@@ -2,15 +2,37 @@
   "site-menu": [
     {
       "navNumber": "01. ",
-      "navTitle": "Who am I?",
-      "navContent": "First content",
-      "scrollSection": "about"
+      "navTitle": "About",
+      "navContent": "Who am I?",
+      "scrollSection": "about",
+      "siteLocation": "/#about"
     },
     {
       "navNumber": "02. ",
-      "navTitle": "What's my experience?",
-      "navContent": "Second content",
-      "scrollSection": "experiences"
+      "navTitle": "Experience",
+      "navContent": "What's my experience?",
+      "scrollSection": "experiences",
+      "siteLocation": "/#experiences"
+    },
+    {
+      "navNumber": "03. ",
+      "navTitle": "Education",
+      "navContent": "What's my education?",
+      "scrollSection": "education",
+      "siteLocation": "/#education"
+    },
+    {
+      "navNumber": "04. ",
+      "navTitle": "Projects",
+      "navContent": "What have I built?",
+      "scrollSection": "projects",
+      "siteLocation": "/projects"
+    },
+    {
+      "navTitle": "AardeYamz",
+      "navContent": "",
+      "scrollSection": "",
+      "siteLocation": ""
     }
   ],
   "about": {
@@ -140,7 +162,7 @@
           "link": [
             "https://www.umass.edu/living/"
           ],
-          "organization": "Residential Life",
+          "organization": "UMass Residential Life",
           "title": "Peer Mentor",
           "timeframe": "01/2021 - 05/2021",
           "tab": "UMass",
@@ -155,7 +177,7 @@
           "link": [
             "https://cics.umass.edu/"
           ],
-          "organization": "College of Computer & Information Sciences",
+          "organization": "Manning College of Computer & Information Sciences",
           "title": "Undergraduate Course Assistant - CS 345",
           "timeframe": "Aug. 2020 - May 2021",
           "tab": " >> CICS 345",
@@ -170,7 +192,7 @@
           "link": [
             "https://cics.umass.edu/"
           ],
-          "organization": "College of Computer & Information Sciences",
+          "organization": "Manning College of Computer & Information Sciences",
           "title": "Undergraduate Course Assistant - CICS 256 / 290M",
           "timeframe": "Aug. 2020 - May 2021",
           "tab": " >> CICS 256",

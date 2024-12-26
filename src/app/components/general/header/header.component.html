@@ -5,10 +5,12 @@
         </a>
         <ul ngbNav #nav="ngbNav" class="menu-ul">
             <li *ngFor='let menuItem of menu ; let i = index' [ngbNavItem]="i" ngbNavItem
-                (click)='analyticsService.sendAnalyticEvent(menuItem.scrollSection, "menu", "click")'>
-                <a ngbNavLink (click)='scroll(menuItem.scrollSection)'><span class='nav-number'>
-                        {{menuItem.navNumber}}</span> <span class="underline nav-text">{{menuItem.navTitle}}</span></a>
-                <ng-template ngbNavContent>{{menuItem.navContent}}</ng-template>
+                (click)='analyticsService.sendAnalyticEvent(menuItem?.scrollSection, "menu", "click")'>
+                <a ngbNavLink (click)='scroll(menuItem?.scrollSection)' *ngIf='menuItem?.navNumber'><span
+                        class='nav-number'>
+                        {{menuItem?.navNumber}}</span> <span
+                        class="underline nav-text">{{menuItem?.navTitle}}</span></a>
+                <ng-template ngbNavContent>{{menuItem?.navContent}}</ng-template>
             </li>
 
         </ul>
@@ -21,9 +23,9 @@
                 <nav>
                     <ol>
                         <li *ngFor='let menuItem of menu ; let i = index'
-                            (click)='analyticsService.sendAnalyticEvent(menuItem.scrollSection, "menu", "click")'>
-                            <a (click)='scroll(menuItem.scrollSection)'>
-                                <span>{{menuItem.navNumber}}</span>{{menuItem.navTitle}}
+                            (click)='analyticsService.sendAnalyticEvent(menuItem?.scrollSection, "menu", "click")'>
+                            <a (click)='scroll(menuItem?.scrollSection)' *ngIf='menuItem?.navNumber'>
+                                <span>{{menuItem?.navNumber}}</span>{{menuItem?.navTitle}}
                             </a>
                         </li>
                     </ol>
