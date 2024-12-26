@@ -27,6 +27,10 @@ footer {
         i {
             font-size: 19px;
             color: $LightSlate;
+            &:hover,
+            &:focus {
+                color: $Orange;
+            }
         }
 
         li {
@@ -34,7 +38,7 @@ footer {
 
             &:last-of-type {
                 margin-bottom: 33px;
-            }
+            }   
         }
     }
 
@@ -61,6 +65,11 @@ footer {
             margin: 20px auto;
             padding: 10px;
             color: $LightSlate;
+
+            &:hover,
+            &:focus {
+                color: $Orange;
+            }
         }
     }
 
