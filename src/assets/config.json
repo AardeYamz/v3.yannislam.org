@@ -254,6 +254,17 @@
             "Beginning my senior year, I assumed the responsibilities of President. I led an Executive Board of 14 members as well as the general fellowship of 80 members during UMass Amherst's transition to remote learning."
           ]
         }
+      ],
+      "skills": [
+        "Azure Platform",
+        "Angular & React JS",
+        "HTML & CSS",
+        "CyberArk Conjur",
+        "SpringBoot, Struts, & JBoss (Java)",
+        "Active Directory",
+        "ServiceNow",
+        "Docker & k8s",
+        "Others ..."
       ]
     }
   },
