@@ -1,0 +1,406 @@
+{
+  "site-menu": [
+    {
+      "navNumber": "01. ",
+      "navTitle": "Who am I?",
+      "navContent": "First content",
+      "scrollSection": "about"
+    },
+    {
+      "navNumber": "02. ",
+      "navTitle": "What's my experience?",
+      "navContent": "Second content",
+      "scrollSection": "experiences"
+    }
+  ],
+  "about": {
+    "first": "Yannis",
+    "last": "Lam",
+    "email": "email@yannislam.org",
+    "contact": [
+      {
+        "icon": "fa-linkedin-in",
+        "name": "Linkedin",
+        "url": "https://linkedin.com/in/yannis-lam/",
+        "handle": "/in/yannis-lam/"
+      },
+      {
+        "icon": "fa-github",
+        "name": "Github",
+        "url": "https://github.com/AardeYamz"
+      },
+      {
+        "icon": "far fa-envelope",
+        "name": "Email",
+        "url": "mailto:email@yannislam.org",
+        "handle": "email@yannislam.org"
+      },
+      {
+        "icon": "fa-tiktok",
+        "name": "TikTok",
+        "url": "https://tiktok.com/@AardeYamz",
+        "handle": "@AardeYamz"
+      },
+      {
+        "icon": "fa-facebook-f",
+        "name": "Facebook",
+        "url": "https://fb.com/AardeYamz",
+        "handle": "/AardeYamz"
+      },
+      {
+        "icon": "fa-instagram",
+        "name": "Instagram",
+        "url": "https://instagram.com/AardeYamz",
+        "handle": "@AardeYamz"
+      }
+    ],
+    "aardeyamz": [
+      {
+        "title": "Yannis Lam",
+        "language": "Greek / Chinese / English",
+        "pronounciation": "/y æ - n ih s · l a m/",
+        "content": [
+          "what my parents decided to name me in English",
+          "my legal name in America",
+          "Yannis (Γιάννης) - Greek name meaning \"God is gracious\" or \"with God's grace\"; commonly translated to \"John\"",
+          "Lam (林) - Common British Hong Kong romanization of Chinese surname meaning \"forrest\""
+        ]
+      },
+      {
+        "title": "林恩力",
+        "language": "Chinese",
+        "pronounciation": "/lam4 jan1 lik6/",
+        "content": [
+          "what my parents decided to name me in Chinese",
+          "what Chinese people call me",
+          "林 - Common Chinese surname meaning \"forest\"; romanized to \"Lam\" or \"Lin\"",
+          "恩 - Chinese character meaning \"grace\"; common Chinese name for girls with the English name of \"Grace\"",
+          "力 - Chinese character meaning \"force\" or \"strength\""
+        ]
+      },
+      {
+        "title": "Aarde · Yamz",
+        "language": "Dutch / English",
+        "pronounciation": "/ardə jæm/",
+        "content": [
+          "what my friend Allison and I decided was a good username that no one had claimed in 2014",
+          "what people on the internet call me",
+          "Aarde - Dutch word meaning \"earth\"",
+          "Yamz - An abbreviation of my English name \"Yannis\"; what my friends called me in high school"
+        ]
+      }
+    ],
+    "experiences": {
+      "work": [
+        {
+          "img": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png",
+          "link": [
+            "https://www.voya.com/"
+          ],
+          "organization": "Voya Financial",
+          "title": "Software Developer, Back Office Application Development",
+          "timeframe": "12/2022 - Present",
+          "tab": "Voya SDE",
+          "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
+          "description": [
+            "Full stack development of Back Office Applications Suite - including Task Manager, Common Remitter, Case Installation applications",
+            "Drove cloud migration projects to break up monolith struts-based Java applications to new k8s based SpringBoot microservices",
+            "Secured password credentials through the onboarding and implementation of CyberArk Conjur"
+          ]
+        },
+        {
+          "img": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png",
+          "organization": "Voya Financial",
+          "title": "IT Resource & Development Rotational Program Associate",
+          "timeframe": "05/2021 - 12/2022",
+          "tab": " >> Rotation",
+          "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
+          "description": [
+            "Led Angular development efforts for Common Remitter app migration to Azure cloud",
+            "Refactored existing PWEB Java application of my.voya.com to remove unused endpoints",
+            "Pioneered Java Development efforts of Swagger integration for MyVoyage app microservices",
+            "Coordinated between App development and DevOps teams in integration of advanced CI/CD pipeline"
+          ]
+        },
+        {
+          "img": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png",
+          "organization": "Voya Financial",
+          "title": "IT Salesforce Development Intern",
+          "timeframe": "05/2019 - 08/2020",
+          "tab": ">> Intern",
+          "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
+          "description": [
+            "Improved test coverage and stabilized Salesforce environments through the refactoring of automated Apex unit tests",
+            "Developed and enhanced advanced coding skills through applied Apex, SOQL, SOSL, and VisualForce practice",
+            "Refined understanding of software development life cycles with exposure to agile and scrum methodologies"
+          ]
+        },
+        {
+          "img": "https://pbs.twimg.com/profile_images/642029086622113792/R_xe0hTC_400x400.png",
+          "link": [
+            "https://www.umass.edu/living/"
+          ],
+          "organization": "Residential Life",
+          "title": "Peer Mentor",
+          "timeframe": "01/2021 - 05/2021",
+          "tab": "UMass",
+          "description": [
+            "I served as a Peer Mentor for Residential Life at UMass Amherst in the Gorman / Wheeler Residential Cluster.",
+            "For this job, I communicated with and advised a group of over 400 freshmen transitioning to on-campus dormitories during the Covid-19 emergency.",
+            "I also coordinated with other peer mentors and residential assistants to provide useful seminars for first year students."
+          ]
+        },
+        {
+          "img": "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg",
+          "link": [
+            "https://cics.umass.edu/"
+          ],
+          "organization": "College of Computer & Information Sciences",
+          "title": "Undergraduate Course Assistant - CS 345",
+          "timeframe": "Aug. 2020 - May 2021",
+          "tab": " >> CICS 345",
+          "description": [
+            "I served as an undergraduate course assistant to Instructor Liam Rothschild and Professor Jaime Dávila for 345: Practice and Applications of Data Management.",
+            "This class focused on data management through the use of SQL. As a UCA, I proctored weekly classes for 1 class section of 100 students, quickly graded assignments, and hosted weekly office hours on Zoom.",
+            "I also helped with the development of new course material using SQL databases and Python autograders."
+          ]
+        },
+        {
+          "img": "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg",
+          "link": [
+            "https://cics.umass.edu/"
+          ],
+          "organization": "College of Computer & Information Sciences",
+          "title": "Undergraduate Course Assistant - CICS 256 / 290M",
+          "timeframe": "Aug. 2020 - May 2021",
+          "tab": " >> CICS 256",
+          "description": [
+            "I served as an undergraduate course assistant to Professors Rui Wang and Tauhidur Rahman for 256/290M Make: A Hand's On Introduction to Physical Computing.",
+            "This class focused on lab-based physics, electronics, and Arduino programming. As a UCA, I proctored weekly labs for 1 class section of 35 students, quickly graded weekly lab reports for 2 sections totaling 75 students"
+          ]
+        },
+        {
+          "img": "https://braintreema.gov/ImageRepository/Document?documentID=4780",
+          "link": [
+            "https://www.braintreeschools.org/"
+          ],
+          "organization": "Braintree Public Schools",
+          "title": "Substitute Technician & Collegiate Intern Technician",
+          "timeframe": "Aug. 2020 - May 2021",
+          "tab": "BPS",
+          "description": [
+            "Based at Braintree High School, I helped service the entire school district as an intern.",
+            "I have assisted in the deployment of Chromebooks, Mac OS updates, Windows 10 images, and Android tablets.",
+            "My responsibilties included providing helpdesk assistence and maintaining an accurate inventory of the midsized enterprise network.",
+            "While I started out as a High School Intern Technician, I was promoted to College Intern Technician and Substitute Technician.",
+            "As a technician, I specialized in the repair of Chromebooks while mentoring teams of 15 high school interns."
+          ]
+        },
+        {
+          "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/TheHomeDepot.svg/1024px-TheHomeDepot.svg.png",
+          "link": [
+            "https://www.homedepot.com/"
+          ],
+          "organization": "Home Depot",
+          "title": "Customer Order Specialist",
+          "timeframe": "05/2018 - 09/2018",
+          "tab": "Home Depot",
+          "description": [
+            "At The Home Depot, I operated behind the service desk.",
+            "I assisted customers with purchases and returns - specializing with online orders.",
+            "I also answered confidential calls, restocked items, and kept the service desk a clean and presentable working environment."
+          ]
+        },
+        {
+          "img": "https://www.thayer.org/uploaded/themes/project_rise_18/images/Horizontal_W_Thayer_1.png",
+          "link": [
+            "https://www.thayer.org/projectrise"
+          ],
+          "organization": "Project RISE Boston",
+          "title": "Substitute Technician & Collegiate Intern Technician",
+          "timeframe": "May 2015 - Aug. 2016",
+          "tab": "Project RISE",
+          "description": [
+            "Over the span of seven weeks, I taught mathematics and helped coordinate general camp activities for a group of 70 inner-city middle and high school students.",
+            "I led five 50 minute math classes for 4 days a week in topics including arithmetic, algebra, geometry, and trigonometry.",
+            "I also oversaw the creation of a new website: \"projectriseboston.org\" (the website has since been updated) and produced a 5 minute video showing the perspective of a student at camp."
+          ]
+        }
+      ],
+      "education": [
+        {
+          "img": "https://upload.wikimedia.org/wikipedia/commons/3/35/University_of_Massachusetts_Amherst_seal.png",
+          "image_alt": "UMass Amherst",
+          "school": "University of Massachusetts Amherst",
+          "more": "Commonwealth Honors College - Computer Science (B.S) & Economics (B.A)",
+          "timeframe": "Sep. 2017 - May 2021",
+          "gpa": "3.69",
+          "description": [
+            "I graduated with a dual degree in Computer Science and Economics at the University of Massachusetts Amherst Commonwealth Honors College in May 2021.",
+            "Some advanced courses that I took were Physical Computing, Data Structures, Data Management, Web Programming, Digital Forensics, Internet Law, and Computer Networks for C.S.",
+            "I also took Political Economy of the Environment, Game Theory, Money and Banking, and Econometrics for Economics."
+          ]
+        }
+      ],
+      "volunteering": [
+        {
+          "img": "https://cdn1-www.cru.org/epicmovement/wp-content/uploads/sites/39/2018/03/cropped-Artboard-1-1.png.pagespeed.ce.nOrh8-GSlT.png",
+          "link": "https://epicmovement.com/",
+          "organization": "Epic Movement at UMass Amherst",
+          "title": "President",
+          "timeframe": "Aug. 2020 - May 2021",
+          "about": "Epic Movement is a Cru ministry that envisions Asian American students and faculty transformed by their relationship with Jesus Christ, embracing the value of their cultures and actively engaging in God's redemptive work in ways that honor all people and contexts. Epic Movement at UMass Amherst was established in the fall of 2008.",
+          "description": [
+            "Beginning my senior year, I assumed the responsibilities of President. I led an Executive Board of 14 members as well as the general fellowship of 80 members during UMass Amherst's transition to remote learning."
+          ]
+        }
+      ]
+    }
+  },
+  "banner": {
+    "blurb": [
+      "I am an ambitious and resourceful <span class='underline'>Software Developer</span>. In 2021, I graduated with dual degrees in Computer Science <i>(B.S.)</i> and Economics <i>(B.A.)</i> at the <span class='underline'>University of Massachusetts Amherst</span> Commonwealth Honors College. Currently I work at <span class='underline'>Voya Financial</span> as a Full Stack Software Developer supporting its Back Office Applications."
+    ],
+    "typeSection": [
+      "I am a Software Developer",
+      "I am a Computer Scientist",
+      "I am an Economist",
+      "I am a Photographer",
+      "I am a Full Stack Developer",
+      "I am a Front End Developer",
+      "I am a Back End Developer",
+      "I am a Tech Enthusiast",
+      "I am Yannis"
+    ]
+  },
+  "siteTitle": "Yannis Lam",
+  "manifestName": "yannislam.org",
+  "manifestShortName": "YL",
+  "manifestStartUrl": "/",
+  "manifestBackgroundColor": "#ff8b00",
+  "manifestThemeColor": "#ff8b00",
+  "manifestDisplay": "standalone",
+  "manifestIcon": "src/assets/images/logos/clearcolor.png",
+  "heading": "Yannis Lam",
+  "subHeading": "",
+  "projects": {
+    "projects1": [
+      {
+        "img": "OLS Regression Plot.png",
+        "image_alt": "OLS Regression Plot",
+        "project": "An Analysis of Regressions of Salary Factors in Massachusetts",
+        "time": "Senior Thesis - 2020 - 2021",
+        "description": [
+          "In 2020, city and state governments across the United States placed restrictions on different sectors of local",
+          "economies, resulting in an economic recession with differing levels of unemployment and across states and",
+          "industries. Employment salaries and rates varied significantly between remote white-collar workers and in",
+          "person blue-collar workers. While Covid-19 has amplified the wage differentials between different industries,",
+          "such differentials existed prior to the pandemic. Factors such as geographic location, company, occupation,",
+          "industry, and work history all influence salaries. Previous research has focused on minimum wage increases,",
+          "interstate comparison of manufacturing production, and work history to determine future jobs.",
+          "This thesis built models of previously collected employment data and analyzed the impact of variables in determining",
+          "hourly salary. Linear, lasso, and ridge regression models were used to consider the differences. The models",
+          "examined the causal relationships and predicted outcomes for occupations in the Commonwealth of Massachusetts."
+        ],
+        "link": ""
+      },
+      {
+        "img": "DBTBT.png",
+        "image_alt": "DBTBT",
+        "project": "DBTBT.com",
+        "time": "Fall 2019",
+        "description": [
+          "In CS 326: Web Programming, I partnered with Christian Daher, Bhogesh Maddirala, and Matthew Lehoullier to create a website with the intent of helping people to make better financial decisions. Upon running a search on the website homepage (http://www.dbtbt.com/), the user will be presented with a number of items from Amazon.com, along with similarly-priced stock options. The idea is to encourage the user to invest their free money for the future, rather than wasting it on frivolous purchases.",
+          "This addresses a real world problem as many Americans do not make educated financial decisions. This project used Node.js (backend and auxiliary socket server),",
+          "React (frontend), Apache, Nginx (reverse proxies),  Amazon EC2, GCP Compute Engine (hosting), Amazon RDS using MySQL (database), and Amazon Route 53 (DNS).     "
+        ],
+        "link": "https://github.com/cdaher3/DBTBT"
+      },
+      {
+        "img": "20191020_053757.jpg",
+        "image_alt": "Raspberry Pi Python Timelapse Controller",
+        "project": "Raspberry Pi Python Timelapse Controller",
+        "time": "HackUMass 00110 - October 2019",
+        "description": [
+          "During the HackUMass VII competition, my team (Henry Cheung, Veronica Gusev, and Nhan Le) built a Raspberry Pi powered camera timelapse system.",
+          "The ardunio ran a python script that controlled a DSLR camera. This script took a time interval and sent it to the DSLR, received images were compiled and encoded into a video"
+        ],
+        "link": "https://github.com/dergoose/hackumass2019"
+      },
+      {
+        "img": "IMG_6074.JPG",
+        "image_alt": "Blinds",
+        "project": "Arduino Smart Window",
+        "time": "Fall 2018",
+        "description": [
+          "During the Fall 2018 semester, I took CICS 290M: MAKE:",
+          "A HANDS-ON INTRODUCTION TO PHYSICAL COMPUTING. In this class, I partnered with Jeffrey Carr",
+          "and we built an arduino powered smart window for our final project. The arduino had a photoresistor that would raise and lower a servo powered shade depending on the amount of light detected."
+        ],
+        "link": "https://sites.google.com/umass.edu/smartblinds/about"
+      },
+      {
+        "img": "IMG_1246.JPG",
+        "image_alt": "ZebRed PC Build",
+        "project": "ZebRed PC Build",
+        "time": "December 2018",
+        "description": "Over the course of the past few date I have been perfecting my own desktop setup. Tired of using slugish prebuilt computers, I built my own!",
+        "link": "https://pcpartpicker.com/user/Aardeyamz/saved/4yCnnQ"
+      },
+      {
+        "img": "20181013_141834.jpg",
+        "image_alt": "Blinds",
+        "project": "Arduino Security System ",
+        "time": "HackUMass 00110 - October 2018",
+        "description": "During the HackUMass VI competition, my team (Jeffrey Carr, Henry Cheung, & Steven Yen) built an arduino powered alarm system. The alarm system had a distance proximity sensor that calculated based off of echo location. Based off of the distance readings, a neopixel ring would light up more pixels the closer an object was to the sensor. There was three levels of colors and if an object got too close, the neopixel ring would turn red.",
+        "link": "https://github.com/jcarr98/HackUMass2018"
+      }
+    ],
+    "projects2": [
+      {
+        "img": "IMG_9104.JPG",
+        "image_alt": "NHD 2017",
+        "project": "Queen of the Desert: Mother of Kings ",
+        "time": "NHD - Spring 2017",
+        "description": [
+          "During senior year of high school, my team (Matthew Pugsley, Katie O'Neil, Laura Wang, and myself)",
+          "competed in our final National History Day comptetition.",
+          "We researched Gertrude Bell and her legacy to current Middle Eastern affairs."
+        ]
+      },
+      {
+        "img": "IMG_20160311_201710.jpg",
+        "image_alt": "NHD 2016",
+        "project": "Scientology: An Exploration into the Unknown",
+        "time": "NHD - Spring 2016",
+        "description": [
+          "In 2016, my team (Matthew Pugsley, Katie O'Neil, Laura Wang, and myself) researched the",
+          "life of L. Ron Hubbard and the rise of Scientology.",
+          "Our exhbit won 3rd place at the Massachusetts South Shore regional History Day competition."
+        ]
+      },
+      {
+        "img": "IMG_20150314_120402.jpg",
+        "image_alt": "Science Fair 2015",
+        "project": "Finding MH370: How Satellite Data Was Used to Locate the Missing Malaysian Airliner",
+        "time": "Science Fair - Spring 2015",
+        "description": [
+          "Sophomore year of high school, I researched the disappearance of Malaysian Airlines flight MH370.",
+          "Using satelite data that was released to the public, I calculated a possible final path and coordinates of a",
+          "proposed crash site in the Indian Ocean. My project won 1st place at my high school science fair before I moved on to",
+          "regional and state science fairs."
+        ]
+      },
+      {
+        "img": "IMG_1787.JPG",
+        "image_alt": "NHD 2015",
+        "project": "Clouded by Delusion: The Flawed Leadership & Legacy of the Salem Court System ",
+        "time": "NHD 2015 - Spring 2015",
+        "description": [
+          "For the National History Day contest of 2015, my team (Lily Tang, Matthew Pugsley, Amanda Ramos, and Caitlin Leach) researched and created an exhibit around the flawed court system that resulted in the Salem Witch Trials.",
+          "Our exhibit won 1st place at the the South Shore Regional competition and won an Honorable Mention at the Massachusetts History Day contest."
+        ]
+      }
+    ]
+  }
+}

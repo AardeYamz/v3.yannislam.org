@@ -1,0 +1,9 @@
+{
+  "name": "v3.yannislam.org",
+  "short_name": "v3.yannislam.org",
+  "theme_color": "#1976d2",
+  "background_color": "#fafafa",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./"
+}

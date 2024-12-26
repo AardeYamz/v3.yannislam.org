@@ -1,0 +1,34 @@
+<nav [@animateMenu] class="navbar main-navbar on-top" [class.nav-shadow]='this.pageYPosition>0'>
+    <div class="container">
+        <a class="navbar-brand text-light" [routerLink]="'/'">
+            <img src='assets/images/logos/clearcolor.png' width='55' />
+        </a>
+        <ul ngbNav #nav="ngbNav" class="menu-ul">
+            <li *ngFor='let menuItem of menu ; let i = index' [ngbNavItem]="i" ngbNavItem
+                (click)='analyticsService.sendAnalyticEvent(menuItem.scrollSection, "menu", "click")'>
+                <a ngbNavLink (click)='scroll(menuItem.scrollSection)'><span class='nav-number'>
+                        {{menuItem.navNumber}}</span> <span class="underline nav-text">{{menuItem.navTitle}}</span></a>
+                <ng-template ngbNavContent>{{menuItem.navContent}}</ng-template>
+            </li>
+
+        </ul>
+        <div class="menu-wrapper">
+            <div [class.animate]='responsiveMenuVisible' (click)='responsiveMenuVisible = !responsiveMenuVisible'
+                class="hamburger-menu"></div>
+        </div>
+        <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }">
+            <aside [class.aside-show]='responsiveMenuVisible' [class.nav-shadow]='this.pageYPosition>0' class="on-top">
+                <nav>
+                    <ol>
+                        <li *ngFor='let menuItem of menu ; let i = index'
+                            (click)='analyticsService.sendAnalyticEvent(menuItem.scrollSection, "menu", "click")'>
+                            <a (click)='scroll(menuItem.scrollSection)'>
+                                <span>{{menuItem.navNumber}}</span>{{menuItem.navTitle}}
+                            </a>
+                        </li>
+                    </ol>
+                </nav>
+            </aside>
+        </div>
+    </div>
+</nav>

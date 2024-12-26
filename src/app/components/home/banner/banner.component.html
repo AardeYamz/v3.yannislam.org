@@ -1,0 +1,28 @@
+<section class="section banner" id="banner">
+    <div [@bannerTrigger] class="container">
+        <div class="section-box-banner">
+            <div class="content">
+                <div>
+                    <h1>Hello! My name is</h1>
+                </div>
+                <div class='banner-title'>
+                    <h2 class="text-capitalize">Yannis Lam;</h2>
+                    <ngx-typed-js [strings]=this.data.banner.typeSection [loop]="true" [shuffle]="true" [backSpeed]="60"
+                        [typeSpeed]="60" [cursorChar]="'_'" [showCursor]="false">
+                        <h3 class="typing"></h3>
+                    </ngx-typed-js>
+                </div>
+                <div class='banner-description'>
+                    <p class="mt-4" *ngFor='let text of this.data.banner.blurb' [innerHTML]="text">
+                    </p>
+                </div>
+            </div>
+            <div class="div-btn-banner">
+                <a (click)='analyticsService.sendAnalyticEvent("click_send_mail", "banner", "email")'
+                    href="mailto:email@yannislam.org" target="_black" class="main-btn text-capitalize">
+                    email me!
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
