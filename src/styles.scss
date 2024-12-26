@@ -1,5 +1,5 @@
-@import "./variables.scss" ;
-@import "/node_modules/bootstrap/scss/bootstrap.scss" ;
+@use "./variables.scss" as *;
+@use "/node_modules/bootstrap/scss/bootstrap.scss" as *;
 
 body {
     margin: 0;
