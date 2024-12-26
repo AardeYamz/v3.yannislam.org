@@ -1,5 +1,7 @@
 # Yannis Lam Portfolio Website v.3
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/5240d316-eab4-486a-97e1-656632fcfb96/deploy-status)](https://app.netlify.com/sites/v3yannislam/deploys)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19. 
 - Forked from [Lê Thanh Tuấn's Portfolio](https://github.com/lethanhtuan939/Portfolio)
 - Which was based on [José Hernández's Portfolio](https://github.com/andresjosehr/andresjosehr-portfolio)
