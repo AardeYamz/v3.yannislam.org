@@ -43,16 +43,10 @@ export class HeaderComponent implements OnInit {
   menu: any[] = this.data["site-menu"];
 
   scroll(el: string) {
-    const element = document.getElementById(el);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (document.getElementById(el)) {
+      document?.getElementById(el)?.scrollIntoView({ behavior: 'smooth' });
     } else {
-      this.router.navigate(['/home']).then(() => {
-        const elementAfterNavigation = document.getElementById(el);
-        if (elementAfterNavigation) {
-          elementAfterNavigation.scrollIntoView({ behavior: 'smooth' });
-        }
-      });
+      this.router.navigate(['/home']).then(() => document?.getElementById(el)?.scrollIntoView({ behavior: 'smooth' }));
     }
     this.responsiveMenuVisible = false;
   }
