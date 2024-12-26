@@ -60,7 +60,7 @@ export class HeaderComponent implements OnInit {
 
   @HostListener('window:scroll', ['getScrollPosition($event)'])
   getScrollPosition() {
-    this.pageYPosition = window.pageYOffset;
+    this.pageYPosition = window.scrollY;
   }
 
 }
