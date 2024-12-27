@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
+import { AardeYamzComponent } from './components/other/aardeyamz/aardeyamz.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'aardeyamz', component: AardeYamzComponent },
   { path: '**', pathMatch: 'full', redirectTo: '/' },
-
 ];
 
 @NgModule({

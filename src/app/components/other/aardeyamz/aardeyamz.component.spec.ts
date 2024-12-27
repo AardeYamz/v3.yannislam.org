@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AardeyamzComponent } from './aardeyamz.component';
+import { AardeYamzComponent } from './aardeyamz.component';
 
-describe('AardeyamzComponent', () => {
-  let component: AardeyamzComponent;
-  let fixture: ComponentFixture<AardeyamzComponent>;
+describe('AardeYamzComponent', () => {
+  let component: AardeYamzComponent;
+  let fixture: ComponentFixture<AardeYamzComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AardeyamzComponent]
+      imports: [AardeYamzComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
-    fixture = TestBed.createComponent(AardeyamzComponent);
+    fixture = TestBed.createComponent(AardeYamzComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

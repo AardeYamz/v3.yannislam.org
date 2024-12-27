@@ -1,0 +1,38 @@
+<section class="section namecard">
+    <div class="container">
+        <div class="section-box ">
+            <div class="">
+                <h3 class="section-title">
+                    <span class='n-section-title'>∞. </span> What's in a name?
+                </h3>
+            </div>
+            <div class="mt-5">
+                <div class="row p-0">
+
+                    <div *ngFor='let section of data.about.aardeyamz ; let i = index'
+                        class="col-12 col-md-6 col-lg-6 col-xl-4 namecard-col" data-aos="fade-up"
+                        data-aos-duration="1000">
+                        <div class="namecard-box">
+                            <div class="row w-100 text-left m-0 p-0">
+                                <h5 class="namecard-title mt-4"><b> {{section.title}} </b>
+
+                                </h5>
+                                <h6 class="namecard-description mt-4">
+                                    <i>{{section.pronounciation}}</i> - ({{section.language}})
+                                </h6>
+                            </div>
+                            <div>
+                                <ul class="namecard-skills">
+                                    <li *ngFor='let content of section.content'>
+                                        <span class="underline">{{content}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

@@ -9,8 +9,6 @@ import * as AOS from 'aos';
   standalone: false
 })
 export class AppComponent implements OnInit {
-  title = 'Portfolio';
-
   constructor(
     private titleService: Title,
     private metaService: Meta,

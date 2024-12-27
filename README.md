@@ -16,7 +16,7 @@ npm install -g @angular/cli
 
 ### Installing
 
-Just clone  the repo and excecute the following command inside the folder proyect
+Just clone  the repo and excecute the following command inside the folder project
 
 ``` bash
 npm install

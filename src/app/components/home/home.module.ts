@@ -26,5 +26,6 @@ import { WorkHistoryComponent } from "./workhistory/workhistory.component";
     CarouselModule,
     NgxTypedJsModule
   ],
+  exports: [ContactComponent]
 })
 export class HomeModule { }
