@@ -11,12 +11,12 @@
                     <li *ngFor='let exp of experiences?.education ; let i = index' [title]="exp?.tab" [ngbNavItem]="i">
                         <a ngbNavLink>{{exp?.tab}}</a>
                         <ng-template ngbNavContent>
-                            <h4 class='title-tab-content'>{{exp?.title}} &#64; <span
+                            <h4 class='title-tab-content'>{{exp?.title}} - <span
                                     class="company-tab-content">{{exp?.organization}}</span></h4>
                             <h5 class="education-time">{{exp?.timeframe}}</h5>
-                            <p *ngFor='let experienceDescriptionParagraph of exp?.description; let i = index'
+                            <p *ngFor='let descParagraph of exp?.description; let i = index'
                                 class="education-description">
-                                {{experienceDescriptionParagraph}}
+                                {{descParagraph}}
                             </p>
 
                             <div *ngIf='exp?.link' class="education-link">
