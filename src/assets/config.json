@@ -1,6 +1,7 @@
 {
-  "site-menu": [
+  "siteMenu": [
     {
+      "navID": 1,
       "navNumber": "01. ",
       "navTitle": "About",
       "navContent": "Who am I?",
@@ -9,17 +10,17 @@
     },
     {
       "navNumber": "02. ",
-      "navTitle": "Experience",
-      "navContent": "What's my experience?",
-      "scrollSection": "experiences",
-      "siteLocation": "/#experiences"
+      "navTitle": "Education",
+      "navContent": "Where did I go to school?",
+      "scrollSection": "education",
+      "siteLocation": "/#education"
     },
     {
       "navNumber": "03. ",
-      "navTitle": "Education",
-      "navContent": "What's my education?",
-      "scrollSection": "education",
-      "siteLocation": "/#education"
+      "navTitle": "Experience",
+      "navContent": "What's my experience?",
+      "scrollSection": "workhistory",
+      "siteLocation": "/#experiences"
     },
     {
       "navNumber": "04. ",
@@ -52,7 +53,7 @@
         "url": "https://github.com/AardeYamz"
       },
       {
-        "icon": "far fa-envelope",
+        "icon": "fa-envelope",
         "name": "Email",
         "url": "mailto:email@yannislam.org",
         "handle": "email@yannislam.org"
@@ -115,37 +116,57 @@
     "experiences": {
       "work": [
         {
-          "img": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png",
+          "imgs": [
+            "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
+          ],
           "link": [
             "https://www.voya.com/"
           ],
           "organization": "Voya Financial",
-          "title": "Software Developer, Back Office Application Development",
+          "title": "Software Developer",
           "timeframe": "12/2022 - Present",
           "tab": "Voya SDE",
           "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
           "description": [
+            "Software Developer, Back Office Application Development",
             "Full stack development of Back Office Applications Suite - including Task Manager, Common Remitter, Case Installation applications",
             "Drove cloud migration projects to break up monolith struts-based Java applications to new k8s based SpringBoot microservices",
             "Secured password credentials through the onboarding and implementation of CyberArk Conjur"
+          ],
+          "skills": [
+            "Azure RedHat Openshift",
+            "CyberArk Conjur",
+            "SpringBoot, Struts, & JBoss (Java)",
+            "Active Directory",
+            "ServiceNow"
           ]
         },
         {
-          "img": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png",
+          "imgs": [
+            "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
+          ],
           "organization": "Voya Financial",
           "title": "IT Resource & Development Rotational Program Associate",
           "timeframe": "05/2021 - 12/2022",
-          "tab": " >> Rotation",
+          "tab": "Rotation",
           "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
           "description": [
             "Led Angular development efforts for Common Remitter app migration to Azure cloud",
             "Refactored existing PWEB Java application of my.voya.com to remove unused endpoints",
             "Pioneered Java Development efforts of Swagger integration for MyVoyage app microservices",
             "Coordinated between App development and DevOps teams in integration of advanced CI/CD pipeline"
+          ],
+          "skills": [
+            "Azure Platform",
+            "Angular",
+            "CICD Pipelines",
+            "GitHub"
           ]
         },
         {
-          "img": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png",
+          "imgs": [
+            "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
+          ],
           "organization": "Voya Financial",
           "title": "IT Salesforce Development Intern",
           "timeframe": "05/2019 - 08/2020",
@@ -155,10 +176,17 @@
             "Improved test coverage and stabilized Salesforce environments through the refactoring of automated Apex unit tests",
             "Developed and enhanced advanced coding skills through applied Apex, SOQL, SOSL, and VisualForce practice",
             "Refined understanding of software development life cycles with exposure to agile and scrum methodologies"
+          ],
+          "skills": [
+            "Salesforce.com CRM Platform",
+            "SOQL & SOSL",
+            "Unit Tests"
           ]
         },
         {
-          "img": "https://pbs.twimg.com/profile_images/642029086622113792/R_xe0hTC_400x400.png",
+          "imgs": [
+            "https://pbs.twimg.com/profile_images/642029086622113792/R_xe0hTC_400x400.png"
+          ],
           "link": [
             "https://www.umass.edu/living/"
           ],
@@ -170,39 +198,60 @@
             "I served as a Peer Mentor for Residential Life at UMass Amherst in the Gorman / Wheeler Residential Cluster.",
             "For this job, I communicated with and advised a group of over 400 freshmen transitioning to on-campus dormitories during the Covid-19 emergency.",
             "I also coordinated with other peer mentors and residential assistants to provide useful seminars for first year students."
+          ],
+          "skills": [
+            "Leadership",
+            "Organizing",
+            "Educational Development"
           ]
         },
         {
-          "img": "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg",
+          "imgs": [
+            "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg"
+          ],
           "link": [
             "https://cics.umass.edu/"
           ],
           "organization": "Manning College of Computer & Information Sciences",
           "title": "Undergraduate Course Assistant - CS 345",
           "timeframe": "09/2020 - 05/2021",
-          "tab": " >> CICS 345",
+          "tab": "CICS 345",
           "description": [
             "I served as an undergraduate course assistant to Instructor Liam Rothschild and Professor Jaime Dávila for 345: Practice and Applications of Data Management.",
             "This class focused on data management through the use of SQL. As a UCA, I proctored weekly classes for 1 class section of 100 students, quickly graded assignments, and hosted weekly office hours on Zoom.",
             "I also helped with the development of new course material using SQL databases and Python autograders."
+          ],
+          "skills": [
+            "Teaching",
+            "SQL",
+            "Class Management"
           ]
         },
         {
-          "img": "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg",
+          "imgs": [
+            "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg"
+          ],
           "link": [
             "https://cics.umass.edu/"
           ],
           "organization": "Manning College of Computer & Information Sciences",
           "title": "Undergraduate Course Assistant - CICS 256 / 290M",
           "timeframe": "09/2019 - 12/2019",
-          "tab": " >> CICS 256",
+          "tab": "CICS 256",
           "description": [
             "I served as an undergraduate course assistant to Professors Rui Wang and Tauhidur Rahman for 256/290M Make: A Hand's On Introduction to Physical Computing.",
             "This class focused on lab-based physics, electronics, and Arduino programming. As a UCA, I proctored weekly labs for 1 class section of 35 students, quickly graded weekly lab reports for 2 sections totaling 75 students"
+          ],
+          "skills": [
+            "Arduino",
+            "Raspberry Pi",
+            "Physical Computing"
           ]
         },
         {
-          "img": "https://braintreema.gov/ImageRepository/Document?documentID=4780",
+          "imgs": [
+            "https://braintreema.gov/ImageRepository/Document?documentID=4780"
+          ],
           "link": [
             "https://www.braintreeschools.org/"
           ],
@@ -216,10 +265,19 @@
             "My responsibilties included providing helpdesk assistence and maintaining an accurate inventory of the midsized enterprise network.",
             "While I started out as a High School Intern Technician, I was promoted to College Intern Technician and Substitute Technician.",
             "As a technician, I specialized in the repair of Chromebooks while mentoring teams of 15 high school interns."
+          ],
+          "skills": [
+            "Inventory",
+            "Training",
+            "Help Desk",
+            "Chrome OS",
+            "Windows OS"
           ]
         },
         {
-          "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/TheHomeDepot.svg/1024px-TheHomeDepot.svg.png",
+          "imgs": [
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/TheHomeDepot.svg/1024px-TheHomeDepot.svg.png"
+          ],
           "link": [
             "https://www.homedepot.com/"
           ],
@@ -231,10 +289,16 @@
             "At The Home Depot, I operated behind the service desk.",
             "I assisted customers with purchases and returns - specializing with online orders.",
             "I also answered confidential calls, restocked items, and kept the service desk a clean and presentable working environment."
+          ],
+          "skills": [
+            "Customer Service",
+            "Retail Management"
           ]
         },
         {
-          "img": "https://www.thayer.org/uploaded/themes/project_rise_18/images/Horizontal_W_Thayer_1.png",
+          "imgs": [
+            "https://www.thayer.org/uploaded/themes/project_rise_18/images/Horizontal_W_Thayer_1.png"
+          ],
           "link": [
             "https://www.thayer.org/projectrise"
           ],
@@ -246,27 +310,69 @@
             "Over the span of seven weeks, I taught mathematics and helped coordinate general camp activities for a group of 70 inner-city middle and high school students.",
             "I led five 50 minute math classes for 4 days a week in topics including arithmetic, algebra, geometry, and trigonometry.",
             "I also oversaw the creation of a new website: \"projectriseboston.org\" (the website has since been updated) and produced a 5 minute video showing the perspective of a student at camp."
+          ],
+          "skills": [
+            "Teaching",
+            "Wix",
+            "Web Development"
           ]
         }
       ],
       "education": [
         {
-          "img": "https://upload.wikimedia.org/wikipedia/commons/3/35/University_of_Massachusetts_Amherst_seal.png",
+          "imgs": "https://upload.wikimedia.org/wikipedia/commons/3/35/University_of_Massachusetts_Amherst_seal.png",
           "image_alt": "UMass Amherst",
-          "school": "University of Massachusetts Amherst",
-          "more": "Commonwealth Honors College - Computer Science (B.S) & Economics (B.A)",
-          "timeframe": "Sep. 2017 - May 2021",
-          "gpa": "3.69",
+          "organization": "University of Massachusetts Amherst, Commonwealth Honors College",
+          "timeframe": "09/2017 - 05/2021",
+          "link": [
+            "https://www.cics.umass.edu/"
+          ],
+          "title": "Computer Science (BS)",
+          "tab": "CICS BS",
           "description": [
-            "I graduated with a dual degree in Computer Science and Economics at the University of Massachusetts Amherst Commonwealth Honors College in May 2021.",
-            "Some advanced courses that I took were Physical Computing, Data Structures, Data Management, Web Programming, Digital Forensics, Internet Law, and Computer Networks for C.S.",
-            "I also took Political Economy of the Environment, Game Theory, Money and Banking, and Econometrics for Economics."
+            "GPA: 3.69",
+            "Bachelors of Sciences, Manning College of Information & Computer Sciences",
+            "Honors: Dean's List Award (Fall 2017, Spring 2019, Fall 2019, Spring 2020, Fall 2020, Spring 2021)",
+            "Some advanced courses that I took were Physical Computing, Data Structures, Data Management, Web Programming, Digital Forensics, Internet Law, and Computer Networks for C.S. "
+          ]
+        },
+        {
+          "imgs": "https://upload.wikimedia.org/wikipedia/commons/3/35/University_of_Massachusetts_Amherst_seal.png",
+          "image_alt": "UMass Amherst",
+          "organization": "University of Massachusetts Amherst, Commonwealth Honors College",
+          "timeframe": "09/2017 - 05/2021",
+          "link": [
+            "https://www.umass.edu/economics/"
+          ],
+          "title": "Economics (BA)",
+          "tab": "ECON BA",
+          "description": [
+            "GPA: 3.69",
+            "Bachelors of Arts, College of Social & Behavioral Sciences",
+            "Revelant courses that I took included Political Economy of the Environment, Game Theory, Money and Banking, and Econometrics for Economics."
+          ]
+        },
+        {
+          "imgs": "https://upload.wikimedia.org/wikipedia/commons/3/35/University_of_Massachusetts_Amherst_seal.png",
+          "image_alt": "Braintree Public Schools",
+          "organization": "Braintree High School",
+          "timeframe": "09/2017 - 05/2021",
+          "link": [
+            "https://www.braintreeschools.org/"
+          ],
+          "title": "High School Diploma",
+          "tab": "HS",
+          "description": [
+            "GPA: 3.83",
+            "High School Diploma ~ Summa Cum Laude",
+            "Throughout high school, I completed 10 AP Courses and passed 10 AP tests while maintaining a 3.83 GPA and a class rank of 8/401.",
+            "I was an inducted member of the Edna M. Parker National Honor Society and acknowledged as a class scholar."
           ]
         }
       ],
       "volunteering": [
         {
-          "img": "https://cdn1-www.cru.org/epicmovement/wp-content/uploads/sites/39/2018/03/cropped-Artboard-1-1.png.pagespeed.ce.nOrh8-GSlT.png",
+          "imgs": "https://cdn1-www.cru.org/epicmovement/wp-content/uploads/sites/39/2018/03/cropped-Artboard-1-1.png.pagespeed.ce.nOrh8-GSlT.png",
           "link": "https://epicmovement.com/",
           "organization": "Epic Movement at UMass Amherst",
           "title": "President",
@@ -319,7 +425,7 @@
   "projects": {
     "projects1": [
       {
-        "img": "OLS Regression Plot.png",
+        "imgs": "OLS Regression Plot.png",
         "image_alt": "OLS Regression Plot",
         "project": "An Analysis of Regressions of Salary Factors in Massachusetts",
         "time": "Senior Thesis - 2020 - 2021",
@@ -338,7 +444,7 @@
         "link": ""
       },
       {
-        "img": "DBTBT.png",
+        "imgs": "DBTBT.png",
         "image_alt": "DBTBT",
         "project": "DBTBT.com",
         "time": "Fall 2019",
@@ -350,7 +456,7 @@
         "link": "https://github.com/cdaher3/DBTBT"
       },
       {
-        "img": "20191020_053757.jpg",
+        "imgs": "20191020_053757.jpg",
         "image_alt": "Raspberry Pi Python Timelapse Controller",
         "project": "Raspberry Pi Python Timelapse Controller",
         "time": "HackUMass 00110 - October 2019",
@@ -361,7 +467,7 @@
         "link": "https://github.com/dergoose/hackumass2019"
       },
       {
-        "img": "IMG_6074.JPG",
+        "imgs": "IMG_6074.JPG",
         "image_alt": "Blinds",
         "project": "Arduino Smart Window",
         "time": "Fall 2018",
@@ -373,7 +479,7 @@
         "link": "https://sites.google.com/umass.edu/smartblinds/about"
       },
       {
-        "img": "IMG_1246.JPG",
+        "imgs": "IMG_1246.JPG",
         "image_alt": "ZebRed PC Build",
         "project": "ZebRed PC Build",
         "time": "December 2018",
@@ -381,7 +487,7 @@
         "link": "https://pcpartpicker.com/user/Aardeyamz/saved/4yCnnQ"
       },
       {
-        "img": "20181013_141834.jpg",
+        "imgs": "20181013_141834.jpg",
         "image_alt": "Blinds",
         "project": "Arduino Security System ",
         "time": "HackUMass 00110 - October 2018",
@@ -391,7 +497,7 @@
     ],
     "projects2": [
       {
-        "img": "IMG_9104.JPG",
+        "imgs": "IMG_9104.JPG",
         "image_alt": "NHD 2017",
         "project": "Queen of the Desert: Mother of Kings ",
         "time": "NHD - Spring 2017",
@@ -402,7 +508,7 @@
         ]
       },
       {
-        "img": "IMG_20160311_201710.jpg",
+        "imgs": "IMG_20160311_201710.jpg",
         "image_alt": "NHD 2016",
         "project": "Scientology: An Exploration into the Unknown",
         "time": "NHD - Spring 2016",
@@ -413,7 +519,7 @@
         ]
       },
       {
-        "img": "IMG_20150314_120402.jpg",
+        "imgs": "IMG_20150314_120402.jpg",
         "image_alt": "Science Fair 2015",
         "project": "Finding MH370: How Satellite Data Was Used to Locate the Missing Malaysian Airliner",
         "time": "Science Fair - Spring 2015",
@@ -425,7 +531,7 @@
         ]
       },
       {
-        "img": "IMG_1787.JPG",
+        "imgs": "IMG_1787.JPG",
         "image_alt": "NHD 2015",
         "project": "Clouded by Delusion: The Flawed Leadership & Legacy of the Salem Court System ",
         "time": "NHD 2015 - Spring 2015",
