@@ -13,7 +13,7 @@
                     <ng-container *ngFor="let img of exp.imgs">
                         <ng-template carouselSlide [id]="exp.title + i">
                             <div #imgContainer class='img-container'>
-                                <img class='img-feature-education rounded' [src]="img" [alt]="exp.title">
+                                <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.title">
                             </div>
                         </ng-template>
                     </ng-container>
@@ -23,8 +23,7 @@
                     *ngIf="i % 2 == 0">
                     <div class="img-feature-workhistory-box">
                         <div class="img-container" style='width: auto;'>
-                            <img class='img-feature-education rounded' [src]="exp.imgs[0]" [alt]="exp.imgs[0]"
-                                width='600px'>
+                            <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.imgs[0]">
                         </div>
                     </div>
                 </div>
@@ -32,9 +31,10 @@
                 <div [ngClass]="{'workhistory-info-right': i % 2 == 0, 'workhistory-info-left': i % 2 != 0}"
                     [style.backgroundImage]="'url(' + exp.imgs[0] + ')'">
                     <div class="workhistory-box">
-                        <h5 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}" class="workhistory-name">
+                        <h5 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}" class="workhistory-title">
                             {{exp.title}} </h5>
-                        <h4 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}" class="workhistory">
+                        <h4 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
+                            class="workhistory-subtitle">
                             &#64; {{exp.organization}}</h4>
 
                         <div class="workhistory-description-box" (click)='debug()'>
@@ -61,7 +61,7 @@
                     <ng-container *ngFor="let img of exp.imgs">
                         <ng-template carouselSlide [id]="exp.title + i">
                             <div class='img-container'>
-                                <img class='img-feature-education rounded' [src]="img" [alt]="exp.title">
+                                <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.title">
                             </div>
                         </ng-template>
                     </ng-container>
@@ -71,8 +71,7 @@
                     *ngIf="i % 2 != 0">
                     <div class="img-feature-workhistory-box">
                         <div class="img-container" style='width: auto;'>
-                            <img class='img-feature-education rounded' [src]="exp.imgs[0]" [alt]="exp.imgs[0]"
-                                width='600px'>
+                            <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.imgs[0]">
                         </div>
                     </div>
                 </div>

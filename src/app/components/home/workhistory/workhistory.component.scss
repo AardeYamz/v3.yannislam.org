@@ -1,8 +1,7 @@
 @use "./../../../../variables.scss" as *;
 .workhistory {
     .workhistory-container {
-        height: 360px;
-        margin: 100px 0;
+        margin: 75px 0;
         .workhistory-info-left {
             width: 50%;
             margin-right: -57px;
@@ -18,7 +17,7 @@
         .workhistory-box {
             display: table-cell;
             vertical-align: middle;
-            .feature-education {
+            .feature-workhistory {
                 font-size: 13px;
                 font-weight: normal;
                 color: $Orange;
@@ -26,10 +25,13 @@
                 margin-top: 10px;
                 padding-top: 0;
             }
-            .workhistory-name {
+            .workhistory-title {
                 font-size: 28px;
-                margin: 0 0 20px;
+                margin: 0 0 10px;
                 color: $LightestSlate;
+            }
+            .workhistory-subtitle {
+                color: $Orange;
             }
             .workhistory-description-box {
                 box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
@@ -97,7 +99,7 @@
             display: table-cell;
             vertical-align: middle;
         }
-        .img-feature-education {
+        .img-feature-workhistory {
             width: 100%;
         }
     }
@@ -190,8 +192,7 @@
 }
 
 .img-container {
-    width: 600px;
-    max-height: 320px;
+    width: 400px;
     overflow: auto;
     border-radius: 3px;
 }
@@ -222,6 +223,18 @@
 
 /* Handle on hover */
 
- ::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
     background: $Orange;
+}
+
+.text-left {
+    text-align: left;
+    z-index: 1; 
+    position: relative;
+}
+
+.text-right {
+    text-align: right;
+    z-index: 1;
+    position: relative;
 }
