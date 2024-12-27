@@ -15,6 +15,7 @@ import { HomeComponent } from './home.component';
     HomeComponent,
     BannerComponent,
     AboutComponent,
+    EducationComponent,
     ContactComponent,
   ],
   imports: [
