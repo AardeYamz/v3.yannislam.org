@@ -40,7 +40,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  menu: any[] = this.data["site-menu"];
+  menu: any[] = this.data.siteMenu;
 
   scroll(el: string) {
     if (document.getElementById(el)) {

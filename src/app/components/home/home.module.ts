@@ -6,7 +6,7 @@ import { NgxTypedJsModule } from 'ngx-typed-js';
 import { AboutComponent } from './about/about.component';
 import { BannerComponent } from './banner/banner.component';
 import { ContactComponent } from './contact/contact.component';
-import { ExperienceComponent } from './experience/experience.component';
+import { EducationComponent } from './education/education.component';
 import { HomeComponent } from './home.component';
 
 
@@ -15,7 +15,6 @@ import { HomeComponent } from './home.component';
     HomeComponent,
     BannerComponent,
     AboutComponent,
-    ExperienceComponent,
     ContactComponent,
   ],
   imports: [

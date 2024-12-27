@@ -1,6 +1,7 @@
 {
-  "site-menu": [
+  "siteMenu": [
     {
+      "navID": 1,
       "navNumber": "01. ",
       "navTitle": "About",
       "navContent": "Who am I?",
@@ -9,17 +10,17 @@
     },
     {
       "navNumber": "02. ",
+      "navTitle": "Education",
+      "navContent": "Where did I go to school?",
+      "scrollSection": "education",
+      "siteLocation": "/#education"
+    },
+    {
+      "navNumber": "03. ",
       "navTitle": "Experience",
       "navContent": "What's my experience?",
       "scrollSection": "experiences",
       "siteLocation": "/#experiences"
-    },
-    {
-      "navNumber": "03. ",
-      "navTitle": "Education",
-      "navContent": "What's my education?",
-      "scrollSection": "education",
-      "siteLocation": "/#education"
     },
     {
       "navNumber": "04. ",
@@ -52,7 +53,7 @@
         "url": "https://github.com/AardeYamz"
       },
       {
-        "icon": "far fa-envelope",
+        "icon": "fa-envelope",
         "name": "Email",
         "url": "mailto:email@yannislam.org",
         "handle": "email@yannislam.org"
@@ -253,14 +254,51 @@
         {
           "img": "https://upload.wikimedia.org/wikipedia/commons/3/35/University_of_Massachusetts_Amherst_seal.png",
           "image_alt": "UMass Amherst",
-          "school": "University of Massachusetts Amherst",
-          "more": "Commonwealth Honors College - Computer Science (B.S) & Economics (B.A)",
-          "timeframe": "Sep. 2017 - May 2021",
-          "gpa": "3.69",
+          "organization": "University of Massachusetts Amherst, Commonwealth Honors College",
+          "timeframe": "09/2017 - 05/2021",
+          "link": [
+            "https://www.cics.umass.edu/"
+          ],
+          "title": "Computer Science (BS)",
+          "tab": "CICS BS",
           "description": [
-            "I graduated with a dual degree in Computer Science and Economics at the University of Massachusetts Amherst Commonwealth Honors College in May 2021.",
-            "Some advanced courses that I took were Physical Computing, Data Structures, Data Management, Web Programming, Digital Forensics, Internet Law, and Computer Networks for C.S.",
-            "I also took Political Economy of the Environment, Game Theory, Money and Banking, and Econometrics for Economics."
+            "GPA: 3.69",
+            "Bachelors of Sciences, Manning College of Information & Computer Sciences",
+            "Honors: Dean's List Award (Fall 2017, Spring 2019, Fall 2019, Spring 2020, Fall 2020, Spring 2021)",
+            "Some advanced courses that I took were Physical Computing, Data Structures, Data Management, Web Programming, Digital Forensics, Internet Law, and Computer Networks for C.S. "
+          ]
+        },
+        {
+          "img": "https://upload.wikimedia.org/wikipedia/commons/3/35/University_of_Massachusetts_Amherst_seal.png",
+          "image_alt": "UMass Amherst",
+          "organization": "University of Massachusetts Amherst, Commonwealth Honors College",
+          "timeframe": "09/2017 - 05/2021",
+          "link": [
+            "https://www.umass.edu/economics/"
+          ],
+          "title": "Economics (BA)",
+          "tab": "ECON BA",
+          "description": [
+            "GPA: 3.69",
+            "Bachelors of Arts, College of Social & Behavioral Sciences",
+            "Revelant courses that I took included Political Economy of the Environment, Game Theory, Money and Banking, and Econometrics for Economics."
+          ]
+        },
+        {
+          "img": "https://upload.wikimedia.org/wikipedia/commons/3/35/University_of_Massachusetts_Amherst_seal.png",
+          "image_alt": "Braintree Public Schools",
+          "organization": "Braintree High School",
+          "timeframe": "09/2017 - 05/2021",
+          "link": [
+            "https://www.braintreeschools.org/"
+          ],
+          "title": "High School Diploma",
+          "tab": "HS",
+          "description": [
+            "GPA: 3.83",
+            "High School Diploma ~ Summa Cum Laude",
+            "Throughout high school, I completed 10 AP Courses and passed 10 AP tests while maintaining a 3.83 GPA and a class rank of 8/401.",
+            "I was an inducted member of the Edna M. Parker National Honor Society and acknowledged as a class scholar."
           ]
         }
       ],

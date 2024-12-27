@@ -1,7 +1,7 @@
 @use "./../../../../variables.scss"  as *;
 
 
-::ng-deep .experiences .experiences-tabs {
+::ng-deep .education .education-tabs {
     display: flex;
 
     .tab-content {
@@ -68,7 +68,7 @@
     }
 }
 
-.experiences {
+.education {
 
     max-width: 700px;
     margin: auto;
@@ -84,7 +84,7 @@
         }
     }
 
-    .job-time {
+    .education-time {
         font-family: $CodeFont;
         font-size: 13px;
         font-weight: normal;
@@ -96,7 +96,7 @@
         margin-bottom: 30px;
     }
 
-    .job-description {
+    .education-description {
         position: relative;
         padding-left: 30px;
         margin-bottom: 10px;
@@ -114,13 +114,13 @@
 
 
 @media (max-width: 768px) {
-    .experiences {
-        .job-description {
+    .education {
+        .education-description {
             padding: 0px;
         }
     }
 
-    ::ng-deep .experiences-tabs {
+    ::ng-deep .education-tabs {
         display: block !important;
 
         .tab-content {
