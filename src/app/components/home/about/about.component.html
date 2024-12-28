@@ -29,8 +29,9 @@
                         </p>
 
                         <ul class="skills-list" data-aos="fade-up">
-                            <li *ngFor='let skill of skills ; let i = index' class="skill-element" data-aos="fade-up"
-                                data-aos-duration="1000"><span class='underline'>{{skill}} </span></li>
+                            <li *ngFor='let skill of data?.about?.experiences?.skills ; let i = index'
+                                class="skill-element" data-aos="fade-up" data-aos-duration="1000"><span
+                                    class='underline'>{{skill}} </span></li>
                         </ul>
                     </div>
                 </div>

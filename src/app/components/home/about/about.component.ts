@@ -13,7 +13,6 @@ export class AboutComponent implements OnInit {
     public analyticsService: AnalyticsService
   ) { }
   data: any = jsonData;
-  skills: any = this.data.about.experiences.skills;
 
   ngOnInit(): void { }
 }
