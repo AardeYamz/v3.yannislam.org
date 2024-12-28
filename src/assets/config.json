@@ -119,6 +119,7 @@
           "imgs": [
             "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
           ],
+          "image_alt": "Voya Financial Logo",
           "link": [
             "https://www.voya.com/"
           ],
@@ -145,6 +146,7 @@
           "imgs": [
             "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
           ],
+          "image_alt": "Voya Financial Logo",
           "organization": "Voya Financial",
           "title": "Associate Software Developer",
           "fullTitle": "IT Resource & Development Rotational Program Associate",
@@ -168,6 +170,7 @@
           "imgs": [
             "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
           ],
+          "image_alt": "Voya Financial Logo",
           "organization": "Voya Financial",
           "title": "Intern Software Developer",
           "fullTitle": "IT Salesforce Development Intern",
@@ -189,6 +192,7 @@
           "imgs": [
             "https://pbs.twimg.com/profile_images/642029086622113792/R_xe0hTC_400x400.png"
           ],
+          "image_alt": "UMass Residential Life Logo",
           "link": [
             "https://www.umass.edu/living/"
           ],
@@ -211,11 +215,13 @@
           "imgs": [
             "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg"
           ],
+          "image_alt": "UMass Amherst Manning College of Computer & Information Sciences Logo",
           "link": [
-            "https://cics.umass.edu/"
+            "https://people.cs.umass.edu/~jaimedavila/Courses/345/COMPSCI_345_syllabus.pdf"
           ],
           "organization": "Manning College of Computer & Information Sciences",
-          "title": "Undergraduate Course Assistant - CS 345",
+          "title": "Undergrad TA - CS 345",
+          "fullTitle": "Undergraduate Course Assistant - CS 345",
           "timeframe": "09/2020 - 05/2021",
           "tab": "CICS 345",
           "description": [
@@ -233,16 +239,19 @@
           "imgs": [
             "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg"
           ],
+          "image_alt": "UMass Amherst Manning College of Computer & Information Sciences Logo",
           "link": [
-            "https://cics.umass.edu/"
+            "https://sites.google.com/view/cics256/home"
           ],
           "organization": "Manning College of Computer & Information Sciences",
-          "title": "Undergraduate Course Assistant - CICS 256 / 290M",
+          "title": "Undergrad TA - CICS 256",
+          "fullTitle": "Undergraduate Course Assistant - CICS 256 / 290M",
           "timeframe": "09/2019 - 12/2019",
           "tab": "CICS 256",
           "description": [
             "I served as an undergraduate course assistant to Professors Rui Wang and Tauhidur Rahman for 256/290M Make: A Hand's On Introduction to Physical Computing.",
-            "This class focused on lab-based physics, electronics, and Arduino programming. As a UCA, I proctored weekly labs for 1 class section of 35 students, quickly graded weekly lab reports for 2 sections totaling 75 students"
+            "This class focused on lab-based physics, electronics, and Arduino programming.",
+            "As a UCA, I proctored weekly labs for 1 class section of 35 students, quickly graded weekly lab reports for 2 sections totaling 75 students"
           ],
           "skills": [
             "Arduino",
@@ -252,8 +261,9 @@
         },
         {
           "imgs": [
-            "https://braintreema.gov/ImageRepository/Document?documentID=4780"
+            "https://scontent-bos5-1.xx.fbcdn.net/v/t39.30808-6/302320580_507069131421821_2558083336515057918_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=IklCyA8y0pMQ7kNvgGvXTKI&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&_nc_gid=Avq1VAFmcUjomUUtC8ht6FE&oh=00_AYCzO8HkNlVEw-hRjMib4bMDwfAHJ0N9KNqBHdfjsFm7Zw&oe=6775256E"
           ],
+          "image_alt": "Braintree Public Schools Logo",
           "link": [
             "https://www.braintreeschools.org/"
           ],
@@ -379,7 +389,7 @@
           "link": "https://epicmovement.com/",
           "organization": "Epic Movement at UMass Amherst",
           "title": "President",
-          "timeframe": "Aug. 2020 - May 2021",
+          "timeframe": "08/2020 - 05/2021",
           "about": "Epic Movement is a Cru ministry that envisions Asian American students and faculty transformed by their relationship with Jesus Christ, embracing the value of their cultures and actively engaging in God's redemptive work in ways that honor all people and contexts. Epic Movement at UMass Amherst was established in the fall of 2008.",
           "description": [
             "Beginning my senior year, I assumed the responsibilities of President. I led an Executive Board of 14 members as well as the general fellowship of 80 members during UMass Amherst's transition to remote learning."

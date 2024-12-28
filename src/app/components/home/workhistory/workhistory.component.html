@@ -47,19 +47,21 @@
                             <p *ngFor='let descParagraph of exp?.description; let i = index' class="mb-1">
                                 {{descParagraph}}
                             </p>
+                            <div [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
+                                class="workhistory-links">
+                                <a *ngIf="exp['link']" class="mx-3" style='color: inherit' [href]="exp['link']"
+                                    target="_blank"><i class="ml-3 fa-solid fa-up-right-from-square"></i></a>
+                                <a *ngIf="exp['demoLink']" style='color: inherit' [href]="exp['demoLink']"
+                                    target="_blank"><i class="ml-3 fas fa-external-link-alt"></i></a>
+                            </div>
                         </div>
+
                         <ul [ngClass]="{'justify-content-end': i % 2 == 0, 'justify-content-start': i % 2 != 0}"
                             class="workhistory-skills">
                             <li *ngFor='let skill of exp.skills' class="mx-2">
                                 <span class="underline skills">{{skill}}</span>
                             </li>
                         </ul>
-                        <div [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}" class="workhistory-links">
-                            <a *ngIf="exp['link']" class="mx-3" style='color: inherit' [href]="exp['link']"
-                                target="_blank"><i class="ml-3 fa-solid fa-up-right-from-square"></i></a>
-                            <a *ngIf="exp['demoLink']" style='color: inherit' [href]="exp['demoLink']"
-                                target="_blank"><i class="ml-3 fas fa-external-link-alt"></i></a>
-                        </div>
                     </div>
                 </div>
 
