@@ -118,7 +118,7 @@
           ],
           "organization": "Voya Financial",
           "title": "Software Developer",
-          "fullTitle": "Software Developer, Back Office Application Development",
+          "subTitle": "Software Developer, Back Office Application Development",
           "timeframe": "12/2022 - Present",
           "tab": "Voya SDE",
           "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
@@ -142,7 +142,7 @@
           "image_alt": "Voya Financial Logo",
           "organization": "Voya Financial",
           "title": "Associate Software Developer",
-          "fullTitle": "IT Resource & Development Rotational Program Associate",
+          "subTitle": "IT Resource & Development Rotational Program Associate",
           "timeframe": "05/2021 - 12/2022",
           "tab": "Rotation",
           "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
@@ -166,7 +166,7 @@
           "image_alt": "Voya Financial Logo",
           "organization": "Voya Financial",
           "title": "Intern Software Developer",
-          "fullTitle": "IT Salesforce Development Intern",
+          "subTitle": "IT Salesforce Development Intern",
           "timeframe": "05/2019 - 08/2020",
           "tab": "Intern",
           "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
@@ -214,7 +214,7 @@
           ],
           "organization": "Manning College of Computer & Information Sciences",
           "title": "Undergrad TA - CS 345",
-          "fullTitle": "Undergraduate Course Assistant - CS 345",
+          "subTitle": "Undergraduate Course Assistant - CS 345",
           "timeframe": "09/2020 - 05/2021",
           "tab": "CICS 345",
           "description": [
@@ -225,7 +225,8 @@
           "skills": [
             "Teaching",
             "SQL",
-            "Class Management"
+            "RDBMS",
+            "Student Engagement"
           ]
         },
         {
@@ -238,7 +239,7 @@
           ],
           "organization": "Manning College of Computer & Information Sciences",
           "title": "Undergrad TA - CICS 256",
-          "fullTitle": "Undergraduate Course Assistant - CICS 256 / 290M",
+          "subTitle": "Undergraduate Course Assistant - CICS 256 / 290M",
           "timeframe": "09/2019 - 12/2019",
           "tab": "CICS 256",
           "description": [
@@ -249,6 +250,7 @@
           "skills": [
             "Arduino",
             "Raspberry Pi",
+            "Circuits",
             "Physical Computing"
           ]
         },
@@ -262,7 +264,7 @@
           ],
           "organization": "Braintree Public Schools",
           "title": "Helpdesk Technician",
-          "fullTitle": "Substitute Technician & Collegiate Intern Technician",
+          "subTitle": "Substitute Technician & Collegiate Intern Technician",
           "timeframe": "Aug. 2020 - May 2021",
           "tab": "BPS",
           "description": [
@@ -309,7 +311,8 @@
             "https://www.thayer.org/projectrise"
           ],
           "organization": "Project RISE Boston",
-          "title": "Substitute Technician & Collegiate Intern Technician",
+          "title": "Math Teacher & Camp Counselor",
+          "subTitle": "Mathematics Teacher (Grades 6 - 10)",
           "timeframe": "05/2015 - 08/2016",
           "tab": "Project RISE",
           "description": [
