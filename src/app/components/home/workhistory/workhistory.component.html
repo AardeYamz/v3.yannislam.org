@@ -7,7 +7,7 @@
                 </h3>
             </div>
 
-            <div *ngFor='let exp of experiences?.work; let i = index' class="d-flex workhistory-container"
+            <div *ngFor='let exp of data?.about?.experiences?.work; let i = index' class="d-flex workhistory-container"
                 data-aos="fade-up" data-aos-duration="1000">
                 <owl-carousel-o class='owl-carousel-o' [options]="customOptions" *ngIf="i % 2 == 0">
                     <ng-container *ngFor="let img of exp.imgs">
@@ -38,6 +38,12 @@
                             &#64; {{exp.organization}}</h4>
 
                         <div class="workhistory-description-box" (click)='debug()'>
+                            <p *ngIf='exp?.timeframe' class="text-right mb-2">
+                                <i>{{exp?.timeframe}}</i>
+                            </p>
+                            <p *ngIf='exp?.fullTitle' class="text-right mb-2">
+                                <u>{{exp?.fullTitle}}</u>
+                            </p>
                             <p *ngFor='let descParagraph of exp?.description; let i = index' class="mb-1">
                                 {{descParagraph}}
                             </p>

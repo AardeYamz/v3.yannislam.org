@@ -11,7 +11,6 @@ import * as jsonData from '../../../../assets/config.json';
 })
 export class WorkHistoryComponent {
   data: any = jsonData;
-  experiences: any = this.data.about.experiences;
 
   customOptions: OwlOptions = {
     loop: true,
