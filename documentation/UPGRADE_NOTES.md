@@ -43,16 +43,40 @@ The upgrade surfaced a few pre-existing issues that only became build/type error
 - **`header.component.ts`**: `@HostListener('window:scroll', ['getScrollPosition($event)'])` was malformed — the args array should list event parameter names (e.g. `'$event'`), not a call expression. The method (`getScrollPosition()`) takes no parameters and doesn't use `$event` (it reads `window.scrollY` directly), so the listener was simplified to `@HostListener('window:scroll')`. TS 6's stricter argument-count checking turned this from a silently-ignored mistake into a hard build error (`TS2554`).
 - **`app.component.spec.ts`**: contained two stale assertions left over from the default `ng new` scaffold — checking for an `app.title` property and rendered text (`'... app is running!'`) that have never existed on the real `AppComponent`/template (which just renders `<app-header>`, `<router-outlet>`, `<app-footer>`). These were pre-existing dead assertions (not caused by the dependency bump) but were failing the test run, so they were removed, leaving the one meaningful test (`should create the app`).
 
-## 5. Verification
+## 5. Clearing the remaining `npm install` deprecation warnings (round 2)
+
+After the round-1 upgrade, `npm install` still printed 5 deprecation warnings. Here's what was done about each:
+
+| Warning | Action | Why |
+|---|---|---|
+| `@angular-devkit/build-angular` deprecated (webpack support) | **Fixed** — ran `ng update @angular/cli --name use-application-builder` | Official Angular migration that swaps the `architect` builders in `angular.json` from `@angular-devkit/build-angular:*` to the new esbuild/Vite-based `@angular/build:*`. `@angular-devkit/build-angular` was removed from `package.json` entirely; `@angular/build` was added in its place. |
+| `@ngtools/webpack` deprecated | **Fixed** — same migration | This was a transitive dependency of `@angular-devkit/build-angular`; it's gone now that package is gone. |
+| `uuid@8.3.2` deprecated | **Fixed** — same migration (indirect) | Was pulled in via `@angular-devkit/build-angular → webpack-dev-server → sockjs → uuid`. Removing the webpack-based builder removed the whole chain. Confirmed with `npm ls uuid` (now empty) — package count dropped from 999 to 621. |
+| `@angular/platform-browser-dynamic` deprecated | **Fixed** — swapped `platformBrowserDynamic` for `platformBrowser` (from `@angular/platform-browser`) in `src/main.ts`, and removed the now-unused `@angular/platform-browser-dynamic` dependency from `package.json` | Angular 22 consolidated the JIT/AOT platform bootstrap into `@angular/platform-browser` itself; the `-dynamic` package is now just a deprecated re-export. The app builds with AOT regardless (CLI default), so this is a drop-in swap. |
+| `@angular/animations` deprecated | **Left as-is, intentionally** | See §8 below. |
+
+### Side effect: Sass import broke under the new builder
+
+The new esbuild-based Sass compiler doesn't resolve `@use "/node_modules/bootstrap/scss/bootstrap.scss"` the way webpack's sass-loader did — the leading `/` was being read as a filesystem-root path instead of a project-root-relative one, and the build failed with "Can't find stylesheet to import." Fixed in `src/styles.scss` by dropping the leading slash (`@use "node_modules/bootstrap/scss/bootstrap.scss" as *;`), which resolves correctly against the existing `stylePreprocessorOptions.includePaths: ["."]` in `angular.json`. Verified the compiled `styles.css` is byte-identical in size before/after (513.83 kB), and visually confirmed via a Playwright screenshot of `ng serve` — full page renders correctly (fonts, layout, icons, footer content all intact, zero console errors).
+
+## 6. Verification
 
 - `ng build` — passes cleanly (one pre-existing, non-blocking warning: `aos` is shipped as CommonJS, not ESM).
-- `ng test` — 5 of 12 pass. The other 7 failures are **pre-existing** and unrelated to this upgrade: their spec files (e.g. `header.component.spec.ts`, `home.component.spec.ts`) only declare the component in isolation in `TestBed`, without importing the modules/directives it actually depends on (`NgbNavModule`, `RouterModule`, `AppModule`, etc.). None of those spec files were touched by any `ng update` migration or by this work — confirmed via `git diff --stat -- '*.spec.ts'`, which shows only `app.component.spec.ts` changed. Fixing them is a separate, pre-existing test-infrastructure gap, out of scope for a dependency update.
+- `ng serve` — verified visually with a headless-browser (Playwright) screenshot: page renders correctly, no console errors.
+- `ng test` — 5 of 12 pass. The other 7 failures are **pre-existing** and unrelated to any of this work: their spec files (e.g. `header.component.spec.ts`, `home.component.spec.ts`) only declare the component in isolation in `TestBed`, without importing the modules/directives it actually depends on (`NgbNavModule`, `RouterModule`, `AppModule`, etc.). None of those spec files were touched by any `ng update` migration or by this work — confirmed via `git diff --stat -- '*.spec.ts'`, which shows only `app.component.spec.ts` changed (round 1). The failure count and specific failures are identical before and after round 2's builder migration — no new regressions.
 
-## 6. README
+## 7. README
 
 Updated the "Stack" section, which was stale (listed `animejs`, which isn't actually a dependency, and Angular CLI 19) to reflect what's actually used: Node 24 LTS, Angular CLI 22, ng-bootstrap 21, bootstrap 5, fontawesome 7, aos, ngx-typed-js, ngx-owl-carousel-o, ngx-google-analytics, netlify.
 
+## 8. `@angular/animations` — deprecated but intentionally not migrated
+
+`footer.component.ts` uses the classic animations API for a real, non-trivial effect: on insertion, it queries all direct children and staggers a fade + slide-up (`query('*', stagger(50, animate(...)))`). Angular's replacement is the newer `animate.enter`/`animate.leave` host-binding API, which is CSS-animation-based and built for simple enter/leave transitions — it doesn't have a direct equivalent for `query()` + `stagger()` across a dynamic set of children.
+
+Rewriting this correctly would mean re-implementing the stagger manually (e.g. CSS `animation-delay` via `:nth-child()`, or per-child JS-set custom properties), which is a genuine behavioral rewrite, not a mechanical dependency swap — and it's not something a screenshot can validate (motion/timing, not layout). `@angular/animations` is deprecated but still fully functional and shipped alongside Angular 22, so it was left in place rather than risk a visual regression in this specific animation. Flagging this as a follow-up if you want it done properly (with `ng serve` open in a real browser to eyeball the timing).
+
 ## Not done / left as-is
 
-- The 7 pre-existing failing unit tests (see §5) were not fixed — flagging for a separate task if you want proper `TestBed` setups for those components.
-- Nothing has been committed; all changes are sitting in this worktree for review.
+- The 7 pre-existing failing unit tests (see §6) were not fixed — flagging for a separate task if you want proper `TestBed` setups for those components.
+- `@angular/animations` deprecation warning (see §8) — left in place deliberately.
+- Round 1's changes were committed as `Update to Angular 22`. Round 2's changes (builder migration, `platformBrowser` swap, Sass fix) are sitting in this worktree for review, not yet committed.
