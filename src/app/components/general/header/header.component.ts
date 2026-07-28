@@ -3,6 +3,7 @@ import { Component, HostListener, OnInit, ChangeDetectionStrategy } from '@angul
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { ThemeService } from 'src/app/services/theme/theme.service';
 import * as jsonData from '../../../../assets/config.json';
 
 @Component({
@@ -36,6 +37,7 @@ export class HeaderComponent implements OnInit {
   constructor(
     private router: Router,
     public analyticsService: AnalyticsService,
+    public themeService: ThemeService,
   ) { }
 
   ngOnInit(): void {
@@ -52,6 +54,11 @@ export class HeaderComponent implements OnInit {
     this.responsiveMenuVisible = false;
   }
 
+  toggleTheme() {
+    this.themeService.cycle();
+    this.analyticsService.sendAnalyticEvent('theme_toggle', 'header', this.themeService.mode());
+  }
+
   downloadResume() {
     // app url
     let url = window.location.href;
@@ -62,6 +69,14 @@ export class HeaderComponent implements OnInit {
   @HostListener('window:scroll')
   getScrollPosition() {
     this.pageYPosition = window.scrollY;
+  }
+
+  // Scroll distance (px) over which the logo completes exactly one turn, then holds at 360deg.
+  private static readonly LOGO_ROTATION_SCROLL_PX = 900;
+
+  get logoRotationDeg(): number {
+    const progress = Math.min((this.pageYPosition || 0) / HeaderComponent.LOGO_ROTATION_SCROLL_PX, 1);
+    return progress * 360;
   }
 
 }

@@ -1,5 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core';
 import { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
+import { ThemeService } from 'src/app/services/theme/theme.service';
 
 // How far (in the artwork's 0 0 800 800 viewBox units) each piece starts
 // offset up and to the left of its resting position.
@@ -23,6 +24,18 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   // Floor on how long the screen stays up so fast page loads don't produce a flash.
   private readonly minDisplayMs = 1400;
   private breathe?: JSAnimation;
+
+  constructor(private themeService: ThemeService) { }
+
+  // Matches clearcolor/black/white.svg: full color for the default theme,
+  // a single flat fill for light/dark so the intro matches the header logo.
+  pieceFill(defaultColor: string): string {
+    switch (this.themeService.mode()) {
+      case 'light': return '#000000';
+      case 'dark': return '#ffffff';
+      default: return defaultColor;
+    }
+  }
 
   ngAfterViewInit(): void {
     document.body.style.overflow = 'hidden';

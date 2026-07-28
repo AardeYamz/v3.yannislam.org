@@ -1,0 +1,55 @@
+// 3 color modes, toggled via [data-theme] on <html> (see ThemeService).
+// Orange and white stay anchored as the accent/emphasis colors in every
+// mode; only their shade is retuned per background for contrast.
+
+:root {
+    --color-navy: #131f31;
+    --color-light-navy: #112240;
+    --color-lightest-navy: #303c55;
+    --color-slate: #8892b0;
+    --color-light-slate: #a8b2d1;
+    --color-lightest-slate: #ccd6f6;
+    --color-white: #e6f1ff;
+    --color-orange: #ffa500;
+    --color-orange-opacity: rgba(255, 165, 0, 0.07);
+    // Straight from the logo's spike/arm/foot pieces (fff200/ffc90e/ff7f27).
+    --name-gradient: linear-gradient(90deg, #fff200, #ffc90e, #ff7f27);
+}
+
+// Light mode: light background, black logo.
+:root[data-theme="light"] {
+    --color-navy: #f4f1ea;
+    --color-light-navy: #ffffff;
+    --color-lightest-navy: #e4ded2;
+    --color-slate: #6b6255;
+    --color-light-slate: #4a4238;
+    --color-lightest-slate: #1f1a12;
+    --color-white: #131108;
+    --color-orange: #d9720c;
+    --color-orange-opacity: rgba(217, 114, 12, 0.08);
+    // Gray→red→maroon, from the logo's cap piece (gray 7f7f7f) and diamond
+    // (red ed1c24), darkened for contrast. Distinct from default's gold and
+    // dark mode's bright orange-forward flame: this starts neutral and cool
+    // rather than warm/saturated, so it reads as its own color rather than
+    // a shade of the other two.
+    --name-gradient: linear-gradient(90deg, #5c5c5c, #9c1f0f, #5c1010);
+}
+
+// Dark mode: darker-than-default background, white logo.
+:root[data-theme="dark"] {
+    --color-navy: #05070c;
+    --color-light-navy: #0a0e18;
+    --color-lightest-navy: #1c2740;
+    --color-slate: #6b7590;
+    --color-light-slate: #93a0bd;
+    --color-lightest-slate: #d7e0f5;
+    --color-white: #f7f9fc;
+    --color-orange: #ffb020;
+    --color-orange-opacity: rgba(255, 176, 32, 0.09);
+    // Shares a yellow start with the default gradient below, which reads
+    // as barely-different on short text like "Yannis Lam;" — dropped
+    // yellow entirely and shifted to a fiery orange→red run (still exact
+    // logo hues: foot-orange ff7f27 → diamond-red ed1c24) so default reads
+    // as gold and dark reads as flame, clearly two different colors.
+    --name-gradient: linear-gradient(90deg, #ff7f27, #ff3d1a, #ed1c24);
+}

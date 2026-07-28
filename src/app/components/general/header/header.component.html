@@ -1,44 +1,54 @@
 <nav [@animateMenu] class="navbar main-navbar on-top" [class.nav-shadow]='this.pageYPosition>0'>
   <div class="container">
-    <a class="navbar-brand text-light" [routerLink]="'/'">
-      <img src='assets/images/logos/clearcolor.png' width='55' />
+    <a class="navbar-brand text-light" [routerLink]="'/'" aria-label="Yannis Lam, home">
+      <img [src]="'assets/images/logos/' + themeService.logoVariant() + '.svg'" width="55" alt="Yannis Lam logo"
+        [style.transform]="'rotate(' + logoRotationDeg + 'deg)'" />
     </a>
-    <ul ngbNav #nav="ngbNav" class="menu-ul">
-      @for (menuItem of menu ; track menuItem; let i = $index) {
-        <li [ngbNavItem]="i" ngbNavItem
-          (click)='analyticsService.sendAnalyticEvent($safeNavigationMigration(menuItem?.scrollSection), "menu", "click")'>
-          @if (menuItem?.navNumber) {
-            <a ngbNavLink (click)='scroll($safeNavigationMigration(menuItem?.scrollSection))'><span
-              class='nav-number'>
-            {{menuItem?.navNumber}}</span> <span
-          class="underline nav-text">{{menuItem?.navTitle}}</span></a>
-        }
-        <ng-template ngbNavContent>{{menuItem?.navContent}}</ng-template>
-      </li>
-    }
-
-  </ul>
-  <div class="menu-wrapper">
-    <div [class.animate]='responsiveMenuVisible' (click)='responsiveMenuVisible = !responsiveMenuVisible'
-    class="hamburger-menu"></div>
-  </div>
-  <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }">
-    <aside [class.aside-show]='responsiveMenuVisible' [class.nav-shadow]='this.pageYPosition>0' class="on-top">
-      <nav>
-        <ol>
-          @for (menuItem of menu ; track menuItem; let i = $index) {
-            <li
-              (click)='analyticsService.sendAnalyticEvent($safeNavigationMigration(menuItem?.scrollSection), "menu", "click")'>
-              @if (menuItem?.navNumber) {
-                <a (click)='scroll($safeNavigationMigration(menuItem?.scrollSection))'>
-                  <span>{{menuItem?.navNumber}}</span>{{menuItem?.navTitle}}
-                </a>
-              }
-            </li>
+    <div class="nav-right">
+      <ul ngbNav #nav="ngbNav" class="menu-ul">
+        @for (menuItem of menu ; track menuItem; let i = $index) {
+          <li [ngbNavItem]="i" ngbNavItem
+            (click)='analyticsService.sendAnalyticEvent($safeNavigationMigration(menuItem?.scrollSection), "menu", "click")'>
+            @if (menuItem?.navNumber) {
+              <a ngbNavLink (click)='scroll($safeNavigationMigration(menuItem?.scrollSection))'><span
+                class='nav-number'>
+              {{menuItem?.navNumber}}</span> <span
+            class="underline nav-text">{{menuItem?.navTitle}}</span></a>
           }
-        </ol>
-      </nav>
-    </aside>
+          <ng-template ngbNavContent>{{menuItem?.navContent}}</ng-template>
+        </li>
+      }
+
+      </ul>
+      <button type="button" class="theme-toggle" (click)="toggleTheme()" title="Toggle color theme"
+        [attr.aria-label]="'Toggle color theme (currently ' + themeService.mode() + ')'">
+        <i class="fa-solid"
+          [class.fa-circle-half-stroke]="themeService.mode() === 'default'"
+          [class.fa-sun]="themeService.mode() === 'light'"
+          [class.fa-moon]="themeService.mode() === 'dark'"></i>
+      </button>
+    </div>
+    <div class="menu-wrapper">
+      <div [class.animate]='responsiveMenuVisible' (click)='responsiveMenuVisible = !responsiveMenuVisible'
+      class="hamburger-menu"></div>
+    </div>
+    <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }">
+      <aside [class.aside-show]='responsiveMenuVisible' [class.nav-shadow]='this.pageYPosition>0' class="on-top">
+        <nav>
+          <ol>
+            @for (menuItem of menu ; track menuItem; let i = $index) {
+              <li
+                (click)='analyticsService.sendAnalyticEvent($safeNavigationMigration(menuItem?.scrollSection), "menu", "click")'>
+                @if (menuItem?.navNumber) {
+                  <a (click)='scroll($safeNavigationMigration(menuItem?.scrollSection))'>
+                    <span>{{menuItem?.navNumber}}</span>{{menuItem?.navTitle}}
+                  </a>
+                }
+              </li>
+            }
+          </ol>
+        </nav>
+      </aside>
+    </div>
   </div>
-</div>
 </nav>
