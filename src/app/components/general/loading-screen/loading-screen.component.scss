@@ -23,10 +23,10 @@
 }
 
 .loading-screen__logo {
-    width: 128px;
-    height: 128px;
+    width: clamp(160px, 24vw, 260px);
+    height: clamp(160px, 24vw, 260px);
     overflow: visible;
-    will-change: transform;
+    shape-rendering: geometricPrecision;
 }
 
 .logo-piece {
