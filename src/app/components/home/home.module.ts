@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { NgxTypedJsModule } from 'ngx-typed-js';
+import { AosDirective } from '../../directives/aos/aos.directive';
 import { AboutComponent } from './about/about.component';
 import { BannerComponent } from './banner/banner.component';
 import { ContactComponent } from './contact/contact.component';
@@ -24,7 +25,8 @@ import { WorkHistoryComponent } from "./workhistory/workhistory.component";
     CommonModule,
     NgbNavModule,
     CarouselModule,
-    NgxTypedJsModule
+    NgxTypedJsModule,
+    AosDirective
   ],
   exports: [ContactComponent]
 })

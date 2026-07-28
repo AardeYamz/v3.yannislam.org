@@ -1,0 +1,14 @@
+// Minimal replacement for aos.css's fade-up effect, driven by AosDirective
+// (the only aos animation variant used across the app).
+[data-aos="fade-up"] {
+    opacity: 0;
+    transform: translate3d(0, 100px, 0);
+    transition-property: opacity, transform;
+    transition-duration: 400ms;
+    transition-timing-function: ease;
+
+    &.aos-animate {
+        opacity: 1;
+        transform: translateZ(0);
+    }
+}

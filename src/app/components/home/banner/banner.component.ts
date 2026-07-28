@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
@@ -21,6 +21,7 @@ import * as jsonData from '../../../../assets/config.json';
             ])
         ])
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class BannerComponent implements OnInit {
