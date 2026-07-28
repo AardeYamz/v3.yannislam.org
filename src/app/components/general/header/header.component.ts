@@ -1,49 +1,38 @@
-import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
-import { Component, HostListener, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { ThemeService } from 'src/app/services/theme/theme.service';
-import * as jsonData from '../../../../assets/config.json';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   animations: [
-    trigger("animateMenu", [
-      transition(":enter", [
-        query("*", [
-          style({ opacity: 0, transform: "translateY(-50%)" }),
-          stagger(50, [
-            animate("250ms cubic-bezier(0.35, 0, 0.25, 1)", style({ opacity: 1, transform: "none" }))
-          ])
-        ])
-      ])
-    ])
+    fadeStaggerAnimation('animateMenu', 'translateY(-50%)')
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
 
   responsiveMenuVisible: Boolean = false;
   pageYPosition!: number;
   languageFormControl: FormControl = new FormControl();
   resumeFile: string = "Yannis Lam Resume 20241225.pdf";
-  data: any = jsonData;
+  menu: any[];
 
   constructor(
     private router: Router,
     public analyticsService: AnalyticsService,
     public themeService: ThemeService,
-  ) { }
-
-  ngOnInit(): void {
+    configService: SiteConfigService,
+  ) {
+    this.menu = configService.menu;
   }
-
-  menu: any[] = this.data.siteMenu;
 
   scroll(el: string) {
     if (document.getElementById(el)) {

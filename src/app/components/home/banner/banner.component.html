@@ -3,10 +3,10 @@
     <div class="section-box-banner">
       <div class="content">
         <div>
-          <h1>Hello! My name is</h1>
+          <h1>{{ data.banner.greeting }}</h1>
         </div>
         <div class='banner-title'>
-          <h2 class="text-capitalize">Yannis Lam;</h2>
+          <h2 class="text-capitalize">{{ data.banner.name }}</h2>
           <ngx-typed-js [strings]=this.data.banner.typeSection [loop]="true" [shuffle]="true" [backSpeed]="60"
             [typeSpeed]="60" [cursorChar]="'_'" [showCursor]="false">
             <h3 class="typing"></h3>

@@ -3,7 +3,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AosDirective } from 'src/app/directives/aos/aos.directive';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
-import * as jsonData from './../../../../../assets/config.json';
+import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 @Component({
   selector: 'app-namecard',
@@ -13,13 +13,11 @@ import * as jsonData from './../../../../../assets/config.json';
   styleUrl: './namecard.component.scss'
 })
 export class NamecardComponent {
-  data: any = jsonData;
-
   constructor(
     private router: Router,
-    public analyticsService: AnalyticsService
+    public analyticsService: AnalyticsService,
+    public configService: SiteConfigService
   ) { }
 
-  ngOnInit() { }
-
+  get data() { return this.configService.data; }
 }

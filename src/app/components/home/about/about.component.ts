@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
-import * as jsonData from '../../../../assets/config.json';
+import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 @Component({
   selector: 'app-about',
@@ -9,11 +9,11 @@ import * as jsonData from '../../../../assets/config.json';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
-export class AboutComponent implements OnInit {
+export class AboutComponent {
   constructor(
-    public analyticsService: AnalyticsService
+    public analyticsService: AnalyticsService,
+    public configService: SiteConfigService
   ) { }
-  data: any = jsonData;
 
-  ngOnInit(): void { }
+  get data() { return this.configService.data; }
 }
