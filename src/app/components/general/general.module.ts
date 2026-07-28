@@ -5,10 +5,12 @@ import { RouterModule } from '@angular/router';
 import { NgbDropdownModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
+import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
 @NgModule({
   declarations: [
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    LoadingScreenComponent
   ],
   imports: [
     CommonModule,
@@ -18,6 +20,6 @@ import { HeaderComponent } from './header/header.component';
     FormsModule,
     ReactiveFormsModule
   ],
-  exports: [HeaderComponent, FooterComponent]
+  exports: [HeaderComponent, FooterComponent, LoadingScreenComponent]
 })
 export class GeneralModule { }

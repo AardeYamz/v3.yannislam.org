@@ -1,0 +1,46 @@
+@use "./../../../../variables.scss" as *;
+
+.loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $Navy;
+    transition: visibility 0s linear 0.5s;
+
+    &--hidden {
+        visibility: hidden;
+        pointer-events: none;
+    }
+}
+
+.loading-screen__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loading-screen__logo {
+    width: 96px;
+    height: 96px;
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+.loading-screen__bar {
+    margin-top: 32px;
+    width: 160px;
+    height: 3px;
+    border-radius: 3px;
+    background-color: $LightestNavy;
+    overflow: hidden;
+}
+
+.loading-screen__bar-fill {
+    width: 0%;
+    height: 100%;
+    background-color: $Orange;
+    border-radius: 3px;
+}
