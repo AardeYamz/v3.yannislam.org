@@ -1,7 +1,6 @@
-import { Component, ElementRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectionStrategy, Input } from '@angular/core';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
-import * as jsonData from '../../../../assets/config.json';
 
 @Component({
   selector: 'app-workhistory',
@@ -11,7 +10,10 @@ import * as jsonData from '../../../../assets/config.json';
   standalone: false
 })
 export class WorkHistoryComponent {
-  data: any = jsonData;
+  @Input() experienceList: any[] = [];
+  @Input() sectionId = '';
+  @Input() navNumber = '';
+  @Input() headingText = '';
 
   customOptions: OwlOptions = {
     loop: true,
@@ -30,8 +32,6 @@ export class WorkHistoryComponent {
   constructor(
     public analyticsService: AnalyticsService
   ) { }
-
-  ngOnInit(): void { }
 
   debug() {
 

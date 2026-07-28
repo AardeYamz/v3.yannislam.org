@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import * as jsonData from '../../../assets/config.json';
 
 @Component({
     selector: 'app-home',
@@ -7,4 +8,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
-export class HomeComponent { }
+export class HomeComponent {
+  data: any = jsonData;
+  experiences: any = this.data.about.experiences;
+}

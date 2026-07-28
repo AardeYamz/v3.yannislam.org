@@ -23,6 +23,14 @@
       "siteLocation": "/#experiences"
     },
     {
+      "navID": 4,
+      "navNumber": "04. ",
+      "navTitle": "Volunteering",
+      "navContent": "How do I give back?",
+      "scrollSection": "volunteering",
+      "siteLocation": "/#volunteering"
+    },
+    {
       "navTitle": "AardeYamz",
       "navContent": "",
       "scrollSection": "",
@@ -107,226 +115,231 @@
       }
     ],
     "experiences": {
-      "work": [
-        {
-          "imgs": [
-            "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
-          ],
-          "image_alt": "Voya Financial Logo",
-          "link": [
-            "https://www.voya.com/"
-          ],
-          "organization": "Voya Financial",
-          "title": "Software Developer",
-          "subTitle": "Software Developer, Back Office Application Development",
-          "timeframe": "12/2022 - Present",
-          "tab": "Voya SDE",
-          "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
-          "description": [
-            "Full stack development of Back Office Applications Suite - including Task Manager, Common Remitter, Case Installation applications",
-            "Drove cloud migration projects to break up monolith struts-based Java applications to new k8s based SpringBoot microservices",
-            "Secured password credentials through the onboarding and implementation of CyberArk Conjur"
-          ],
-          "skills": [
-            "Azure RedHat Openshift",
-            "CyberArk Conjur",
-            "SpringBoot, Struts, & JBoss (Java)",
-            "Active Directory",
-            "ServiceNow"
-          ]
-        },
-        {
-          "imgs": [
-            "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
-          ],
-          "image_alt": "Voya Financial Logo",
-          "organization": "Voya Financial",
-          "title": "Associate Software Developer",
-          "subTitle": "IT Resource & Development Rotational Program Associate",
-          "timeframe": "05/2021 - 12/2022",
-          "tab": "Rotation",
-          "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
-          "description": [
-            "Led Angular development efforts for Common Remitter app migration to Azure cloud",
-            "Refactored existing PWEB Java application of my.voya.com to remove unused endpoints",
-            "Pioneered Java Development efforts of Swagger integration for MyVoyage app microservices",
-            "Coordinated between App development and DevOps teams in integration of advanced CI/CD pipeline"
-          ],
-          "skills": [
-            "Azure Platform",
-            "Angular",
-            "CICD Pipelines",
-            "GitHub"
-          ]
-        },
-        {
-          "imgs": [
-            "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
-          ],
-          "image_alt": "Voya Financial Logo",
-          "organization": "Voya Financial",
-          "title": "Intern Software Developer",
-          "subTitle": "IT Salesforce Development Intern",
-          "timeframe": "05/2019 - 08/2020",
-          "tab": "Intern",
-          "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
-          "description": [
-            "Improved test coverage and stabilized Salesforce environments through the refactoring of automated Apex unit tests",
-            "Developed and enhanced advanced coding skills through applied Apex, SOQL, SOSL, and VisualForce practice",
-            "Refined understanding of software development life cycles with exposure to agile and scrum methodologies"
-          ],
-          "skills": [
-            "Salesforce.com CRM Platform",
-            "SOQL & SOSL",
-            "Unit Tests"
-          ]
-        },
-        {
-          "imgs": [
-            "https://pbs.twimg.com/profile_images/642029086622113792/R_xe0hTC_400x400.png"
-          ],
-          "image_alt": "UMass Residential Life Logo",
-          "link": [
-            "https://www.umass.edu/living/"
-          ],
-          "organization": "UMass Residential Life",
-          "title": "Peer Mentor",
-          "timeframe": "01/2021 - 05/2021",
-          "tab": "UMass",
-          "description": [
-            "I served as a Peer Mentor for Residential Life at UMass Amherst in the Gorman / Wheeler Residential Cluster.",
-            "For this job, I communicated with and advised a group of over 400 freshmen transitioning to on-campus dormitories during the Covid-19 emergency.",
-            "I also coordinated with other peer mentors and residential assistants to provide useful seminars for first year students."
-          ],
-          "skills": [
-            "Leadership",
-            "Organizing",
-            "Educational Development"
-          ]
-        },
-        {
-          "imgs": [
-            "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg"
-          ],
-          "image_alt": "UMass Amherst Manning College of Computer & Information Sciences Logo",
-          "link": [
-            "https://people.cs.umass.edu/~jaimedavila/Courses/345/COMPSCI_345_syllabus.pdf"
-          ],
-          "organization": "Manning College of Computer & Information Sciences",
-          "title": "Undergrad TA - CS 345",
-          "subTitle": "Undergraduate Course Assistant - CS 345",
-          "timeframe": "09/2020 - 05/2021",
-          "tab": "CICS 345",
-          "description": [
-            "I served as an undergraduate course assistant to Instructor Liam Rothschild and Professor Jaime Dávila for 345: Practice and Applications of Data Management.",
-            "This class focused on data management through the use of SQL. As a UCA, I proctored weekly classes for 1 class section of 100 students, quickly graded assignments, and hosted weekly office hours on Zoom.",
-            "I also helped with the development of new course material using SQL databases and Python autograders."
-          ],
-          "skills": [
-            "Teaching",
-            "SQL",
-            "RDBMS",
-            "Student Engagement"
-          ]
-        },
-        {
-          "imgs": [
-            "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg"
-          ],
-          "image_alt": "UMass Amherst Manning College of Computer & Information Sciences Logo",
-          "link": [
-            "https://sites.google.com/view/cics256/home"
-          ],
-          "organization": "Manning College of Computer & Information Sciences",
-          "title": "Undergrad TA - CICS 256",
-          "subTitle": "Undergraduate Course Assistant - CICS 256 / 290M",
-          "timeframe": "09/2019 - 12/2019",
-          "tab": "CICS 256",
-          "description": [
-            "I served as an undergraduate course assistant to Professors Rui Wang and Tauhidur Rahman for 256/290M Make: A Hand's On Introduction to Physical Computing.",
-            "This class focused on lab-based physics, electronics, and Arduino programming.",
-            "As a UCA, I proctored weekly labs for 1 class section of 35 students, quickly graded weekly lab reports for 2 sections totaling 75 students"
-          ],
-          "skills": [
-            "Arduino",
-            "Raspberry Pi",
-            "Circuits",
-            "Physical Computing"
-          ]
-        },
-        {
-          "imgs": [
-            "https://scontent-bos5-1.xx.fbcdn.net/v/t39.30808-6/302320580_507069131421821_2558083336515057918_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s2048x2048&_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=khGA9x_X_EUQ7kNvwGJgIUX&_nc_oc=AdoNQUmUDGG5AAc-PSpaumEE9yHCUCbd7P3MpzEsZvqmDGRQtGJ0iUzIBgyT_laDQog&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&_nc_gid=57ZDyRfjRrFzn5cUDxj6gg&_nc_ss=7b2a8&oh=00_AQCpf3k0lnHpiAvm1-UKMcI4MQQ4w8JZP-amB3TCiYD3lw&oe=6A6DD6EE"
-          ],
-          "image_alt": "Braintree Public Schools Logo",
-          "link": [
-            "https://www.braintreeschools.org/"
-          ],
-          "organization": "Braintree Public Schools",
-          "title": "Helpdesk Technician",
-          "subTitle": "Substitute Technician & Collegiate Intern Technician",
-          "timeframe": "Aug. 2020 - May 2021",
-          "tab": "BPS",
-          "description": [
-            "Based at Braintree High School, I helped service the entire school district as an intern.",
-            "I have assisted in the deployment of Chromebooks, Mac OS updates, Windows 10 images, and Android tablets.",
-            "My responsibilties included providing helpdesk assistence and maintaining an accurate inventory of the midsized enterprise network.",
-            "While I started out as a High School Intern Technician, I was promoted to College Intern Technician and Substitute Technician.",
-            "As a technician, I specialized in the repair of Chromebooks while mentoring teams of 15 high school interns."
-          ],
-          "skills": [
-            "Inventory",
-            "Training",
-            "Help Desk",
-            "Chrome OS",
-            "Windows OS"
-          ]
-        },
-        {
-          "imgs": [
-            "https://corporate.homedepot.com/sites/default/files/image_gallery/THD_logo.jpg"
-          ],
-          "link": [
-            "https://www.homedepot.com/"
-          ],
-          "organization": "Home Depot",
-          "title": "Customer Order Specialist",
-          "timeframe": "05/2018 - 09/2018",
-          "tab": "Home Depot",
-          "description": [
-            "At The Home Depot, I operated behind the service desk.",
-            "I assisted customers with purchases and returns - specializing with online orders.",
-            "I also answered confidential calls, restocked items, and kept the service desk a clean and presentable working environment."
-          ],
-          "skills": [
-            "Customer Service",
-            "Retail Management"
-          ]
-        },
-        {
-          "imgs": [
-            "https://www.thayer.org/uploaded/themes/project_rise_18/images/Horizontal_W_Thayer_1.png"
-          ],
-          "link": [
-            "https://www.thayer.org/projectrise"
-          ],
-          "organization": "Project RISE Boston",
-          "title": "Math Teacher & Camp Counselor",
-          "subTitle": "Mathematics Teacher (Grades 6 - 10)",
-          "timeframe": "05/2015 - 08/2016",
-          "tab": "Project RISE",
-          "description": [
-            "Over the span of seven weeks, I taught mathematics and helped coordinate general camp activities for a group of 70 inner-city middle and high school students.",
-            "I led five 50 minute math classes for 4 days a week in topics including arithmetic, algebra, geometry, and trigonometry.",
-            "I also oversaw the creation of a new website: \"projectriseboston.org\" (the website has since been updated) and produced a 5 minute video showing the perspective of a student at camp."
-          ],
-          "skills": [
-            "Teaching",
-            "Wix",
-            "Web Development"
-          ]
-        }
-      ],
+      "work": {
+        "sectionId": "workhistory",
+        "navNumber": "03.",
+        "headingText": "What's my experience?",
+        "list": [
+          {
+            "imgs": [
+              "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
+            ],
+            "image_alt": "Voya Financial Logo",
+            "link": [
+              "https://www.voya.com/"
+            ],
+            "organization": "Voya Financial",
+            "title": "Software Developer",
+            "subTitle": "Software Developer, Back Office Application Development",
+            "timeframe": "12/2022 - Present",
+            "tab": "Voya SDE",
+            "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
+            "description": [
+              "Full stack development of Back Office Applications Suite - including Task Manager, Common Remitter, Case Installation applications",
+              "Drove cloud migration projects to break up monolith struts-based Java applications to new k8s based SpringBoot microservices",
+              "Secured password credentials through the onboarding and implementation of CyberArk Conjur"
+            ],
+            "skills": [
+              "Azure RedHat Openshift",
+              "CyberArk Conjur",
+              "SpringBoot, Struts, & JBoss (Java)",
+              "Active Directory",
+              "ServiceNow"
+            ]
+          },
+          {
+            "imgs": [
+              "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
+            ],
+            "image_alt": "Voya Financial Logo",
+            "organization": "Voya Financial",
+            "title": "Associate Software Developer",
+            "subTitle": "IT Resource & Development Rotational Program Associate",
+            "timeframe": "05/2021 - 12/2022",
+            "tab": "Rotation",
+            "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
+            "description": [
+              "Led Angular development efforts for Common Remitter app migration to Azure cloud",
+              "Refactored existing PWEB Java application of my.voya.com to remove unused endpoints",
+              "Pioneered Java Development efforts of Swagger integration for MyVoyage app microservices",
+              "Coordinated between App development and DevOps teams in integration of advanced CI/CD pipeline"
+            ],
+            "skills": [
+              "Azure Platform",
+              "Angular",
+              "CICD Pipelines",
+              "GitHub"
+            ]
+          },
+          {
+            "imgs": [
+              "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
+            ],
+            "image_alt": "Voya Financial Logo",
+            "organization": "Voya Financial",
+            "title": "Intern Software Developer",
+            "subTitle": "IT Salesforce Development Intern",
+            "timeframe": "05/2019 - 08/2020",
+            "tab": "Intern",
+            "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
+            "description": [
+              "Improved test coverage and stabilized Salesforce environments through the refactoring of automated Apex unit tests",
+              "Developed and enhanced advanced coding skills through applied Apex, SOQL, SOSL, and VisualForce practice",
+              "Refined understanding of software development life cycles with exposure to agile and scrum methodologies"
+            ],
+            "skills": [
+              "Salesforce.com CRM Platform",
+              "SOQL & SOSL",
+              "Unit Tests"
+            ]
+          },
+          {
+            "imgs": [
+              "https://pbs.twimg.com/profile_images/642029086622113792/R_xe0hTC_400x400.png"
+            ],
+            "image_alt": "UMass Residential Life Logo",
+            "link": [
+              "https://www.umass.edu/living/"
+            ],
+            "organization": "UMass Residential Life",
+            "title": "Peer Mentor",
+            "timeframe": "01/2021 - 05/2021",
+            "tab": "UMass",
+            "description": [
+              "I served as a Peer Mentor for Residential Life at UMass Amherst in the Gorman / Wheeler Residential Cluster.",
+              "For this job, I communicated with and advised a group of over 400 freshmen transitioning to on-campus dormitories during the Covid-19 emergency.",
+              "I also coordinated with other peer mentors and residential assistants to provide useful seminars for first year students."
+            ],
+            "skills": [
+              "Leadership",
+              "Organizing",
+              "Educational Development"
+            ]
+          },
+          {
+            "imgs": [
+              "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg"
+            ],
+            "image_alt": "UMass Amherst Manning College of Computer & Information Sciences Logo",
+            "link": [
+              "https://people.cs.umass.edu/~jaimedavila/Courses/345/COMPSCI_345_syllabus.pdf"
+            ],
+            "organization": "Manning College of Computer & Information Sciences",
+            "title": "Undergrad TA - CS 345",
+            "subTitle": "Undergraduate Course Assistant - CS 345",
+            "timeframe": "09/2020 - 05/2021",
+            "tab": "CICS 345",
+            "description": [
+              "I served as an undergraduate course assistant to Instructor Liam Rothschild and Professor Jaime Dávila for 345: Practice and Applications of Data Management.",
+              "This class focused on data management through the use of SQL. As a UCA, I proctored weekly classes for 1 class section of 100 students, quickly graded assignments, and hosted weekly office hours on Zoom.",
+              "I also helped with the development of new course material using SQL databases and Python autograders."
+            ],
+            "skills": [
+              "Teaching",
+              "SQL",
+              "RDBMS",
+              "Student Engagement"
+            ]
+          },
+          {
+            "imgs": [
+              "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg"
+            ],
+            "image_alt": "UMass Amherst Manning College of Computer & Information Sciences Logo",
+            "link": [
+              "https://sites.google.com/view/cics256/home"
+            ],
+            "organization": "Manning College of Computer & Information Sciences",
+            "title": "Undergrad TA - CICS 256",
+            "subTitle": "Undergraduate Course Assistant - CICS 256 / 290M",
+            "timeframe": "09/2019 - 12/2019",
+            "tab": "CICS 256",
+            "description": [
+              "I served as an undergraduate course assistant to Professors Rui Wang and Tauhidur Rahman for 256/290M Make: A Hand's On Introduction to Physical Computing.",
+              "This class focused on lab-based physics, electronics, and Arduino programming.",
+              "As a UCA, I proctored weekly labs for 1 class section of 35 students, quickly graded weekly lab reports for 2 sections totaling 75 students"
+            ],
+            "skills": [
+              "Arduino",
+              "Raspberry Pi",
+              "Circuits",
+              "Physical Computing"
+            ]
+          },
+          {
+            "imgs": [
+              "https://scontent-bos5-1.xx.fbcdn.net/v/t39.30808-6/302320580_507069131421821_2558083336515057918_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s2048x2048&_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=khGA9x_X_EUQ7kNvwGJgIUX&_nc_oc=AdoNQUmUDGG5AAc-PSpaumEE9yHCUCbd7P3MpzEsZvqmDGRQtGJ0iUzIBgyT_laDQog&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&_nc_gid=57ZDyRfjRrFzn5cUDxj6gg&_nc_ss=7b2a8&oh=00_AQCpf3k0lnHpiAvm1-UKMcI4MQQ4w8JZP-amB3TCiYD3lw&oe=6A6DD6EE"
+            ],
+            "image_alt": "Braintree Public Schools Logo",
+            "link": [
+              "https://www.braintreeschools.org/"
+            ],
+            "organization": "Braintree Public Schools",
+            "title": "Helpdesk Technician",
+            "subTitle": "Substitute Technician & Collegiate Intern Technician",
+            "timeframe": "Aug. 2020 - May 2021",
+            "tab": "BPS",
+            "description": [
+              "Based at Braintree High School, I helped service the entire school district as an intern.",
+              "I have assisted in the deployment of Chromebooks, Mac OS updates, Windows 10 images, and Android tablets.",
+              "My responsibilties included providing helpdesk assistence and maintaining an accurate inventory of the midsized enterprise network.",
+              "While I started out as a High School Intern Technician, I was promoted to College Intern Technician and Substitute Technician.",
+              "As a technician, I specialized in the repair of Chromebooks while mentoring teams of 15 high school interns."
+            ],
+            "skills": [
+              "Inventory",
+              "Training",
+              "Help Desk",
+              "Chrome OS",
+              "Windows OS"
+            ]
+          },
+          {
+            "imgs": [
+              "https://corporate.homedepot.com/sites/default/files/image_gallery/THD_logo.jpg"
+            ],
+            "link": [
+              "https://www.homedepot.com/"
+            ],
+            "organization": "Home Depot",
+            "title": "Customer Order Specialist",
+            "timeframe": "05/2018 - 09/2018",
+            "tab": "Home Depot",
+            "description": [
+              "At The Home Depot, I operated behind the service desk.",
+              "I assisted customers with purchases and returns - specializing with online orders.",
+              "I also answered confidential calls, restocked items, and kept the service desk a clean and presentable working environment."
+            ],
+            "skills": [
+              "Customer Service",
+              "Retail Management"
+            ]
+          },
+          {
+            "imgs": [
+              "https://www.thayer.org/uploaded/themes/project_rise_18/images/Horizontal_W_Thayer_1.png"
+            ],
+            "link": [
+              "https://www.thayer.org/projectrise"
+            ],
+            "organization": "Project RISE Boston",
+            "title": "Math Teacher & Camp Counselor",
+            "subTitle": "Mathematics Teacher (Grades 6 - 10)",
+            "timeframe": "05/2015 - 08/2016",
+            "tab": "Project RISE",
+            "description": [
+              "Over the span of seven weeks, I taught mathematics and helped coordinate general camp activities for a group of 70 inner-city middle and high school students.",
+              "I led five 50 minute math classes for 4 days a week in topics including arithmetic, algebra, geometry, and trigonometry.",
+              "I also oversaw the creation of a new website: \"projectriseboston.org\" (the website has since been updated) and produced a 5 minute video showing the perspective of a student at camp."
+            ],
+            "skills": [
+              "Teaching",
+              "Wix",
+              "Web Development"
+            ]
+          }
+        ]
+      },
       "education": [
         {
           "imgs": "https://upload.wikimedia.org/wikipedia/commons/3/35/University_of_Massachusetts_Amherst_seal.png",
@@ -379,19 +392,44 @@
           ]
         }
       ],
-      "volunteering": [
-        {
-          "imgs": "https://cdn1-www.cru.org/epicmovement/wp-content/uploads/sites/39/2018/03/cropped-Artboard-1-1.png.pagespeed.ce.nOrh8-GSlT.png",
-          "link": "https://epicmovement.com/",
-          "organization": "Epic Movement at UMass Amherst",
-          "title": "President",
-          "timeframe": "08/2020 - 05/2021",
-          "about": "Epic Movement is a Cru ministry that envisions Asian American students and faculty transformed by their relationship with Jesus Christ, embracing the value of their cultures and actively engaging in God's redemptive work in ways that honor all people and contexts. Epic Movement at UMass Amherst was established in the fall of 2008.",
-          "description": [
-            "Beginning my senior year, I assumed the responsibilities of President. I led an Executive Board of 14 members as well as the general fellowship of 80 members during UMass Amherst's transition to remote learning."
-          ]
-        }
-      ],
+      "volunteering": {
+        "sectionId": "volunteering",
+        "navNumber": "04.",
+        "headingText": "How do I give back?",
+        "list": [
+          {
+            "imgs": [
+              "https://epicmovement.com/wp-content/uploads/sites/39/2026/03/RGB-Endorsed.png"
+            ],
+            "image_alt": "Epic Movement Logo",
+            "link": "https://epicmovement.com/",
+            "organization": "Epic Movement at UMass Amherst",
+            "title": "President",
+            "tab": "Epic Movement",
+            "timeframe": "08/2020 - 05/2021",
+            "about": "Epic Movement is a Cru ministry that envisions Asian American students and faculty transformed by their relationship with Jesus Christ, embracing the value of their cultures and actively engaging in God's redemptive work in ways that honor all people and contexts. Epic Movement at UMass Amherst was established in the fall of 2008.",
+            "description": [
+              "Beginning my senior year, I assumed the responsibilities of President. I led an Executive Board of 14 members as well as the general fellowship of 80 members during UMass Amherst's transition to remote learning."
+            ]
+          },
+          {
+            "imgs": [
+              "https://images.squarespace-cdn.com/content/5c7d8e4cc2ff6107242ff5f6/1556760518783-TJ3O5QM4FWX1FTQVVKGS/ARISElogoBMGrayFinal.png?format=1500w&content-type=image%2Fpng"
+            ],
+            "image_alt": "ARISE Youth Ministries Logo",
+            "link": "https://www.ariseyouth.org/",
+            "organization": "ARISE Youth Ministries",
+            "title": "Youth Counselor",
+            "tab": "ARISE",
+            "timeframe": "07/2018 - 08/2019",
+            "about": "ARISE is a para-church ministry dedicated to loving the Korean Church of New England primarily by serving the second-generation youth.",
+            "description": [
+              "Throughout the period of a week, I mentored a group of Korean American middle school boys at a retreat-style Christian camp.",
+              "I led quiet time, Bible studies, and fellowship. I also shot raw footage that was later used in a retreat highlight video."
+            ]
+          }
+        ]
+      },
       "skills": [
         "Azure Platform",
         "Angular & React JS",

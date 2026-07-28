@@ -2,5 +2,16 @@
     <app-banner></app-banner>
     <app-about></app-about>
     <app-education></app-education>
-    <app-workhistory></app-workhistory>
+    <app-workhistory
+      [experienceList]="experiences.work.list"
+      [sectionId]="experiences.work.sectionId"
+      [navNumber]="experiences.work.navNumber"
+      [headingText]="experiences.work.headingText">
+    </app-workhistory>
+    <app-workhistory
+      [experienceList]="experiences.volunteering.list"
+      [sectionId]="experiences.volunteering.sectionId"
+      [navNumber]="experiences.volunteering.navNumber"
+      [headingText]="experiences.volunteering.headingText">
+    </app-workhistory>
 </main>
