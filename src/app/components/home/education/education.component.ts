@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
-import * as jsonData from '../../../../assets/config.json';
+import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 @Component({
   selector: 'app-education',
@@ -9,19 +9,15 @@ import * as jsonData from '../../../../assets/config.json';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
-export class EducationComponent implements OnInit {
+export class EducationComponent {
 
   active = 0
-  data: any = jsonData;
-  experiences: any = this.data.about.experiences;
-  sectionTitle: any = this.data.siteMenu.find((item: { navNumber: string; }) => item?.navNumber === "01. ");
-
+  experiences: any;
 
   constructor(
-    public analyticsService: AnalyticsService
-  ) { }
-
-  ngOnInit(): void {
-    console.log(this.sectionTitle)
+    public analyticsService: AnalyticsService,
+    public configService: SiteConfigService
+  ) {
+    this.experiences = this.configService.experiences;
   }
 }

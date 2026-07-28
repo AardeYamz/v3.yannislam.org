@@ -444,6 +444,8 @@
     }
   },
   "banner": {
+    "greeting": "Hello! My name is",
+    "name": "Yannis Lam;",
     "blurb": [
       "I am an ambitious and resourceful <span class='underline'>Software Developer</span>. In 2021, I graduated with dual degrees in Computer Science <i>(B.S.)</i> and Economics <i>(B.A.)</i> at the <span class='underline'>University of Massachusetts Amherst</span> Commonwealth Honors College. Currently I work at <span class='underline'>Voya Financial</span> as a Full Stack Software Developer supporting its Back Office Applications."
     ],

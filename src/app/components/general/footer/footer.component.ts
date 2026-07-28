@@ -1,38 +1,28 @@
-import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
-import * as jsonData from '../../../../assets/config.json';
+import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 @Component({
     selector: 'app-footer',
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss'],
     animations: [
-        trigger("animateFooter", [
-            transition(":enter", [
-                query("*", [
-                    style({ opacity: 0, transform: "translateY(100%)" }),
-                    stagger(50, [
-                        animate("250ms cubic-bezier(0.35, 0, 0.25, 1)", style({ opacity: 1, transform: "none" }))
-                    ])
-                ])
-            ])
-        ])
+        fadeStaggerAnimation('animateFooter', 'translateY(100%)')
     ],
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
-export class FooterComponent implements OnInit {
-    data: any = jsonData;
-    socials: any = this.data.about.contact;
+export class FooterComponent {
+    socials: any;
+    email: any;
     currentDate = new Date();
-    email: any = this.socials.find((item: { name: string; }) => item?.name === "Email");
 
     constructor(
         public analyticsService: AnalyticsService,
-    ) { }
-
-    ngOnInit() {
+        public configService: SiteConfigService,
+    ) {
+        this.socials = this.configService.contacts;
+        this.email = this.socials.find((item: { name: string; }) => item?.name === "Email");
     }
-
 }

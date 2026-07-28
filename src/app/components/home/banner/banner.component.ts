@@ -1,37 +1,24 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
-import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
+import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
-import * as jsonData from '../../../../assets/config.json';
-
+import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 @Component({
     selector: 'app-banner',
     templateUrl: './banner.component.html',
     styleUrls: ['./banner.component.scss'],
     animations: [
-        trigger('bannerTrigger', [
-            transition(":enter", [
-                query("*", [
-                    style({ opacity: 0, transform: "translateX(-50px)" }),
-                    stagger(50, [
-                        animate("250ms cubic-bezier(0.35, 0, 0.25, 1)", style({ opacity: 1, transform: "none" }))
-                    ])
-                ])
-            ])
-        ])
+        fadeStaggerAnimation('bannerTrigger', 'translateX(-50px)')
     ],
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
-export class BannerComponent implements OnInit {
-    data: any = jsonData;
-
+export class BannerComponent {
     constructor(
-        public analyticsService: AnalyticsService
+        public analyticsService: AnalyticsService,
+        public configService: SiteConfigService
     ) { }
 
-    ngOnInit(): void {
-
-    }
+    get data() { return this.configService.data; }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 
 @Component({
@@ -8,14 +8,8 @@ import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
-export class ContactComponent implements OnInit {
-
+export class ContactComponent {
   constructor(
     public analyticsService: AnalyticsService
-
   ) { }
-
-  ngOnInit(): void {
-  }
-
 }

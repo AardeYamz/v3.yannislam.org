@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import * as jsonData from '../../../assets/config.json';
+import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 @Component({
     selector: 'app-home',
@@ -9,6 +9,6 @@ import * as jsonData from '../../../assets/config.json';
     standalone: false
 })
 export class HomeComponent {
-  data: any = jsonData;
-  experiences: any = this.data.about.experiences;
+  constructor(private configService: SiteConfigService) { }
+  experiences: any = this.configService.experiences;
 }

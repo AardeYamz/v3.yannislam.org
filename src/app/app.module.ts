@@ -7,7 +7,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GeneralModule } from './components/general/general.module';
 import { HomeModule } from './components/home/home.module';
-import { AardeYamzModule } from './components/other/aardeyamz/aardeyamz.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +16,6 @@ import { AardeYamzModule } from './components/other/aardeyamz/aardeyamz.module';
     HomeModule,
     GeneralModule,
     BrowserModule,
-    AardeYamzModule,
     AppRoutingModule,
     NgbModule,
     BrowserAnimationsModule
