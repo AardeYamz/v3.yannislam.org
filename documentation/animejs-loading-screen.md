@@ -21,12 +21,14 @@ overlay sits on top of the header/router-outlet/footer regardless of DOM order:
 ### Sequence
 
 1. **Intro** (`playIntro`) — each `<polygon class="logo-piece">` starts scaled
-   down, rotated, transparent, and translated outward along the line from the
-   artwork's center to that piece's own center (`radialOffset()`, using
-   `SVGGraphicsElement.getBBox()`). `animate()` tweens all of them back to
-   `translate(0,0) scale(1) rotate(0) opacity(1)` with `stagger(45, { from:
-   'center' })` and an `outElastic` ease, so the pieces fly inward and snap into
-   the finished mark instead of a plain progress bar.
+   down, rotated, transparent, and offset up-and-left by `FLY_DISTANCE` (in the
+   artwork's own viewBox units). Pieces are sorted by `diagonalPosition()` — each
+   piece's bounding-box center summed on x+y, via `SVGGraphicsElement.getBBox()`
+   — so the default first-to-last `stagger(60)` sweeps the assembly diagonally
+   across the mark from its top-left corner to its bottom-right one. `animate()`
+   tweens every piece back to `translate(0,0) scale(1) rotate(0) opacity(1)`
+   with an `outElastic` ease, so each one snaps into place as the sweep reaches
+   it, instead of a plain progress bar.
 2. **Breathe** (`playBreathe`) — once assembled, the whole `<g class="loading-screen__logo-group">`
    loops a subtle scale pulse (1 → 1.035, alternating) while the real page
    finishes loading in the background.
@@ -42,6 +44,15 @@ Each piece animates independently via CSS transform, so `transform-box:
 fill-box; transform-origin: center;` is set on `.logo-piece` (and the group) —
 without it, scale/rotate pivot around the SVG viewport's origin instead of each
 shape's own center.
+
+### Sizing & rendering
+
+`.loading-screen__logo` is sized with `clamp(220px, 34vw, 380px)` (up from an
+initial fixed 128px, bumped twice after visual review) so it reads clearly on
+both small and large viewports. `shape-rendering: geometricPrecision` is set on
+it to keep the thin piece edges crisp; an earlier `will-change: transform` on
+the `<svg>` itself was dropped since that element is never directly
+transformed (only its children/`.logo-piece`s and the inner `<g>` are).
 
 ## Logo: PNG → SVG
 
@@ -83,11 +94,19 @@ the build.
 
 ## Verification
 
-- `ng build` — clean, no TypeScript errors.
+- `ng build` — clean, no TypeScript errors, after every change described above.
 - `ng serve` + headless Chrome screenshots: confirmed the overlay renders with
   pieces visibly mid-flight (offset from final position, motion-blurred) shortly
   after load, and that the overlay fades away to reveal the actual homepage
   underneath once loading completes.
+- Re-checked after the size/sharpness pass at both default and
+  `--force-device-scale-factor=2` (simulated Retina) — confirmed the logo reads
+  larger and crisp at both densities.
+- Re-checked after the sweep-direction change: an early real-time screenshot
+  shows the top pieces (spikes/cap/diamond/arms) already settled while the
+  bottom-left foot piece is still trailing in from the upper-left, confirming
+  the assembly now visibly sweeps top-left → bottom-right rather than exploding
+  outward from the center.
 
 ## Files touched
 
