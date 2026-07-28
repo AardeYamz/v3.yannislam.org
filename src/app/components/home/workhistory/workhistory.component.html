@@ -1,13 +1,13 @@
-<section class="section workhistory" id='workhistory'>
+<section class="section workhistory" [id]="sectionId">
   <div class="container">
     <div class="section-box">
       <div data-aos="fade-up" data-aos-duration="1000">
         <h3 class="section-title">
-          <span class='n-section-title'>03.</span>What's my experience?
+          <span class='n-section-title'>{{navNumber}}</span>{{headingText}}
         </h3>
       </div>
 
-      @for (exp of data?.about?.experiences?.work; track exp; let i = $index) {
+      @for (exp of experienceList; track exp; let i = $index) {
         <div class="d-flex workhistory-container"
           data-aos="fade-up" data-aos-duration="1000">
           @if (i % 2 == 0) {
@@ -67,14 +67,16 @@
                       }
                     </div>
                   </div>
-                  <ul [ngClass]="{'justify-content-end': i % 2 == 0, 'justify-content-start': i % 2 != 0}"
-                    class="workhistory-skills">
-                    @for (skill of exp.skills; track skill) {
-                      <li class="mx-2">
-                        <span class="underline skills">{{skill}}</span>
-                      </li>
-                    }
-                  </ul>
+                  @if (exp?.skills) {
+                    <ul [ngClass]="{'justify-content-end': i % 2 == 0, 'justify-content-start': i % 2 != 0}"
+                      class="workhistory-skills">
+                      @for (skill of exp.skills; track skill) {
+                        <li class="mx-2">
+                          <span class="underline skills">{{skill}}</span>
+                        </li>
+                      }
+                    </ul>
+                  }
                 </div>
               </div>
               @if (i % 2 != 0) {

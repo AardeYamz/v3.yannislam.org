@@ -1,7 +1,14 @@
-import { Component, ElementRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectionStrategy, Input, OnInit } from '@angular/core';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import * as jsonData from '../../../../assets/config.json';
+
+interface WorkHistorySectionConfig {
+  sectionId: string;
+  navNumber: string;
+  headingText: string;
+  experienceList: any[];
+}
 
 @Component({
   selector: 'app-workhistory',
@@ -10,8 +17,31 @@ import * as jsonData from '../../../../assets/config.json';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
-export class WorkHistoryComponent {
+export class WorkHistoryComponent implements OnInit {
   data: any = jsonData;
+
+  // Which config.json experiences list (and heading) this instance renders.
+  @Input() section: 'work' | 'volunteering' = 'work';
+
+  sectionConfigs: Record<string, WorkHistorySectionConfig> = {
+    work: {
+      sectionId: 'workhistory',
+      navNumber: '03.',
+      headingText: "What's my experience?",
+      experienceList: this.data?.about?.experiences?.work
+    },
+    volunteering: {
+      sectionId: 'volunteering',
+      navNumber: '04.',
+      headingText: 'How do I give back?',
+      experienceList: this.data?.about?.experiences?.volunteering
+    }
+  };
+
+  sectionId = '';
+  navNumber = '';
+  headingText = '';
+  experienceList: any[] = [];
 
   customOptions: OwlOptions = {
     loop: true,
@@ -31,7 +61,13 @@ export class WorkHistoryComponent {
     public analyticsService: AnalyticsService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    const config = this.sectionConfigs[this.section];
+    this.sectionId = config.sectionId;
+    this.navNumber = config.navNumber;
+    this.headingText = config.headingText;
+    this.experienceList = config.experienceList;
+  }
 
   debug() {
 

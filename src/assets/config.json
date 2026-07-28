@@ -23,6 +23,14 @@
       "siteLocation": "/#experiences"
     },
     {
+      "navID": 4,
+      "navNumber": "04. ",
+      "navTitle": "Volunteering",
+      "navContent": "How do I give back?",
+      "scrollSection": "volunteering",
+      "siteLocation": "/#volunteering"
+    },
+    {
       "navTitle": "AardeYamz",
       "navContent": "",
       "scrollSection": "",
@@ -381,14 +389,34 @@
       ],
       "volunteering": [
         {
-          "imgs": "https://cdn1-www.cru.org/epicmovement/wp-content/uploads/sites/39/2018/03/cropped-Artboard-1-1.png.pagespeed.ce.nOrh8-GSlT.png",
+          "imgs": [
+            "https://cdn1-www.cru.org/epicmovement/wp-content/uploads/sites/39/2018/03/cropped-Artboard-1-1.png.pagespeed.ce.nOrh8-GSlT.png"
+          ],
+          "image_alt": "Epic Movement Logo",
           "link": "https://epicmovement.com/",
           "organization": "Epic Movement at UMass Amherst",
           "title": "President",
+          "tab": "Epic Movement",
           "timeframe": "08/2020 - 05/2021",
           "about": "Epic Movement is a Cru ministry that envisions Asian American students and faculty transformed by their relationship with Jesus Christ, embracing the value of their cultures and actively engaging in God's redemptive work in ways that honor all people and contexts. Epic Movement at UMass Amherst was established in the fall of 2008.",
           "description": [
             "Beginning my senior year, I assumed the responsibilities of President. I led an Executive Board of 14 members as well as the general fellowship of 80 members during UMass Amherst's transition to remote learning."
+          ]
+        },
+        {
+          "imgs": [
+            "https://images.squarespace-cdn.com/content/5c7d8e4cc2ff6107242ff5f6/1556760518783-TJ3O5QM4FWX1FTQVVKGS/ARISElogoBMGrayFinal.png?format=1500w&content-type=image%2Fpng"
+          ],
+          "image_alt": "ARISE Youth Ministries Logo",
+          "link": "https://www.ariseyouth.org/",
+          "organization": "ARISE Youth Ministries",
+          "title": "Youth Counselor",
+          "tab": "ARISE",
+          "timeframe": "07/2018 - 08/2019",
+          "about": "ARISE is a para-church ministry dedicated to loving the Korean Church of New England primarily by serving the second-generation youth.",
+          "description": [
+            "Throughout the period of a week, I mentored a group of Korean American middle school boys at a retreat-style Christian camp.",
+            "I led quiet time, Bible studies, and fellowship. I also shot raw footage that was later used in a retreat highlight video."
           ]
         }
       ],
