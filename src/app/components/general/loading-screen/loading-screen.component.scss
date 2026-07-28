@@ -23,24 +23,15 @@
 }
 
 .loading-screen__logo {
-    width: 96px;
-    height: 96px;
+    width: 128px;
+    height: 128px;
+    overflow: visible;
+    will-change: transform;
+}
+
+.logo-piece {
     opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
     will-change: transform, opacity;
-}
-
-.loading-screen__bar {
-    margin-top: 32px;
-    width: 160px;
-    height: 3px;
-    border-radius: 3px;
-    background-color: $LightestNavy;
-    overflow: hidden;
-}
-
-.loading-screen__bar-fill {
-    width: 0%;
-    height: 100%;
-    background-color: $Orange;
-    border-radius: 3px;
 }
