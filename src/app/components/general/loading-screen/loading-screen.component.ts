@@ -1,10 +1,9 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core';
 import { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
 
-// Center of the logo artwork's 0 0 800 800 viewBox, used to fly each piece
-// in from the direction it sits away from the mark's middle.
-const VIEWBOX_CENTER = 400;
-const FLY_DISTANCE = 300;
+// How far (in the artwork's 0 0 800 800 viewBox units) each piece starts
+// offset up and to the left of its resting position.
+const FLY_DISTANCE = 260;
 
 @Component({
   selector: 'app-loading-screen',
@@ -44,14 +43,18 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   private playIntro(): void {
     const pieces = Array.from(this.logoGroupRef.nativeElement.querySelectorAll<SVGGraphicsElement>('.logo-piece'));
 
+    // Sort top-left -> bottom-right so the default (first-to-last) stagger
+    // sweeps the assembly diagonally across the mark in that direction.
+    pieces.sort((a, b) => this.diagonalPosition(a) - this.diagonalPosition(b));
+
     animate(pieces, {
-      translateX: (el: any) => [this.radialOffset(el).x, 0],
-      translateY: (el: any) => [this.radialOffset(el).y, 0],
-      rotate: () => [random(-50, 50), 0],
+      translateX: [-FLY_DISTANCE, 0],
+      translateY: [-FLY_DISTANCE, 0],
+      rotate: () => [random(-30, 30), 0],
       scale: [0.25, 1],
       opacity: [0, 1],
-      duration: 800,
-      delay: stagger(45, { from: 'center' }),
+      duration: 700,
+      delay: stagger(60),
       ease: 'outElastic(1, .7)',
       onComplete: () => this.playBreathe()
     });
@@ -87,13 +90,10 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
       }, '+=150');
   }
 
-  // Direction a piece flies in from: away from the artwork's center, along the
-  // line from center to the piece's own bounding-box center.
-  private radialOffset(el: SVGGraphicsElement): { x: number; y: number } {
+  // A piece's position along the top-left -> bottom-right diagonal, used to
+  // order the assembly sweep.
+  private diagonalPosition(el: SVGGraphicsElement): number {
     const box = el.getBBox();
-    const dx = (box.x + box.width / 2) - VIEWBOX_CENTER;
-    const dy = (box.y + box.height / 2) - VIEWBOX_CENTER;
-    const dist = Math.hypot(dx, dy) || 1;
-    return { x: (dx / dist) * FLY_DISTANCE, y: (dy / dist) * FLY_DISTANCE };
+    return (box.x + box.width / 2) + (box.y + box.height / 2);
   }
 }
