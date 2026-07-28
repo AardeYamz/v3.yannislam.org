@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
-import * as AOS from 'aos';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +20,5 @@ export class AppComponent implements OnInit {
       { name: 'keywords', content: 'Web, software, developer, portfolio, resume, photography' },
       { name: 'description', content: 'Yannis Lam Personal Website' },
     ]);
-
-    AOS.init();
   }
 }

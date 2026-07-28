@@ -30,7 +30,7 @@ Third-party libraries pinned to Angular 19 were incompatible with 20/21, so inte
 | `tslib` | 2.3.0 | 2.8.1 | Latest minor |
 | `zone.js` | 0.15.0 | 0.16.2 | Latest minor (still required — app uses `provideZoneChangeDetection`, not zoneless) |
 | `typescript` | 5.6.3 | 6.0.3 | Pulled in automatically by `ng update` for Angular 22 compat |
-| `@types/aos`, `@types/jasmine`, `jasmine-core`, `karma`, `karma-coverage`, `karma-jasmine-html-reporter` | various | latest | Dev/test tooling kept in step with the Angular 22 toolchain |
+| `@types/jasmine`, `jasmine-core`, `karma`, `karma-coverage`, `karma-jasmine-html-reporter` | various | latest | Dev/test tooling kept in step with the Angular 22 toolchain |
 | `ngx-typed-js`, `ngx-google-analytics` | 2.1.1 / 14.0.1 | unchanged | Already at latest published version |
 
 `zone.js` had silently dropped out of `package.json` during the `ng update` run even though `angular.json` still references it as a polyfill — it was added back explicitly so the build doesn't rely on a transitive install.
@@ -61,13 +61,13 @@ The new esbuild-based Sass compiler doesn't resolve `@use "/node_modules/bootstr
 
 ## 6. Verification
 
-- `ng build` — passes cleanly (one pre-existing, non-blocking warning: `aos` is shipped as CommonJS, not ESM).
+- `ng build` — passes cleanly, zero warnings (the `aos` CommonJS warning is gone as of §9).
 - `ng serve` — verified visually with a headless-browser (Playwright) screenshot: page renders correctly, no console errors.
 - `ng test` — 5 of 12 pass. The other 7 failures are **pre-existing** and unrelated to any of this work: their spec files (e.g. `header.component.spec.ts`, `home.component.spec.ts`) only declare the component in isolation in `TestBed`, without importing the modules/directives it actually depends on (`NgbNavModule`, `RouterModule`, `AppModule`, etc.). None of those spec files were touched by any `ng update` migration or by this work — confirmed via `git diff --stat -- '*.spec.ts'`, which shows only `app.component.spec.ts` changed (round 1). The failure count and specific failures are identical before and after round 2's builder migration — no new regressions.
 
 ## 7. README
 
-Updated the "Stack" section, which was stale (listed `animejs`, which isn't actually a dependency, and Angular CLI 19) to reflect what's actually used: Node 24 LTS, Angular CLI 22, ng-bootstrap 21, bootstrap 5, fontawesome 7, aos, ngx-typed-js, ngx-owl-carousel-o, ngx-google-analytics, netlify.
+Updated the "Stack" section, which was stale (listed `animejs`, which isn't actually a dependency, and Angular CLI 19) to reflect what's actually used: Node 24 LTS, Angular CLI 22, ng-bootstrap 21, bootstrap 5, fontawesome 7, ngx-typed-js, ngx-owl-carousel-o, ngx-google-analytics, netlify. (`aos` has since been removed entirely — see §9.)
 
 ## 8. `@angular/animations` — deprecated but intentionally not migrated
 
@@ -75,8 +75,24 @@ Updated the "Stack" section, which was stale (listed `animejs`, which isn't actu
 
 Rewriting this correctly would mean re-implementing the stagger manually (e.g. CSS `animation-delay` via `:nth-child()`, or per-child JS-set custom properties), which is a genuine behavioral rewrite, not a mechanical dependency swap — and it's not something a screenshot can validate (motion/timing, not layout). `@angular/animations` is deprecated but still fully functional and shipped alongside Angular 22, so it was left in place rather than risk a visual regression in this specific animation. Flagging this as a follow-up if you want it done properly (with `ng serve` open in a real browser to eyeball the timing).
 
+## 9. Replacing `aos` (round 3)
+
+The last remaining build warning was `Module 'aos' used by 'src/app/app.component.ts' is not ESM`. This one couldn't be fixed with a version bump: `aos` hasn't been published since **2018** — 2.3.4 (what was installed) is already its newest stable release, and the only newer-looking version, `3.0.0-beta.6`, is also from 2018, was never promoted out of beta, and actually *predates* 2.3.4. There was no real upgrade path, so — per your call — `aos` was replaced outright with a small first-party directive.
+
+Usage was minimal and uniform: every one of the 18 `data-aos` usages across the app (5 templates) is `data-aos="fade-up"`, most with `data-aos-duration="1000"`, nothing else (no other effects, no `data-aos-offset`/`-delay`/`-anchor-placement`). That made a full library unnecessary:
+
+- **`src/app/directives/aos/aos.directive.ts`** (new) — a standalone `[data-aos]` attribute directive. Uses `IntersectionObserver` (threshold `0.1`, `rootMargin: '0px 0px -120px 0px'`, matching AOS's default `offset: 120`) to toggle an `aos-animate` class as each element enters/leaves the viewport, and applies `data-aos-duration` as an inline `transition-duration` if present — the same mechanism AOS itself used under the hood.
+- **`src/aos.scss`** (new) — replaces `node_modules/aos/dist/aos.css`. Only defines the `fade-up` transform/opacity rule (the only effect actually used), copied from AOS's own CSS values (`translate3d(0,100px,0)` → `translateZ(0)`, 400ms default duration, `ease` timing) so the visual result is unchanged.
+- **`angular.json`** — removed `node_modules/aos/dist/aos.css` and `node_modules/aos/dist/aos.js` from `styles`/`scripts`, added `src/aos.scss` to `styles`.
+- **`app.component.ts`** — removed `import * as AOS from 'aos'` and the `AOS.init()` call (no longer needed; each element now manages its own observer).
+- **`home.module.ts`** — added `AosDirective` to `imports` (it's a standalone directive, so NgModule-declared components consume it via `imports`, not `declarations`).
+- **`namecard.component.ts`** — added `AosDirective` directly to its own `imports` array (this component is itself standalone).
+- **`package.json`** — removed `aos` and `@types/aos`.
+
+Verified with Playwright against `ng serve`: an element scrolled out of view stays at `opacity: 0`, scrolling it into view flips it to `opacity: 1` (via the `aos-animate` class), and `console --errors` is empty. `ng build` now finishes with **zero warnings**, and the bundle shrank slightly (no more `aos` in the JS bundle or a separate `scripts` chunk for `aos.js`).
+
 ## Not done / left as-is
 
 - The 7 pre-existing failing unit tests (see §6) were not fixed — flagging for a separate task if you want proper `TestBed` setups for those components.
 - `@angular/animations` deprecation warning (see §8) — left in place deliberately.
-- Round 1's changes were committed as `Update to Angular 22`. Round 2's changes (builder migration, `platformBrowser` swap, Sass fix) are sitting in this worktree for review, not yet committed.
+- Round 1's changes were committed as `Update to Angular 22`, round 2's as `Fixed Depreciation Warnings`. Round 3's changes (the `aos` replacement) are sitting in this worktree for review, not yet committed.
