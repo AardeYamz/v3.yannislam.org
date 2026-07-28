@@ -17,44 +17,79 @@ A fourth homepage section, "04. Volunteering," was added alongside the existing 
     "siteLocation": "/#volunteering"
   }
   ```
-- **`about.experiences.volunteering`**: already existed with a single Epic Movement entry (unused by the app until now — see "Before this change" below). A second entry for ARISE Youth Ministries was added, sourced from the legacy `yannislam.org/config.js` site (which listed both organizations under `experience`). Both entries' `imgs` fields were converted from a bare string to a single-element array (`"imgs": ["..."]`) to match the shape `WorkHistoryComponent`'s template expects (`exp.imgs[0]`, and iteration over `exp.imgs` for the carousel).
+- **`about.experiences.work` / `about.experiences.volunteering`**: both were changed from a bare array to an object carrying the section's own display metadata alongside its entries:
+  ```json
+  "work": {
+    "sectionId": "workhistory",
+    "navNumber": "03.",
+    "headingText": "What's my experience?",
+    "list": [ /* ...existing work entries... */ ]
+  },
+  "volunteering": {
+    "sectionId": "volunteering",
+    "navNumber": "04.",
+    "headingText": "How do I give back?",
+    "list": [ /* Epic Movement, ARISE Youth Ministries */ ]
+  }
+  ```
+  (`education` and `skills` are untouched — still plain arrays, since nothing about their rendering changed.) The Volunteering entries' `imgs` fields were also converted from a bare string to a single-element array (`"imgs": ["..."]`) to match the shape `WorkHistoryComponent`'s template expects (`exp.imgs[0]`, and iteration over `exp.imgs` for the carousel). The ARISE entry was sourced from the legacy `yannislam.org/config.js` site, which listed both organizations under `experience`.
 
-## Component: reusing `WorkHistoryComponent` instead of adding a new one
+## Component: `WorkHistoryComponent` reused as a plain, data-driven component
 
-The Volunteering entries (`organization`, `title`, `timeframe`, `imgs`, `link`, `description`) are structurally the same shape as the `work` entries the Experience section already renders — so rather than adding a fourth component, `WorkHistoryComponent` (`src/app/components/home/workhistory/`) was made to render **either** section, selected by a new `@Input() section: 'work' | 'volunteering'`:
+The Volunteering entries (`organization`, `title`, `timeframe`, `imgs`, `link`, `description`) are structurally the same shape as the `work` entries the Experience section already renders — so rather than adding a fourth component, both sections render through the same `WorkHistoryComponent` (`src/app/components/home/workhistory/`).
+
+An earlier pass had the component pick its own data via an `@Input() section: 'work' | 'volunteering'` resolved against an internal `sectionConfigs` lookup table in `ngOnInit`. That put a routing/branching decision inside a component that should just render whatever it's given. It was removed — `WorkHistoryComponent` now has **no knowledge of "work" or "volunteering" at all** and no config import; it's four plain inputs:
 
 ```ts
-@Input() section: 'work' | 'volunteering' = 'work';
-
-sectionConfigs: Record<string, WorkHistorySectionConfig> = {
-  work: { sectionId: 'workhistory', navNumber: '03.', headingText: "What's my experience?", experienceList: this.data?.about?.experiences?.work },
-  volunteering: { sectionId: 'volunteering', navNumber: '04.', headingText: 'How do I give back?', experienceList: this.data?.about?.experiences?.volunteering }
-};
+@Input() experienceList: any[] = [];
+@Input() sectionId = '';
+@Input() navNumber = '';
+@Input() headingText = '';
 ```
 
-`ngOnInit` resolves the active config into plain `sectionId` / `navNumber` / `headingText` / `experienceList` fields that the template binds to (previously these were hardcoded: `id='workhistory'`, the literal text `03.` / `What's my experience?`, and `data?.about?.experiences?.work` directly).
+The template already bound to these fields (`[id]="sectionId"`, `{{navNumber}}`, `{{headingText}}`, `experienceList` in the `@for`) from the earlier pass, so no template changes were needed here — only the `.ts` file lost its `sectionConfigs` map, the `WorkHistorySectionConfig` interface, the `section` input, the `jsonData` import, and `ngOnInit`.
 
-`home.component.html` now renders two instances:
+The decision of *which* data feeds each instance now lives entirely in the parent, `home.component.ts`, which just reads `config.json` and exposes it:
+
+```ts
+export class HomeComponent {
+  data: any = jsonData;
+  experiences: any = this.data.about.experiences;
+}
+```
+
+`home.component.html` binds each section's own `sectionId` / `navNumber` / `headingText` / `list` straight from config — no string matching, no lookup table, no conditional:
 
 ```html
-<app-workhistory></app-workhistory>                       <!-- section="work" (default) -->
-<app-workhistory section="volunteering"></app-workhistory>
+<app-workhistory
+  [experienceList]="experiences.work.list"
+  [sectionId]="experiences.work.sectionId"
+  [navNumber]="experiences.work.navNumber"
+  [headingText]="experiences.work.headingText">
+</app-workhistory>
+<app-workhistory
+  [experienceList]="experiences.volunteering.list"
+  [sectionId]="experiences.volunteering.sectionId"
+  [navNumber]="experiences.volunteering.navNumber"
+  [headingText]="experiences.volunteering.headingText">
+</app-workhistory>
 ```
 
-One template/stylesheet pair now drives both sections — no visual or behavioral difference between them (same alternating image/text carousel layout, same CSS classes). The only template change beyond parameterization was wrapping the `workhistory-skills` list in `@if (exp?.skills)`, since volunteering entries don't have a `skills` field (education/work entries do).
+Adding a future third instance (say, another `work`-shaped section) is now just another config.json object plus another `<app-workhistory>` binding — no code change to the component or a lookup table to extend.
 
-### Before this change
+### Earlier iterations (superseded)
 
-An earlier version of this work added a standalone `VolunteeringComponent` modeled on `EducationComponent`'s tabbed layout (`src/app/components/home/volunteering/`). It was removed in favor of the approach above once it was clear the data already matched `WorkHistoryComponent`'s shape closely enough to share the component outright, rather than maintaining two nearly-identical implementations.
+1. A standalone `VolunteeringComponent` modeled on `EducationComponent`'s tabbed layout (`src/app/components/home/volunteering/`) — removed once it was clear the data matched `WorkHistoryComponent`'s shape closely enough to share the component outright.
+2. `WorkHistoryComponent` with an internal `section` input + `sectionConfigs` lookup table — removed per this refactor, in favor of the parent-resolved plain-input design described above.
 
 ## Verification
 
-- `ng build` — clean, no errors.
-- `ng serve` + Playwright: confirmed the nav renders `01. About | 02. Education | 03. Experience | 04. Volunteering`; the Volunteering section renders both organizations (Epic Movement — President, 08/2020–05/2021; ARISE Youth Ministries — Youth Counselor, 07/2018–08/2019) with correct headings, descriptions, and links; the Experience section is unaffected (still renders all 9 entries); zero console errors from application code.
+- `ng build` — clean, no errors, after each iteration.
+- `ng serve` + Playwright: confirmed the nav renders `01. About | 02. Education | 03. Experience | 04. Volunteering`; the Volunteering section renders both organizations (Epic Movement — President, 08/2020–05/2021; ARISE Youth Ministries — Youth Counselor, 07/2018–08/2019) with correct headings, descriptions, and links; the Experience section is unaffected (still renders all 9 entries); zero console errors.
 
 ## Files touched
 
-- `src/assets/config.json` — nav entry + ARISE entry + `imgs` shape fix.
-- `src/app/components/home/workhistory/workhistory.component.ts` — `@Input() section`, `sectionConfigs` map.
-- `src/app/components/home/workhistory/workhistory.component.html` — parameterized `id`/heading/data source, guarded `skills` block.
-- `src/app/components/home/home.component.html` — second `<app-workhistory>` instance.
+- `src/assets/config.json` — nav entry; `work`/`volunteering` restructured from arrays to `{ sectionId, navNumber, headingText, list }` objects; `volunteering` entries' `imgs` shape fix.
+- `src/app/components/home/workhistory/workhistory.component.ts` — reduced to four plain `@Input()`s, no config import, no branching logic.
+- `src/app/components/home/home.component.ts` — now reads `config.json` and exposes `experiences`.
+- `src/app/components/home/home.component.html` — two `<app-workhistory>` instances, each bound explicitly to its section's config data.
