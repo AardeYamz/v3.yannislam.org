@@ -15,6 +15,22 @@ body {
     font-size: 20px;
 }
 
+app-root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+router-outlet + * {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+app-footer {
+    flex-shrink: 0;
+    width: 100%;
+}
+
 .section-box {
     padding: 130px 0;
 }
