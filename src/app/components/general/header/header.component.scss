@@ -62,7 +62,11 @@
         background-color: $LightNavy;
         height: 100%;
         position: relative;
-        right: -625px;
+        // -625px was a magic number that only clears the drawer's own
+        // width (75vw) off-screen up to ~833px viewports; wider than that
+        // it fell short and the closed drawer bled onto the right edge.
+        // -100vw always exceeds 75vw, so it's fully off-screen at any width.
+        right: -100vw;
         margin-left: auto;
         font-family: $CodeFont;
         box-shadow: rgba(2, 12, 27, 0.7) -10px 0px 30px -15px;
@@ -198,6 +202,86 @@
     }
 }
 
+.navbar-brand {
+    img {
+        display: block;
+        // No transform transition here: the scroll-driven rotation is set
+        // via an inline style, which would otherwise fight a CSS transform.
+        transition: opacity 0.2s ease;
+    }
+
+    &:hover img,
+    &:focus-visible img {
+        opacity: 0.8;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $Orange;
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    background: none;
+    color: $LightestSlate;
+    cursor: pointer;
+    font-size: 20px;
+    transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+        color: $Orange;
+        border-color: $Orange;
+        transform: scale(1.08);
+    }
+
+    &:focus-visible {
+        outline: 2px solid $Orange;
+        outline-offset: 2px;
+    }
+}
+
+@media (max-width: 1050px) {
+    .nav-right {
+        gap: 12px;
+    }
+
+    // Below this width the menu links are hidden (see "nav .nav" rule
+    // above), so .nav-right only shows the toggle button. Pull the brand
+    // out of the flex row and center it absolutely so it stays centered
+    // regardless of the toggle/hamburger widths, and let the toggle take
+    // the brand's old spot on the left.
+    .container {
+        position: relative;
+    }
+
+    .navbar-brand {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .nav-right {
+        order: -1;
+    }
+}
+
 .on-top {
     position: fixed;
     width: 100%;
@@ -215,16 +299,7 @@
     transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
 }
 
-@media (max-width: 1000px) {
-    .main-navbar {
-        .nav-link {
-            margin: 0;
-            padding: .5rem .7rem;
-        }
-    }
-}
-
-@media (max-width: 827px) {
+@media (max-width: 1050px) {
     nav .nav {
         display: none;
     }
@@ -234,7 +309,7 @@
     }
 }
 
-@media (min-width: 827px) {
+@media (min-width: 1050px) {
 
     .menu-wrapper,
     .menu-responsive {

@@ -468,7 +468,7 @@
   "manifestBackgroundColor": "#ff8b00",
   "manifestThemeColor": "#ff8b00",
   "manifestDisplay": "standalone",
-  "manifestIcon": "src/assets/images/logos/clearcolor.png",
+  "manifestIcon": "src/assets/images/logos/clearcolor.svg",
   "heading": "Yannis Lam",
   "subHeading": "",
   "projects": {

@@ -1,0 +1,13 @@
+<svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+    <polygon class="logo-piece logo-piece--spike-left" fill="#ffffff" points="287,194 287,80 343,193" />
+    <polygon class="logo-piece logo-piece--spike-right" fill="#ffffff" points="437,194 493,80 493,194" />
+    <polygon class="logo-piece logo-piece--cap" fill="#ffffff" points="360,204 420,204 390,265" />
+    <polygon class="logo-piece logo-piece--arm-left" fill="#ffffff" points="354,333 289,203 348,203 384,275" />
+    <polygon class="logo-piece logo-piece--arm-right" fill="#ffffff" points="425,333 396,275 432,203 491,203" />
+    <polygon class="logo-piece logo-piece--diamond" fill="#ffffff" points="361,342 390,284 419,342 390,402" />
+    <polygon class="logo-piece logo-piece--leg-left" fill="#ffffff" points="323,539 384,417 384,667 323,669" />
+    <polygon class="logo-piece logo-piece--leg-right" fill="#ffffff" points="395,412 458,538 458,670 396,670" />
+    <polygon class="logo-piece logo-piece--foot-green" fill="#ffffff" points="321,680 377,680 352,731 295,731" />
+    <polygon class="logo-piece logo-piece--foot-orange" fill="#ffffff" points="484,731 427,731 402,681 458,680" />
+    <polygon class="logo-piece logo-piece--foot-cream" fill="#ffffff" points="601,731 496,731 471,681 575,680" />
+</svg>

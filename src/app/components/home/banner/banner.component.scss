@@ -30,10 +30,7 @@
                 margin: 0;
                 font-family: $MainFont;
 
-                background: linear-gradient(90deg,
-                        #eeff41,
-                        #f9a825,
-                        #ff5722);
+                background: var(--name-gradient);
                 color: #fff;
                 background-clip: text;
                 -webkit-background-clip: text;
