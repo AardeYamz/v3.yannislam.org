@@ -1,89 +1,105 @@
 <section class="section workhistory" id='workhistory'>
-    <div class="container">
-        <div class="section-box">
-            <div data-aos="fade-up" data-aos-duration="1000">
-                <h3 class="section-title">
-                    <span class='n-section-title'>03.</span>What's my experience?
-                </h3>
+  <div class="container">
+    <div class="section-box">
+      <div data-aos="fade-up" data-aos-duration="1000">
+        <h3 class="section-title">
+          <span class='n-section-title'>03.</span>What's my experience?
+        </h3>
+      </div>
+
+      @for (exp of data?.about?.experiences?.work; track exp; let i = $index) {
+        <div class="d-flex workhistory-container"
+          data-aos="fade-up" data-aos-duration="1000">
+          @if (i % 2 == 0) {
+            <owl-carousel-o class='owl-carousel-o' [options]="customOptions">
+              @for (img of exp.imgs; track img) {
+                <ng-template carouselSlide [id]="exp.title + i">
+                  <div #imgContainer class='img-container'>
+                    <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.title">
+                  </div>
+                </ng-template>
+              }
+            </owl-carousel-o>
+          }
+          @if (i % 2 == 0) {
+            <div class="img-feature-workhistory-container" data-aos="fade-up" data-aos-duration="1000"
+              >
+              <div class="img-feature-workhistory-box">
+                <div class="img-container" style='width: auto;'>
+                  <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.imgs[0]">
+                </div>
+              </div>
             </div>
-
-            <div *ngFor='let exp of data?.about?.experiences?.work; let i = index' class="d-flex workhistory-container"
-                data-aos="fade-up" data-aos-duration="1000">
-                <owl-carousel-o class='owl-carousel-o' [options]="customOptions" *ngIf="i % 2 == 0">
-                    <ng-container *ngFor="let img of exp.imgs">
-                        <ng-template carouselSlide [id]="exp.title + i">
-                            <div #imgContainer class='img-container'>
-                                <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.title">
-                            </div>
-                        </ng-template>
-                    </ng-container>
+          }
+          <div [ngClass]="{'workhistory-info-right': i % 2 == 0, 'workhistory-info-left': i % 2 != 0}"
+            [style.backgroundImage]="'url(' + exp.imgs[0] + ')'">
+            <div class="workhistory-box">
+              <h5 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}" class="workhistory-title">
+              {{exp.title}} </h5>
+              <h4 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
+                class="workhistory-subtitle">
+              &#64; {{exp.organization}}</h4>
+              <div class="workhistory-description-box" (click)='debug()'>
+                @if (exp?.timeframe) {
+                  <p class="text-right mb-2">
+                    <i>{{exp?.timeframe}}</i>
+                  </p>
+                }
+                @if (exp?.subTitle) {
+                  <p class="text-right mb-2">
+                    <u>{{exp?.subTitle}}</u>
+                  </p>
+                }
+                @for (descParagraph of exp?.description; track descParagraph; let i = $index) {
+                  <p class="mb-1">
+                    {{descParagraph}}
+                  </p>
+                }
+                <div [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
+                  class="workhistory-links">
+                  @if (exp['link']) {
+                    <a class="mx-3" style='color: inherit' [href]="exp['link']"
+                      target="_blank"><i class="ml-3 fa-solid fa-up-right-from-square"></i></a>
+                    }
+                    @if (exp['demoLink']) {
+                      <a style='color: inherit' [href]="exp['demoLink']"
+                        target="_blank"><i class="ml-3 fas fa-external-link-alt"></i></a>
+                      }
+                    </div>
+                  </div>
+                  <ul [ngClass]="{'justify-content-end': i % 2 == 0, 'justify-content-start': i % 2 != 0}"
+                    class="workhistory-skills">
+                    @for (skill of exp.skills; track skill) {
+                      <li class="mx-2">
+                        <span class="underline skills">{{skill}}</span>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              </div>
+              @if (i % 2 != 0) {
+                <owl-carousel-o class='owl-carousel-o' [options]="customOptions">
+                  @for (img of exp.imgs; track img) {
+                    <ng-template carouselSlide [id]="exp.title + i">
+                      <div class='img-container'>
+                        <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.title">
+                      </div>
+                    </ng-template>
+                  }
                 </owl-carousel-o>
-
+              }
+              @if (i % 2 != 0) {
                 <div class="img-feature-workhistory-container" data-aos="fade-up" data-aos-duration="1000"
-                    *ngIf="i % 2 == 0">
-                    <div class="img-feature-workhistory-box">
-                        <div class="img-container" style='width: auto;'>
-                            <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.imgs[0]">
-                        </div>
+                  >
+                  <div class="img-feature-workhistory-box">
+                    <div class="img-container" style='width: auto;'>
+                      <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.imgs[0]">
                     </div>
+                  </div>
                 </div>
-
-                <div [ngClass]="{'workhistory-info-right': i % 2 == 0, 'workhistory-info-left': i % 2 != 0}"
-                    [style.backgroundImage]="'url(' + exp.imgs[0] + ')'">
-                    <div class="workhistory-box">
-                        <h5 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}" class="workhistory-title">
-                            {{exp.title}} </h5>
-                        <h4 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
-                            class="workhistory-subtitle">
-                            &#64; {{exp.organization}}</h4>
-
-                        <div class="workhistory-description-box" (click)='debug()'>
-                            <p *ngIf='exp?.timeframe' class="text-right mb-2">
-                                <i>{{exp?.timeframe}}</i>
-                            </p>
-                            <p *ngIf='exp?.subTitle' class="text-right mb-2">
-                                <u>{{exp?.subTitle}}</u>
-                            </p>
-                            <p *ngFor='let descParagraph of exp?.description; let i = index' class="mb-1">
-                                {{descParagraph}}
-                            </p>
-                            <div [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
-                                class="workhistory-links">
-                                <a *ngIf="exp['link']" class="mx-3" style='color: inherit' [href]="exp['link']"
-                                    target="_blank"><i class="ml-3 fa-solid fa-up-right-from-square"></i></a>
-                                <a *ngIf="exp['demoLink']" style='color: inherit' [href]="exp['demoLink']"
-                                    target="_blank"><i class="ml-3 fas fa-external-link-alt"></i></a>
-                            </div>
-                        </div>
-
-                        <ul [ngClass]="{'justify-content-end': i % 2 == 0, 'justify-content-start': i % 2 != 0}"
-                            class="workhistory-skills">
-                            <li *ngFor='let skill of exp.skills' class="mx-2">
-                                <span class="underline skills">{{skill}}</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <owl-carousel-o class='owl-carousel-o' [options]="customOptions" *ngIf="i % 2 != 0">
-                    <ng-container *ngFor="let img of exp.imgs">
-                        <ng-template carouselSlide [id]="exp.title + i">
-                            <div class='img-container'>
-                                <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.title">
-                            </div>
-                        </ng-template>
-                    </ng-container>
-                </owl-carousel-o>
-
-                <div class="img-feature-workhistory-container" data-aos="fade-up" data-aos-duration="1000"
-                    *ngIf="i % 2 != 0">
-                    <div class="img-feature-workhistory-box">
-                        <div class="img-container" style='width: auto;'>
-                            <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.imgs[0]">
-                        </div>
-                    </div>
-                </div>
+              }
             </div>
+          }
         </div>
-    </div>
-</section>
+      </div>
+    </section>

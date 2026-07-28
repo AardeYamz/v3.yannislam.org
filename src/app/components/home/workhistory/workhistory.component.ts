@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import * as jsonData from '../../../../assets/config.json';
@@ -7,6 +7,7 @@ import * as jsonData from '../../../../assets/config.json';
   selector: 'app-workhistory',
   templateUrl: './workhistory.component.html',
   styleUrls: ['./workhistory.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WorkHistoryComponent {

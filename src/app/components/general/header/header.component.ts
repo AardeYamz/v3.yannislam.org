@@ -1,5 +1,5 @@
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
@@ -21,6 +21,7 @@ import * as jsonData from '../../../../assets/config.json';
       ])
     ])
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 
@@ -58,7 +59,7 @@ export class HeaderComponent implements OnInit {
     window.open(url + "/../assets/resume/" + this.resumeFile, "_blank");
   }
 
-  @HostListener('window:scroll', ['getScrollPosition($event)'])
+  @HostListener('window:scroll')
   getScrollPosition() {
     this.pageYPosition = window.scrollY;
   }

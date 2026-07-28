@@ -1,6 +1,6 @@
 # Yannis Lam Portfolio Website v.3
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19. 
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19, and later updated to version 22. 
 - Forked from [Lê Thanh Tuấn's Portfolio](https://github.com/lethanhtuan939/Portfolio)
 - Which was based on [José Hernández's Portfolio](https://github.com/andresjosehr/andresjosehr-portfolio)
 - And adapted from [Brittany Chiang's Portfolio](https://github.com/bchiang7/v4)
@@ -41,9 +41,13 @@ The application will automatically reload if you change any of the source files.
 
 ## Stack
 
-- @angular/cli@19
-- @ng-bootstrap/ng-bootstrap
-- @fortawesome/fontawesome-free
-- animejs
-- typed
+- Node.js 24 (LTS)
+- @angular/cli@22
+- @ng-bootstrap/ng-bootstrap@21
+- bootstrap@5
+- @fortawesome/fontawesome-free@7
+- aos
+- ngx-typed-js
+- ngx-owl-carousel-o
+- ngx-google-analytics
 - netlify
