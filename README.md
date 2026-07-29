@@ -60,10 +60,12 @@ The application will automatically reload if you change any of the source files.
 - [ngx-owl-carousel-o](https://www.npmjs.com/package/ngx-owl-carousel-o) — work history carousel
 - [animejs](https://animejs.com) 4 — the boot-time loading screen's logo assembly animation (see `documentation/animejs-loading-screen.md`)
 - AOS-style scroll reveal via a custom `AosDirective` (`src/app/directives/aos/`)
+- A hand-rolled `requestAnimationFrame` loop powers `FloatingLogosComponent`, a field of falling logo marks behind the banner greeting (see `documentation/floating-logos-banner.md`)
+- `LogoFallbackDirective` (`src/app/directives/logo-fallback/`) generates a data-URI SVG placeholder — the organization's name as themed accent-colored text — for work/education entries with no logo image
 - All page copy (nav, banner, about, education, work history, contact, footer socials) is data-driven from `src/assets/config.json`, read through a single `SiteConfigService` (see `documentation/config-dedup-refactor.md`)
 
 **Analytics**
-- [ngx-google-analytics](https://www.npmjs.com/package/ngx-google-analytics) wrapping Google Analytics (gtag.js), routed through an `AnalyticsService` — see `documentation/google-analytics.md`
+- Google Analytics 4 via the global `gtag.js` site tag, loaded inline in `src/index.html`; `AnalyticsService` calls the global `gtag()` directly — no analytics npm package is used (an earlier `ngx-google-analytics` integration was removed since it was never wired up) — see `documentation/google-analytics.md`
 
 **Infrastructure & deployment**
 - **Hosting/build**: [Vercel](https://vercel.com) builds and serves the production app (`vercel.json`); a `postbuild` step (`scripts/inject-env.js`) substitutes `%GOOGLE_ANALYTICS_ID%` in `index.html` from Vercel's environment at build time so the ID isn't hardcoded in source
@@ -91,9 +93,10 @@ flowchart TB
 
     subgraph "HomeModule (eager)"
         Home --> Banner["BannerComponent"]
+        Banner --> FloatingLogos["FloatingLogosComponent<br/>(falling logo field)"]
         Home --> About["AboutComponent"]
         Home --> Education["EducationComponent"]
-        Home --> WorkHistory["WorkHistoryComponent x2<br/>(work / volunteering)"]
+        Home --> WorkHistory["WorkHistoryComponent x2<br/>(work / volunteering)<br/>logoFallback directive"]
         Home --> Contact["ContactComponent"]
     end
 
@@ -107,6 +110,8 @@ flowchart TB
 
     ThemeService["ThemeService<br/>(signals, localStorage)"] --> Header
     ThemeService --> LoadingScreen
+    ThemeService -->|"recolor on toggle"| FloatingLogos
+    ThemeService -->|"accent color"| WorkHistory
 
     AnalyticsService --> Header
     AnalyticsService --> Banner
@@ -144,6 +149,7 @@ src/
 │   │   │   └── loading-screen/  # Boot-time anime.js logo intro
 │   │   ├── home/             # Sections that make up the "/" route (HomeModule, eager)
 │   │   │   ├── banner/       # Hero banner + typewriter effect
+│   │   │   ├── floating-logos/  # Falling logo-mark field behind the banner greeting
 │   │   │   ├── about/        # About + AardeYamz name-meaning cards
 │   │   │   ├── education/    # Education list
 │   │   │   ├── workhistory/  # Work/volunteering timeline (reused for both)
@@ -152,22 +158,33 @@ src/
 │   │   │   └── projects-highschool/  # High school projects
 │   │   └── other/
 │   │       └── aardeyamz/    # Standalone "/aardeyamz" route, lazy-loaded (+ NamecardComponent)
-│   ├── directives/aos/       # Custom scroll-reveal directive (AOS-style)
+│   ├── directives/
+│   │   ├── aos/               # Custom scroll-reveal directive (AOS-style)
+│   │   └── logo-fallback/     # Generates a themed placeholder logo SVG when no image is set
 │   ├── pipes/linkify/        # Turns plain-text URLs into links
 │   ├── services/
 │   │   ├── site-config/      # SiteConfigService — the only reader of assets/config.json
 │   │   ├── theme/            # ThemeService — light/dark theme, signals + localStorage
-│   │   ├── analytics/        # AnalyticsService — wraps ngx-google-analytics/gtag
-│   │   └── resume/           # Resume link/download handling
+│   │   ├── analytics/        # AnalyticsService — calls the global gtag() directly
+│   │   └── resume/           # Resume link/download handling, reads assets/resume-manifest.json
 │   ├── app.module.ts         # Root NgModule (eager HomeModule, lazy AardeYamz route)
 │   └── app-routing.module.ts # Top-level routes
 ├── assets/
 │   ├── config.json           # All page copy/content — see "Updating the config file" below
+│   ├── resume-manifest.json  # Generated at build/serve time — see note below (gitignored)
 │   ├── fonts/                # Calibre, SF Mono
 │   ├── images/                # Logos, profile photos, project screenshots
 │   └── resume/                # Downloadable resume file(s)
 └── enviroment/                # Angular environment files
 ```
+
+`scripts/generate-resume-manifest.js` runs as a `pre*` hook before `start`,
+`build`, `watch`, and `test` (see `package.json`). It scans
+`src/assets/resume/` for files named `<anything> YYYYMMDD.pdf`, picks the
+newest by date, and writes its filename to `src/assets/resume-manifest.json`,
+which `ResumeService` imports as a TS module — so dropping in a new dated
+resume PDF is all that's needed to update the site's download link, no code
+change required.
 
 Every component under `components/` follows the standard Angular trio
 (`*.component.ts` / `.html` / `.scss`, plus a `.spec.ts` where present).
@@ -175,7 +192,8 @@ Components read content through `SiteConfigService` rather than importing
 `config.json` directly — see `documentation/config-dedup-refactor.md` for why.
 Other write-ups worth skimming when touching a specific area live in
 `documentation/` (loading screen animation, Google Analytics wiring, the
-projects and volunteering sections, dark-mode logo handling, and Angular
+projects and volunteering sections, the falling-logos banner background,
+SVG logo conversion + the 3-state light/dark theme system, and Angular
 version upgrade notes).
 
 ## Updating the Config File
@@ -193,7 +211,10 @@ Key sections:
   for in-page sections.
 - **`logos`** — a keyed map of `{ src, alt }` image references, reused by
   `logoKey` across `experiences.work.list`, `experiences.education`, and
-  `experiences.volunteering.list` so a logo is only defined once.
+  `experiences.volunteering.list` so a logo is only defined once. If an
+  entry's `logoKey` is omitted or its `src` is empty, the `logoFallback`
+  directive auto-generates a themed placeholder (the organization's name as
+  wrapped, accent-colored text) instead — no image asset required.
 - **`about`** — `first`/`last` name, `email`, the `contact` list (social
   links, each with an `icon` matching a Font Awesome class), and the
   `aardeyamz` array powering the name-meaning cards.
