@@ -1,9 +1,9 @@
 @use "./../../../../../variables.scss" as *;
 
 .namecard{
-    
+
     // height: 100vh;
-    
+
     .namecard-col{
         padding: 10px;
         height: auto;
@@ -16,8 +16,22 @@
 
         .namecard-box {
             box-shadow: 0 10px 30px -15px rgba(2,12,27,0.7);
-            -webkit-transition: width 0.5s cubic-bezier(0.55,0.055,0.675,0.19), height 0.5s cubic-bezier(0.55,0.055,0.675,0.19), box-shadow 0.25s ease;
-            transition: width 0.5s cubic-bezier(0.55,0.055,0.675,0.19), height 0.5s cubic-bezier(0.55,0.055,0.675,0.19), box-shadow 0.25s ease;
+            // The middle-of-3 card shifts sideways on hover (see the
+            // 1200px+ block below) to center its growth between both
+            // neighbors, via `transform` rather than `left`: `left`
+            // starts undefined while this box is still `position:
+            // relative` at rest, and animating a property through a
+            // concurrent position:relative -> absolute switch is
+            // ill-defined — in testing it left `left` stuck at its
+            // starting point for the whole hover, which in turn pinned
+            // `width` next to it (a running transition takes priority
+            // over any other value for a property, including !important
+            // rules, until it completes — and it never did). `transform`
+            // has a well-defined resting value (none) regardless of
+            // position mode, so it animates smoothly no matter what
+            // position is doing at the same time.
+            -webkit-transition: width 0.5s cubic-bezier(0.55,0.055,0.675,0.19), height 0.5s cubic-bezier(0.55,0.055,0.675,0.19), -webkit-transform 0.5s cubic-bezier(0.55,0.055,0.675,0.19), box-shadow 0.25s ease;
+            transition: width 0.5s cubic-bezier(0.55,0.055,0.675,0.19), height 0.5s cubic-bezier(0.55,0.055,0.675,0.19), transform 0.5s cubic-bezier(0.55,0.055,0.675,0.19), box-shadow 0.25s ease;
             display: -webkit-box;
             display: -webkit-flex;
             display: -ms-flexbox;
@@ -29,11 +43,6 @@
             height: 100%;
             border-radius: 3px;
             background-color: $LightNavy;
-            cursor: pointer;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
             box-sizing: border-box;
 
             &:hover, &:focus {
@@ -127,6 +136,19 @@
     }
 }
 
+// Expanding on hover is an overlay (position: absolute) rather than a
+// flex/grid reflow: a reflow-based accordion (shrinking siblings to let
+// the hovered card grow) moves the hovered card's own edge under a
+// mouse that hasn't actually moved, which drops :hover mid-transition
+// and immediately re-triggers it — a flicker loop. An overlay never
+// resizes anything else, so nothing can shift the hovered card out from
+// under the pointer that's hovering it.
+//
+// The width below covers every column sharing a row at the current
+// breakpoint (2 columns from col-md-6/col-lg-6, widened to 3 for
+// col-xl-4 further down) — that's the fix for "kind of works, not
+// entirely": the previous fixed 215% only ever reached one neighbor, so
+// a 3-up row always left its 3rd column showing.
 @media(min-width: 768px){
     .namecard{
         .namecard-col{
@@ -134,7 +156,7 @@
                 position: absolute;
                 top: 0;
                 left: 0;
-                width: 215%;
+                width: 200%;
                 height: auto;
                 min-height: 100%;
             }
@@ -153,10 +175,24 @@
     }
 }
 
-// col-xl-4: three cards per row, so the 3rd (last) card is the
-// rightmost and needs to grow leftward instead.
+// col-xl-4: three cards per row, so covering the row now takes 300%
+// instead of 200%.
 @media(min-width: 1200px){
     .namecard{
+        .namecard-col .namecard-box:hover {
+            width: 300%;
+        }
+
+        // The middle (2nd of 3) card has a neighbor on both sides, so
+        // growing only rightward (the default) would leave the 1st
+        // column uncovered — shift it left by one column (a third of
+        // its own new, already-300%-wide box) to center the growth.
+        .namecard-col:nth-child(2) .namecard-box:hover {
+            -webkit-transform: translateX(-33.3333%);
+            transform: translateX(-33.3333%);
+        }
+
+        // 3rd (last) card is the rightmost, so it grows leftward.
         .namecard-col:last-child .namecard-box:hover {
             left: auto;
             right: 0;
