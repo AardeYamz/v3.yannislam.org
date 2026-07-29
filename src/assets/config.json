@@ -567,6 +567,34 @@
       "I am Yannis"
     ]
   },
+  "footer": {
+    "repo": {
+      "url": "https://github.com/AardeYamz/v3.yannislam.org",
+      "text": "</Yannis Lam>"
+    },
+    "builtWith": {
+      "text": "Adapted & built with 🧡 using",
+      "linkText": "Angular",
+      "url": "https://angular.dev/"
+    },
+    "designCredits": [
+      {
+        "name": "Lê Thanh Tuấn",
+        "url": "https://github.com/lethanhtuan939/Portfolio",
+        "separator": ", "
+      },
+      {
+        "name": "Jośe Andreś",
+        "url": "https://github.com/andresjosehr/andresjosehr-portfolio",
+        "separator": ", & "
+      },
+      {
+        "name": "Brittany Chiang",
+        "url": "https://github.com/bchiang7/v4",
+        "separator": ""
+      }
+    ]
+  },
   "siteTitle": "Yannis Lam",
   "manifestName": "yannislam.org",
   "manifestShortName": "YL",

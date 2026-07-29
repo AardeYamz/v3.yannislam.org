@@ -15,19 +15,16 @@
   </div>
 
   <div class="footer-credits text-center">
-    <div class="mt-2"><a href="https://github.com/AardeYamz/v3.yannislam.org" target="_blank"
-    rel="nofollow noopener noreferrer">&lt;/Yannis Lam&gt;</a>
+    <div class="mt-2"><a href={{footer.repo.url}} target="_blank"
+    rel="nofollow noopener noreferrer">{{footer.repo.text}}</a>
     &copy; {{currentDate |
   date:'yyyy'}}</div>
-  <div class="mt-2">Adapted &amp; built with 🧡 using <a href="https://angular.dev/" target="_blank"
-  rel="nofollow noopener noreferrer">Angular</a></div>
+  <div class="mt-2">{{footer.builtWith.text}} <a href={{footer.builtWith.url}} target="_blank"
+  rel="nofollow noopener noreferrer">{{footer.builtWith.linkText}}</a></div>
   <div class="mt-2">Designed by
-    <a href="https://github.com/lethanhtuan939/Portfolio" target="_blank" rel="nofollow noopener noreferrer">Lê
-    Thanh Tuấn</a>,
-    <a href="https://github.com/andresjosehr/andresjosehr-portfolio" target="_blank"
-    rel="nofollow noopener noreferrer">Jośe Andreś</a>, &amp;
-    <a href="https://github.com/bchiang7/v4" target="_blank" rel="nofollow noopener noreferrer">Brittany
-    Chiang</a>
+    @for (credit of footer.designCredits; track credit.url) {
+      <a href={{credit.url}} target="_blank" rel="nofollow noopener noreferrer">{{credit.name}}</a>{{credit.separator}}
+    }
   </div>
 
 </div>

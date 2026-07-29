@@ -13,4 +13,5 @@ export class SiteConfigService {
   readonly experiences: any = this.data.about.experiences;
   readonly contacts: any[] = this.data.about.contact;
   readonly projects: any = this.data.projects;
+  readonly footer: any = this.data.footer;
 }

@@ -16,6 +16,7 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
 export class FooterComponent {
     socials: any;
     email: any;
+    footer: any;
     currentDate = new Date();
 
     constructor(
@@ -24,5 +25,6 @@ export class FooterComponent {
     ) {
         this.socials = this.configService.contacts;
         this.email = this.socials.find((item: { name: string; }) => item?.name === "Email");
+        this.footer = this.configService.footer;
     }
 }
