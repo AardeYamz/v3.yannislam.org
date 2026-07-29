@@ -1,0 +1,11 @@
+<div class="floating-logos" aria-hidden="true">
+  @for (logo of logos; track logo.id) {
+    <img #logoEl
+         class="floating-logo"
+         [src]="'assets/images/logos/' + logo.variant + '.svg'"
+         [style.width.px]="logo.size"
+         [style.opacity]="logo.opacity"
+         (mouseenter)="onDodge($event, logo)"
+         alt="" />
+  }
+</div>

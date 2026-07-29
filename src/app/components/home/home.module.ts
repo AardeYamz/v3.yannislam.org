@@ -10,6 +10,7 @@ import { AboutComponent } from './about/about.component';
 import { BannerComponent } from './banner/banner.component';
 import { ContactComponent } from './contact/contact.component';
 import { EducationComponent } from './education/education.component';
+import { FloatingLogosComponent } from './floating-logos/floating-logos.component';
 import { HomeComponent } from './home.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { ProjectsHighschoolComponent } from './projects-highschool/projects-highschool.component';
@@ -27,6 +28,7 @@ import { LinkifyPipe } from '../../pipes/linkify/linkify.pipe';
     WorkHistoryComponent,
     ProjectsComponent,
     ProjectsHighschoolComponent,
+    FloatingLogosComponent,
     LinkifyPipe
   ],
   imports: [
