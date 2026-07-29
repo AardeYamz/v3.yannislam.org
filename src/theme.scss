@@ -14,6 +14,11 @@
     --color-orange-opacity: rgba(255, 165, 0, 0.07);
     // Straight from the logo's spike/arm/foot pieces (fff200/ffc90e/ff7f27).
     --name-gradient: linear-gradient(90deg, #fff200, #ffc90e, #ff7f27);
+    // Mobile card overlay (see workhistory.component.scss) — must track the
+    // theme's navy so text set from $LightestSlate/$LightSlate stays legible;
+    // a background fixed to dark navy goes invisible against light mode's
+    // near-black text.
+    --color-card-overlay: rgba(10, 25, 47, 0.89);
 }
 
 // Light mode: light background, black logo.
@@ -27,6 +32,7 @@
     --color-white: #131108;
     --color-orange: #d9720c;
     --color-orange-opacity: rgba(217, 114, 12, 0.08);
+    --color-card-overlay: rgba(244, 241, 234, 0.92);
     // Gray→red→maroon, from the logo's cap piece (gray 7f7f7f) and diamond
     // (red ed1c24), darkened for contrast. Distinct from default's gold and
     // dark mode's bright orange-forward flame: this starts neutral and cool
@@ -46,6 +52,7 @@
     --color-white: #f7f9fc;
     --color-orange: #ffb020;
     --color-orange-opacity: rgba(255, 176, 32, 0.09);
+    --color-card-overlay: rgba(5, 7, 12, 0.92);
     // Shares a yellow start with the default gradient below, which reads
     // as barely-different on short text like "Yannis Lam;" — dropped
     // yellow entirely and shifted to a fiery orange→red run (still exact

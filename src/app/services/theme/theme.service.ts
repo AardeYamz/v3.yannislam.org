@@ -7,6 +7,13 @@ const CYCLE_ORDER: ThemeMode[] = ['default', 'light', 'dark'];
 // 'default' is already a dark theme, so it's the system-dark counterpart —
 // there's no separate OS signal for the deepest 'dark' mode.
 const PREFERS_LIGHT_QUERY = '(prefers-color-scheme: light)';
+// Mirrors --color-navy per mode from theme.scss — used to keep the browser
+// chrome (address bar on mobile) in sync with the actual page background.
+const NAVY_BY_MODE: Record<ThemeMode, string> = {
+  default: '#131f31',
+  light: '#f4f1ea',
+  dark: '#05070c'
+};
 
 @Injectable({
   providedIn: 'root'
@@ -56,5 +63,8 @@ export class ThemeService {
     } else {
       document.documentElement.setAttribute('data-theme', mode);
     }
+
+    document.querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', NAVY_BY_MODE[mode]);
   }
 }

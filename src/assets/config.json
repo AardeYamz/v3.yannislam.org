@@ -143,16 +143,19 @@
             "tab": "Voya SDE",
             "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
             "description": [
-              "Full stack development of Back Office Applications Suite - including Task Manager, Common Remitter, Case Installation applications",
-              "Drove cloud migration projects to break up monolith struts-based Java applications to new k8s based SpringBoot microservices",
-              "Secured password credentials through the onboarding and implementation of CyberArk Conjur"
+              "Directed a cross-functional team of India-based developers to migrate 5,100 retirement plans — 668K participants and $51.8B in assets — from OneAmerica onto Voya's Payroll platform",
+              "Drove cloud migration efforts, breaking up monolithic Struts-based Java applications into Kubernetes-native SpringBoot microservices",
+              "Spearheaded vulnerability remediation and modernization for SpringBoot and JDK upgrades using agentic Copilot-driven pipelines",
+              "Built and maintained the Back Office Applications Suite — Task Manager, Common Remitter, Case Installation, Claims Integration, and Voya PayCloud — for Retirement & Employee Benefits businesses",
+              "Elevated documentation and community-of-practice standards across 50+ Java developers"
             ],
             "skills": [
               "Azure RedHat Openshift",
               "CyberArk Conjur",
               "SpringBoot, Struts, & JBoss (Java)",
               "Active Directory",
-              "ServiceNow"
+              "ServiceNow",
+              "GitHub Copilot"
             ]
           },
           {
@@ -167,10 +170,9 @@
             "tab": "Rotation",
             "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
             "description": [
-              "Led Angular development efforts for Common Remitter app migration to Azure cloud",
-              "Refactored existing PWEB Java application of my.voya.com to remove unused endpoints",
-              "Pioneered Java Development efforts of Swagger integration for MyVoyage app microservices",
-              "Coordinated between App development and DevOps teams in integration of advanced CI/CD pipeline"
+              "Led Angular front-end development for the Common Remitter application's migration to Azure cloud",
+              "Refactored the Participant Web Java application (my.voya.com), eliminating unused endpoints to reduce technical debt",
+              "Bridged App Development and DevOps teams to integrate an advanced CI/CD pipeline"
             ],
             "skills": [
               "Azure Platform",
@@ -191,9 +193,9 @@
             "tab": "Intern",
             "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
             "description": [
-              "Improved test coverage and stabilized Salesforce environments through the refactoring of automated Apex unit tests",
-              "Developed and enhanced advanced coding skills through applied Apex, SOQL, SOSL, and VisualForce practice",
-              "Refined understanding of software development life cycles with exposure to agile and scrum methodologies"
+              "Improved test coverage and stabilized Salesforce environments by refactoring automated Apex unit tests",
+              "Built hands-on expertise in Apex, SOQL, SOSL, and Visualforce through applied development work",
+              "Gained exposure to Agile and Scrum methodologies across the full software development lifecycle"
             ],
             "skills": [
               "Salesforce.com CRM Platform",
@@ -214,9 +216,9 @@
             "timeframe": "01/2021 - 05/2021",
             "tab": "UMass",
             "description": [
-              "I served as a Peer Mentor for Residential Life at UMass Amherst in the Gorman / Wheeler Residential Cluster.",
-              "For this job, I communicated with and advised a group of over 400 freshmen transitioning to on-campus dormitories during the Covid-19 emergency.",
-              "I also coordinated with other peer mentors and residential assistants to provide useful seminars for first year students."
+              "Served as a Peer Mentor for Residential Life at UMass Amherst in the Gorman/Wheeler Residential Cluster",
+              "Advised and supported 400+ incoming freshmen transitioning to on-campus living during the COVID-19 emergency",
+              "Coordinated with peer mentors and residential assistants to deliver seminars for first-year students"
             ],
             "skills": [
               "Leadership",
@@ -238,9 +240,9 @@
             "timeframe": "09/2020 - 05/2021",
             "tab": "CICS 345",
             "description": [
-              "I served as an undergraduate course assistant to Instructor Liam Rothschild and Professor Jaime Dávila for 345: Practice and Applications of Data Management.",
-              "This class focused on data management through the use of SQL. As a UCA, I proctored weekly classes for 1 class section of 100 students, quickly graded assignments, and hosted weekly office hours on Zoom.",
-              "I also helped with the development of new course material using SQL databases and Python autograders."
+              "Served as Undergraduate Course Assistant to Instructor Liam Rothschild and Professor Jaime Dávila for CS 345: Practice and Applications of Data Management",
+              "Proctored weekly classes of 100 students, graded assignments, and hosted weekly office hours covering SQL and data management fundamentals",
+              "Developed new course material, including SQL databases and Python-based autograders"
             ],
             "skills": [
               "Teaching",
@@ -263,9 +265,9 @@
             "timeframe": "09/2019 - 12/2019",
             "tab": "CICS 256",
             "description": [
-              "I served as an undergraduate course assistant to Professors Rui Wang and Tauhidur Rahman for 256/290M Make: A Hand's On Introduction to Physical Computing.",
-              "This class focused on lab-based physics, electronics, and Arduino programming.",
-              "As a UCA, I proctored weekly labs for 1 class section of 35 students, quickly graded weekly lab reports for 2 sections totaling 75 students"
+              "Served as Undergraduate Course Assistant to Professors Rui Wang and Tauhidur Rahman for CICS 256/290M: Physical Computing",
+              "Proctored weekly labs on physics, electronics, and Arduino programming for a section of 35 students",
+              "Graded weekly lab reports across 2 sections totaling 75 students"
             ],
             "skills": [
               "Arduino",
@@ -283,23 +285,49 @@
               "https://www.braintreeschools.org/"
             ],
             "organization": "Braintree Public Schools",
-            "title": "Helpdesk Technician",
-            "subTitle": "Substitute Technician & Collegiate Intern Technician",
-            "timeframe": "Aug. 2020 - May 2021",
+            "title": "Collegiate Intern & Substitute Technician",
+            "subTitle": "Office of Technology & Accountability",
+            "timeframe": "08/2017 - 06/2021",
             "tab": "BPS",
             "description": [
-              "Based at Braintree High School, I helped service the entire school district as an intern.",
-              "I have assisted in the deployment of Chromebooks, Mac OS updates, Windows 10 images, and Android tablets.",
-              "My responsibilties included providing helpdesk assistence and maintaining an accurate inventory of the midsized enterprise network.",
-              "While I started out as a High School Intern Technician, I was promoted to College Intern Technician and Substitute Technician.",
-              "As a technician, I specialized in the repair of Chromebooks while mentoring teams of 15 high school interns."
+              "Supported the entire school district's technology infrastructure from Braintree High School's Office of Technology & Accountability",
+              "Specialized in Chromebook repair, Chrome OS, and Google Admin Console administration, repairing 300+ damaged devices",
+              "Led BYOD onboarding and inventory initiatives for 7,000+ devices district-wide",
+              "Promoted from High School Intern to Substitute Technician, supervising teams of up to 20 technicians",
+              "Reimaged 1,000+ Windows computers using DISM and SCCM, and managed Android Go device deployments via Google Admin Console",
+              "Delivered helpdesk support to teachers and administrators, and managed iPad Air distribution and AV equipment repairs"
             ],
             "skills": [
-              "Inventory",
-              "Training",
-              "Help Desk",
               "Chrome OS",
-              "Windows OS"
+              "Google Admin Console",
+              "DISM & SCCM",
+              "Inventory Management",
+              "Team Leadership"
+            ]
+          },
+          {
+            "imgs": [
+              "https://scontent-bos5-1.xx.fbcdn.net/v/t39.30808-6/302320580_507069131421821_2558083336515057918_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s2048x2048&_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=khGA9x_X_EUQ7kNvwGJgIUX&_nc_oc=AdoNQUmUDGG5AAc-PSpaumEE9yHCUCbd7P3MpzEsZvqmDGRQtGJ0iUzIBgyT_laDQog&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&_nc_gid=57ZDyRfjRrFzn5cUDxj6gg&_nc_ss=7b2a8&oh=00_AQCpf3k0lnHpiAvm1-UKMcI4MQQ4w8JZP-amB3TCiYD3lw&oe=6A6DD6EE"
+            ],
+            "image_alt": "Braintree Public Schools Logo",
+            "link": [
+              "https://www.braintreeschools.org/"
+            ],
+            "organization": "Braintree Public Schools",
+            "title": "Student Technician",
+            "subTitle": "Office of Technology & Accountability",
+            "timeframe": "12/2016 - 08/2017",
+            "tab": "BPS Student",
+            "description": [
+              "Managed enrollment and distribution of 500+ Chromebooks, and inventoried 1,000+ devices across six buildings for damage assessment",
+              "Upgraded 400 HP computers from Windows 7 to Windows 10 using DISM and WinPE, and migrated 30 iMacs from OS X El Capitan to macOS High Sierra",
+              "Organized inventory storage systems and supported 200+ EPSON projector installations district-wide"
+            ],
+            "skills": [
+              "Chromebook Repair",
+              "DISM & WinPE",
+              "Inventory",
+              "Help Desk"
             ]
           },
           {
@@ -314,9 +342,9 @@
             "timeframe": "05/2018 - 09/2018",
             "tab": "Home Depot",
             "description": [
-              "At The Home Depot, I operated behind the service desk.",
-              "I assisted customers with purchases and returns - specializing with online orders.",
-              "I also answered confidential calls, restocked items, and kept the service desk a clean and presentable working environment."
+              "Operated the service desk at The Home Depot, specializing in online order fulfillment",
+              "Assisted customers with purchases, returns, and product inquiries",
+              "Maintained accurate inventory and a clean, organized service desk environment"
             ],
             "skills": [
               "Customer Service",
@@ -336,9 +364,9 @@
             "timeframe": "05/2015 - 08/2016",
             "tab": "Project RISE",
             "description": [
-              "Over the span of seven weeks, I taught mathematics and helped coordinate general camp activities for a group of 70 inner-city middle and high school students.",
-              "I led five 50 minute math classes for 4 days a week in topics including arithmetic, algebra, geometry, and trigonometry.",
-              "I also oversaw the creation of a new website: \"projectriseboston.org\" (the website has since been updated) and produced a 5 minute video showing the perspective of a student at camp."
+              "Taught mathematics and coordinated camp activities for 70 inner-city middle and high school students over a seven-week program",
+              "Led five 50-minute math classes, 4 days a week, covering topics from arithmetic through trigonometry",
+              "Built and launched \"projectriseboston.org\" (since updated) and produced a 5-minute promotional video showcasing the camp experience"
             ],
             "skills": [
               "Teaching",
@@ -407,6 +435,26 @@
         "list": [
           {
             "imgs": [
+              "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23cccccc'/><text x='50%25' y='50%25' font-size='22' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle' fill='%23555555'>CBCGB</text></svg>"
+            ],
+            "image_alt": "Chinese Baptist Church of Greater Boston (placeholder logo)",
+            "organization": "Chinese Baptist Church of Greater Boston",
+            "title": "Church Council Member",
+            "subTitle": "English Congregational & Youth Dept. Chair → General Affairs Chair → Council Secretary",
+            "tab": "CBCGB",
+            "timeframe": "11/2022 - Present",
+            "description": [
+              "Elected lay leader serving on the Chinese Baptist Church of Greater Boston Church Council, holding the roles of English Congregational and Youth Department Chair (2022-24), General Affairs Chair (2024-25), and Council Secretary (2025-26).",
+              "Coordinated ministry events, budget, and administrative tasks alongside congregational leaders, deacons, and pastoral staff."
+            ],
+            "skills": [
+              "Church Leadership",
+              "Budget Coordination",
+              "Ministry Planning"
+            ]
+          },
+          {
+            "imgs": [
               "https://epicmovement.com/wp-content/uploads/sites/39/2026/03/RGB-Endorsed.png"
             ],
             "image_alt": "Epic Movement Logo",
@@ -418,6 +466,57 @@
             "about": "Epic Movement is a Cru ministry that envisions Asian American students and faculty transformed by their relationship with Jesus Christ, embracing the value of their cultures and actively engaging in God's redemptive work in ways that honor all people and contexts. Epic Movement at UMass Amherst was established in the fall of 2008.",
             "description": [
               "Beginning my senior year, I assumed the responsibilities of President. I led an Executive Board of 14 members as well as the general fellowship of 80 members during UMass Amherst's transition to remote learning."
+            ]
+          },
+          {
+            "imgs": [
+              "https://images.squarespace-cdn.com/content/v1/5a68c543c027d8520a74c74a/658c179a-80ed-4f21-bec2-be3c907f57bf/craigs-2.png"
+            ],
+            "image_alt": "Craig's Doors Logo",
+            "organization": "Craig's Doors",
+            "title": "Kitchen Volunteer",
+            "tab": "Craig's Doors",
+            "timeframe": "01/2020 - 03/2020",
+            "description": [
+              "Volunteered in the kitchen at Craig's Doors, a shelter and support services organization for people experiencing homelessness in Amherst, MA."
+            ],
+            "skills": [
+              "Community Service",
+              "Food Service"
+            ]
+          },
+          {
+            "imgs": [
+              "https://upload.wikimedia.org/wikipedia/commons/3/35/University_of_Massachusetts_Amherst_seal.png"
+            ],
+            "image_alt": "UMass Amherst",
+            "link": "https://www.umass.edu/",
+            "organization": "University of Massachusetts Amherst",
+            "title": "Commencement Ambassador",
+            "tab": "Commencement",
+            "timeframe": "05/2019",
+            "description": [
+              "Served as a Commencement Ambassador, assisting with the University of Massachusetts Amherst's commencement ceremony and events."
+            ],
+            "skills": [
+              "Event Support"
+            ]
+          },
+          {
+            "imgs": [
+              "https://images.squarespace-cdn.com/content/v1/60f4e051476ec73ef23d5056/abbbe5eb-523c-4002-bea2-87677a31045c/FBC+Logo_Primary.png"
+            ],
+            "image_alt": "First Baptist Church of Amherst Logo",
+            "organization": "First Baptist Church of Amherst",
+            "title": "Agape College Ministry Events Planner",
+            "tab": "Agape",
+            "timeframe": "09/2018 - 05/2019",
+            "description": [
+              "Planned and organized fellowship events for Agape College Ministry, the college-age ministry of First Baptist Church of Amherst."
+            ],
+            "skills": [
+              "Event Planning",
+              "Community Building"
             ]
           },
           {
@@ -439,15 +538,13 @@
         ]
       },
       "skills": [
-        "Azure Platform",
+        "Java & SpringBoot",
+        "Azure Cloud & Kubernetes",
         "Angular & React JS",
-        "HTML & CSS",
         "CyberArk Conjur",
-        "SpringBoot, Struts, & JBoss (Java)",
-        "Active Directory",
-        "ServiceNow",
-        "Docker & k8s",
-        "Others ..."
+        "GitHub Copilot & AI Tooling",
+        "HTML & CSS",
+        "Active Directory & ServiceNow"
       ]
     }
   },
@@ -455,19 +552,18 @@
     "greeting": "Hello! My name is",
     "name": "Yannis Lam;",
     "blurb": [
-      "I am an ambitious and resourceful <span class='underline'>Software Developer</span>. In 2021, I graduated with dual degrees in Computer Science <i>(B.S.)</i> and Economics <i>(B.A.)</i> at the <span class='underline'>University of Massachusetts Amherst</span> Commonwealth Honors College. Currently I work at <span class='underline'>Voya Financial</span> as a Full Stack Software Developer supporting its Back Office Applications."
+      "I'm a <span class='underline'>Full Stack Software Developer</span> who turns legacy systems into modern, cloud-native platforms. At <span class='underline'>Voya Financial</span>, I build and scale Back Office applications, drive Java-to-Kubernetes migrations, and lead vulnerability remediation efforts across 50+ developers. I graduated from the <span class='underline'>University of Massachusetts Amherst</span> Commonwealth Honors College with dual degrees in Computer Science <i>(B.S.)</i> and Economics <i>(B.A.)</i>, and I love turning complex problems into elegant, reliable software."
     ],
     "typeSection": [
-      "I am a Software Developer",
+      "I am a Full Stack Software Developer",
+      "I am a Cloud Migration Specialist",
+      "I am a Java Engineer",
       "I am a Computer Scientist",
       "I am an Economist",
-      "I am a Photographer",
-      "I am a Full Stack Developer",
+      "I am an AI-Augmented Developer",
       "I am a Front End Developer",
       "I am a Back End Developer",
-      "I am an Integrations Developer",
-      "I am an AI Orchestrator",
-      "I am a Tech Enthusiast",
+      "I am a Photographer",
       "I am Yannis"
     ]
   },
