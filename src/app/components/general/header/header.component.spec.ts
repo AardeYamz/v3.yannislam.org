@@ -77,19 +77,48 @@ describe('HeaderComponent', () => {
   });
 
   describe('logoRotationDeg', () => {
+    // logoRotationDeg reads the live document/viewport size to know how
+    // far the page can actually scroll, so pin those rather than relying
+    // on whatever size the Karma test page happens to be.
+    function mockMaxScroll(px: number): void {
+      spyOnProperty(document.documentElement, 'scrollHeight', 'get').and.returnValue(px);
+      spyOnProperty(window, 'innerHeight', 'get').and.returnValue(0);
+    }
+
     it('is 0 before any scrolling', () => {
+      mockMaxScroll(2000);
       component.pageYPosition = 0;
       expect(component.logoRotationDeg).toBe(0);
     });
 
-    it('scales linearly up to 900px of scroll', () => {
+    it('scales linearly up to 900px of scroll on a page long enough to reach it', () => {
+      mockMaxScroll(2000);
       component.pageYPosition = 450;
       expect(component.logoRotationDeg).toBe(180);
     });
 
     it('holds at 360deg for any scroll depth beyond 900px', () => {
+      mockMaxScroll(2000);
       component.pageYPosition = 5000;
       expect(component.logoRotationDeg).toBe(360);
+    });
+
+    it('scales the full turn down to fit a page shorter than 900px of scroll', () => {
+      mockMaxScroll(200);
+      component.pageYPosition = 100;
+      expect(component.logoRotationDeg).toBe(180);
+    });
+
+    it('completes exactly one turn at the bottom of a short page', () => {
+      mockMaxScroll(200);
+      component.pageYPosition = 200;
+      expect(component.logoRotationDeg).toBe(360);
+    });
+
+    it('falls back to the fixed 900px distance when the page cannot scroll at all', () => {
+      mockMaxScroll(0);
+      component.pageYPosition = 0;
+      expect(component.logoRotationDeg).toBe(0);
     });
   });
 
