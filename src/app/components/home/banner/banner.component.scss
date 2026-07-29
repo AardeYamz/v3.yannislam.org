@@ -1,6 +1,7 @@
 @use "../../../../variables.scss"  as *;
 
 .banner {
+    position: relative;
     min-height: 100vh;
 
     .container {
