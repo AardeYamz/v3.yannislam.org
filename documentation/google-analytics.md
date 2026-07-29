@@ -23,7 +23,6 @@ In Vercel: **Project → Settings → Environment Variables** → add/edit `GOOG
 ## Notes
 
 - This is a static tag, not the Angular-router-aware version — it fires a pageview on initial load only. Since this is an Angular SPA, `gtag('config', ...)` does **not** automatically log a new pageview on client-side route changes.
-- If per-route pageview tracking is needed later, either:
-  - Call `gtag('config', 'G-XXXXXXX', { send_page_view: false })` and manually send `gtag('event', 'page_view', { page_path: ... })` on each Angular `Router` `NavigationEnd` event, or
-  - Use the already-installed but currently unused `ngx-google-analytics` package, which handles this automatically.
+- If per-route pageview tracking is needed later, call `gtag('config', 'G-XXXXXXX', { send_page_view: false })` and manually send `gtag('event', 'page_view', { page_path: ... })` on each Angular `Router` `NavigationEnd` event (`AnalyticsService.sendAnalyticPageView()` already exists for this — it's just never called from a router subscription yet).
+- `AnalyticsService` (`src/app/services/analytics/analytics.service.ts`) calls the global `gtag()` function directly — the same one this file defines — rather than a separate library, so there's exactly one Analytics integration, not two. It previously wrapped the `ngx-google-analytics` package's `GoogleAnalyticsService`, but that package's `NgxGoogleAnalyticsModule.forRoot(...)` was never imported anywhere, so every custom event sent through it was silently dropped. The package has been removed.
 - `src/enviroment/enviroment.ts` also has a `googleAnalyticsID` field, but it isn't referenced anywhere in `src/app` — it predates this setup and is unrelated to the mechanism described here.
