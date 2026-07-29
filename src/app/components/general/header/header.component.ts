@@ -71,7 +71,15 @@ export class HeaderComponent {
   private static readonly LOGO_ROTATION_SCROLL_PX = 900;
 
   get logoRotationDeg(): number {
-    const progress = Math.min((this.pageYPosition || 0) / HeaderComponent.LOGO_ROTATION_SCROLL_PX, 1);
+    // On a page shorter than LOGO_ROTATION_SCROLL_PX, scrollY can never
+    // reach it, so the spin used to stall partway through and just sit
+    // there. Scale the distance-per-turn down to whatever's actually
+    // scrollable so short pages still land on a full turn by the bottom.
+    const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 0);
+    const rotationDistance = maxScroll > 0
+      ? Math.min(HeaderComponent.LOGO_ROTATION_SCROLL_PX, maxScroll)
+      : HeaderComponent.LOGO_ROTATION_SCROLL_PX;
+    const progress = Math.min((this.pageYPosition || 0) / rotationDistance, 1);
     return progress * 360;
   }
 
