@@ -27,11 +27,11 @@ describe('LogoFallbackDirective', () => {
     expect(img().src).toBe('https://example.com/broken.png');
   });
 
-  it('swaps to a generated initials SVG once the image fails to load', () => {
+  it('swaps to a generated full-name SVG once the image fails to load', () => {
     img().dispatchEvent(new Event('error'));
 
     expect(img().src).toContain('data:image/svg+xml;utf8,');
-    expect(img().src).toContain('VF');
+    expect(img().src).toContain('Voya Financial');
   });
 
   it('only swaps once, even if the generated fallback somehow errors too', () => {

@@ -14,6 +14,14 @@ const NAVY_BY_MODE: Record<ThemeMode, string> = {
   light: '#f4f1ea',
   dark: '#05070c'
 };
+// Mirrors --color-orange per mode from theme.scss — used by things like the
+// generated logo-fallback placeholder that can't read CSS custom properties
+// because they're rendered into a static SVG data URI, not the live DOM.
+const ORANGE_BY_MODE: Record<ThemeMode, string> = {
+  default: '#ffa500',
+  light: '#d9720c',
+  dark: '#ffb020'
+};
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +37,7 @@ export class ThemeService {
       default: return 'clearcolor';
     }
   });
+  readonly accentColor = computed(() => ORANGE_BY_MODE[this.modeSignal()]);
 
   constructor() {
     effect(() => this.applyToDom(this.modeSignal()));
