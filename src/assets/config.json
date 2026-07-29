@@ -143,16 +143,19 @@
             "tab": "Voya SDE",
             "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
             "description": [
-              "Full stack development of Back Office Applications Suite - including Task Manager, Common Remitter, Case Installation applications",
+              "Full stack development of Back Office Applications Suite - including Task Manager, Common Remitter, Case Installation, Claims Integration, and Voya PayCloud applications for Retirement & Employee Benefits businesses",
+              "Organized teams of India-based developers and infrastructure resources to migrate 5,100 plans (668k participants, $51.8B in assets) from OneAmerica to Voya's Payroll platform",
               "Drove cloud migration projects to break up monolith struts-based Java applications to new k8s based SpringBoot microservices",
-              "Secured password credentials through the onboarding and implementation of CyberArk Conjur"
+              "Spearheaded application remediation and vulnerability management for SpringBoot and JDK upgrades using agentic copilot pipelines",
+              "Improved documentation and community of practice standards across 50+ Java developers"
             ],
             "skills": [
               "Azure RedHat Openshift",
               "CyberArk Conjur",
               "SpringBoot, Struts, & JBoss (Java)",
               "Active Directory",
-              "ServiceNow"
+              "ServiceNow",
+              "GitHub Copilot"
             ]
           },
           {
@@ -168,8 +171,7 @@
             "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
             "description": [
               "Led Angular development efforts for Common Remitter app migration to Azure cloud",
-              "Refactored existing PWEB Java application of my.voya.com to remove unused endpoints",
-              "Pioneered Java Development efforts of Swagger integration for MyVoyage app microservices",
+              "Refactored existing Participant Web Java application of my.voya.com to remove unused endpoints",
               "Coordinated between App development and DevOps teams in integration of advanced CI/CD pipeline"
             ],
             "skills": [
@@ -283,23 +285,49 @@
               "https://www.braintreeschools.org/"
             ],
             "organization": "Braintree Public Schools",
-            "title": "Helpdesk Technician",
-            "subTitle": "Substitute Technician & Collegiate Intern Technician",
-            "timeframe": "Aug. 2020 - May 2021",
+            "title": "Collegiate Intern & Substitute Technician",
+            "subTitle": "Office of Technology & Accountability",
+            "timeframe": "08/2017 - 06/2021",
             "tab": "BPS",
             "description": [
-              "Based at Braintree High School, I helped service the entire school district as an intern.",
-              "I have assisted in the deployment of Chromebooks, Mac OS updates, Windows 10 images, and Android tablets.",
-              "My responsibilties included providing helpdesk assistence and maintaining an accurate inventory of the midsized enterprise network.",
-              "While I started out as a High School Intern Technician, I was promoted to College Intern Technician and Substitute Technician.",
-              "As a technician, I specialized in the repair of Chromebooks while mentoring teams of 15 high school interns."
+              "Based at Braintree High School, I served in the Office of Technology & Accountability, helping support the entire school district.",
+              "I specialized in Chromebook repair, Chrome OS, and the Google Admin Console, personally repairing 300+ damaged Chromebooks.",
+              "I led BYOD onboarding and inventorying initiatives for over 7,000 devices district-wide.",
+              "I was promoted from High School Intern to Substitute Technician, supervising subordinate teams of up to 20 high school technicians.",
+              "I assisted in the reimaging of 1,000 Windows computers using DISM and SCCM, and helped manage Android Go devices through the Google Admin console.",
+              "I responded to helpdesk inquiries from teachers and administrators, advised on iPad Air distribution, and serviced defective monitors and EPSON projectors."
             ],
             "skills": [
-              "Inventory",
-              "Training",
-              "Help Desk",
               "Chrome OS",
-              "Windows OS"
+              "Google Admin Console",
+              "DISM & SCCM",
+              "Inventory Management",
+              "Team Leadership"
+            ]
+          },
+          {
+            "imgs": [
+              "https://scontent-bos5-1.xx.fbcdn.net/v/t39.30808-6/302320580_507069131421821_2558083336515057918_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s2048x2048&_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=khGA9x_X_EUQ7kNvwGJgIUX&_nc_oc=AdoNQUmUDGG5AAc-PSpaumEE9yHCUCbd7P3MpzEsZvqmDGRQtGJ0iUzIBgyT_laDQog&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&_nc_gid=57ZDyRfjRrFzn5cUDxj6gg&_nc_ss=7b2a8&oh=00_AQCpf3k0lnHpiAvm1-UKMcI4MQQ4w8JZP-amB3TCiYD3lw&oe=6A6DD6EE"
+            ],
+            "image_alt": "Braintree Public Schools Logo",
+            "link": [
+              "https://www.braintreeschools.org/"
+            ],
+            "organization": "Braintree Public Schools",
+            "title": "Student Technician",
+            "subTitle": "Office of Technology & Accountability",
+            "timeframe": "12/2016 - 08/2017",
+            "tab": "BPS Student",
+            "description": [
+              "I managed the enrollment and distribution of over 500 Chromebooks and inventoried 1,000+ Chromebooks across six buildings, assessing them for damage and repairability.",
+              "I assisted in upgrading 400 HP computers from Windows 7 to Windows 10 using DISM and WinPE, and facilitated the transition of 30 iMacs from OS X El Capitan to macOS High Sierra.",
+              "I organized computer component storage facilities, advised the Class of 2021 on connecting personal devices to the school's managed wireless network, and serviced 200 EPSON projectors."
+            ],
+            "skills": [
+              "Chromebook Repair",
+              "DISM & WinPE",
+              "Inventory",
+              "Help Desk"
             ]
           },
           {
@@ -407,6 +435,26 @@
         "list": [
           {
             "imgs": [
+              "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23cccccc'/><text x='50%25' y='50%25' font-size='22' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle' fill='%23555555'>CBCGB</text></svg>"
+            ],
+            "image_alt": "Chinese Baptist Church of Greater Boston (placeholder logo)",
+            "organization": "Chinese Baptist Church of Greater Boston",
+            "title": "Church Council Member",
+            "subTitle": "English Congregational & Youth Dept. Chair → General Affairs Chair → Council Secretary",
+            "tab": "CBCGB",
+            "timeframe": "11/2022 - Present",
+            "description": [
+              "Elected lay leader serving on the Chinese Baptist Church of Greater Boston Church Council, holding the roles of English Congregational and Youth Department Chair (2022-24), General Affairs Chair (2024-25), and Council Secretary (2025-26).",
+              "Coordinated ministry events, budget, and administrative tasks alongside congregational leaders, deacons, and pastoral staff."
+            ],
+            "skills": [
+              "Church Leadership",
+              "Budget Coordination",
+              "Ministry Planning"
+            ]
+          },
+          {
+            "imgs": [
               "https://epicmovement.com/wp-content/uploads/sites/39/2026/03/RGB-Endorsed.png"
             ],
             "image_alt": "Epic Movement Logo",
@@ -418,6 +466,57 @@
             "about": "Epic Movement is a Cru ministry that envisions Asian American students and faculty transformed by their relationship with Jesus Christ, embracing the value of their cultures and actively engaging in God's redemptive work in ways that honor all people and contexts. Epic Movement at UMass Amherst was established in the fall of 2008.",
             "description": [
               "Beginning my senior year, I assumed the responsibilities of President. I led an Executive Board of 14 members as well as the general fellowship of 80 members during UMass Amherst's transition to remote learning."
+            ]
+          },
+          {
+            "imgs": [
+              "https://images.squarespace-cdn.com/content/v1/5a68c543c027d8520a74c74a/658c179a-80ed-4f21-bec2-be3c907f57bf/craigs-2.png"
+            ],
+            "image_alt": "Craig's Doors Logo",
+            "organization": "Craig's Doors",
+            "title": "Kitchen Volunteer",
+            "tab": "Craig's Doors",
+            "timeframe": "01/2020 - 03/2020",
+            "description": [
+              "Volunteered in the kitchen at Craig's Doors, a shelter and support services organization for people experiencing homelessness in Amherst, MA."
+            ],
+            "skills": [
+              "Community Service",
+              "Food Service"
+            ]
+          },
+          {
+            "imgs": [
+              "https://upload.wikimedia.org/wikipedia/commons/3/35/University_of_Massachusetts_Amherst_seal.png"
+            ],
+            "image_alt": "UMass Amherst",
+            "link": "https://www.umass.edu/",
+            "organization": "University of Massachusetts Amherst",
+            "title": "Commencement Ambassador",
+            "tab": "Commencement",
+            "timeframe": "05/2019",
+            "description": [
+              "Served as a Commencement Ambassador, assisting with the University of Massachusetts Amherst's commencement ceremony and events."
+            ],
+            "skills": [
+              "Event Support"
+            ]
+          },
+          {
+            "imgs": [
+              "https://images.squarespace-cdn.com/content/v1/60f4e051476ec73ef23d5056/abbbe5eb-523c-4002-bea2-87677a31045c/FBC+Logo_Primary.png"
+            ],
+            "image_alt": "First Baptist Church of Amherst Logo",
+            "organization": "First Baptist Church of Amherst",
+            "title": "Agape College Ministry Events Planner",
+            "tab": "Agape",
+            "timeframe": "09/2018 - 05/2019",
+            "description": [
+              "Planned and organized fellowship events for Agape College Ministry, the college-age ministry of First Baptist Church of Amherst."
+            ],
+            "skills": [
+              "Event Planning",
+              "Community Building"
             ]
           },
           {
