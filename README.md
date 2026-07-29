@@ -130,3 +130,88 @@ flowchart LR
     Cloudflare -->|"MX / SPF / DKIM / DMARC<br/>Email Routing"| Inbox["email@yannislam.org"]
     Cloudflare -.->|"legacy CNAMEs<br/>(alpha., v1., v2.)"| Netlify["Netlify<br/>(older site versions)"]
 ```
+
+## Code Structure
+
+```
+src/
+├── app/
+│   ├── animations/           # Shared Angular animation triggers (e.g. fade-stagger)
+│   ├── components/
+│   │   ├── general/          # Chrome shared across every route
+│   │   │   ├── header/       # Nav bar + theme toggle
+│   │   │   ├── footer/       # Footer (repo link, built-with, design credits)
+│   │   │   └── loading-screen/  # Boot-time anime.js logo intro
+│   │   ├── home/             # Sections that make up the "/" route (HomeModule, eager)
+│   │   │   ├── banner/       # Hero banner + typewriter effect
+│   │   │   ├── about/        # About + AardeYamz name-meaning cards
+│   │   │   ├── education/    # Education list
+│   │   │   ├── workhistory/  # Work/volunteering timeline (reused for both)
+│   │   │   ├── contact/      # Contact section
+│   │   │   ├── projects/     # College projects
+│   │   │   └── projects-highschool/  # High school projects
+│   │   └── other/
+│   │       └── aardeyamz/    # Standalone "/aardeyamz" route, lazy-loaded (+ NamecardComponent)
+│   ├── directives/aos/       # Custom scroll-reveal directive (AOS-style)
+│   ├── pipes/linkify/        # Turns plain-text URLs into links
+│   ├── services/
+│   │   ├── site-config/      # SiteConfigService — the only reader of assets/config.json
+│   │   ├── theme/            # ThemeService — light/dark theme, signals + localStorage
+│   │   ├── analytics/        # AnalyticsService — wraps ngx-google-analytics/gtag
+│   │   └── resume/           # Resume link/download handling
+│   ├── app.module.ts         # Root NgModule (eager HomeModule, lazy AardeYamz route)
+│   └── app-routing.module.ts # Top-level routes
+├── assets/
+│   ├── config.json           # All page copy/content — see "Updating the config file" below
+│   ├── fonts/                # Calibre, SF Mono
+│   ├── images/                # Logos, profile photos, project screenshots
+│   └── resume/                # Downloadable resume file(s)
+└── enviroment/                # Angular environment files
+```
+
+Every component under `components/` follows the standard Angular trio
+(`*.component.ts` / `.html` / `.scss`, plus a `.spec.ts` where present).
+Components read content through `SiteConfigService` rather than importing
+`config.json` directly — see `documentation/config-dedup-refactor.md` for why.
+Other write-ups worth skimming when touching a specific area live in
+`documentation/` (loading screen animation, Google Analytics wiring, the
+projects and volunteering sections, dark-mode logo handling, and Angular
+version upgrade notes).
+
+## Updating the Config File
+
+Nearly all page content — nav labels, bio text, work/education/volunteering
+history, project write-ups, footer links, and site metadata — is data-driven
+from [`src/assets/config.json`](src/assets/config.json). To personalize this
+site for your own use, you generally only need to edit that file; component
+templates shouldn't need to change.
+
+Key sections:
+
+- **`siteMenu`** — top nav items. Each entry needs `navTitle`, `siteLocation`
+  (route or `/#anchor`), and optionally `navNumber`/`navContent`/`scrollSection`
+  for in-page sections.
+- **`logos`** — a keyed map of `{ src, alt }` image references, reused by
+  `logoKey` across `experiences.work.list`, `experiences.education`, and
+  `experiences.volunteering.list` so a logo is only defined once.
+- **`about`** — `first`/`last` name, `email`, the `contact` list (social
+  links, each with an `icon` matching a Font Awesome class), and the
+  `aardeyamz` array powering the name-meaning cards.
+- **`about.experiences`** — `work` and `volunteering` each have a `list` of
+  entries (`organization`, `title`, `timeframe`, `description[]`, `skills[]`,
+  optional `logoKey`/`link`/`about`/`tab`), plus a top-level `education`
+  array in the same shape. `skills` at the bottom of `experiences` is the
+  flat skills summary shown separately from any one job.
+- **`banner`** — hero `greeting`/`name`/`blurb` and the `typeSection` array
+  cycled by the typewriter effect.
+- **`footer`** — repo link, "built with" credit, and `designCredits`.
+- **`projects.college` / `projects.highschool`** — each a `list` of
+  `{ imgs[], title, timeframe, description[], link? }` project cards.
+- **`siteTitle`, `heading`, `subHeading`, `manifest*`** — page `<title>` and
+  PWA manifest fields (name, short name, start URL, theme/background colors,
+  icon).
+
+Image `src` values can be either a hosted URL or a path under `src/assets/`.
+There's no JSON schema enforced at build time, so keep new entries consistent
+with the shape of existing ones in the same array. After editing, `npm start`
+/ `ng serve` picks up changes on save like any other source file.

@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { ResumeService } from 'src/app/services/resume/resume.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 @Component({
@@ -17,8 +18,14 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
 export class BannerComponent {
     constructor(
         public analyticsService: AnalyticsService,
-        public configService: SiteConfigService
+        public configService: SiteConfigService,
+        private resumeService: ResumeService
     ) { }
 
     get data() { return this.configService.data; }
+
+    openResume() {
+        this.analyticsService.sendAnalyticEvent('click_open_resume', 'banner', 'resume');
+        this.resumeService.open();
+    }
 }

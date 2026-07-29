@@ -5,6 +5,7 @@ import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { NgxTypedJsModule } from 'ngx-typed-js';
 import { AosDirective } from '../../directives/aos/aos.directive';
+import { LogoFallbackDirective } from '../../directives/logo-fallback/logo-fallback.directive';
 import { AboutComponent } from './about/about.component';
 import { BannerComponent } from './banner/banner.component';
 import { ContactComponent } from './contact/contact.component';
@@ -34,7 +35,8 @@ import { LinkifyPipe } from '../../pipes/linkify/linkify.pipe';
     NgbNavModule,
     CarouselModule,
     NgxTypedJsModule,
-    AosDirective
+    AosDirective,
+    LogoFallbackDirective
   ],
   exports: [ContactComponent]
 })

@@ -3,10 +3,14 @@
   "version": "3.0.0",
   "scripts": {
     "ng": "ng",
+    "prestart": "node scripts/generate-resume-manifest.js",
     "start": "ng serve",
+    "prebuild": "node scripts/generate-resume-manifest.js",
     "build": "ng build",
     "postbuild": "node scripts/inject-env.js",
+    "prewatch": "node scripts/generate-resume-manifest.js",
     "watch": "ng build --watch --configuration development",
+    "pretest": "node scripts/generate-resume-manifest.js",
     "test": "ng test"
   },
   "private": true,

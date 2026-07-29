@@ -51,4 +51,34 @@ describe('SiteConfigService', () => {
       expect(entry.imgs.length).withContext(JSON.stringify(entry.title)).toBeGreaterThan(0);
     }
   });
+
+  it('exposes the shared logos map keyed by logoKey', () => {
+    expect(service.logos['voya']?.src).toContain('voya.com');
+    expect(service.logos['voya']?.alt).toBeTruthy();
+  });
+
+  it('resolves entry.logoKey against the shared logos map into imgs/image_alt', () => {
+    const voyaEntries = service.experiences.work.list.filter((e: any) => e.logoKey === 'voya');
+    expect(voyaEntries.length).toBeGreaterThan(1);
+
+    for (const entry of voyaEntries) {
+      expect(entry.imgs).toEqual([service.logos['voya'].src]);
+      expect(entry.image_alt).toBe(service.logos['voya'].alt);
+    }
+  });
+
+  it('every entry referencing a logoKey resolves to a known logo', () => {
+    const allEntries = [
+      ...service.experiences.work.list,
+      ...service.experiences.education,
+      ...service.experiences.volunteering.list,
+    ];
+
+    for (const entry of allEntries) {
+      if (entry.logoKey) {
+        expect(service.logos[entry.logoKey]).withContext(entry.logoKey).toBeTruthy();
+        expect(entry.imgs).withContext(entry.logoKey).toEqual([service.logos[entry.logoKey].src]);
+      }
+    }
+  });
 });

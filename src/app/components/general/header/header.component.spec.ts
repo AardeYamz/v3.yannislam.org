@@ -10,6 +10,7 @@ describe('HeaderComponent', () => {
   let router: { navigate: jasmine.Spy; navigateByUrl: jasmine.Spy };
   let analyticsService: { sendAnalyticEvent: jasmine.Spy };
   let themeService: { cycle: jasmine.Spy; mode: jasmine.Spy };
+  let resumeService: { open: jasmine.Spy };
   let configService: { menu: any[] };
 
   beforeEach(() => {
@@ -22,18 +23,16 @@ describe('HeaderComponent', () => {
       cycle: jasmine.createSpy('cycle'),
       mode: jasmine.createSpy('mode').and.returnValue('dark'),
     };
+    resumeService = { open: jasmine.createSpy('open') };
     configService = { menu: [{ navTitle: 'About', scrollSection: 'about' }] };
 
     component = new HeaderComponent(
       router as any,
       analyticsService as any,
       themeService as any,
+      resumeService as any,
       configService as any
     );
-  });
-
-  afterEach(() => {
-    document.querySelectorAll('meta[name="resume-file"]').forEach((el) => el.remove());
   });
 
   it('should create', () => {
@@ -94,43 +93,9 @@ describe('HeaderComponent', () => {
     });
   });
 
-  describe('downloadResume()', () => {
-    function setResumeMeta(content: string): void {
-      const meta = document.createElement('meta');
-      meta.setAttribute('name', 'resume-file');
-      meta.setAttribute('content', content);
-      document.head.appendChild(meta);
-    }
+  it('downloadResume() delegates to ResumeService', () => {
+    component.downloadResume();
 
-    it('opens the build-time-resolved resume filename as an absolute, encoded URL', () => {
-      setResumeMeta('Yannis Lam Resume 20260706.pdf');
-      spyOn(window, 'open');
-
-      component.downloadResume();
-
-      expect(window.open).toHaveBeenCalledWith(
-        `${window.location.origin}/assets/resume/Yannis%20Lam%20Resume%2020260706.pdf`,
-        '_blank'
-      );
-    });
-
-    it('does not open anything when the build-time placeholder was never resolved', () => {
-      setResumeMeta('%RESUME_FILENAME%');
-      spyOn(window, 'open');
-      spyOn(console, 'warn');
-
-      component.downloadResume();
-
-      expect(window.open).not.toHaveBeenCalled();
-    });
-
-    it('does not open anything when the resume-file meta tag is missing entirely', () => {
-      spyOn(window, 'open');
-      spyOn(console, 'warn');
-
-      component.downloadResume();
-
-      expect(window.open).not.toHaveBeenCalled();
-    });
+    expect(resumeService.open).toHaveBeenCalled();
   });
 });

@@ -18,4 +18,15 @@ describe('BannerComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('openResume() logs an analytics event and opens the resume', () => {
+    spyOn(component.analyticsService, 'sendAnalyticEvent');
+    spyOn((component as any).resumeService, 'open');
+
+    component.openResume();
+
+    expect(component.analyticsService.sendAnalyticEvent)
+      .toHaveBeenCalledWith('click_open_resume', 'banner', 'resume');
+    expect((component as any).resumeService.open).toHaveBeenCalled();
+  });
 });

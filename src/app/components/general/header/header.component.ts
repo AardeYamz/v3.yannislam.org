@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { ResumeService } from 'src/app/services/resume/resume.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
@@ -28,6 +29,7 @@ export class HeaderComponent {
     private router: Router,
     public analyticsService: AnalyticsService,
     public themeService: ThemeService,
+    private resumeService: ResumeService,
     configService: SiteConfigService,
   ) {
     this.menu = configService.menu;
@@ -57,17 +59,7 @@ export class HeaderComponent {
   }
 
   downloadResume() {
-    // Filename is resolved at build time (scripts/inject-env.js) from
-    // whichever dated file in src/assets/resume/ is newest, so it never
-    // needs to be hardcoded here — see index.html's "resume-file" meta tag.
-    const filename = document.querySelector('meta[name="resume-file"]')?.getAttribute('content');
-    if (!filename || filename.includes('%')) {
-      // Unresolved placeholder (e.g. `ng serve`, which skips the postbuild
-      // step) or no dated resume file found at build time.
-      console.warn('[header] Resume filename not resolved; skipping download.');
-      return;
-    }
-    window.open(`${window.location.origin}/assets/resume/${encodeURIComponent(filename)}`, "_blank");
+    this.resumeService.open();
   }
 
   @HostListener('window:scroll')

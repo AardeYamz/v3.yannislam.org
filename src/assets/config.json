@@ -45,6 +45,56 @@
       "siteLocation": "/aardeyamz"
     }
   ],
+  "logos": {
+    "voya": {
+      "src": "https://cdn.voya.com/global/images/logo/1.0.1/logo.svg",
+      "alt": "Voya Financial Logo"
+    },
+    "umassAmherst": {
+      "src": "https://www.umass.edu/brand/sites/default/files/styles/tile_max_250px/public/2025-10/Seal%20Small-PMS_Black3.png",
+      "alt": "UMass Amherst"
+    },
+    "umassResLife": {
+      "src": "https://pbs.twimg.com/profile_images/642029086622113792/R_xe0hTC_400x400.png",
+      "alt": "UMass Residential Life Logo"
+    },
+    "manningCICS": {
+      "src": "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg",
+      "alt": "UMass Amherst Manning College of Computer & Information Sciences Logo"
+    },
+    "braintreePS": {
+      "src": "https://scontent-bos5-1.xx.fbcdn.net/v/t39.30808-6/302320580_507069131421821_2558083336515057918_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s2048x2048&_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=khGA9x_X_EUQ7kNvwGJgIUX&_nc_oc=AdoNQUmUDGG5AAc-PSpaumEE9yHCUCbd7P3MpzEsZvqmDGRQtGJ0iUzIBgyT_laDQog&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&_nc_gid=57ZDyRfjRrFzn5cUDxj6gg&_nc_ss=7b2a8&oh=00_AQCpf3k0lnHpiAvm1-UKMcI4MQQ4w8JZP-amB3TCiYD3lw&oe=6A6DD6EE",
+      "alt": "Braintree Public Schools Logo"
+    },
+    "homeDepot": {
+      "src": "https://corporate.homedepot.com/sites/default/files/image_gallery/THD_logo.jpg",
+      "alt": "Home Depot Logo"
+    },
+    "projectRise": {
+      "src": "https://www.thayer.org/uploaded/themes/project_rise_18/images/Horizontal_W_Thayer_1.png",
+      "alt": "Project RISE Boston Logo"
+    },
+    "cbcgb": {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23cccccc'/><text x='50%25' y='50%25' font-size='22' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle' fill='%23555555'>CBCoGB</text></svg>",
+      "alt": "Chinese Baptist Church of Greater Boston"
+    },
+    "epicMovement": {
+      "src": "https://epicmovement.com/wp-content/uploads/sites/39/2026/03/RGB-Endorsed.png",
+      "alt": "Epic Movement Logo"
+    },
+    "craigsDoors": {
+      "src": "https://images.squarespace-cdn.com/content/v1/5a68c543c027d8520a74c74a/658c179a-80ed-4f21-bec2-be3c907f57bf/craigs-2.png",
+      "alt": "Craig's Doors Logo"
+    },
+    "fbcAmherst": {
+      "src": "https://images.squarespace-cdn.com/content/v1/60f4e051476ec73ef23d5056/abbbe5eb-523c-4002-bea2-87677a31045c/FBC+Logo_Primary.png",
+      "alt": "First Baptist Church of Amherst Logo"
+    },
+    "ariseYouth": {
+      "src": "https://images.squarespace-cdn.com/content/5c7d8e4cc2ff6107242ff5f6/1556760518783-TJ3O5QM4FWX1FTQVVKGS/ARISElogoBMGrayFinal.png?format=1500w&content-type=image%2Fpng",
+      "alt": "ARISE Youth Ministries Logo"
+    }
+  },
   "about": {
     "first": "Yannis",
     "last": "Lam",
@@ -129,10 +179,7 @@
         "headingText": "What's my experience?",
         "list": [
           {
-            "imgs": [
-              "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
-            ],
-            "image_alt": "Voya Financial Logo",
+            "logoKey": "voya",
             "link": [
               "https://www.voya.com/"
             ],
@@ -159,10 +206,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
-            ],
-            "image_alt": "Voya Financial Logo",
+            "logoKey": "voya",
             "organization": "Voya Financial",
             "title": "Associate Software Developer",
             "subTitle": "IT Resource & Development Rotational Program Associate",
@@ -182,10 +226,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://upload.wikimedia.org/wikipedia/commons/f/f7/Voya_Financial_logo.png"
-            ],
-            "image_alt": "Voya Financial Logo",
+            "logoKey": "voya",
             "organization": "Voya Financial",
             "title": "Intern Software Developer",
             "subTitle": "IT Salesforce Development Intern",
@@ -204,10 +245,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://pbs.twimg.com/profile_images/642029086622113792/R_xe0hTC_400x400.png"
-            ],
-            "image_alt": "UMass Residential Life Logo",
+            "logoKey": "umassResLife",
             "link": [
               "https://www.umass.edu/living/"
             ],
@@ -227,10 +265,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg"
-            ],
-            "image_alt": "UMass Amherst Manning College of Computer & Information Sciences Logo",
+            "logoKey": "manningCICS",
             "link": [
               "https://people.cs.umass.edu/~jaimedavila/Courses/345/COMPSCI_345_syllabus.pdf"
             ],
@@ -252,10 +287,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg"
-            ],
-            "image_alt": "UMass Amherst Manning College of Computer & Information Sciences Logo",
+            "logoKey": "manningCICS",
             "link": [
               "https://sites.google.com/view/cics256/home"
             ],
@@ -277,10 +309,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://scontent-bos5-1.xx.fbcdn.net/v/t39.30808-6/302320580_507069131421821_2558083336515057918_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s2048x2048&_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=khGA9x_X_EUQ7kNvwGJgIUX&_nc_oc=AdoNQUmUDGG5AAc-PSpaumEE9yHCUCbd7P3MpzEsZvqmDGRQtGJ0iUzIBgyT_laDQog&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&_nc_gid=57ZDyRfjRrFzn5cUDxj6gg&_nc_ss=7b2a8&oh=00_AQCpf3k0lnHpiAvm1-UKMcI4MQQ4w8JZP-amB3TCiYD3lw&oe=6A6DD6EE"
-            ],
-            "image_alt": "Braintree Public Schools Logo",
+            "logoKey": "braintreePS",
             "link": [
               "https://www.braintreeschools.org/"
             ],
@@ -288,7 +317,6 @@
             "title": "Collegiate Intern & Substitute Technician",
             "subTitle": "Office of Technology & Accountability",
             "timeframe": "08/2017 - 06/2021",
-            "tab": "BPS",
             "description": [
               "Supported the entire school district's technology infrastructure from Braintree High School's Office of Technology & Accountability",
               "Specialized in Chromebook repair, Chrome OS, and Google Admin Console administration, repairing 300+ damaged devices",
@@ -306,10 +334,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://scontent-bos5-1.xx.fbcdn.net/v/t39.30808-6/302320580_507069131421821_2558083336515057918_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s2048x2048&_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=khGA9x_X_EUQ7kNvwGJgIUX&_nc_oc=AdoNQUmUDGG5AAc-PSpaumEE9yHCUCbd7P3MpzEsZvqmDGRQtGJ0iUzIBgyT_laDQog&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&_nc_gid=57ZDyRfjRrFzn5cUDxj6gg&_nc_ss=7b2a8&oh=00_AQCpf3k0lnHpiAvm1-UKMcI4MQQ4w8JZP-amB3TCiYD3lw&oe=6A6DD6EE"
-            ],
-            "image_alt": "Braintree Public Schools Logo",
+            "logoKey": "braintreePS",
             "link": [
               "https://www.braintreeschools.org/"
             ],
@@ -317,7 +342,6 @@
             "title": "Student Technician",
             "subTitle": "Office of Technology & Accountability",
             "timeframe": "12/2016 - 08/2017",
-            "tab": "BPS Student",
             "description": [
               "Managed enrollment and distribution of 500+ Chromebooks, and inventoried 1,000+ devices across six buildings for damage assessment",
               "Upgraded 400 HP computers from Windows 7 to Windows 10 using DISM and WinPE, and migrated 30 iMacs from OS X El Capitan to macOS High Sierra",
@@ -331,9 +355,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://corporate.homedepot.com/sites/default/files/image_gallery/THD_logo.jpg"
-            ],
+            "logoKey": "homeDepot",
             "link": [
               "https://www.homedepot.com/"
             ],
@@ -352,9 +374,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://www.thayer.org/uploaded/themes/project_rise_18/images/Horizontal_W_Thayer_1.png"
-            ],
+            "logoKey": "projectRise",
             "link": [
               "https://www.thayer.org/projectrise"
             ],
@@ -378,8 +398,7 @@
       },
       "education": [
         {
-          "imgs": "https://www.umass.edu/brand/sites/default/files/styles/tile_max_250px/public/2025-10/Seal%20Small-PMS_Black3.png",
-          "image_alt": "UMass Amherst",
+          "logoKey": "umassAmherst",
           "organization": "University of Massachusetts Amherst, Commonwealth Honors College",
           "timeframe": "09/2017 - 05/2021",
           "link": [
@@ -395,8 +414,7 @@
           ]
         },
         {
-          "imgs": "https://www.umass.edu/brand/sites/default/files/styles/tile_max_250px/public/2025-10/Seal%20Small-PMS_Black3.png",
-          "image_alt": "UMass Amherst",
+          "logoKey": "umassAmherst",
           "organization": "University of Massachusetts Amherst, Commonwealth Honors College",
           "timeframe": "09/2017 - 05/2021",
           "link": [
@@ -411,8 +429,7 @@
           ]
         },
         {
-          "imgs": "https://scontent-bos5-1.xx.fbcdn.net/v/t39.30808-6/302320580_507069131421821_2558083336515057918_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s2048x2048&_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=khGA9x_X_EUQ7kNvwGJgIUX&_nc_oc=AdoNQUmUDGG5AAc-PSpaumEE9yHCUCbd7P3MpzEsZvqmDGRQtGJ0iUzIBgyT_laDQog&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&_nc_gid=57ZDyRfjRrFzn5cUDxj6gg&_nc_ss=7b2a8&oh=00_AQCpf3k0lnHpiAvm1-UKMcI4MQQ4w8JZP-amB3TCiYD3lw&oe=6A6DD6EE",
-          "image_alt": "Braintree Public Schools",
+          "logoKey": "braintreePS",
           "organization": "Braintree High School",
           "timeframe": "09/2017 - 05/2021",
           "link": [
@@ -434,10 +451,7 @@
         "headingText": "How do I give back?",
         "list": [
           {
-            "imgs": [
-              "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23cccccc'/><text x='50%25' y='50%25' font-size='22' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle' fill='%23555555'>CBCoGB</text></svg>"
-            ],
-            "image_alt": "Chinese Baptist Church of Greater Boston (placeholder logo)",
+            "logoKey": "cbcgb",
             "organization": "Chinese Baptist Church of Greater Boston",
             "title": "Church Council Member",
             "subTitle": "English Congregational & Youth Dept. Chair → General Affairs Chair → Council Secretary",
@@ -454,10 +468,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://epicmovement.com/wp-content/uploads/sites/39/2026/03/RGB-Endorsed.png"
-            ],
-            "image_alt": "Epic Movement Logo",
+            "logoKey": "epicMovement",
             "link": "https://epicmovement.com/",
             "organization": "Epic Movement at UMass Amherst",
             "title": "President",
@@ -469,10 +480,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://images.squarespace-cdn.com/content/v1/5a68c543c027d8520a74c74a/658c179a-80ed-4f21-bec2-be3c907f57bf/craigs-2.png"
-            ],
-            "image_alt": "Craig's Doors Logo",
+            "logoKey": "craigsDoors",
             "organization": "Craig's Doors",
             "title": "Kitchen Volunteer",
             "tab": "Craig's Doors",
@@ -486,10 +494,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://www.umass.edu/brand/sites/default/files/styles/tile_max_250px/public/2025-10/Seal%20Small-PMS_Black3.png"
-            ],
-            "image_alt": "UMass Amherst",
+            "logoKey": "umassAmherst",
             "link": "https://www.umass.edu/",
             "organization": "University of Massachusetts Amherst",
             "title": "Commencement Ambassador",
@@ -503,10 +508,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://images.squarespace-cdn.com/content/v1/60f4e051476ec73ef23d5056/abbbe5eb-523c-4002-bea2-87677a31045c/FBC+Logo_Primary.png"
-            ],
-            "image_alt": "First Baptist Church of Amherst Logo",
+            "logoKey": "fbcAmherst",
             "organization": "First Baptist Church of Amherst",
             "title": "Agape College Ministry Events Planner",
             "tab": "Agape",
@@ -520,10 +522,7 @@
             ]
           },
           {
-            "imgs": [
-              "https://images.squarespace-cdn.com/content/5c7d8e4cc2ff6107242ff5f6/1556760518783-TJ3O5QM4FWX1FTQVVKGS/ARISElogoBMGrayFinal.png?format=1500w&content-type=image%2Fpng"
-            ],
-            "image_alt": "ARISE Youth Ministries Logo",
+            "logoKey": "ariseYouth",
             "link": "https://www.ariseyouth.org/",
             "organization": "ARISE Youth Ministries",
             "title": "Youth Counselor",
@@ -552,7 +551,7 @@
     "greeting": "Hello! My name is",
     "name": "Yannis Lam;",
     "blurb": [
-      "I'm a <span class='underline'>Full Stack Software Developer</span> who turns legacy systems into modern, cloud-native platforms. At <span class='underline'>Voya Financial</span>, I build and scale Back Office applications, drive Java-to-Kubernetes migrations, and lead vulnerability remediation efforts across 50+ developers. I graduated from the <span class='underline'>University of Massachusetts Amherst</span> Commonwealth Honors College with dual degrees in Computer Science <i>(B.S.)</i> and Economics <i>(B.A.)</i>, and I love turning complex problems into elegant, reliable software."
+      "I'm a <span class='underline'>Full Stack Software Developer</span> who turns legacy systems into modern, cloud-native platforms. At <span class='underline'>Voya Financial</span>, I build and scale Back Office applications, drive data migrations, and lead cross-functional initiatives across 50+ developers. I graduated from the <span class='underline'>University of Massachusetts Amherst</span> Commonwealth Honors College with dual degrees in Computer Science <i>(B.S.)</i> and Economics <i>(B.A.)</i>, and I love turning complex problems into elegant, reliable software."
     ],
     "typeSection": [
       "I am a Full Stack Software Developer",

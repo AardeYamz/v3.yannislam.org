@@ -61,7 +61,9 @@
             }
 
             .div-btn-banner {
-                height: 43px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
             }
         }
     }
