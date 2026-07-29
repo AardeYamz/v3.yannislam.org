@@ -22,7 +22,6 @@ export class HeaderComponent {
   responsiveMenuVisible: Boolean = false;
   pageYPosition!: number;
   languageFormControl: FormControl = new FormControl();
-  resumeFile: string = "Yannis Lam Resume 20241225.pdf";
   menu: any[];
 
   constructor(
@@ -58,10 +57,17 @@ export class HeaderComponent {
   }
 
   downloadResume() {
-    // app url
-    let url = window.location.href;
-    // Open a new window with the CV
-    window.open(url + "/../assets/resume/" + this.resumeFile, "_blank");
+    // Filename is resolved at build time (scripts/inject-env.js) from
+    // whichever dated file in src/assets/resume/ is newest, so it never
+    // needs to be hardcoded here — see index.html's "resume-file" meta tag.
+    const filename = document.querySelector('meta[name="resume-file"]')?.getAttribute('content');
+    if (!filename || filename.includes('%')) {
+      // Unresolved placeholder (e.g. `ng serve`, which skips the postbuild
+      // step) or no dated resume file found at build time.
+      console.warn('[header] Resume filename not resolved; skipping download.');
+      return;
+    }
+    window.open(`${window.location.origin}/assets/resume/${encodeURIComponent(filename)}`, "_blank");
   }
 
   @HostListener('window:scroll')

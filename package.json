@@ -22,7 +22,6 @@
     "@ng-bootstrap/ng-bootstrap": "^21.0.0",
     "animejs": "^4.5.0",
     "bootstrap": "^5.3.8",
-    "ngx-google-analytics": "^14.0.1",
     "ngx-owl-carousel-o": "^22.0.0",
     "ngx-typed-js": "^2.1.1",
     "rxjs": "~7.8.2",
