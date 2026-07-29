@@ -1,0 +1,16 @@
+<main>
+    <section class="section projects-highschool-back">
+        <div class="container">
+            <div class="section-box projects-highschool-back-box" data-aos="fade-up" data-aos-duration="1000">
+                <a [routerLink]="['/projects']" class="underline back-link">&larr; Back to Projects</a>
+            </div>
+        </div>
+    </section>
+    <app-workhistory
+      [subsection]="true"
+      [experienceList]="highschool.list"
+      [sectionId]="highschool.sectionId"
+      [navNumber]="highschool.navNumber"
+      [headingText]="highschool.headingText">
+    </app-workhistory>
+</main>

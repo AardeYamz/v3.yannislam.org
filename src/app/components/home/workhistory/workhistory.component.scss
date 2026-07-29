@@ -1,4 +1,16 @@
 @use "./../../../../variables.scss" as *;
+.subsection-title {
+    font-size: 22px;
+
+    .n-section-title {
+        font-size: 15px;
+    }
+
+    &:after {
+        width: 150px;
+    }
+}
+
 .workhistory {
     .workhistory-container {
         margin: 75px 0;

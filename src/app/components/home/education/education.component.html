@@ -9,7 +9,7 @@
       <div class="education-tabs" data-aos="fade-up" data-aos-duration="1000">
         <ul ngbNav #nav="ngbNav" [(activeId)]="active" orientation="vertical" class="nav-tabs education-tabs">
           @for (exp of experiences?.education ; track exp; let i = $index) {
-            <li [title]="$safeNavigationMigration(exp?.tab)" [ngbNavItem]="i">
+            <li [title]="exp?.tab" [ngbNavItem]="i">
               <a ngbNavLink>{{exp?.tab}}</a>
               <ng-template ngbNavContent>
                 <h4 class='title-tab-content'>{{exp?.title}} - <span

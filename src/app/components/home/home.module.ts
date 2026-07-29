@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { NgxTypedJsModule } from 'ngx-typed-js';
@@ -9,7 +10,10 @@ import { BannerComponent } from './banner/banner.component';
 import { ContactComponent } from './contact/contact.component';
 import { EducationComponent } from './education/education.component';
 import { HomeComponent } from './home.component';
+import { ProjectsComponent } from './projects/projects.component';
+import { ProjectsHighschoolComponent } from './projects-highschool/projects-highschool.component';
 import { WorkHistoryComponent } from "./workhistory/workhistory.component";
+import { LinkifyPipe } from '../../pipes/linkify/linkify.pipe';
 
 
 @NgModule({
@@ -19,10 +23,14 @@ import { WorkHistoryComponent } from "./workhistory/workhistory.component";
     AboutComponent,
     EducationComponent,
     ContactComponent,
-    WorkHistoryComponent
+    WorkHistoryComponent,
+    ProjectsComponent,
+    ProjectsHighschoolComponent,
+    LinkifyPipe
   ],
   imports: [
     CommonModule,
+    RouterModule,
     NgbNavModule,
     CarouselModule,
     NgxTypedJsModule,
