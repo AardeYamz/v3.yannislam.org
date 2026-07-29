@@ -270,11 +270,16 @@
         position: relative;
     }
 
+    // Centered via auto margins on all four insets rather than
+    // transform: translate(-50%, -50%) — the header's :enter fade
+    // animation (see fadeStaggerAnimation) queries every descendant of
+    // <nav> and finishes by setting transform: none on each one, which
+    // would wipe out a transform-based centering offset here.
     .navbar-brand {
         position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+        inset: 0;
+        margin: auto;
+        width: 55px;
     }
 
     .nav-right {

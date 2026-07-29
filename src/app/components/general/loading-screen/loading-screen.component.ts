@@ -21,8 +21,6 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
 
   hidden = false;
 
-  // Floor on how long the screen stays up so fast page loads don't produce a flash.
-  private readonly minDisplayMs = 1400;
   private breathe?: JSAnimation;
 
   constructor(private themeService: ThemeService) { }
@@ -41,12 +39,11 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
     document.body.style.overflow = 'hidden';
     this.playIntro();
 
-    const minDisplay = new Promise<void>(resolve => setTimeout(resolve, this.minDisplayMs));
     const pageReady = document.readyState === 'complete'
       ? Promise.resolve()
       : new Promise<void>(resolve => window.addEventListener('load', () => resolve(), { once: true }));
 
-    Promise.all([minDisplay, pageReady]).then(() => this.playOutro());
+    pageReady.then(() => this.playOutro());
   }
 
   ngOnDestroy(): void {
