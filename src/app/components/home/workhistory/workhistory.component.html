@@ -2,7 +2,7 @@
   <div class="container">
     <div class="section-box">
       <div data-aos="fade-up" data-aos-duration="1000">
-        <h3 class="section-title">
+        <h3 class="section-title" [class.subsection-title]="subsection">
           <span class='n-section-title'>{{navNumber}}</span>{{headingText}}
         </h3>
       </div>
@@ -36,9 +36,11 @@
             <div class="workhistory-box">
               <h5 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}" class="workhistory-title">
               {{exp.title}} </h5>
-              <h4 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
-                class="workhistory-subtitle">
-              &#64; {{exp.organization}}</h4>
+              @if (exp?.organization) {
+                <h4 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
+                  class="workhistory-subtitle">
+                &#64; {{exp.organization}}</h4>
+              }
               <div class="workhistory-description-box" (click)='debug()'>
                 @if (exp?.timeframe) {
                   <p class="text-right mb-2">
@@ -51,9 +53,7 @@
                   </p>
                 }
                 @for (descParagraph of exp?.description; track descParagraph; let i = $index) {
-                  <p class="mb-1">
-                    {{descParagraph}}
-                  </p>
+                  <p class="mb-1" [innerHTML]="descParagraph | linkify"></p>
                 }
                 <div [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
                   class="workhistory-links">

@@ -43,6 +43,15 @@ export class HeaderComponent {
     this.responsiveMenuVisible = false;
   }
 
+  navigate(menuItem: any) {
+    if (menuItem?.scrollSection) {
+      this.scroll(menuItem.scrollSection);
+    } else if (menuItem?.siteLocation) {
+      this.router.navigateByUrl(menuItem.siteLocation);
+      this.responsiveMenuVisible = false;
+    }
+  }
+
   toggleTheme() {
     this.themeService.cycle();
     this.analyticsService.sendAnalyticEvent('theme_toggle', 'header', this.themeService.mode());

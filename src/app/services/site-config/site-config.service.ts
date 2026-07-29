@@ -12,4 +12,5 @@ export class SiteConfigService {
   readonly menu: any[] = this.data.siteMenu;
   readonly experiences: any = this.data.about.experiences;
   readonly contacts: any[] = this.data.about.contact;
+  readonly projects: any = this.data.projects;
 }

@@ -14,6 +14,7 @@ export class WorkHistoryComponent {
   @Input() sectionId = '';
   @Input() navNumber = '';
   @Input() headingText = '';
+  @Input() subsection = false;
 
   customOptions: OwlOptions = {
     loop: true,

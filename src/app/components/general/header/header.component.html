@@ -8,9 +8,9 @@
       <ul ngbNav #nav="ngbNav" class="menu-ul">
         @for (menuItem of menu ; track menuItem; let i = $index) {
           <li [ngbNavItem]="i" ngbNavItem
-            (click)='analyticsService.sendAnalyticEvent($safeNavigationMigration(menuItem?.scrollSection), "menu", "click")'>
+            (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
             @if (menuItem?.navNumber) {
-              <a ngbNavLink (click)='scroll($safeNavigationMigration(menuItem?.scrollSection))'><span
+              <a ngbNavLink (click)='navigate(menuItem)'><span
                 class='nav-number'>
               {{menuItem?.navNumber}}</span> <span
             class="underline nav-text">{{menuItem?.navTitle}}</span></a>
@@ -38,9 +38,9 @@
           <ol>
             @for (menuItem of menu ; track menuItem; let i = $index) {
               <li
-                (click)='analyticsService.sendAnalyticEvent($safeNavigationMigration(menuItem?.scrollSection), "menu", "click")'>
+                (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
                 @if (menuItem?.navNumber) {
-                  <a (click)='scroll($safeNavigationMigration(menuItem?.scrollSection))'>
+                  <a (click)='navigate(menuItem)'>
                     <span>{{menuItem?.navNumber}}</span>{{menuItem?.navTitle}}
                   </a>
                 }

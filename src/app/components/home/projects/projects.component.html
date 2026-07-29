@@ -1,0 +1,29 @@
+<main>
+    <section class="section projects" [id]="projects.sectionId">
+        <div class="container">
+            <div class="section-box projects-heading-box">
+                <div data-aos="fade-up" data-aos-duration="1000">
+                    <h3 class="section-title">
+                        <span class='n-section-title'>{{projects.navNumber}}</span>{{projects.headingText}}
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-workhistory
+      [subsection]="true"
+      [experienceList]="projects.college.list"
+      [sectionId]="projects.college.sectionId"
+      [navNumber]="projects.college.navNumber"
+      [headingText]="projects.college.headingText">
+    </app-workhistory>
+    <section class="section projects-highschool-link">
+        <div class="container">
+            <div class="section-box projects-highschool-link-box" data-aos="fade-up" data-aos-duration="1000">
+                <a [routerLink]="['/projects', 'highschool']" class="main-btn text-capitalize">
+                    View {{projects.highschool.headingText}}
+                </a>
+            </div>
+        </div>
+    </section>
+</main>

@@ -1,0 +1,14 @@
+@use "./../../../../variables.scss" as *;
+
+.projects-heading-box {
+    padding: 160px 0 0;
+}
+
+.projects-highschool-link-box {
+    padding: 20px 0 80px;
+    text-align: center;
+
+    .main-btn {
+        display: inline-block;
+    }
+}
