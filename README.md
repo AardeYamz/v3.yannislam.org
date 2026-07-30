@@ -193,7 +193,8 @@ Components read content through `SiteConfigService` rather than importing
 Other write-ups worth skimming when touching a specific area live in
 `documentation/` (loading screen animation, Google Analytics wiring, the
 projects and volunteering sections, the falling-logos banner background,
-SVG logo conversion + the 3-state light/dark theme system, and Angular
+SVG logo conversion + the 3-state light/dark theme system, the header's
+scroll-translucency and left-to-right entrance animation, and Angular
 version upgrade notes).
 
 ## Updating the Config File
