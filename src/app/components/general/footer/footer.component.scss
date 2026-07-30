@@ -24,12 +24,24 @@ footer {
         left: 51px;
         padding: 0;
 
+        a {
+            position: relative;
+            display: inline-flex;
+            overflow: hidden;
+            border-radius: $ShapeFull;
+            padding: 6px;
+
+            @include md-state-layer($Primary);
+        }
+
         i {
+            position: relative;
+            z-index: 1;
             font-size: 19px;
-            color: $LightSlate;
+            color: $OnSurfaceVariant;
             &:hover,
             &:focus {
-                color: $Orange;
+                color: $Primary;
             }
         }
 
@@ -38,7 +50,7 @@ footer {
 
             &:last-of-type {
                 margin-bottom: 33px;
-            }   
+            }
         }
     }
 
@@ -53,6 +65,9 @@ footer {
         }
 
         a {
+            position: relative;
+            overflow: hidden;
+            border-radius: $ShapeSmall;
             font-family: $CodeFont;
             font-size: 12px;
             -webkit-letter-spacing: 0.1em;
@@ -64,11 +79,13 @@ footer {
             writing-mode: vertical-rl;
             margin: 20px auto;
             padding: 10px;
-            color: $LightSlate;
+            color: $OnSurfaceVariant;
+
+            @include md-state-layer($Primary);
 
             &:hover,
             &:focus {
-                color: $Orange;
+                color: $Primary;
             }
         }
     }
@@ -81,7 +98,7 @@ footer {
         padding: 40px 0 20px;
 
         a {
-            color: $LightSlate;
+            color: $OnSurfaceVariant;
             -webkit-transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
             transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
             transition-property: all;
@@ -92,7 +109,7 @@ footer {
 
             &:hover,
             &:focus {
-                color: $Orange;
+                color: $Primary;
             }
         }
     }

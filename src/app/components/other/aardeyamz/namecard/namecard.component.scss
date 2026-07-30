@@ -15,7 +15,9 @@
         }
 
         .namecard-box {
-            box-shadow: 0 10px 30px -15px rgba(2,12,27,0.7);
+            // M3 elevated card: level1 at rest, level3 while it's the
+            // hovered/expanded card in the row.
+            box-shadow: $Elevation1;
             // The middle-of-3 card shifts sideways on hover (see the
             // 1200px+ block below) to center its growth between both
             // neighbors, via `transform` rather than `left`: `left`
@@ -41,12 +43,14 @@
             padding: 2rem 1.75rem;
             width: 100%;
             height: 100%;
-            border-radius: 3px;
-            background-color: $LightNavy;
+            border-radius: $ShapeLarge;
+            background-color: $SurfaceContainer;
             box-sizing: border-box;
 
+            @include md-state-layer($Primary);
+
             &:hover, &:focus {
-                box-shadow: 0 20px 30px -15px rgba(2,12,27,0.7);
+                box-shadow: $Elevation3;
             }
 
             .namecard-content {
@@ -72,7 +76,7 @@
             svg{
                 width: 40px;
                 height: 40px;
-                color: $Orange;
+                color: $Primary;
             }
 
             .namecard-title{
@@ -85,7 +89,7 @@
 
             .namecard-description{
                 font-size: 17px;
-                color: $Orange;
+                color: $Primary;
                 -webkit-transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
                 transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
             }

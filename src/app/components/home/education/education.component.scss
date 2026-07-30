@@ -14,16 +14,18 @@
         border: none;
     }
 
+    // M3 vertical tab: a colored leading-edge indicator plus filled
+    // surface-container for the active tab, with a plain state-layer
+    // (no fill/color swap) for hover so it reads distinctly from active.
     a.active {
-        background-color: $LightNavy !important;
-        color: $Orange !important;
+        background-color: $SurfaceContainerHigh !important;
+        color: $Primary !important;
         border-color: transparent !important;
         border-radius: 0px;
+        box-shadow: inset 3px 0 0 0 $Primary;
     }
 
-    a:hover {
-        background-color: $LightNavy !important;
-        color: $Orange !important;
+    a:not(.active):hover {
         border-color: transparent !important;
         border-radius: 0px;
     }
@@ -36,6 +38,7 @@
         text-decoration-skip-ink: auto;
         color: inherit;
         position: relative;
+        overflow: hidden;
         -webkit-transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
         transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
         cursor: pointer;
@@ -57,14 +60,13 @@
         white-space: nowrap;
         font-family: $CodeFont;
         font-size: 13px;
-        color: $Slate;
+        color: $OnSurfaceVariant;
+
+        @include md-state-layer($OnSurface);
     }
 
     li {
-        border-left: 2px solid $LightestNavy;
-        border-left-width: 2px;
-        border-left-style: solid;
-        border-left-color: rgb(48, 60, 85);
+        border-left: 2px solid $OutlineVariant;
     }
 }
 
@@ -74,13 +76,13 @@
     margin: auto;
 
     .title-tab-content {
-        color: $LightestSlate;
+        color: $OnSurface;
         font-size: 22px;
         font-weight: 500;
         margin-bottom: 5px;
 
         .company-tab-content {
-            color: $Orange;
+            color: $Primary;
         }
     }
 
@@ -106,7 +108,7 @@
             content: '▹';
             position: absolute;
             left: 0;
-            color: $Orange;
+            color: $Primary;
         }
     }
 }
