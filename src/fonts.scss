@@ -1,153 +1,44 @@
+// Material Design 3's default typefaces: Roboto for UI/body text, Roboto
+// Mono for the code-styled accents ($CodeFont in variables.scss). Both are
+// variable fonts (single file spans the whole weight axis, normal and
+// italic each), so one @font-face per style covers every weight the site
+// actually uses (300/400/500/600) instead of one file per weight.
 @font-face {
-    font-family: 'Calibre';
-    font-weight: 500;
-    font-style: italic;
-    font-display: swap;
-    unicode-range: U+000-5FF;
-    src: local('Calibre'),
-        url('assets/fonts/Calibre/Calibre-MediumItalic.woff2') format('woff2'),
-        url('assets/fonts/Calibre/Calibre-MediumItalic.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'Calibre';
-    font-weight: 600;
-    font-style: italic;
-    font-display: swap;
-    unicode-range: U+000-5FF;
-    src: local('Calibre'),
-        url('assets/fonts/Calibre/Calibre-SemiboldItalic.woff2') format('woff2'),
-        url('assets/fonts/Calibre/Calibre-SemiboldItalic.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'Calibre';
-    font-weight: normal;
+    font-family: 'Roboto';
+    font-weight: 100 900;
     font-style: normal;
     font-display: swap;
     unicode-range: U+000-5FF;
-    src: local('Calibre'),
-        url('assets/fonts/Calibre/Calibre-Regular.woff2') format('woff2'),
-        url('assets/fonts/Calibre/Calibre-Regular.woff') format('woff');
+    src: local('Roboto'),
+        url('assets/fonts/Roboto/Roboto-Variable.woff2') format('woff2');
 }
 
 @font-face {
-    font-family: 'Calibre';
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-    unicode-range: U+000-5FF;
-    src: local('Calibre'),
-        url('assets/fonts/Calibre/Calibre-Medium.woff2') format('woff2'),
-        url('assets/fonts/Calibre/Calibre-Medium.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'Calibre';
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-    unicode-range: U+000-5FF;
-    src: local('Calibre'),
-        url('assets/fonts/Calibre/Calibre-Semibold.woff2') format('woff2'),
-        url('assets/fonts/Calibre/Calibre-Semibold.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'Calibre';
-    font-weight: normal;
+    font-family: 'Roboto';
+    font-weight: 100 900;
     font-style: italic;
     font-display: swap;
     unicode-range: U+000-5FF;
-    src: local('Calibre'),
-        url('assets/fonts/Calibre/Calibre-RegularItalic.woff2') format('woff2'),
-        url('assets/fonts/Calibre/Calibre-RegularItalic.woff') format('woff');
+    src: local('Roboto'),
+        url('assets/fonts/Roboto/Roboto-Italic-Variable.woff2') format('woff2');
 }
 
 @font-face {
-    font-family: 'Calibre';
-    font-weight: 300;
+    font-family: 'Roboto Mono';
+    font-weight: 100 700;
     font-style: normal;
     font-display: swap;
     unicode-range: U+000-5FF;
-    src: local('Calibre'),
-        url('assets/fonts/Calibre/Calibre-Light.woff2') format('woff2'),
-        url('assets/fonts/Calibre/Calibre-Light.woff') format('woff');
+    src: local('Roboto Mono'),
+        url('assets/fonts/RobotoMono/RobotoMono-Variable.woff2') format('woff2');
 }
 
 @font-face {
-    font-family: 'Calibre';
-    font-weight: 300;
+    font-family: 'Roboto Mono';
+    font-weight: 100 700;
     font-style: italic;
     font-display: swap;
     unicode-range: U+000-5FF;
-    src: local('Calibre'),
-        url('assets/fonts/Calibre/Calibre-LightItalic.woff2') format('woff2'),
-        url('assets/fonts/Calibre/Calibre-LightItalic.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'SF Mono';
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-    unicode-range: U+000-5FF;
-    src: local('SF Mono'),
-        url('assets/fonts/SFMono/SFMono-Regular.woff2') format('woff2'),
-        url('assets/fonts/SFMono/SFMono-Regular.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'SF Mono';
-    font-weight: 600;
-    font-style: italic;
-    font-display: swap;
-    unicode-range: U+000-5FF;
-    src: local('SF Mono'),
-        url('assets/fonts/SFMono/SFMono-SemiboldItalic.woff2') format('woff2'),
-        url('assets/fonts/SFMono/SFMono-SemiboldItalic.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'SF Mono';
-    font-weight: 500;
-    font-style: italic;
-    font-display: swap;
-    unicode-range: U+000-5FF;
-    src: local('SF Mono'),
-        url('assets/fonts/SFMono/SFMono-MediumItalic.woff2') format('woff2'),
-        url('assets/fonts/SFMono/SFMono-MediumItalic.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'SF Mono';
-    font-weight: normal;
-    font-style: italic;
-    font-display: swap;
-    unicode-range: U+000-5FF;
-    src: local('SF Mono'),
-        url('assets/fonts/SFMono/SFMono-RegularItalic.woff2') format('woff2'),
-        url('assets/fonts/SFMono/SFMono-RegularItalic.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'SF Mono';
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-    unicode-range: U+000-5FF;
-    src: local('SF Mono'),
-        url('assets/fonts/SFMono/SFMono-Medium.woff2') format('woff2'),
-        url('assets/fonts/SFMono/SFMono-Medium.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'SF Mono';
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-    unicode-range: U+000-5FF;
-    src: local('SF Mono'),
-        url('assets/fonts/SFMono/SFMono-Semibold.woff2') format('woff2'),
-        url('assets/fonts/SFMono/SFMono-Semibold.woff') format('woff');
+    src: local('Roboto Mono'),
+        url('assets/fonts/RobotoMono/RobotoMono-Italic-Variable.woff2') format('woff2');
 }
