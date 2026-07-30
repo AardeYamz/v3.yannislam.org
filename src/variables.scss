@@ -8,11 +8,8 @@ $White : var(--color-white);
 $Orange : var(--color-orange);
 $OrangeOpacity : var(--color-orange-opacity);
 
-// Roboto / Roboto Mono are Material Design 3's default typefaces (see
-// fonts.scss for the self-hosted @font-face rules); the rest of each stack
-// is just a system-font safety net if that fails to load.
-$MainFont: Roboto, San Francisco, SF Pro Text, -apple-system, system-ui, BlinkMacSystemFont, Helvetica Neue, Segoe UI, Arial, sans-serif;
-$CodeFont: Roboto Mono, SF Mono, Fira Code, Fira Mono, Lucida Console, Monaco, Monospace;
+$MainFont: Calibre, San Francisco, SF Pro Text, -apple-system, system-ui, BlinkMacSystemFont, Roboto, Helvetica Neue, Segoe UI, Arial, sans-serif;
+$CodeFont: SF Mono, Fira Code, Fira Mono, Roboto Mono, Lucida Console, Monaco, Monospace;
 
 // --- Material Design 3 tokens (see theme.scss for the underlying custom properties) ---
 
