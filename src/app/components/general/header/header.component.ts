@@ -12,7 +12,7 @@ import { ThemeService } from 'src/app/services/theme/theme.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   animations: [
-    fadeStaggerAnimation('animateMenu', 'translateY(-50%)')
+    fadeStaggerAnimation('animateMenu', 'translateX(-20px)')
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false

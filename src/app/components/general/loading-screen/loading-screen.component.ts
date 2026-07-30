@@ -6,6 +6,11 @@ import { ThemeService } from 'src/app/services/theme/theme.service';
 // offset up and to the left of its resting position.
 const FLY_DISTANCE = 260;
 
+// Floor so a fast load doesn't just flash the intro and immediately cut to
+// the outro before the assembly animation (and a beat of the breathe loop)
+// has had a chance to actually play.
+const MIN_DISPLAY_MS = 1400;
+
 @Component({
   selector: 'app-loading-screen',
   templateUrl: './loading-screen.component.html',
@@ -39,11 +44,15 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
     document.body.style.overflow = 'hidden';
     this.playIntro();
 
-    const pageReady = document.readyState === 'complete'
-      ? Promise.resolve()
-      : new Promise<void>(resolve => window.addEventListener('load', () => resolve(), { once: true }));
-
-    pageReady.then(() => this.playOutro());
+    // The page behind this overlay has nothing left to actually wait for:
+    // its content comes from config.json, bundled at build time rather than
+    // fetched, so it's already fully rendered by the time this view inits.
+    // `window.load` doesn't reflect that — it waits on unrelated resources
+    // (fonts, third-party logos, analytics) that can stall for seconds on a
+    // flaky connection, during which this overlay's logo was left floating
+    // on top of an already-live, already-interactive page underneath. A
+    // fixed minimum display is what the intro animation actually needs.
+    setTimeout(() => this.playOutro(), MIN_DISPLAY_MS);
   }
 
   ngOnDestroy(): void {

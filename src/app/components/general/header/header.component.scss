@@ -314,6 +314,16 @@
     transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
 }
 
+// Translucent + blurred backdrop for the fixed navbar once the page has
+// scrolled. Scoped to .main-navbar (rather than the shared .nav-shadow
+// rule above, which is also applied to the mobile drawer <aside>) so the
+// full-screen mobile menu stays opaque and readable.
+.main-navbar.nav-shadow {
+    background: color-mix(in srgb, $Navy 85%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
 @media (max-width: 1050px) {
     nav .nav {
         display: none;
