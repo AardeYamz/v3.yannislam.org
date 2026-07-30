@@ -1,5 +1,13 @@
 @use "./../../../../variables.scss"  as *;
 
+// Shared by several selectors below (menu-responsive/aside-show/aside,
+// the drawer's nav links, .on-top, .nav-shadow) — a placeholder + @extend
+// merges them into one shared rule in the compiled CSS instead of
+// repeating this exact declaration six times.
+%ease-transition {
+    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+}
+
 .main-navbar {
     height: 70px;
     background: $Surface;
@@ -32,7 +40,7 @@
         transform: translateX(0vw);
         visibility: visible;
         outline: 0px;
-        transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+        @extend %ease-transition;
 
         li {
             a {
@@ -47,7 +55,7 @@
     }
 
     .aside-show {
-        transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+        @extend %ease-transition;
         right: 0px;
     }
 
@@ -72,7 +80,7 @@
         // M3 modal navigation drawer elevation.
         box-shadow: $Elevation3;
         padding: 25px;
-        transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+        @extend %ease-transition;
 
         nav {
             display: flex;
@@ -112,7 +120,7 @@
                         cursor: pointer;
                         width: 100%;
                         text-decoration: none;
-                        transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+                        @extend %ease-transition;
                         padding: 3px 20px 20px;
 
                         @include md-state-layer($OnSurface);
@@ -304,22 +312,21 @@
     z-index: 9;
     height: 100px;
     padding: 0 6%;
-    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+    @extend %ease-transition;
 }
 
 .nav-shadow {
     height: 70px;
     // M3 elevation for an app bar that's scrolled off its resting surface.
     box-shadow: $Elevation2;
-    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+    @extend %ease-transition;
 }
 
-// Translucent + blurred backdrop for the fixed navbar once the page has
-// scrolled. Scoped to .main-navbar (rather than the shared .nav-shadow
-// rule above, which is also applied to the mobile drawer <aside>) so the
-// full-screen mobile menu stays opaque and readable.
+// Translucent + blurred backdrop once scrolled. Scoped to .main-navbar
+// (not the shared .nav-shadow rule above, also applied to the mobile
+// drawer <aside>) so the full-screen mobile menu stays opaque/readable.
 .main-navbar.nav-shadow {
-    background: color-mix(in srgb, $Navy 85%, transparent);
+    background: color-mix(in srgb, $Surface 85%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
