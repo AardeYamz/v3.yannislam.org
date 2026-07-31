@@ -82,20 +82,28 @@
 
 @media (max-width: 500px) {
     .about {
+        // A fixed width here (rather than 100%, like it was) matters: the
+        // base rule's `margin: auto` only centers a box with a real width,
+        // and the offset frame below is positioned relative to *this* box,
+        // not the image — with width: 100% the frame's fixed `left` value
+        // only lined up with the image by coincidence at one particular
+        // viewport width. 264px = the image's 240px plus the same ~24px of
+        // slack the desktop size (300px image / 324px container) uses, so
+        // the frame offset below scales the same way desktop's does.
         .about-img-container {
-            width: 100%;
+            width: 264px;
 
             img {
-                width: 180px;
-                height: 240px;
+                width: 240px;
+                height: 320px;
                 object-fit: cover;
             }
 
             &:after {
-                width: 180px;
-                height: 240px;
+                width: 240px;
+                height: 320px;
                 top: 10px;
-                left: 74px;
+                left: 19px;
             }
         }
     }

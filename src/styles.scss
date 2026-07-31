@@ -32,18 +32,18 @@ app-footer {
 }
 
 .section-box {
-    padding: 130px 0;
+    padding: 90px 0;
 }
 
 @media (max-width: 768px) {
     .section-box {
-        padding: 80px 0;
+        padding: 60px 0;
     }
 }
 
 @media (max-width: 480px) {
     .section-box {
-        padding: 60px 0;
+        padding: 40px 0;
     }
 }
 
@@ -181,38 +181,23 @@ a {
 
 }
 
-@media (min-width: 1100px) and (max-width: 1300px) {
-    .container {
-        max-width: 950px;
-    }
+// Bootstrap's own .container snaps to a handful of fixed max-widths per
+// breakpoint (540/720/960/1140/1320px) rather than tracking the viewport
+// continuously, so as a window grows within one of those bands the content
+// column just sits there while empty margin grows around it — worse once
+// `body` also had `class="container"` (removed from index.html), which
+// made every *nested* .container compute its own width against an
+// already-narrowed parent instead of the viewport, shrinking things
+// further. This replaces Bootstrap's stepped caps with one that tracks
+// viewport width continuously, capped so it doesn't get unreasonably wide
+// on an ultra-wide monitor.
+.container {
+    max-width: min(94vw, 1800px) !important;
 }
 
-@media (min-width: 992px) and (max-width: 1100px) {
-    .container {
-        max-width: 800px;
-    }
-
-}
-
-@media (min-width: 880px) and (max-width: 992px) {
-    .container {
-        max-width: 700px;
-    }
-}
-
-@media (min-width: 768px) and (max-width: 880px) {
-    .container {
-        max-width: 600px;
-    }
-}
-
-@media (max-width: 768em) {
+@media (max-width: 768px) {
     .section-title {
         font-size: 24px;
-    }
-
-    .container {
-        width: 90%;
     }
 }
 

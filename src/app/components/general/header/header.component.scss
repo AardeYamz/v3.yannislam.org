@@ -298,8 +298,10 @@
         display: none;
     }
 
+    // Was 0 — the theme/menu toggle icons sat flush against the true
+    // viewport edge with no breathing room at all below this width.
     .on-top {
-        padding: 0;
+        padding: 0 20px;
     }
 }
 
