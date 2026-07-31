@@ -6,14 +6,13 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
 import { NgxTypedJsModule } from 'ngx-typed-js';
 import { AosDirective } from '../../directives/aos/aos.directive';
 import { LogoFallbackDirective } from '../../directives/logo-fallback/logo-fallback.directive';
+import { LogoFallbackBackgroundDirective } from '../../directives/logo-fallback/logo-fallback-background.directive';
 import { AboutComponent } from './about/about.component';
 import { BannerComponent } from './banner/banner.component';
 import { ContactComponent } from './contact/contact.component';
 import { EducationComponent } from './education/education.component';
 import { FloatingLogosComponent } from './floating-logos/floating-logos.component';
 import { HomeComponent } from './home.component';
-import { ProjectsComponent } from './projects/projects.component';
-import { ProjectsHighschoolComponent } from './projects-highschool/projects-highschool.component';
 import { WorkHistoryComponent } from "./workhistory/workhistory.component";
 import { LinkifyPipe } from '../../pipes/linkify/linkify.pipe';
 
@@ -26,8 +25,6 @@ import { LinkifyPipe } from '../../pipes/linkify/linkify.pipe';
     EducationComponent,
     ContactComponent,
     WorkHistoryComponent,
-    ProjectsComponent,
-    ProjectsHighschoolComponent,
     FloatingLogosComponent,
     LinkifyPipe
   ],
@@ -39,8 +36,12 @@ import { LinkifyPipe } from '../../pipes/linkify/linkify.pipe';
     CarouselModule,
     NgxTypedJsModule,
     AosDirective,
-    LogoFallbackDirective
+    LogoFallbackDirective,
+    LogoFallbackBackgroundDirective
   ],
-  exports: [ContactComponent]
+  // WorkHistoryComponent is exported (in addition to ContactComponent) so the
+  // now-standalone, lazy-loaded ProjectsComponent/ProjectsHighschoolComponent
+  // can still import HomeModule to use <app-workhistory> in their templates.
+  exports: [ContactComponent, WorkHistoryComponent]
 })
 export class HomeModule { }

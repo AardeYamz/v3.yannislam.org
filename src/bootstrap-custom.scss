@@ -1,0 +1,41 @@
+// Custom Bootstrap entry point.
+//
+// The site only uses a small slice of Bootstrap: the grid/container system,
+// the Nav/Navbar components (used directly, and indirectly through
+// @ng-bootstrap's NgbNav which renders `nav` / `nav-item` / `nav-link`
+// classes), and a handful of spacing/display/text utility classes.
+//
+// Rather than pulling in the full `bootstrap/scss/bootstrap` (which is what
+// previously produced the compiled `bootstrap.min.css` bundle imported by
+// angular.json — on top of this same full import already living in
+// styles.scss, i.e. Bootstrap was being shipped twice), this file forwards
+// only the partials that are actually needed. See
+// documentation/css-bundle-trim.md for the audit behind this list.
+//
+// Usage audit performed via:
+//   grep -roE 'class="[^"]*"' src/app --include=*.html
+//   grep -rn "ngbNav" src (NgbNav/NgbNavItem/NgbNavLink apply "nav",
+//     "nav-item", "nav-link", and — for orientation="vertical" — "flex-column")
+
+// Configuration (required by everything below)
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/variables-dark";
+@import "node_modules/bootstrap/scss/maps";
+@import "node_modules/bootstrap/scss/mixins";
+@import "node_modules/bootstrap/scss/utilities";
+
+// Base
+@import "node_modules/bootstrap/scss/root";
+@import "node_modules/bootstrap/scss/reboot";
+@import "node_modules/bootstrap/scss/type";
+@import "node_modules/bootstrap/scss/containers";
+@import "node_modules/bootstrap/scss/grid";
+
+// Components actually used in templates (navbar, nav/nav-tabs via NgbNav)
+@import "node_modules/bootstrap/scss/nav";
+@import "node_modules/bootstrap/scss/navbar";
+
+// Utility classes (d-flex/d-none/d-md-block, m*/p* spacing, text-center,
+// text-capitalize, flex-column, w-100, etc.) generated from the utilities map
+@import "node_modules/bootstrap/scss/utilities/api";
