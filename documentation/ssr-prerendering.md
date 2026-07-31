@@ -312,3 +312,35 @@ per-request rendering left to serve. It's left in place (that's what the
 schematic scaffolds, and removing it isn't necessary for correctness) but
 should be treated as inert unless a future route genuinely needs
 per-request server rendering.
+
+## Merge with main (post-review update)
+
+This branch was rebased against `main` after several sibling optimization
+PRs landed (font/CSS trimming, lazy routes + `OnPush`, the service worker,
+Vercel Analytics). Conflicts were limited to `package.json`/
+`package-lock.json` (both sets of new dependencies kept, lockfile
+regenerated via `npm install`), `app.module.ts` (both
+`provideClientHydration()` and `ServiceWorkerModule.register(...)`
+retained), and `loading-screen`/`floating-logos` components, where both
+this PR's `PLATFORM_ID`/`isPlatformBrowser` guards and the `OnPush` PR's
+`ChangeDetectorRef`/`markForCheck()` additions needed to coexist in the
+same constructors — both are now present in both files.
+
+`ng build` after the merge still succeeds (exit 0, all 4 routes
+prerendered, content verified non-empty), but it now surfaces 3
+non-fatal `ReferenceError: Image is not defined` errors logged during
+prerendering — one per route that renders the work-history carousel
+(`/`, `/projects`, `/projects/highschool`). This traces to
+`ngx-owl-carousel-o`'s lazy-image handling, which calls `new Image()` to
+probe image dimensions; Domino (Angular's server-side DOM emulation)
+doesn't implement the `Image` constructor. The exception is caught by
+Angular's zone/error handling and doesn't stop the build or corrupt the
+output — the carousel markup (`.owl-carousel`, `.img-feature-workhistory`)
+is confirmed present in the rendered HTML for both affected routes — but
+it's a real, previously-unverified gap in `ngx-owl-carousel-o`'s SSR
+compatibility (this PR's original verification only read the library's
+source for `isPlatformBrowser` guards, not observed its actual prerender
+behavior). Left unfixed here as out of scope for a merge-conflict pass;
+worth a follow-up (e.g. lazy-load images without the carousel's
+dimension-probing feature, or gate that specific behavior behind the same
+`isPlatformBrowser` check used elsewhere in this PR).
