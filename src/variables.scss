@@ -51,9 +51,23 @@ $MotionEasingStandard: var(--md-sys-motion-easing-standard);
 
 // M3 state layer: a full-bleed pseudo-element whose opacity ramps up on
 // hover/focus/press, layered in the given $color. Requires the host to be
-// `position: relative` and `overflow: hidden` with its actual corner
-// radius set there (not on the pseudo) — the `inset: 0` box below is
-// already clipped to that same rounded shape by the host's own overflow.
+// `position: relative`.
+//
+// $corner sets the *pseudo's own* border-radius. Deliberately not on the
+// host: a `border-radius` on a clickable element gets its own corners
+// (the parts of its rectangular layout box outside the rounded shape)
+// excluded from hit-testing in this engine — confirmed via
+// `elementFromPoint` on a circular 46px .theme-toggle/.menu-toggle, with
+// and without `overflow: hidden` (made no difference either way — this
+// isn't an overflow-clipping thing, `border-radius` alone does it). Since
+// the pseudo is `pointer-events: none`, giving *it* the rounded corners
+// instead gets the same visual result with a full rectangular hit area on
+// the actual interactive element. Only safe to drop the host's own
+// border-radius where the host has no visible fill/border of its own to
+// round (icon buttons, plain text links) — elsewhere (.main-btn's outline,
+// namecard-box's card fill) the host keeps its border-radius and accepts
+// a small hit-testing dead zone right at its corners, since those
+// elements are large enough that it isn't a practical problem.
 //
 // The host also gets `isolation: isolate` here so it forms its own
 // stacking context: without one, an auto-z-index absolutely-positioned
@@ -63,7 +77,7 @@ $MotionEasingStandard: var(--md-sys-motion-easing-standard);
 // touching `z-index` itself, so it can't clobber a z-index the host sets
 // for its own unrelated reasons (e.g. namecard-box layering against its
 // siblings) the way setting `z-index: 0` here would.
-@mixin md-state-layer($color: currentColor) {
+@mixin md-state-layer($color: currentColor, $corner: 0) {
     isolation: isolate;
 
     &::before {
@@ -71,6 +85,7 @@ $MotionEasingStandard: var(--md-sys-motion-easing-standard);
         position: absolute;
         z-index: -1;
         inset: 0;
+        border-radius: $corner;
         background-color: $color;
         opacity: 0;
         pointer-events: none;

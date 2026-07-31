@@ -18,12 +18,12 @@ import { ThemeService } from 'src/app/services/theme/theme.service';
     // CSS depending on viewport width but still present in the DOM — so
     // querySelectorAll matches them regardless, and their ~40 combined
     // descendant elements each claim a 50ms stagger slot ahead of the
-    // theme toggle and hamburger button in DOM order. On mobile that left
-    // the hamburger sitting at opacity 0 (invisible, unusable) for over a
+    // theme toggle and menu-toggle button in DOM order. On mobile that left
+    // the menu toggle sitting at opacity 0 (invisible, unusable) for over a
     // second after the header itself became visible. Staggering just the
-    // 4 top-level chrome groups (logo, nav-right, hamburger wrapper,
-    // mobile drawer) as blocks instead of every nested span/li fixes that
-    // and still reads as a staggered entrance.
+    // 4 top-level chrome groups (logo, nav-right, menu toggle, mobile
+    // drawer) as blocks instead of every nested span/li fixes that and
+    // still reads as a staggered entrance.
     fadeStaggerAnimation('animateMenu', 'translateX(-20px)', '.container > *')
   ],
   changeDetection: ChangeDetectionStrategy.Eager,

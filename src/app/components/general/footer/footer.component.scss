@@ -24,19 +24,21 @@ footer {
         left: 51px;
         padding: 0;
 
+        // No border-radius on the link itself: a rounded, hit-testable
+        // element gets its own corners excluded from hit-testing by this
+        // engine (confirmed via elementFromPoint) regardless of overflow —
+        // rounding lives on the (non-interactive) state-layer pseudo
+        // instead. Safe here since the link has no visible fill of its own
+        // to round.
         a {
             position: relative;
             display: inline-flex;
-            overflow: hidden;
-            border-radius: $ShapeFull;
             padding: 6px;
 
-            @include md-state-layer($Primary);
+            @include md-state-layer($Primary, $ShapeFull);
         }
 
         i {
-            position: relative;
-            z-index: 1;
             font-size: 19px;
             color: $OnSurfaceVariant;
             &:hover,
@@ -66,8 +68,6 @@ footer {
 
         a {
             position: relative;
-            overflow: hidden;
-            border-radius: $ShapeSmall;
             font-family: $CodeFont;
             font-size: 12px;
             -webkit-letter-spacing: 0.1em;
@@ -81,7 +81,7 @@ footer {
             padding: 10px;
             color: $OnSurfaceVariant;
 
-            @include md-state-layer($Primary);
+            @include md-state-layer($Primary, $ShapeSmall);
 
             &:hover,
             &:focus {

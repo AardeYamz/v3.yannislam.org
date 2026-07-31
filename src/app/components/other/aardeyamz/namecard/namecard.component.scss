@@ -47,7 +47,7 @@
             background-color: $SurfaceContainer;
             box-sizing: border-box;
 
-            @include md-state-layer($Primary);
+            @include md-state-layer($Primary, $ShapeLarge);
 
             &:hover, &:focus {
                 box-shadow: $Elevation3;

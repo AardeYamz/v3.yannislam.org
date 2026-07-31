@@ -28,9 +28,11 @@
           [class.fa-moon]="themeService.mode() === 'dark'"></i>
       </button>
     </div>
-    <div class="menu-wrapper" (click)='responsiveMenuVisible = !responsiveMenuVisible'>
-      <div [class.animate]='responsiveMenuVisible' class="hamburger-menu"></div>
-    </div>
+    <button type="button" class="menu-toggle" (click)="responsiveMenuVisible = !responsiveMenuVisible"
+      [attr.aria-label]="responsiveMenuVisible ? 'Close menu' : 'Open menu'"
+      [attr.aria-expanded]="responsiveMenuVisible">
+      <i class="fa-solid" [class.fa-bars]="!responsiveMenuVisible" [class.fa-xmark]="responsiveMenuVisible"></i>
+    </button>
     <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }">
       <aside [class.aside-show]='responsiveMenuVisible' [class.nav-shadow]='this.pageYPosition>0' class="on-top">
         <nav>
