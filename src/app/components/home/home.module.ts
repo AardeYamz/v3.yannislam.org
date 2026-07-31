@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
@@ -33,6 +33,7 @@ import { LinkifyPipe } from '../../pipes/linkify/linkify.pipe';
   ],
   imports: [
     CommonModule,
+    NgOptimizedImage,
     RouterModule,
     NgbNavModule,
     CarouselModule,
