@@ -1,11 +1,13 @@
-# Header: translucent scroll state + left-to-right entrance
+# Header: scroll state, entrance animation, and the mobile menu toggle
 
-Three small, related changes around `HeaderComponent`
-(`src/app/components/general/header/`): a translucent/blurred navbar once
-the page scrolls, switching the existing on-load entrance animation from a
-vertical drop to a horizontal left-to-right slide, and deferring that
-entrance so it actually plays after the boot-time loading screen instead of
-hidden underneath it.
+A series of related changes around `HeaderComponent`
+(`src/app/components/general/header/`), grown over several passes: a
+translucent/blurred navbar once the page scrolls, switching the existing
+on-load entrance animation from a vertical drop to a horizontal
+left-to-right slide (and fixing why that animation was quietly breaking the
+mobile menu button), then replacing the mobile menu's hand-rolled hamburger
+icon with a proper Material icon button — which surfaced two real,
+independently-confirmed hit-testing bugs along the way.
 
 ## 1. Translucent + blurred navbar on scroll
 
@@ -206,6 +208,12 @@ Verified with a synthetic click 5px from the *top* of `.menu-wrapper`'s
 bounding box (nowhere near the old 1.5px-tall target) correctly toggling
 the drawer open.
 
+**Superseded in §8**: this fix was correct as far as it went, but a later
+report ("still has to be clicked dead center") turned out to be a second,
+different bug in the *button's own* corners — see §9 — that this change
+didn't touch. §8 replaces the whole hand-rolled icon (and `.menu-wrapper`
+along with it) rather than patching it further.
+
 ## 6. Mobile drawer translucency
 
 Per a follow-up request, the drawer `<aside>` — previously a solid
@@ -244,7 +252,137 @@ here because Angular's emulated view encapsulation adds a component-scoped
 attribute selector to every rule in `header.component.scss`, which outranks
 a plain selector in `styles.scss` regardless of source order — the same
 reason the pre-existing downward `.banner h2/h3` breakpoints in `styles.scss`
-already needed it.
+already needed it. (The budget pressure that forced this into `styles.scss`
+was specific to that moment — §8 removes far more from
+`header.component.scss` than it adds, so the file isn't anywhere near the
+budget anymore. Left as-is rather than moved back, since it works correctly
+where it is and moving it would just be churn.)
+
+## 8. Replacing the hand-rolled hamburger with a Material icon button
+
+Follow-up ask, after §5: "can we replace the hamburger menu with a material
+hamburger menu?" — i.e. stop hand-rolling the icon and make it look/behave
+like a standard Material icon button, the same pattern already used for
+`.theme-toggle` right next to it.
+
+Old markup — a wrapper div plus an icon built from one real element and two
+pseudo-elements, each independently transitioned/rotated into an X via a
+`.animate` class:
+
+```html
+<div class="menu-wrapper" (click)='responsiveMenuVisible = !responsiveMenuVisible'>
+  <div [class.animate]='responsiveMenuVisible' class="hamburger-menu"></div>
+</div>
+```
+
+New markup — a single `<button>`, matching `.theme-toggle`'s structure
+exactly, with Font Awesome's `fa-bars`/`fa-xmark` (already a project
+dependency — no new icon font needed) swapped via the same
+`[class.x]="expr"` pattern `.theme-toggle` already uses for its own icon:
+
+```html
+<button type="button" class="menu-toggle" (click)="responsiveMenuVisible = !responsiveMenuVisible"
+  [attr.aria-label]="responsiveMenuVisible ? 'Close menu' : 'Open menu'"
+  [attr.aria-expanded]="responsiveMenuVisible">
+  <i class="fa-solid" [class.fa-bars]="!responsiveMenuVisible" [class.fa-xmark]="responsiveMenuVisible"></i>
+</button>
+```
+
+`.menu-wrapper` (the layout div) is gone too — the button itself is now the
+layout unit, including for the `@media (min-width: 1050px) { display: none }`
+rule that used to target `.menu-wrapper` and now targets `.menu-toggle`
+directly.
+
+On the CSS side, `.theme-toggle`'s rule became a `%icon-button` placeholder
+(`@extend`ed by both `.theme-toggle` and `.menu-toggle`) instead of being
+duplicated — they're visually and behaviorally identical M3 icon buttons,
+so there was no reason to write the circular-state-layer/focus-ring/hover-
+color treatment twice. Deleting the ~60 lines of old hamburger-specific CSS
+(the three-bar sizing, the two pseudo-element rotate/translate transitions,
+the `.animate` state) also happened to clear `header.component.scss`'s
+per-component style budget warning entirely — it had been hovering right at
+the edge of that budget since §6.
+
+## 9. `border-radius` was excluding its own corners from hit-testing
+
+While verifying §8's icon button was actually clickable everywhere (not
+just visually — see §5 for why that specific question gets asked twice
+here), the *exact* same "has to be clicked at the center" symptom reappeared
+on the *new* button, despite it now being a single 46×46px element with the
+click handler on the right place. `elementFromPoint` at each of its four
+corners (1px in from each edge — well inside its own `getBoundingClientRect()`)
+resolved to `.container`, its own parent, instead of the button:
+
+```
+corner (313.5, 28): DIV.container   <- should be the button
+corner+8 (320.5, 35): BUTTON.menu-toggle
+```
+
+The button has `border-radius: 999px` (from `$ShapeFull`, making it
+circular) and, at the time, `overflow: hidden` (needed to clip the
+state-layer pseudo-element to that same circle — see the `md-state-layer`
+mixin, `variables.scss`). The instinct was that `overflow: hidden` plus a
+rounded `border-radius` on the same element was clipping *hit-testing* to
+the visual circle, the same way it clips paint — so the first attempt
+removed `overflow: hidden` and re-tested. No change: the corners still
+resolved to `.container`. Root cause was `border-radius` itself, regardless
+of `overflow`: a clickable element with a large `border-radius` has the
+parts of its own rectangular layout box that fall *outside* the rounded
+shape excluded from hit-testing in this engine — confirmed by then removing
+`border-radius` from the button entirely (moving it to `0`) and re-running
+the same four-corner check: all four resolved to the button immediately.
+
+Fix, generalized into the `md-state-layer` mixin itself rather than patched
+per-component: the mixin gained a `$corner` parameter that rounds the
+*pseudo-element's* own corners (it's `pointer-events: none`, so its
+roundness has zero effect on hit-testing) instead of relying on the host's
+`border-radius` + `overflow: hidden` to clip it. The host keeps a plain
+rectangular (`border-radius: 0`, effectively) hit area no matter how round
+it looks. Applied everywhere the host has no visible fill/border of its own
+to round — both icon buttons, the footer's social/email links, the drawer's
+nav links (`a { border-radius: $ShapeSmall }` in §5 became
+`@include md-state-layer($OnSurface, $ShapeSmall)` with no radius on the
+`a` itself) — all zero visual cost, since none of those elements paint a
+background or border of their own.
+
+**Not applied everywhere**: `.main-btn` (an outlined pill button — the
+border itself needs to be round) and `.namecard-box` (a filled card — the
+background needs to be round) both keep their own `border-radius`, and by
+extension both still have a small hit-testing dead zone right at their own
+corners. Removing it there would mean visibly squaring off a real,
+user-visible border/fill, not just a hover-only pseudo-element, and both
+elements are large enough (a padded button with a text label; a
+multi-hundred-pixel card) that a user's click landing in the specific few
+pixels right at a geometric corner — as opposed to anywhere in or near the
+button/card's actual content — isn't a realistic scenario.
+
+## 10. The drawer's own overlay was blocking the button that closes it
+
+Third bug found while re-verifying §8/§9 end-to-end: after fixing hit-testing
+on the button's corners, a full open → close → reopen cycle (via corner
+clicks, to make sure §9's fix held) got stuck after the first open — the
+"close" click did nothing. `elementFromPoint` at the button's own center,
+*while the drawer was open*, resolved to `<aside>`, not the button.
+
+`.menu-responsive` (the drawer's full-screen fixed wrapper) has `z-index: 10`;
+`.main-navbar` (and `<aside>`, which shares its `.on-top` class) has
+`z-index: 9`. Once the drawer opens, `.menu-responsive` — full-viewport,
+`pointer-events: auto` — sits above the header bar in the stacking order
+despite being nested inside it in the DOM, since both are `position: fixed`
+with explicit `z-index` and compare directly regardless of ancestry. That
+covers `.menu-toggle`'s own screen position: the X icon keeps rendering
+(paint order and hit-testing are independent), but every click on it lands
+on the transparent overlay behind, one layer up, instead — there was no way
+to close the drawer via the header button at all, only by whatever handlers
+exist inside `<aside>` itself (its own nav links, which happen to also
+close it as a side effect of navigating).
+
+Fix: give `.menu-toggle` its own `z-index: 12`, above the overlay's `10`,
+so it stays reachable regardless of drawer state. Scoped to just the toggle
+button rather than raising the whole header's `z-index` — nothing else in
+the bar needs to stay interactive while a modal drawer is covering the page,
+and widening the fix further than the one control that actually needs it
+risks new overlap bugs of its own.
 
 ## Files touched
 
@@ -252,9 +390,13 @@ already needed it.
   `.main-navbar.nav-shadow` translucency/blur rule (§1); `aside`'s
   translucency (§6); `%blur-backdrop` placeholder and dead `-webkit-box-*`
   prefix removal to stay under budget (§6); `$Navy`/`$SurfaceContainerHigh`
-  renamed onto MD3 role tokens.
+  renamed onto MD3 role tokens; old hand-rolled hamburger CSS deleted and
+  `%icon-button` placeholder added, shared by `.theme-toggle`/`.menu-toggle`
+  (§8); `.menu-toggle`'s `z-index: 12` (§10).
 - `src/app/components/general/header/header.component.html` — hamburger
-  click handler moved from `.hamburger-menu` to `.menu-wrapper` (§5).
+  click handler moved from `.hamburger-menu` to `.menu-wrapper` (§5), then
+  the whole hand-rolled icon replaced with a single `<button class=
+  "menu-toggle">` using Font Awesome's `fa-bars`/`fa-xmark` (§8).
 - `src/app/components/general/header/header.component.ts` — `fromTransform`
   changed from `translateY(-50%)` to `translateX(-20px)` (§2); added the
   `'.container > *'` selector argument to `fadeStaggerAnimation` (§4).
@@ -263,7 +405,17 @@ already needed it.
 - `src/app/app.component.html` / `.ts` — `<app-header>` mount deferred behind
   `headerReady`, flipped by a new `(finished)` handler on
   `<app-loading-screen>` (see §3).
-- `src/styles.scss` — large-screen nav-bar sizing at 1600px/2200px+ (§7).
+- `src/styles.scss` — large-screen nav-bar sizing at 1600px/2200px+ (§7);
+  `.main-btn` no longer sets its own `overflow: hidden` (§9).
+- `src/variables.scss` — `md-state-layer` mixin gained a `$corner` parameter
+  that rounds the state-layer pseudo-element instead of the host (§9).
+- `src/app/components/general/footer/footer.component.scss`,
+  `src/app/components/other/aardeyamz/namecard/namecard.component.scss` —
+  updated `md-state-layer` call sites for the new `$corner` parameter (§9);
+  `namecard-box` in particular had never had its state-layer tint properly
+  rounded at all before this (a latent, separate bug — see §9's mixin
+  change for why the pseudo needs its own radius regardless of whether the
+  host clips it).
 
 ## Verification
 
@@ -300,3 +452,20 @@ already needed it.
   `gap` at a 2200px viewport match the `!important` overrides, and
   screenshotted to confirm the nav bar reads proportionally larger alongside
   the already-scaled banner text.
+- §9 (hit-testing): `elementFromPoint` at all four corners (1px inset from
+  each edge, computed from the *actual* `getBoundingClientRect()`, not an
+  assumed size) of both `.theme-toggle` and `.menu-toggle` — all four
+  resolved to the button itself after the fix, versus resolving to
+  `.container` (the button's own parent) at 3 of the 4 tested inset
+  distances beforehand. Ran this both with and without `overflow: hidden`
+  still present on the host to isolate that it wasn't the actual cause.
+  Also confirmed via screenshot that `.namecard-box`'s state-layer tint
+  is now visibly clipped to the card's rounded corners on hover, instead of
+  the sharp-cornered square it was silently painting as before (invisible
+  in practice at `opacity: 0`, but real once you trigger `:hover`).
+- §10 (overlay z-index): `elementFromPoint` at `.menu-toggle`'s own center
+  *while `responsiveMenuVisible` was true* resolved to `<aside>` before the
+  fix, to `<i class="fa-xmark">` (the button's own icon child) after. Full
+  open → close → reopen cycle using clicks placed at alternating corners of
+  the button (not its center) on each step, to exercise §9 and §10
+  together rather than just one at a time.
