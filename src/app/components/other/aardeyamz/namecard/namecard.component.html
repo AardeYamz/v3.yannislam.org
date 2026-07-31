@@ -1,41 +1,32 @@
 <section class="section namecard">
   <div class="container">
-    <div class="section-box ">
-      <div class="">
+    <div class="section-box">
+      <div>
         <h3 class="section-title">
           <span class='n-section-title'>∞. </span> What's in a name?
         </h3>
       </div>
       <div class="mt-5">
-        <div class="row p-0">
-
-          @for (section of data.about.aardeyamz ; track section; let i = $index) {
-            <div
-              class="col-12 col-md-6 col-lg-6 col-xl-4 namecard-col" data-aos="fade-up"
-              data-aos-duration="1000">
-              <div class="namecard-box">
-                <div class="namecard-content">
-                  <div class="row w-100 text-left m-0 p-0">
-                    <h5 class="namecard-title mt-4"><b> {{section.title}} </b>
-                  </h5>
-                  <h6 class="namecard-description mt-4">
+        <div class="namecard-accordion" data-aos="fade-up" data-aos-duration="1000">
+          @for (section of data.about.aardeyamz; track section; let i = $index) {
+            <div class="namecard-item" tabindex="0">
+              <div class="namecard-item-inner">
+                <div class="namecard-header">
+                  <h5 class="namecard-title"><b>{{section.title}}</b></h5>
+                  <h6 class="namecard-description">
                     <i>{{section.pronounciation}}</i> - ({{section.language}})
                   </h6>
                 </div>
-                <div>
-                  <ul class="namecard-skills">
-                    @for (content of section.content; track content) {
-                      <li>{{content}}</li>
-                    }
-                  </ul>
-                </div>
+                <ul class="namecard-skills">
+                  @for (content of section.content; track content) {
+                    <li>{{content}}</li>
+                  }
+                </ul>
               </div>
             </div>
-          </div>
-        }
+          }
+        </div>
       </div>
-
     </div>
   </div>
-</div>
 </section>
