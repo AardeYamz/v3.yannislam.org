@@ -575,7 +575,7 @@
     "greeting": "Hello! My name is",
     "name": "Yannis Lam;",
     "blurb": [
-      "I'm a <span class='underline'>Full Stack Software Developer</span> and technical leader who transforms legacy systems into modern, cloud-native platforms. At <span class='underline'>Voya Financial</span>, I architect Back Office solutions, orchestrate large-scale data migrations, and mentor cross-functional teams spanning 50+ engineers. I approach technical challenges by breaking complexity into manageable components, always prioritizing clarity and long-term maintainability. As a leader, I believe in elevating team capability through knowledge sharing and creating psychological safety for experimentation. I graduated from the <span class='underline'>University of Massachusetts Amherst</span> Commonwealth Honors College with dual degrees in Computer Science <i>(B.S.)</i> and Economics <i>(B.A.)</i>."
+      "I'm a <span class='underline'>Full Stack Software Developer</span> and technical leader transforming legacy systems into cloud-native platforms at <span class='underline'>Voya Financial</span>. I lead teams of 50+ engineers, decompose complex problems into elegant solutions, and elevate capability through knowledge sharing. I graduated from the <span class='underline'>University of Massachusetts Amherst</span> Commonwealth Honors College with dual degrees in Computer Science <i>(B.S.)</i> and Economics <i>(B.A.)</i>."
     ],
     "typeSection": [
       "I am a Full Stack Software Developer",
