@@ -209,12 +209,22 @@
     border-radius: 3px;
 }
 
-// Images are bound dynamically ([src]="img") and vary in native aspect ratio
-// (org logos vs. project photos). The width/height attributes on
-// .img-feature-workhistory only reserve layout space and prevent CLS;
-// object-fit keeps the actual image uncropped-looking without stretching.
+// Images are bound dynamically ([src]="img") and come from two different
+// sources with very different shapes: work/education/volunteering entries
+// point at external org logos (square, wide banners, arbitrary padding),
+// while college/highschool entries point at actual local project photos.
+// `cover` (fill + crop overflow) reads fine for a photo, but it slices
+// bits off a logo — a wide banner logo loses its left/right edges, a
+// square icon loses top/bottom. `exp.logoKey` (only set on the
+// logo-backed entries, see SiteConfigService.resolveLogoKeys) drives which
+// behavior each `<img>` gets, via the `--logo` modifier below.
 .img-feature-workhistory {
     object-fit: cover;
+
+    &.img-feature-workhistory--logo {
+        object-fit: contain;
+        background-color: $LightNavy;
+    }
 }
 
 
