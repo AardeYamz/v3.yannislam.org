@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
-import { ProjectsComponent } from './components/home/projects/projects.component';
-import { ProjectsHighschoolComponent } from './components/home/projects-highschool/projects-highschool.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'projects', component: ProjectsComponent },
-  { path: 'projects/highschool', component: ProjectsHighschoolComponent },
+  {
+    path: 'projects',
+    loadComponent: () => import('./components/home/projects/projects.component').then(m => m.ProjectsComponent)
+  },
+  {
+    path: 'projects/highschool',
+    loadComponent: () => import('./components/home/projects-highschool/projects-highschool.component').then(m => m.ProjectsHighschoolComponent)
+  },
   {
     path: 'aardeyamz',
     loadComponent: () => import('./components/other/aardeyamz/aardeyamz.component').then(m => m.AardeYamzComponent)
