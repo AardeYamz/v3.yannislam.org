@@ -142,7 +142,7 @@
         "language": "Greek / Chinese / English",
         "pronounciation": "/y æ - n ih s · l a m/",
         "content": [
-          "what my parents decided to name me in English",
+          "my parents' gift to me in English",
           "my legal name in America",
           "Yannis (Γιάννης) - Greek name meaning \"God is gracious\" or \"with God's grace\"; commonly translated to \"John\"",
           "Lam (林) - Common British Hong Kong romanization of Chinese surname meaning \"forest\""
@@ -254,14 +254,14 @@
             "timeframe": "01/2021 - 05/2021",
             "tab": "UMass",
             "description": [
-              "Served as a Peer Mentor for Residential Life at UMass Amherst in the Gorman/Wheeler Residential Cluster",
-              "Advised and supported 400+ incoming freshmen transitioning to on-campus living during the COVID-19 emergency",
-              "Coordinated with peer mentors and residential assistants to deliver seminars for first-year students"
+              "Provided peer mentorship to 400+ first-year students in the Gorman/Wheeler Residential Cluster during emergency remote learning transition.",
+              "Offered guidance on academic resources, social integration, and residential life challenges specific to pandemic conditions.",
+              "Collaborated with residential assistants and peer mentor teams to deliver educational seminars and foster inclusive community."
             ],
             "skills": [
-              "Leadership",
-              "Organizing",
-              "Educational Development"
+              "Peer Mentoring",
+              "Community Support",
+              "Crisis Communication"
             ]
           },
           {
@@ -364,13 +364,14 @@
             "timeframe": "05/2018 - 09/2018",
             "tab": "Home Depot",
             "description": [
-              "Operated the service desk at The Home Depot, specializing in online order fulfillment",
-              "Assisted customers with purchases, returns, and product inquiries",
-              "Maintained accurate inventory and a clean, organized service desk environment"
+              "Managed the service desk as a specialist in online order fulfillment and customer support",
+              "Resolved complex customer inquiries across purchases, returns, and product recommendations with efficiency",
+              "Maintained precise inventory accuracy and optimized desk operations for high-volume service"
             ],
             "skills": [
               "Customer Service",
-              "Retail Management"
+              "Problem-Solving",
+              "Operations Management"
             ]
           },
           {
@@ -476,7 +477,14 @@
             "timeframe": "08/2020 - 05/2021",
             "about": "Epic Movement is a Cru ministry that envisions Asian American students and faculty transformed by their relationship with Jesus Christ, embracing the value of their cultures and actively engaging in God's redemptive work in ways that honor all people and contexts. Epic Movement at UMass Amherst was established in the fall of 2008.",
             "description": [
-              "Beginning my senior year, I assumed the responsibilities of President. I led an Executive Board of 14 members as well as the general fellowship of 80 members during UMass Amherst's transition to remote learning."
+              "Assumed the presidency during my senior year and led an Executive Board of 14 leaders plus 80 fellowship members through UMass's emergency transition to remote learning.",
+              "Spearheaded virtual community-building initiatives to maintain engagement and spiritual growth during unprecedented organizational challenges.",
+              "Coordinated strategic planning, budget allocation, and collaborative decision-making across distributed leadership structures."
+            ],
+            "skills": [
+              "Strategic Leadership",
+              "Community Building",
+              "Change Management"
             ]
           },
           {
@@ -486,11 +494,14 @@
             "tab": "Craig's Doors",
             "timeframe": "01/2020 - 03/2020",
             "description": [
-              "Volunteered in the kitchen at Craig's Doors, a shelter and support services organization for people experiencing homelessness in Amherst, MA."
+              "Volunteered in the kitchen at Craig's Doors, a shelter and support services organization for individuals experiencing homelessness in Amherst, MA.",
+              "Contributed to meal preparation and service operations that provided daily support to vulnerable community members.",
+              "Worked collaboratively with diverse volunteer and staff teams in a mission-driven environment."
             ],
             "skills": [
               "Community Service",
-              "Food Service"
+              "Food Service",
+              "Collaboration"
             ]
           },
           {
@@ -501,10 +512,14 @@
             "tab": "Commencement",
             "timeframe": "05/2019",
             "description": [
-              "Served as a Commencement Ambassador, assisting with the University of Massachusetts Amherst's commencement ceremony and events."
+              "Selected as a Commencement Ambassador to represent the university and coordinate the graduation ceremony and celebration events.",
+              "Provided guidance and logistical support to graduating students, families, and dignitaries throughout commencement.",
+              "Contributed to creating a memorable milestone experience for the Class of 2019."
             ],
             "skills": [
-              "Event Support"
+              "Event Coordination",
+              "Communication",
+              "Student Engagement"
             ]
           },
           {
@@ -514,11 +529,14 @@
             "tab": "Agape",
             "timeframe": "09/2018 - 05/2019",
             "description": [
-              "Planned and organized fellowship events for Agape College Ministry, the college-age ministry of First Baptist Church of Amherst."
+              "Designed and executed fellowship events for Agape College Ministry, fostering spiritual growth and connection for 50+ college students.",
+              "Managed logistics, budgeting, and participant coordination across bi-weekly gatherings and special events.",
+              "Built and sustained meaningful community engagement in a growing young adult ministry."
             ],
             "skills": [
               "Event Planning",
-              "Community Building"
+              "Community Building",
+              "Leadership"
             ]
           },
           {
@@ -530,8 +548,14 @@
             "timeframe": "07/2018 - 08/2019",
             "about": "ARISE is a para-church ministry dedicated to loving the Korean Church of New England primarily by serving the second-generation youth.",
             "description": [
-              "Throughout the period of a week, I mentored a group of Korean American middle school boys at a retreat-style Christian camp.",
-              "I led quiet time, Bible studies, and fellowship. I also shot raw footage that was later used in a retreat highlight video."
+              "Mentored Korean American middle school boys through week-long retreat experiences, providing spiritual guidance and pastoral care.",
+              "Facilitated devotional activities, Bible studies, and group discussions tailored to adolescent developmental needs.",
+              "Created media content documenting retreat experiences, strengthening community engagement and alumni connection."
+            ],
+            "skills": [
+              "Youth Mentoring",
+              "Leadership",
+              "Cultural Competency"
             ]
           }
         ]
@@ -551,7 +575,7 @@
     "greeting": "Hello! My name is",
     "name": "Yannis Lam;",
     "blurb": [
-      "I'm a <span class='underline'>Full Stack Software Developer</span> who turns legacy systems into modern, cloud-native platforms. At <span class='underline'>Voya Financial</span>, I build and scale Back Office applications, drive data migrations, and lead cross-functional initiatives across 50+ developers. I graduated from the <span class='underline'>University of Massachusetts Amherst</span> Commonwealth Honors College with dual degrees in Computer Science <i>(B.S.)</i> and Economics <i>(B.A.)</i>, and I love turning complex problems into elegant, reliable software."
+      "I'm a <span class='underline'>Full Stack Software Developer</span> and technical leader who transforms legacy systems into modern, cloud-native platforms. At <span class='underline'>Voya Financial</span>, I architect Back Office solutions, orchestrate large-scale data migrations, and mentor cross-functional teams spanning 50+ engineers. I approach technical challenges by breaking complexity into manageable components, always prioritizing clarity and long-term maintainability. As a leader, I believe in elevating team capability through knowledge sharing and creating psychological safety for experimentation. I graduated from the <span class='underline'>University of Massachusetts Amherst</span> Commonwealth Honors College with dual degrees in Computer Science <i>(B.S.)</i> and Economics <i>(B.A.)</i>."
     ],
     "typeSection": [
       "I am a Full Stack Software Developer",
