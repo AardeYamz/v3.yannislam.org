@@ -8,6 +8,12 @@
     transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
 }
 
+// Shared by aside and .main-navbar.nav-shadow's translucent backdrops.
+%blur-backdrop {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
 .main-navbar {
     height: 70px;
     background: $Surface;
@@ -62,12 +68,12 @@
     aside {
         width: 75vw;
         display: flex;
-        -webkit-box-pack: center;
         justify-content: center;
-        -webkit-box-align: center;
         align-items: center;
         flex-direction: column;
-        background-color: $SurfaceContainerHigh;
+        // Translucent + blurred, same treatment as .main-navbar.nav-shadow.
+        background-color: color-mix(in srgb, $SurfaceContainerHigh 85%, transparent);
+        @extend %blur-backdrop;
         height: 100%;
         position: relative;
         // -625px was a magic number that only clears the drawer's own
@@ -84,9 +90,7 @@
 
         nav {
             display: flex;
-            -webkit-box-pack: justify;
             justify-content: space-between;
-            -webkit-box-align: center;
             align-items: center;
             width: 100%;
             flex-direction: column;
@@ -323,12 +327,12 @@
 }
 
 // Translucent + blurred backdrop once scrolled. Scoped to .main-navbar
-// (not the shared .nav-shadow rule above, also applied to the mobile
-// drawer <aside>) so the full-screen mobile menu stays opaque/readable.
+// rather than the shared .nav-shadow rule above (which the mobile drawer
+// <aside> also picks up, but that gets its own always-on blur — see aside
+// {} above) since this one should only kick in once actually scrolled.
 .main-navbar.nav-shadow {
     background: color-mix(in srgb, $Surface 85%, transparent);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    @extend %blur-backdrop;
 }
 
 @media (max-width: 1050px) {
