@@ -1,4 +1,5 @@
-import { Component, HostListener, ChangeDetectionStrategy } from '@angular/core';
+import { Component, HostListener, ChangeDetectionStrategy, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
@@ -25,17 +26,27 @@ export class HeaderComponent {
   languageFormControl: FormControl = new FormControl();
   menu: any[];
 
+  // Domino (Angular's server-side DOM emulation) provides a `window`/`document`
+  // stand-in during prerendering, but layout/scroll APIs like `scrollY`,
+  // `innerHeight` and `scrollIntoView` aren't meaningfully implemented there,
+  // so scroll-driven behavior is gated on this flag and only runs client-side.
+  private readonly isBrowser: boolean;
+
   constructor(
     private router: Router,
     public analyticsService: AnalyticsService,
     public themeService: ThemeService,
     private resumeService: ResumeService,
     configService: SiteConfigService,
+    @Inject(PLATFORM_ID) platformId: object,
   ) {
     this.menu = configService.menu;
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
   scroll(el: string) {
+    if (!this.isBrowser) return;
+
     if (document.getElementById(el)) {
       document?.getElementById(el)?.scrollIntoView({ behavior: 'smooth' });
     } else {
@@ -64,6 +75,7 @@ export class HeaderComponent {
 
   @HostListener('window:scroll')
   getScrollPosition() {
+    if (!this.isBrowser) return;
     this.pageYPosition = window.scrollY;
   }
 
@@ -71,6 +83,8 @@ export class HeaderComponent {
   private static readonly LOGO_ROTATION_SCROLL_PX = 900;
 
   get logoRotationDeg(): number {
+    if (!this.isBrowser) return 0;
+
     // On a page shorter than LOGO_ROTATION_SCROLL_PX, scrollY can never
     // reach it, so the spin used to stall partway through and just sit
     // there. Scale the distance-per-turn down to whatever's actually

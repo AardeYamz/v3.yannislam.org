@@ -1,4 +1,5 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Inject, OnDestroy, Output, PLATFORM_ID, ViewChild } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
@@ -28,7 +29,18 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
 
   private breathe?: JSAnimation;
 
-  constructor(private themeService: ThemeService) { }
+  // `document` doesn't exist and animejs has nothing to animate during
+  // server-side prerendering (Node has no DOM), so the whole intro/outro
+  // sequence is skipped there in favor of immediately reporting "finished"
+  // so the header still renders into the static HTML.
+  private readonly isBrowser: boolean;
+
+  constructor(
+    private themeService: ThemeService,
+    @Inject(PLATFORM_ID) platformId: object,
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   // Matches clearcolor/black/white.svg: full color for the default theme,
   // a single flat fill for light/dark so the intro matches the header logo.
@@ -41,6 +53,15 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    if (!this.isBrowser) {
+      // Skip the animated intro/outro entirely on the server and report
+      // completion right away, so prerendered HTML includes the header
+      // instead of being stuck behind a loading state that never finishes.
+      this.hidden = true;
+      this.finished.emit();
+      return;
+    }
+
     document.body.style.overflow = 'hidden';
     this.playIntro();
 

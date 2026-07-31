@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -20,7 +20,9 @@ import { HomeModule } from './components/home/home.module';
     NgbModule,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [
+    provideClientHydration()
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
