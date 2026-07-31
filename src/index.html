@@ -44,6 +44,11 @@
 
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Preload the weight used by the banner name (h2, font-weight 600) —
+       the largest above-the-fold text and the page's likely LCP element. -->
+  <link rel="preload" href="assets/fonts/Calibre/Calibre-Semibold.woff2" as="font" type="font/woff2" crossorigin>
+
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="manifest" href="manifest.webmanifest">
 

@@ -1,7 +1,6 @@
 @font-face {
     font-family: 'Calibre';
-    src: url('Calibre-MediumItalic.woff2') format('woff2'),
-        url('Calibre-MediumItalic.woff') format('woff');
+    src: url('Calibre-MediumItalic.woff2') format('woff2');
     font-weight: 500;
     font-style: italic;
     font-display: swap;
@@ -9,8 +8,7 @@
 
 @font-face {
     font-family: 'Calibre';
-    src: url('Calibre-SemiboldItalic.woff2') format('woff2'),
-        url('Calibre-SemiboldItalic.woff') format('woff');
+    src: url('Calibre-SemiboldItalic.woff2') format('woff2');
     font-weight: 600;
     font-style: italic;
     font-display: swap;
@@ -18,8 +16,7 @@
 
 @font-face {
     font-family: 'Calibre';
-    src: url('Calibre-Regular.woff2') format('woff2'),
-        url('Calibre-Regular.woff') format('woff');
+    src: url('Calibre-Regular.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -27,8 +24,7 @@
 
 @font-face {
     font-family: 'Calibre';
-    src: url('Calibre-Medium.woff2') format('woff2'),
-        url('Calibre-Medium.woff') format('woff');
+    src: url('Calibre-Medium.woff2') format('woff2');
     font-weight: 500;
     font-style: normal;
     font-display: swap;
@@ -36,8 +32,7 @@
 
 @font-face {
     font-family: 'Calibre';
-    src: url('Calibre-Semibold.woff2') format('woff2'),
-        url('Calibre-Semibold.woff') format('woff');
+    src: url('Calibre-Semibold.woff2') format('woff2');
     font-weight: 600;
     font-style: normal;
     font-display: swap;
@@ -45,8 +40,7 @@
 
 @font-face {
     font-family: 'Calibre';
-    src: url('Calibre-RegularItalic.woff2') format('woff2'),
-        url('Calibre-RegularItalic.woff') format('woff');
+    src: url('Calibre-RegularItalic.woff2') format('woff2');
     font-weight: normal;
     font-style: italic;
     font-display: swap;
@@ -54,8 +48,7 @@
 
 @font-face {
     font-family: 'Calibre';
-    src: url('Calibre-Light.woff2') format('woff2'),
-        url('Calibre-Light.woff') format('woff');
+    src: url('Calibre-Light.woff2') format('woff2');
     font-weight: 300;
     font-style: normal;
     font-display: swap;
@@ -63,8 +56,7 @@
 
 @font-face {
     font-family: 'Calibre';
-    src: url('Calibre-LightItalic.woff2') format('woff2'),
-        url('Calibre-LightItalic.woff') format('woff');
+    src: url('Calibre-LightItalic.woff2') format('woff2');
     font-weight: 300;
     font-style: italic;
     font-display: swap;
