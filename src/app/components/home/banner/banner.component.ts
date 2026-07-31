@@ -12,7 +12,7 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
     animations: [
         fadeStaggerAnimation('bannerTrigger', 'translateX(-50px)')
     ],
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
 })
 export class BannerComponent {

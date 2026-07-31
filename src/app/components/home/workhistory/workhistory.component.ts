@@ -6,7 +6,7 @@ import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
   selector: 'app-workhistory',
   templateUrl: './workhistory.component.html',
   styleUrls: ['./workhistory.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class WorkHistoryComponent {

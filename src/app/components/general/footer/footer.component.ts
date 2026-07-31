@@ -10,7 +10,7 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
     animations: [
         fadeStaggerAnimation('animateFooter', 'translateY(100%)')
     ],
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
 })
 export class FooterComponent {
