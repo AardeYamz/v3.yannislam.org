@@ -1,7 +1,6 @@
 @font-face {
     font-family: 'SF Mono';
-    src: url('SFMono-Regular.woff2') format('woff2'),
-        url('SFMono-Regular.woff') format('woff');
+    src: url('SFMono-Regular.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -9,8 +8,7 @@
 
 @font-face {
     font-family: 'SF Mono';
-    src: url('SFMono-SemiboldItalic.woff2') format('woff2'),
-        url('SFMono-SemiboldItalic.woff') format('woff');
+    src: url('SFMono-SemiboldItalic.woff2') format('woff2');
     font-weight: 600;
     font-style: italic;
     font-display: swap;
@@ -18,8 +16,7 @@
 
 @font-face {
     font-family: 'SF Mono';
-    src: url('SFMono-MediumItalic.woff2') format('woff2'),
-        url('SFMono-MediumItalic.woff') format('woff');
+    src: url('SFMono-MediumItalic.woff2') format('woff2');
     font-weight: 500;
     font-style: italic;
     font-display: swap;
@@ -27,8 +24,7 @@
 
 @font-face {
     font-family: 'SF Mono';
-    src: url('SFMono-RegularItalic.woff2') format('woff2'),
-        url('SFMono-RegularItalic.woff') format('woff');
+    src: url('SFMono-RegularItalic.woff2') format('woff2');
     font-weight: normal;
     font-style: italic;
     font-display: swap;
@@ -36,8 +32,7 @@
 
 @font-face {
     font-family: 'SF Mono';
-    src: url('SFMono-Medium.woff2') format('woff2'),
-        url('SFMono-Medium.woff') format('woff');
+    src: url('SFMono-Medium.woff2') format('woff2');
     font-weight: 500;
     font-style: normal;
     font-display: swap;
@@ -45,8 +40,7 @@
 
 @font-face {
     font-family: 'SF Mono';
-    src: url('SFMono-Semibold.woff2') format('woff2'),
-        url('SFMono-Semibold.woff') format('woff');
+    src: url('SFMono-Semibold.woff2') format('woff2');
     font-weight: 600;
     font-style: normal;
     font-display: swap;
