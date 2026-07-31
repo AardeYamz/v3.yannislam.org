@@ -77,3 +77,27 @@
         }
     }
 }
+
+@media (min-width: 1600px) {
+    .contact {
+        .contact-title {
+            font-size: 76px;
+        }
+
+        .contact-pre-title {
+            font-size: 18px;
+        }
+    }
+}
+
+@media (min-width: 2200px) {
+    .contact {
+        .contact-title {
+            font-size: 90px;
+        }
+
+        .contact-pre-title {
+            font-size: 20px;
+        }
+    }
+}

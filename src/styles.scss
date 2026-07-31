@@ -266,3 +266,50 @@ a {
         font-size: 18px;
     }
 }
+
+// Scale typography up on large/ultra-wide displays: the container caps out
+// at 1320px (Bootstrap's xxl breakpoint), so past that the page just gets
+// wider margins rather than bigger text, which reads as undersized on a
+// big monitor. .banner h2/h3 need !important here for the same reason the
+// downward breakpoints above do — banner.component.scss's own base rule
+// gets a component-scoped attribute selector from Angular's view
+// encapsulation, which otherwise outranks a plain selector here.
+@media (min-width: 1600px) {
+    body {
+        font-size: 22px;
+    }
+
+    .section-title {
+        font-size: 38px;
+
+        .n-section-title {
+            font-size: 22px;
+        }
+    }
+
+    .banner h2,
+    .banner h3,
+    .big-title {
+        font-size: 100px !important;
+    }
+}
+
+@media (min-width: 2200px) {
+    body {
+        font-size: 24px;
+    }
+
+    .section-title {
+        font-size: 44px;
+
+        .n-section-title {
+            font-size: 24px;
+        }
+    }
+
+    .banner h2,
+    .banner h3,
+    .big-title {
+        font-size: 120px !important;
+    }
+}

@@ -69,3 +69,31 @@
         }
     }
 }
+
+// h2/h3's own font-size bump for these breakpoints lives in styles.scss
+// (see the comment there for why) — this only covers what's local to this
+// component: the eyebrow line, and a wider paragraph cap so the larger
+// body copy (also bumped in styles.scss) doesn't wrap unnecessarily narrow.
+@media (min-width: 1600px) {
+    .banner .container .section-box-banner {
+        h1 {
+            font-size: 18px;
+        }
+
+        p {
+            max-width: 600px;
+        }
+    }
+}
+
+@media (min-width: 2200px) {
+    .banner .container .section-box-banner {
+        h1 {
+            font-size: 20px;
+        }
+
+        p {
+            max-width: 700px;
+        }
+    }
+}
