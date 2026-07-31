@@ -26,7 +26,7 @@ import { ThemeService } from 'src/app/services/theme/theme.service';
     // still reads as a staggered entrance.
     fadeStaggerAnimation('animateMenu', 'translateX(-20px)', '.container > *')
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 

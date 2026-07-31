@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, QueryList, ViewChildren, effect } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, QueryList, ViewChildren, effect } from '@angular/core';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
 interface FloatingLogo {
@@ -78,7 +78,7 @@ const DODGE_TARGET_DECAY = 0.94;
   selector: 'app-floating-logos',
   templateUrl: './floating-logos.component.html',
   styleUrls: ['./floating-logos.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
@@ -100,10 +100,22 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
 
   private isFirstThemeCheck = true;
 
-  constructor(private host: ElementRef<HTMLElement>, private themeService: ThemeService) {
+  constructor(
+    private host: ElementRef<HTMLElement>,
+    private themeService: ThemeService,
+    private cdr: ChangeDetectorRef,
+  ) {
     // Re-randomize colors whenever the user toggles the theme. Skipped on
     // the first run (effects fire once immediately on creation) since
     // generateLogos() already picked initial colors.
+    //
+    // This effect fires from the reactive graph, not from a template-bound
+    // DOM event, so under OnPush it wouldn't otherwise be picked up: the
+    // view isn't automatically marked dirty just because a constructor
+    // effect ran, and reshuffleColors() mutates `logo.variant` (a plain
+    // field on an object already in `logos`, read by [src] in the
+    // template) in place rather than replacing the array. markForCheck()
+    // makes that in-place update visible on the next tick.
     effect(() => {
       this.themeService.mode();
       if (this.isFirstThemeCheck) {
@@ -111,6 +123,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
         return;
       }
       this.reshuffleColors();
+      this.cdr.markForCheck();
     });
   }
 

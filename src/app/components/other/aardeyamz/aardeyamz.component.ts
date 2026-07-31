@@ -5,7 +5,7 @@ import { NamecardComponent } from "./namecard/namecard.component";
   selector: 'app-aardeyamz',
   imports: [NamecardComponent],
   templateUrl: './aardeyamz.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './aardeyamz.component.scss'
 })
 export class AardeYamzComponent {

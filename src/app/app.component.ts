@@ -1,11 +1,14 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
+import { inject as injectVercelAnalytics } from '@vercel/analytics';
+import { injectSpeedInsights } from '@vercel/speed-insights';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class AppComponent implements OnInit {
@@ -19,6 +22,7 @@ export class AppComponent implements OnInit {
   constructor(
     private titleService: Title,
     private metaService: Meta,
+    @Inject(PLATFORM_ID) private platformId: object,
   ) { }
 
   ngOnInit(): void {
@@ -27,6 +31,16 @@ export class AppComponent implements OnInit {
       { name: 'keywords', content: 'Web, software, developer, portfolio, resume, photography' },
       { name: 'description', content: 'Yannis Lam Personal Website' },
     ]);
+
+    // Vercel Web Analytics + Speed Insights, additive to the existing
+    // gtag.js-based AnalyticsService (see analytics.service.ts). Both
+    // `inject()` calls are already no-ops when `window` is undefined, but
+    // this app currently has no SSR, so the isPlatformBrowser() guard is
+    // just defensive belt-and-braces should that change later.
+    if (isPlatformBrowser(this.platformId)) {
+      injectVercelAnalytics();
+      injectSpeedInsights();
+    }
   }
 
   onLoadingScreenFinished(): void {

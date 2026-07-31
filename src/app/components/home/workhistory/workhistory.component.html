@@ -34,7 +34,7 @@
             </div>
           }
           <div [ngClass]="{'workhistory-info-right': i % 2 == 0, 'workhistory-info-left': i % 2 != 0}"
-            [style.backgroundImage]="'url(' + exp.imgs[0] + ')'">
+            [appLogoFallbackBg]="exp.imgs[0]" [appLogoFallbackBgOrg]="exp.organization">
             <div class="workhistory-box">
               <h5 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}" class="workhistory-title">
               {{exp.title}} </h5>
