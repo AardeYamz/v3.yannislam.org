@@ -6,7 +6,7 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
   selector: 'app-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class AboutComponent {

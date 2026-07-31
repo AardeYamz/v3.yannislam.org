@@ -15,7 +15,7 @@ import { ThemeService } from 'src/app/services/theme/theme.service';
   animations: [
     fadeStaggerAnimation('animateMenu', 'translateX(-20px)')
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 

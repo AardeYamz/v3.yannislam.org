@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Inject, OnDestroy, Output, PLATFORM_ID, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestroy, Output, PLATFORM_ID, ViewChild } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
 import { ThemeService } from 'src/app/services/theme/theme.service';
@@ -16,7 +16,7 @@ const MIN_DISPLAY_MS = 1400;
   selector: 'app-loading-screen',
   templateUrl: './loading-screen.component.html',
   styleUrls: ['./loading-screen.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
@@ -37,6 +37,7 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private themeService: ThemeService,
+    private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) platformId: object,
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -123,7 +124,13 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
         duration: 500,
         ease: 'inOutQuad',
         onComplete: () => {
+          // `hidden` gates the template's [class.loading-screen--hidden]
+          // binding, but this callback comes from animejs's own rAF-driven
+          // timeline, not an Angular-bound event, so under OnPush the view
+          // wouldn't otherwise be marked dirty here — without markForCheck()
+          // the overlay would never actually fade/hide.
           this.hidden = true;
+          this.cdr.markForCheck();
           document.body.style.overflow = '';
           this.finished.emit();
         }
