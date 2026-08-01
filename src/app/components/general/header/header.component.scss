@@ -147,6 +147,8 @@
         left: 0;
         right: 0;
         bottom: 0;
+        display: flex;
+        align-items: center;
         width: 36px;
         height: 60px;
         cursor: pointer;
@@ -159,9 +161,16 @@
             height: 1.5px;
         }
 
+        // Centered via the wrapper's flex align-items rather than a
+        // transform: translateY() here, because this div is also a target
+        // of the header's entrance stagger animation (fadeStaggerAnimation),
+        // which animates `transform` from translateX(-20px) to none. A
+        // transform-based vertical offset would get clobbered for the
+        // duration of that animation, so the icon appeared pinned to the
+        // top of its wrapper and only snapped down to its real position
+        // once the animation finished and released the property.
         .hamburger-menu {
             position: relative;
-            transform: translateY(25px);
             background: $Orange;
             transition: all 0ms 300ms;
 
