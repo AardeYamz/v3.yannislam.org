@@ -127,19 +127,52 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  // Pauses/resumes the rAF loop when the tab is hidden/shown, so a
+  // backgrounded tab doesn't keep burning CPU/battery on an animation
+  // nobody can see. No-op under reduced motion, since there's no loop
+  // running to pause in the first place (render(0) already drew the
+  // static final frame).
+  private readonly onVisibilityChange = () => {
+    if (this.prefersReducedMotion) return;
+
+    if (document.hidden) {
+      this.stopLoop();
+    } else {
+      this.startLoop();
+    }
+  };
+
   ngAfterViewInit(): void {
     this.elements = this.logoEls.map(ref => ref.nativeElement);
     this.layoutLanes();
 
     if (typeof window === 'undefined') return;
     window.addEventListener('resize', this.onResize);
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
 
     if (this.prefersReducedMotion) {
       this.render(0);
       return;
     }
 
-    const start = performance.now();
+    this.startLoop();
+  }
+
+  ngOnDestroy(): void {
+    this.stopLoop();
+    clearTimeout(this.resizeTimeout);
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.onResize);
+      document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    }
+  }
+
+  // Anchors `start` so that `now - start` (in tick) continues from
+  // `this.elapsedS` rather than restarting at zero — resuming after a
+  // pause (e.g. tab was hidden) picks up right where it left off instead
+  // of jumping the logos back to their track's starting position.
+  private startLoop(): void {
+    const start = performance.now() - this.elapsedS * 1000;
     const tick = (now: number) => {
       this.render(now - start);
       this.rafId = requestAnimationFrame(tick);
@@ -147,10 +180,11 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     this.rafId = requestAnimationFrame(tick);
   }
 
-  ngOnDestroy(): void {
-    if (this.rafId !== undefined) cancelAnimationFrame(this.rafId);
-    clearTimeout(this.resizeTimeout);
-    if (typeof window !== 'undefined') window.removeEventListener('resize', this.onResize);
+  private stopLoop(): void {
+    if (this.rafId !== undefined) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = undefined;
+    }
   }
 
   // Sets a target displacement away from the cursor; render() eases the
