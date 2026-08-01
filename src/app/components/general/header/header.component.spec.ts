@@ -32,7 +32,7 @@ describe('HeaderComponent', () => {
       themeService as any,
       resumeService as any,
       configService as any,
-      'browser'
+      'browser' as any
     );
   });
 
