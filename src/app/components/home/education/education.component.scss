@@ -3,6 +3,14 @@
 
 ::ng-deep .education .education-tabs {
     display: flex;
+    // Centers the tab widget itself within the now much wider container —
+    // the section-title above stays full-width (see .education below), but
+    // the tabs/content pairing reads as its own centered block rather than
+    // pinned to the container's left edge with a large empty gap on the
+    // right. Width is the tab list (114.33px) + content's own left margin
+    // (38px) + its max-width (700px) below.
+    max-width: 852.33px;
+    margin: 0 auto;
 
     // Caps line length on the actual readable text, not the section — the
     // old approach (max-width on .education, the <section> element itself)
@@ -122,6 +130,7 @@
 @media (max-width: 768px) {
     ::ng-deep .education-tabs {
         display: block !important;
+        max-width: 100% !important;
 
         .tab-content {
             margin-left: 0px !important;

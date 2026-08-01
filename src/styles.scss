@@ -195,6 +195,23 @@ a {
     max-width: min(94vw, 1800px) !important;
 }
 
+// footer-left-bar/footer-right-bar (the social-icon column and the
+// rotated email link) are position: fixed to the viewport's bottom
+// corners and only appear from this same breakpoint up (d-md-block in
+// footer.component.html), so they're always on screen wherever the page
+// happens to be scrolled to — not just over the true <footer>. The 94vw
+// cap above only reserves ~3% of the viewport per side, which is well
+// under the ~110px those fixed bars need and let them sit on top of
+// whatever section content is currently at the bottom of the window
+// (confirmed overlapping the About section's skill list at ~1280px
+// wide). Below the ~2040px width where the 94vw margin naturally clears
+// that on its own, reserve a flat 110px per side instead.
+@media (min-width: 768px) {
+    .container {
+        max-width: min(94vw, 1800px, calc(100vw - 220px)) !important;
+    }
+}
+
 @media (max-width: 768px) {
     .section-title {
         font-size: 24px;
