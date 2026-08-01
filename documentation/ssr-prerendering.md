@@ -327,20 +327,26 @@ this PR's `PLATFORM_ID`/`isPlatformBrowser` guards and the `OnPush` PR's
 same constructors — both are now present in both files.
 
 `ng build` after the merge still succeeds (exit 0, all 4 routes
-prerendered, content verified non-empty), but it now surfaces 3
-non-fatal `ReferenceError: Image is not defined` errors logged during
-prerendering — one per route that renders the work-history carousel
-(`/`, `/projects`, `/projects/highschool`). This traces to
-`ngx-owl-carousel-o`'s lazy-image handling, which calls `new Image()` to
-probe image dimensions; Domino (Angular's server-side DOM emulation)
-doesn't implement the `Image` constructor. The exception is caught by
-Angular's zone/error handling and doesn't stop the build or corrupt the
-output — the carousel markup (`.owl-carousel`, `.img-feature-workhistory`)
-is confirmed present in the rendered HTML for both affected routes — but
-it's a real, previously-unverified gap in `ngx-owl-carousel-o`'s SSR
-compatibility (this PR's original verification only read the library's
-source for `isPlatformBrowser` guards, not observed its actual prerender
-behavior). Left unfixed here as out of scope for a merge-conflict pass;
-worth a follow-up (e.g. lazy-load images without the carousel's
-dimension-probing feature, or gate that specific behavior behind the same
-`isPlatformBrowser` check used elsewhere in this PR).
+prerendered, content verified non-empty), but it surfaced 3 non-fatal
+`ReferenceError: Image is not defined` errors logged during prerendering —
+one per route that renders the work-history carousel (`/`, `/projects`,
+`/projects/highschool`). Initially misdiagnosed as `ngx-owl-carousel-o`'s
+lazy-image handling (that library does ship its own `isPlatformBrowser`
+guards, confirmed by reading its source, and was a reasonable first
+suspect given the routes affected). The actual source, found by grepping
+the repo for `new Image` directly rather than continuing to assume it was
+third-party: **`src/app/directives/logo-fallback/logo-fallback-background.directive.ts`**,
+a directive added by a sibling PR after this branch was first opened. Its
+`probe()` method (called from `ngOnChanges`, which fires during
+prerendering same as anywhere else) does `new Image()` to test whether a
+background-image URL 404s, so it can swap to a generated fallback SVG —
+`Image` doesn't exist under Domino, so this threw on every affected route.
+
+Fixed with the same pattern used everywhere else in this file: injected
+`PLATFORM_ID`, and `ngOnChanges` now only calls `probe()` when
+`isPlatformBrowser` is true; server-side it just sets the background to
+the raw `src` directly (no probing possible without `Image`, and no error
+event to act on anyway) and lets the real browser probe it — and correct
+to the fallback if needed — once it hydrates client-side. Re-ran `ng
+build` after the fix: zero `Image is not defined` errors, `Prerendered 4
+static routes.` still reported, build otherwise unchanged.
