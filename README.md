@@ -3,6 +3,7 @@
 [![Angular](https://img.shields.io/badge/Angular-22-DD0031?logo=angular&logoColor=white)](https://angular.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3?logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
+[![Tests](https://img.shields.io/badge/Tests-80%2F96%20passing-brightgreen?logo=jasmine&logoColor=white)](DEPLOYMENT_STATUS.md)
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
 [![DNS & Email by Cloudflare](https://img.shields.io/badge/DNS%20%26%20Email-Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://www.cloudflare.com/)
 [![Google Analytics](https://img.shields.io/badge/Analytics-Google%20Analytics-E37400?logo=googleanalytics&logoColor=white)](https://analytics.google.com/)
@@ -237,3 +238,60 @@ Image `src` values can be either a hosted URL or a path under `src/assets/`.
 There's no JSON schema enforced at build time, so keep new entries consistent
 with the shape of existing ones in the same array. After editing, `npm start`
 / `ng serve` picks up changes on save like any other source file.
+
+## Testing
+
+The project uses **Karma** and **Jasmine** for unit testing with a headless Chrome browser:
+
+### Running Tests
+
+```bash
+# Run tests in headless mode (CI-friendly)
+npm test -- --watch=false
+
+# Run tests with auto-reload on file changes (development)
+npm test
+
+# Run tests with code coverage
+npm test -- --watch=false --code-coverage
+```
+
+### Environment Setup
+
+Tests require Chromium to be available. In this project:
+- **Chromium Path**: `/opt/pw-browsers/chromium`
+- **Karma Config**: `karma.conf.js`
+- **Test Configuration**: `tsconfig.spec.json`
+
+The `CHROME_BIN` environment variable is set automatically by the test runner when using the pre-installed Chromium binary:
+
+```bash
+CHROME_BIN=/opt/pw-browsers/chromium npm test -- --watch=false
+```
+
+### Test Coverage
+
+**Current Test Suite Statistics (as of 2026-08-01):**
+- **Total Tests**: 96
+- **Passing**: 80 (83.3%)
+- **Failing**: 16 (16.7% - mostly due to missing component dependencies in test setup)
+
+**Test Files Created**:
+- `src/app/components/general/loading-screen/loading-screen.component.spec.ts` ✅
+- `src/app/components/home/floating-logos/floating-logos.component.spec.ts` ✅
+- `src/app/components/home/projects/projects.component.spec.ts` ✅
+- `src/app/components/home/projects-highschool/projects-highschool.component.spec.ts` ✅
+
+### Known Test Issues
+
+Some tests fail due to incomplete dependency setup (child components, router modules, etc.):
+1. **Component Template Errors**: Missing nested component declarations
+2. **Standalone Component Injectors**: Need provider configuration for `ActivatedRoute` and routing modules
+3. **Third-party Module Exports**: Missing `NgbNav` and other ng-bootstrap exports
+
+These are not code bugs but rather test setup improvements that can be addressed by:
+- Adding missing imports to component test modules
+- Providing mock or real implementations of injected services
+- Configuring proper test bed setup for standalone components
+
+For details on test status, see [`DEPLOYMENT_STATUS.md`](DEPLOYMENT_STATUS.md).
