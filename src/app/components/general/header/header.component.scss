@@ -272,7 +272,13 @@
     right: 0;
     z-index: 9;
     height: 100px;
-    padding: 0 6%;
+    // No horizontal padding here (was 0 6%): that inset was on top of
+    // .container's own centering/gutter logic, so the nav's available
+    // width for its .container was narrower than every section's, and a
+    // fixed percentage can't track .container's `min(94vw, 1800px)` cap
+    // at every viewport size anyway. Leaving this at 0 makes the nav's
+    // .container resolve identically to a section's, so the logo and
+    // theme toggle line up with the section content's edges exactly.
     @extend %ease-transition;
 }
 

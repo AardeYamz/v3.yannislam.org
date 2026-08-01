@@ -80,6 +80,69 @@
     }
 }
 
+// Both halves of this row were fixed-size (480px text column, 300x400
+// photo) so once .container started tracking the viewport instead of
+// Bootstrap's 1320px cap (see .container in styles.scss), a wide window
+// left a large empty band between the two columns. Scale both up to use
+// the extra room, same breakpoints as the nav bar/typography scaling in
+// styles.scss.
+@media (min-width: 1600px) {
+    .about {
+        .about-description {
+            max-width: 600px;
+        }
+
+        // The base rule's margin: auto centers the photo within its own
+        // 50%-width column, which (now that the column itself is much
+        // wider) left a bigger gap on the text side than the outer edge.
+        // Pulling it to the column's near edge instead keeps the gap next
+        // to the text small regardless of how wide the column gets.
+        .about-img-container {
+            width: 414px;
+            margin: 0 auto 0 40px;
+
+            img {
+                width: 390px;
+                height: 520px;
+                object-fit: cover;
+            }
+
+            &:after {
+                width: 390px;
+                height: 520px;
+                top: 13px;
+                left: 30px;
+            }
+        }
+    }
+}
+
+@media (min-width: 2200px) {
+    .about {
+        .about-description {
+            max-width: 680px;
+        }
+
+        .about-img-container {
+            width: 464px;
+            margin: 0 auto 0 50px;
+
+            img {
+                width: 440px;
+                height: 587px;
+                object-fit: cover;
+            }
+
+            &:after {
+                width: 440px;
+                height: 587px;
+                top: 15px;
+                left: 34px;
+            }
+        }
+    }
+}
+
 @media (max-width: 500px) {
     .about {
         // A fixed width here (rather than 100%, like it was) matters: the

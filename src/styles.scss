@@ -310,6 +310,11 @@ a {
         height: 54px !important;
         font-size: 23px !important;
     }
+
+    .main-btn {
+        font-size: 15px;
+        padding: 1.5rem 2.25rem;
+    }
 }
 
 @media (min-width: 2200px) {
@@ -359,5 +364,10 @@ a {
         width: 60px !important;
         height: 60px !important;
         font-size: 26px !important;
+    }
+
+    .main-btn {
+        font-size: 17px;
+        padding: 1.75rem 2.75rem;
     }
 }

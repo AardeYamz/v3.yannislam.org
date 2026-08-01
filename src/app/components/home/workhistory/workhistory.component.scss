@@ -13,7 +13,14 @@
 
 .workhistory {
     .workhistory-container {
-        margin: 75px 0;
+        margin: 75px auto;
+        // The carousel/photo column is a fixed 600px and the info column is
+        // only ever 50% of *this* container (not the section), so once
+        // .container tracks the viewport instead of Bootstrap's 1320px cap
+        // (see .container in styles.scss) a wide window left this row
+        // packed to the left with a large gap on the right. 1320px matches
+        // the width these proportions were originally tuned against.
+        max-width: 1320px;
         .workhistory-info-left {
             width: 50%;
             margin-right: -57px;

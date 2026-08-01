@@ -4,8 +4,15 @@
 ::ng-deep .education .education-tabs {
     display: flex;
 
+    // Caps line length on the actual readable text, not the section — the
+    // old approach (max-width on .education, the <section> element itself)
+    // also shrank the section-title above it to match, which looked
+    // undersized/misaligned next to every other section once the shared
+    // .container was widened to track the viewport (see .container in
+    // styles.scss).
     .tab-content {
         margin-left: 38px;
+        max-width: 700px;
     }
 
     ul {
@@ -71,9 +78,6 @@
 }
 
 .education {
-
-    max-width: 700px;
-    margin: auto;
 
     .title-tab-content {
         color: $OnSurface;
