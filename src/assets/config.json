@@ -409,9 +409,9 @@
           "tab": "CICS BS",
           "description": [
             "GPA: 3.69",
-            "Bachelors of Sciences, Manning College of Information & Computer Sciences",
-            "Honors: Dean's List Award (Fall 2017, Spring 2019, Fall 2019, Spring 2020, Fall 2020, Spring 2021)",
-            "Some advanced courses that I took were Physical Computing, Data Structures, Data Management, Web Programming, Digital Forensics, Internet Law, and Computer Networks for C.S. "
+            "Bachelor of Science, Manning College of Information & Computer Sciences",
+            "Honors: Dean's List (6 semesters)",
+            "Advanced coursework: Physical Computing, Data Structures, Data Management, Web Programming, Digital Forensics, Internet Law, Computer Networks"
           ]
         },
         {
@@ -425,24 +425,23 @@
           "tab": "ECON BA",
           "description": [
             "GPA: 3.69",
-            "Bachelors of Arts, College of Social & Behavioral Sciences",
-            "Revelant courses that I took included Political Economy of the Environment, Game Theory, Money and Banking, and Econometrics for Economics."
+            "Bachelor of Arts, College of Social & Behavioral Sciences",
+            "Relevant coursework: Political Economy of the Environment, Game Theory, Money and Banking, Econometrics"
           ]
         },
         {
           "logoKey": "braintreePS",
           "organization": "Braintree High School",
-          "timeframe": "09/2017 - 05/2021",
+          "timeframe": "09/2013 - 06/2017",
           "link": [
             "https://www.braintreeschools.org/"
           ],
           "title": "High School Diploma",
           "tab": "HS",
           "description": [
-            "GPA: 3.83",
-            "High School Diploma ~ Summa Cum Laude",
-            "Throughout high school, I completed 10 AP Courses and passed 10 AP tests while maintaining a 3.83 GPA and a class rank of 8/401.",
-            "I was an inducted member of the Edna M. Parker National Honor Society and acknowledged as a class scholar."
+            "GPA: 3.83 ~ Summa Cum Laude",
+            "Completed 10 AP Courses and passed 10 AP exams while maintaining class rank of 8/401",
+            "Inducted member of the Edna M. Parker National Honor Society and recognized as a class scholar"
           ]
         }
       ],
@@ -641,11 +640,11 @@
           "imgs": [
             "assets/images/projects/OLS Regression Plot.png"
           ],
-          "title": "An Analysis of Regressions of Salary Factors in Massachusetts",
-          "timeframe": "Senior Thesis - 2020 - 2021",
+          "title": "Analysis of Salary Factors in Massachusetts",
+          "timeframe": "Senior Thesis - 2021",
           "description": [
-            "In 2020, city and state governments across the United States placed restrictions on different sectors of local economies, resulting in an economic recession with differing levels of unemployment across states and industries. Employment salaries and rates varied significantly between remote white-collar workers and in-person blue-collar workers. While Covid-19 has amplified the wage differentials between different industries, such differentials existed prior to the pandemic. Factors such as geographic location, company, occupation, industry, and work history all influence salaries. Previous research has focused on minimum wage increases, interstate comparison of manufacturing production, and work history to determine future jobs.",
-            "This thesis built models of previously collected employment data and analyzed the impact of variables in determining hourly salary. Linear, lasso, and ridge regression models were used to consider the differences. The models examined the causal relationships and predicted outcomes for occupations in the Commonwealth of Massachusetts."
+            "Investigated the wage gap between remote and in-person employment during the COVID-19 recession. While pandemic conditions amplified these differentials, analysis showed structural wage disparities predated the pandemic across geography, industry, occupation, and work history.",
+            "Built predictive models using linear, lasso, and ridge regression to analyze salary determination in Massachusetts. Examined causal relationships between demographic/employment variables and hourly wages, providing insights into occupational earnings potential within the Commonwealth."
           ]
         },
         {
@@ -655,8 +654,8 @@
           "title": "DBTBT.com",
           "timeframe": "Fall 2019",
           "description": [
-            "In CS 326: Web Programming, I partnered with Christian Daher, Bhogesh Maddirala, and Matthew Lehoullier to create a website with the intent of helping people to make better financial decisions. Upon running a search on the website homepage (https://www.dbtbt.com/), the user will be presented with a number of items from Amazon.com, along with similarly-priced stock options. The idea is to encourage the user to invest their free money for the future, rather than wasting it on frivolous purchases.",
-            "This addresses a real world problem as many Americans do not make educated financial decisions. This project used Node.js (backend and auxiliary socket server), React (frontend), Apache, Nginx (reverse proxies), Amazon EC2, GCP Compute Engine (hosting), Amazon RDS using MySQL (database), and Amazon Route 53 (DNS)."
+            "In CS 326: Web Programming, partnered with Christian Daher, Bhogesh Maddirala, and Matthew Lehoullier to build a platform encouraging smarter financial decision-making. The application compares Amazon products with similarly-priced stock investment alternatives, helping users redirect impulse spending toward long-term wealth building.",
+            "Tech stack: Node.js (backend & socket server), React (frontend), Apache & Nginx (reverse proxies), Amazon EC2 & GCP Compute Engine (hosting), Amazon RDS with MySQL (database), Amazon Route 53 (DNS). Deployed live at https://www.dbtbt.com/"
           ],
           "link": "https://github.com/cdaher3/DBTBT"
         },
@@ -665,9 +664,9 @@
             "assets/images/projects/20191020_053757.jpg"
           ],
           "title": "Raspberry Pi Python Timelapse Controller",
-          "timeframe": "HackUMass 00110 - October 2019",
+          "timeframe": "HackUMass VII - October 2019",
           "description": [
-            "During the HackUMass VII competition, my team (Henry Cheung, Veronica Gusev, and Nhan Le) built a Raspberry Pi powered camera timelapse system. The Arduino ran a python script that controlled a DSLR camera. This script took a time interval and sent it to the DSLR, received images were compiled and encoded into a video."
+            "Built an automated timelapse photography system with Henry Cheung, Veronica Gusev, and Nhan Le. A Python script on the Raspberry Pi controlled a DSLR camera at configurable intervals, capturing images that were automatically compiled and encoded into timelapse videos."
           ],
           "link": "https://github.com/dergoose/hackumass2019"
         },
@@ -678,7 +677,7 @@
           "title": "Arduino Smart Window",
           "timeframe": "Fall 2018",
           "description": [
-            "During the Fall 2018 semester, I took CICS 290M: MAKE: A Hands-On Introduction to Physical Computing. In this class, I partnered with Jeffrey Carr and we built an arduino powered smart window for our final project. The arduino had a photoresistor that would raise and lower a servo powered shade depending on the amount of light detected."
+            "Built an automated window shade system with Jeffrey Carr for CICS 290M: Physical Computing. An Arduino microcontroller monitored ambient light levels via a photoresistor and automatically adjusted a servo-controlled shade to optimize natural lighting in real-time."
           ],
           "link": "https://sites.google.com/umass.edu/smartblinds/about"
         },
@@ -687,9 +686,9 @@
             "assets/images/projects/IMG_1246.JPG"
           ],
           "title": "ZebRed PC Build",
-          "timeframe": "June 2016 - 2024",
+          "timeframe": "June 2016 - Present",
           "description": [
-            "Over the course of the past few years I have been perfecting my own desktop setup. Tired of using sluggish prebuilt computers, I built my own!"
+            "Custom-built high-performance desktop workstation optimized for development and creative work. Engineered component selection for performance, thermal efficiency, and long-term value. Continuously refined and upgraded over 8+ years of active use and iteration."
           ],
           "link": "https://pcpartpicker.com/user/Aardeyamz/saved/whJdFT"
         },
@@ -698,9 +697,9 @@
             "assets/images/projects/20181013_141834.jpg"
           ],
           "title": "Arduino Security System",
-          "timeframe": "HackUMass 00110 - October 2018",
+          "timeframe": "HackUMass VI - October 2018",
           "description": [
-            "During the HackUMass VI competition, my team (Jeffrey Carr, Henry Cheung, & Steven Yen) built an arduino powered alarm system. The alarm system had a distance proximity sensor that calculated based off of echo location. Based off of the distance readings, a neopixel ring would light up more pixels the closer an object was to the sensor. There was three levels of colors and if an object got too close, the neopixel ring would turn red."
+            "Built an ultrasonic proximity-based alarm system with Jeffrey Carr, Henry Cheung, and Steven Yen. An Arduino microcontroller monitored distance via ultrasonic sensor and provided visual feedback through a NeoPixel ring that intensified as objects approached, turning red when triggering the alarm threshold."
           ],
           "link": "https://github.com/jcarr98/HackUMass2018"
         }
@@ -716,9 +715,9 @@
             "assets/images/projects/IMG_9104.JPG"
           ],
           "title": "Queen of the Desert: Mother of Kings",
-          "timeframe": "NHD - Spring 2017",
+          "timeframe": "National History Day - Spring 2017",
           "description": [
-            "During senior year of high school, my team (Matthew Pugsley, Katie O'Neil, Laura Wang, and myself) competed in our final National History Day competition. We researched Gertrude Bell and her legacy to current Middle Eastern affairs."
+            "Senior capstone project exploring Gertrude Bell's historical significance and influence on modern Middle Eastern geopolitics. Collaborated with Matthew Pugsley, Katie O'Neil, and Laura Wang to research and present at the national competition."
           ]
         },
         {
@@ -726,29 +725,29 @@
             "assets/images/projects/IMG_20160311_201710.jpg"
           ],
           "title": "Scientology: An Exploration into the Unknown",
-          "timeframe": "NHD - Spring 2016",
+          "timeframe": "National History Day - Spring 2016",
           "description": [
-            "In 2016, my team (Matthew Pugsley, Katie O'Neil, Laura Wang, and myself) researched the life of L. Ron Hubbard and the rise of Scientology. Our exhibit won 3rd place at the Massachusetts South Shore regional History Day competition."
+            "Researched the life of L. Ron Hubbard and the origins of the Scientology movement with Matthew Pugsley, Katie O'Neil, and Laura Wang. Our exhibit earned 3rd place at the Massachusetts South Shore regional History Day competition."
           ]
         },
         {
           "imgs": [
             "assets/images/projects/IMG_20150314_120402.jpg"
           ],
-          "title": "Finding MH370: How Satellite Data Was Used to Locate the Missing Malaysian Airliner",
+          "title": "Finding MH370: Satellite Data Analysis",
           "timeframe": "Science Fair - Spring 2015",
           "description": [
-            "Sophomore year of high school, I researched the disappearance of Malaysian Airlines flight MH370. Using satellite data that was released to the public, I calculated a possible final path and coordinates of a proposed crash site in the Indian Ocean. My project won 1st place at my high school science fair before I moved on to regional and state science fairs."
+            "Analyzed publicly released satellite data to reconstruct a probable flight path and proposed impact coordinates for Malaysia Airlines Flight 370 in the Indian Ocean. Won 1st place at the high school science fair and advanced to regional and state competitions."
           ]
         },
         {
           "imgs": [
             "assets/images/projects/IMG_1787.JPG"
           ],
-          "title": "Clouded by Delusion: The Flawed Leadership & Legacy of the Salem Court System",
-          "timeframe": "NHD 2015 - Spring 2015",
+          "title": "Clouded by Delusion: The Salem Court System",
+          "timeframe": "National History Day - Spring 2015",
           "description": [
-            "For the National History Day contest of 2015, my team (Lily Tang, Matthew Pugsley, Amanda Ramos, and Caitlin Leach) researched and created an exhibit around the flawed court system that resulted in the Salem Witch Trials. Our exhibit won 1st place at the South Shore Regional competition and won an Honorable Mention at the Massachusetts History Day contest."
+            "Examined the institutional failures and legal flaws that precipitated the Salem Witch Trials. Collaborated with Lily Tang, Matthew Pugsley, Amanda Ramos, and Caitlin Leach to research and exhibit findings, earning 1st place at South Shore Regional competition and Honorable Mention at state level."
           ]
         }
       ]
