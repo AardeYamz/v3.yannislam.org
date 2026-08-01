@@ -147,8 +147,6 @@
         left: 0;
         right: 0;
         bottom: 0;
-        display: flex;
-        align-items: center;
         width: 36px;
         height: 60px;
         cursor: pointer;
@@ -330,6 +328,16 @@
 
     .on-top {
         padding: 0;
+    }
+
+    // display: flex belongs here rather than on the unconditional
+    // .main-navbar .menu-wrapper rule above: two classes there would
+    // outrank the single-class ".menu-wrapper { display: none }" rule
+    // below that hides the hamburger above 1050px, leaving it visible
+    // on desktop regardless of viewport width.
+    .menu-wrapper {
+        display: flex;
+        align-items: center;
     }
 }
 
