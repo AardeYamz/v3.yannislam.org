@@ -18,24 +18,24 @@
 //     "nav-item", "nav-link", and — for orientation="vertical" — "flex-column")
 
 // Configuration (required by everything below)
-@import "node_modules/bootstrap/scss/functions";
-@import "node_modules/bootstrap/scss/variables";
-@import "node_modules/bootstrap/scss/variables-dark";
-@import "node_modules/bootstrap/scss/maps";
-@import "node_modules/bootstrap/scss/mixins";
-@import "node_modules/bootstrap/scss/utilities";
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/variables-dark";
+@import "../node_modules/bootstrap/scss/maps";
+@import "../node_modules/bootstrap/scss/mixins";
+@import "../node_modules/bootstrap/scss/utilities";
 
 // Base
-@import "node_modules/bootstrap/scss/root";
-@import "node_modules/bootstrap/scss/reboot";
-@import "node_modules/bootstrap/scss/type";
-@import "node_modules/bootstrap/scss/containers";
-@import "node_modules/bootstrap/scss/grid";
+@import "../node_modules/bootstrap/scss/root";
+@import "../node_modules/bootstrap/scss/reboot";
+@import "../node_modules/bootstrap/scss/type";
+@import "../node_modules/bootstrap/scss/containers";
+@import "../node_modules/bootstrap/scss/grid";
 
 // Components actually used in templates (navbar, nav/nav-tabs via NgbNav)
-@import "node_modules/bootstrap/scss/nav";
-@import "node_modules/bootstrap/scss/navbar";
+@import "../node_modules/bootstrap/scss/nav";
+@import "../node_modules/bootstrap/scss/navbar";
 
 // Utility classes (d-flex/d-none/d-md-block, m*/p* spacing, text-center,
 // text-capitalize, flex-column, w-100, etc.) generated from the utilities map
-@import "node_modules/bootstrap/scss/utilities/api";
+@import "../node_modules/bootstrap/scss/utilities/api";
