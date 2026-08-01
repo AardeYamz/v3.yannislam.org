@@ -1,7 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ProjectsHighschoolComponent } from './projects-highschool.component';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { HomeModule } from '../home.module';
+import { AosDirective } from 'src/app/directives/aos/aos.directive';
+import { LogoFallbackDirective } from 'src/app/directives/logo-fallback/logo-fallback.directive';
 
 describe('ProjectsHighschoolComponent', () => {
   let component: ProjectsHighschoolComponent;
@@ -10,11 +14,15 @@ describe('ProjectsHighschoolComponent', () => {
 
   beforeEach(async () => {
     const configServiceSpy = jasmine.createSpyObj('SiteConfigService', [], {
-      projects: { highschool: [] }
+      projects: {
+        highschool: [
+          { title: 'High School Project 1', description: ['A learning project'], imgs: [], timeframe: '2019' }
+        ]
+      }
     });
 
     await TestBed.configureTestingModule({
-      imports: [ProjectsHighschoolComponent],
+      imports: [ProjectsHighschoolComponent, RouterTestingModule, HomeModule, AosDirective, LogoFallbackDirective],
       providers: [
         { provide: SiteConfigService, useValue: configServiceSpy }
       ]
@@ -38,16 +46,18 @@ describe('ProjectsHighschoolComponent', () => {
     expect(component.highschool).toBeDefined();
   });
 
-  it('should handle empty highschool array', () => {
-    component.highschool = [];
-    expect(component.highschool.length).toBe(0);
+  it('should have highschool projects array', () => {
+    expect(Array.isArray(component.highschool)).toBe(true);
   });
 
   it('should handle highschool array with items', () => {
-    component.highschool = [
-      { name: 'Project 1', description: 'Description 1' },
-      { name: 'Project 2', description: 'Description 2' }
-    ];
-    expect(component.highschool.length).toBe(2);
+    expect(component.highschool.length).toBeGreaterThan(0);
+    expect(component.highschool[0].title).toBe('High School Project 1');
+  });
+
+  it('should render without errors', () => {
+    expect(() => {
+      fixture.detectChanges();
+    }).not.toThrow();
   });
 });
