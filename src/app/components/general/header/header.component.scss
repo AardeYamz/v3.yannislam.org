@@ -38,11 +38,6 @@
             a {
                 display: flex !important;
             }
-
-            .cv-btn {
-                width: fit-content !important;
-                margin-left: 20px;
-            }
         }
     }
 
@@ -54,9 +49,7 @@
     aside {
         width: 75vw;
         display: flex;
-        -webkit-box-pack: center;
         justify-content: center;
-        -webkit-box-align: center;
         align-items: center;
         flex-direction: column;
         background-color: $LightNavy;
@@ -75,9 +68,7 @@
 
         nav {
             display: flex;
-            -webkit-box-pack: justify;
             justify-content: space-between;
-            -webkit-box-align: center;
             align-items: center;
             width: 100%;
             flex-direction: column;
@@ -115,10 +106,6 @@
                 }
             }
         }
-    }
-
-    .cv-btn {
-        padding: 7px 15px !important;
     }
 
     .nav-link {
@@ -348,39 +335,3 @@
         display: none;
     }
 }
-
-.flag-text {
-    color: inherit;
-    margin: 0 10px;
-    font-size: 13px;
-    font-family: $CodeFont;
-}
-
-.arrow-language {
-    font-size: 10px;
-    height: 10px;
-    width: 10px;
-    fill: $Orange;
-}
-
-::ng-deep .dropdown-toggle::after {
-    display: none;
-}
-
-::ng-deep .dropdown-menu.show {
-    padding: 0 !important;
-    border-radius: 7px !important;
-    background: #ccd6f6 !important;
-    margin-top: 10px !important;
-    left: 20px !important;
-    box-shadow: 0 10px 30px -15px rgb(2 12 27 / 70%);
-}
-
-.arrow-active {
-    font-size: 20px;
-    height: 20px;
-    width: 25px;
-    fill: $Orange;
-    visibility: hidden;
-}
-
