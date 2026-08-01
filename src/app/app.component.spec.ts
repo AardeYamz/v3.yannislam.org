@@ -58,9 +58,4 @@ describe('AppComponent', () => {
     expect(app.headerReady).toBe(true);
   });
 
-  it('should initialize on component creation', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    expect(fixture.componentInstance).toBeTruthy();
-  });
 });

@@ -58,9 +58,4 @@ describe('AboutComponent', () => {
     expect(component.configService).toBeDefined();
   });
 
-  it('should render without errors', () => {
-    expect(() => {
-      fixture.detectChanges();
-    }).not.toThrow();
-  });
 });

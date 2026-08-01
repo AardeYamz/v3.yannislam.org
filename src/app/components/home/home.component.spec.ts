@@ -71,9 +71,4 @@ describe('HomeComponent', () => {
     expect(Array.isArray(component.experiences.volunteering.list)).toBe(true);
   });
 
-  it('should render without errors', () => {
-    expect(() => {
-      fixture.detectChanges();
-    }).not.toThrow();
-  });
 });

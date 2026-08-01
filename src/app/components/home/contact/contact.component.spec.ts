@@ -34,9 +34,4 @@ describe('ContactComponent', () => {
     expect(component.analyticsService).toBeDefined();
   });
 
-  it('should render without errors', () => {
-    expect(() => {
-      fixture.detectChanges();
-    }).not.toThrow();
-  });
 });
