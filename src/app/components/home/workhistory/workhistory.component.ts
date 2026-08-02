@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 
@@ -27,19 +27,7 @@ export class WorkHistoryComponent {
     autoplayTimeout: 3000
   }
 
-  @ViewChild('imgContainer') imgContainer: ElementRef | undefined;
-
-
   constructor(
     public analyticsService: AnalyticsService
   ) { }
-
-  debug() {
-
-    this.imgContainer?.nativeElement.scroll({
-      top: this.imgContainer?.nativeElement.scrollHeight,
-      left: 0,
-      behavior: 'smooth',
-    });
-  }
 }
