@@ -14,7 +14,7 @@
             <owl-carousel-o class='owl-carousel-o' [options]="customOptions">
               @for (img of exp.imgs; track img) {
                 <ng-template carouselSlide [id]="exp.title + i">
-                  <div #imgContainer class='img-container'>
+                  <div class='img-container'>
                     <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.image_alt || exp.title"
                       [appLogoFallback]="exp.organization">
                   </div>
@@ -43,7 +43,7 @@
                   class="workhistory-subtitle">
                 &#64; {{exp.organization}}</h4>
               }
-              <div class="workhistory-description-box" (click)='debug()'>
+              <div class="workhistory-description-box">
                 @if (exp?.timeframe) {
                   <p class="text-right mb-2">
                     <i>{{exp?.timeframe}}</i>
