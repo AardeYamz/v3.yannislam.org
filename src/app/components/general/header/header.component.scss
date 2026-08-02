@@ -154,9 +154,22 @@
         // duration of that animation, so the icon appeared pinned to the
         // top of its wrapper and only snapped down to its real position
         // once the animation finished and released the property.
+        // Converted from a <div> to a <button> for keyboard/screen-reader
+        // accessibility (see documentation/fix-hamburger-menu-accessibility.md);
+        // these reset the browser's default button chrome (border, padding,
+        // background, font) so it still renders as the plain animated bars
+        // below, identical to the old <div>.
         .hamburger-menu {
+            display: block;
             position: relative;
             background: $Orange;
+            border: none;
+            padding: 0;
+            margin: 0;
+            font: inherit;
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
             transition: all 0ms 300ms;
 
             &:before {
