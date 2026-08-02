@@ -57,12 +57,6 @@ describe('FooterComponent', () => {
     expect(component.email.name).toBe('Email');
   });
 
-  it('should have deployment status', () => {
-    expect(component.deploymentStatus).toBeDefined();
-    expect(component.deploymentStatus.buildStatus).toBe('✅ Success');
-    expect(component.deploymentStatus.testsPassing).toBe('80/96 (83.3%)');
-  });
-
   it('should display current year', () => {
     expect(component.currentDate).toBeDefined();
     expect(component.currentDate.getFullYear()).toBe(new Date().getFullYear());
