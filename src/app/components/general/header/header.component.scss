@@ -14,14 +14,29 @@
     -webkit-backdrop-filter: blur(10px);
 }
 
+// Shared by the desktop nav pill and the mobile drawer's link, both of
+// which mark the section currently scrolled into view (activeSection in
+// header.component.ts) the same way: a filled tonal-container pill.
+%nav-active-pill {
+    background-color: $SecondaryContainer;
+    color: $OnSecondaryContainer;
+}
+
 .main-navbar {
     height: 70px;
     background: $Surface;
     font-family: $CodeFont;
+    // M3 top app bar divider — was relying on .nav-shadow's box-shadow
+    // alone, which only reads as a crisp edge once scrolled and stays a
+    // soft blur otherwise. A flat border gives a consistent, more visible
+    // separation from page content at rest too.
+    border-bottom: 2px solid $Outline;
 
     .menu-ul {
+        align-items: center;
+
         li {
-            margin: 0px 13px;
+            margin: 0px 4px;
         }
 
         // First and Last li has no margin
@@ -61,7 +76,11 @@
     }
 
     aside {
-        width: 75vw;
+        // Was a flat 75vw — on anything but a narrow phone that's a lot of
+        // screen for a handful of links; capping it keeps the drawer from
+        // dominating the viewport on wider/tablet-ish widths while still
+        // scaling down further on small phones.
+        width: min(75vw, 320px);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -99,14 +118,15 @@
                 list-style: none;
 
                 li {
-                    font-size: 16px;
+                    font-size: 18px;
                     margin: 0px auto 10px;
 
                     span {
                         display: block;
                         color: $Primary;
-                        font-size: 14px;
+                        font-size: 15px;
                         margin-bottom: 5px;
+                        transition: color 0.2s ease;
                     }
 
                     a {
@@ -117,24 +137,55 @@
                         cursor: pointer;
                         width: 100%;
                         text-decoration: none;
+                        border-radius: $ShapeSmall;
                         @extend %ease-transition;
-                        padding: 3px 20px 20px;
+                        padding: 8px 20px;
 
                         @include md-state-layer($OnSurface, $ShapeSmall);
+
+                        &.nav-link-active {
+                            @extend %nav-active-pill;
+
+                            span {
+                                color: $OnSecondaryContainer;
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
+    // M3 navigation pill: a rounded state layer for hover/focus/press, and
+    // a filled tonal-container background once the corresponding section
+    // is scrolled into view (see activeSection in header.component.ts) —
+    // replaces the old underlined-text treatment, which had no way to show
+    // an "active" state at all.
     .nav-link {
-        padding: 5px 0px;
-        color: inherit;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: $ShapeFull;
+        color: $OnSurfaceVariant;
         margin: 0px;
         font-size: 13px;
+        cursor: pointer;
+        transition: color 0.2s ease, background-color 0.2s ease;
+
+        @include md-state-layer($Primary, $ShapeFull);
 
         &:hover {
             color: $Primary;
+        }
+
+        &.nav-link-active {
+            @extend %nav-active-pill;
+
+            .nav-number {
+                color: $OnSecondaryContainer;
+            }
         }
     }
 
@@ -144,8 +195,7 @@
     }
 
     .nav-text {
-        color: $OnSurface !important;
-        padding-bottom: 4px;
+        color: inherit;
     }
 }
 
@@ -235,8 +285,17 @@
     // out of the flex row and center it absolutely so it stays centered
     // regardless of the toggle/hamburger widths, and let the toggle take
     // the brand's old spot on the left.
+    //
+    // height: 100% matters here: .container's flex children (nav-right,
+    // menu-toggle) are both exactly 46px tall, so without it .container
+    // shrink-wraps to 46px instead of filling nav's own (100px/70px)
+    // height — the buttons then center fine within that shrunk box, but
+    // .navbar-brand's inset: 0 below centers against a *different,
+    // shorter* box, landing the logo above the buttons' centerline
+    // instead of level with it.
     .container {
         position: relative;
+        height: 100%;
     }
 
     // Centered via auto margins on all four insets rather than
@@ -244,11 +303,32 @@
     // animation (see fadeStaggerAnimation) queries every descendant of
     // <nav> and finishes by setting transform: none on each one, which
     // would wipe out a transform-based centering offset here.
+    //
+    // Both width AND height need a real value here, not just width: with
+    // top/bottom both 0 and height left auto, auto-margin centering only
+    // applies once every one of top/height/bottom is non-auto — leave
+    // height out and the spec's fallback kicks in instead (margins forced
+    // to 0, height stretched to fill), which is what silently pinned the
+    // logo to the container's top edge instead of centering it.
+    // 46px matches %icon-button's fixed size so the logo reads as the
+    // same scale as the theme/menu toggles either side of it.
     .navbar-brand {
         position: absolute;
         inset: 0;
         margin: auto;
-        width: 55px;
+        width: 46px;
+        height: 46px;
+        // Bootstrap's own .navbar-brand rule (unscoped, so it still
+        // applies) sets top/bottom padding — with box-sizing: border-box
+        // that shrinks the *content* box the img's height: 100% below
+        // resolves against, so the image quietly rendered a few px short
+        // instead of filling the full 46px box.
+        padding: 0;
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
     }
 
     .nav-right {
