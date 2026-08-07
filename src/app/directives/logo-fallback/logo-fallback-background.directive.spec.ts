@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ComponentFixture, fakeAsync, flushMicrotasks, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LogoFallbackBackgroundDirective } from './logo-fallback-background.directive';
 
@@ -39,23 +39,26 @@ describe('LogoFallbackBackgroundDirective', () => {
     window.Image = StubImage as unknown as typeof Image;
   }
 
-  it('uses the real image as the background once it loads', fakeAsync(() => {
+  it('uses the real image as the background once it loads', async () => {
     stubImage('load');
     fixture = TestBed.createComponent(HostComponent);
     fixture.componentInstance.src = 'https://example.com/logo.png';
     fixture.detectChanges();
-    flushMicrotasks();
+    // The stubbed Image resolves via a microtask (Promise.resolve().then(...)),
+    // not a timer, so awaiting a microtask turn is enough to flush it -
+    // no fakeAsync/zone.js needed.
+    await Promise.resolve();
 
     expect(div().style.backgroundImage).toContain('https://example.com/logo.png');
-  }));
+  });
 
-  it('falls back to a generated full-name SVG background when the image fails to load', fakeAsync(() => {
+  it('falls back to a generated full-name SVG background when the image fails to load', async () => {
     stubImage('error');
     fixture = TestBed.createComponent(HostComponent);
     fixture.detectChanges();
-    flushMicrotasks();
+    await Promise.resolve();
 
     expect(div().style.backgroundImage).toContain('data:image/svg+xml;utf8,');
     expect(div().style.backgroundImage).toContain('Chinese Baptist');
-  }));
+  });
 });
