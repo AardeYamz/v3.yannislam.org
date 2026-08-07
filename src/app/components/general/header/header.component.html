@@ -29,11 +29,12 @@
       </button>
     </div>
     <div class="menu-wrapper">
-      <div [class.animate]='responsiveMenuVisible' (click)='responsiveMenuVisible = !responsiveMenuVisible'
-      class="hamburger-menu"></div>
+      <button type="button" [class.animate]='responsiveMenuVisible' (click)='responsiveMenuVisible = !responsiveMenuVisible'
+      class="hamburger-menu" [attr.aria-expanded]="responsiveMenuVisible" aria-label="Toggle menu"
+      aria-controls="mobile-menu"></button>
     </div>
     <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }">
-      <aside [class.aside-show]='responsiveMenuVisible' [class.nav-shadow]='this.pageYPosition>0' class="on-top">
+      <aside id="mobile-menu" [class.aside-show]='responsiveMenuVisible' [class.nav-shadow]='this.pageYPosition>0' class="on-top">
         <nav>
           <ol>
             @for (menuItem of menu ; track menuItem; let i = $index) {
