@@ -268,6 +268,31 @@ a {
     }
 }
 
+// The logo's scroll-driven rotation (logoRotationDeg in
+// header.component.ts) spins its square img via a CSS transform, which
+// enlarges its axis-aligned bounding box up to ~1.41x its own width at a
+// 45deg angle. That comfortably clears the tall, unscrolled nav bar, but
+// at every breakpoint the shorter scrolled one (.nav-shadow) is not
+// enough taller than the logo's own size to give the rotated corners
+// clearance — they visually crowd/overflow the bar's top and bottom
+// edges. Shrinking the logo specifically in that state restores a real
+// buffer around it, at every breakpoint's own scale.
+.nav-shadow .navbar-brand img {
+    width: 42px;
+}
+
+// Scale typography and the nav bar up on large/ultra-wide displays: the
+// container caps out at 1320px (Bootstrap's xxl breakpoint), so past that
+// the page just gets wider margins rather than bigger content, which reads
+// as undersized on a big monitor. The banner/nav-bar overrides need
+// !important here for the same reason the downward banner breakpoints
+// above do — their own component stylesheets' base rules get a
+// component-scoped attribute selector from Angular's view encapsulation,
+// which otherwise outranks a plain selector here regardless of source
+// order. (header.component.scss itself is already right at this project's
+// per-component style budget, so the nav-bar rules live here rather than
+// there — see documentation/material-design-3-tokens.md.)
+
 // Scale typography and the nav bar up on large/ultra-wide displays: the
 // container caps out at 1320px (Bootstrap's xxl breakpoint), so past that
 // the page just gets wider margins rather than bigger content, which reads
@@ -310,6 +335,10 @@ a {
         width: 64px !important;
     }
 
+    .nav-shadow .navbar-brand img {
+        width: 54px !important;
+    }
+
     .nav-right {
         gap: 22px !important;
     }
@@ -331,6 +360,19 @@ a {
     .main-btn {
         font-size: 15px;
         padding: 1.5rem 2.25rem;
+    }
+
+    // Paired with .main-navbar .nav-link's scaling above, same ratio.
+    .footer-credits {
+        font-size: 14px !important;
+    }
+
+    .footer-right-bar a {
+        font-size: 16px !important;
+    }
+
+    .footer-left-bar i {
+        font-size: 22px !important;
     }
 }
 
@@ -365,6 +407,10 @@ a {
         width: 72px !important;
     }
 
+    .nav-shadow .navbar-brand img {
+        width: 60px !important;
+    }
+
     .nav-right {
         gap: 26px !important;
     }
@@ -386,5 +432,17 @@ a {
     .main-btn {
         font-size: 17px;
         padding: 1.75rem 2.75rem;
+    }
+
+    .footer-credits {
+        font-size: 16px !important;
+    }
+
+    .footer-right-bar a {
+        font-size: 18px !important;
+    }
+
+    .footer-left-bar i {
+        font-size: 25px !important;
     }
 }
