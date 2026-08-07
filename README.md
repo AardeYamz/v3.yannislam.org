@@ -138,9 +138,64 @@ flowchart LR
     Cloudflare -.->|"legacy CNAMEs<br/>(alpha., v1., v2.)"| Netlify["Netlify<br/>(older site versions)"]
 ```
 
+### GitHub Actions & CI/CD Pipeline
+
+```mermaid
+flowchart LR
+    PR["Pull Request<br/>to main/master/develop"] -->|"triggers"| GHA["GitHub Actions<br/>Build & Test"]
+    
+    subgraph "Matrix Strategy"
+        N22["Node.js 22.x"] 
+        N24["Node.js 24.x"]
+    end
+    
+    GHA --> N22
+    GHA --> N24
+    
+    N22 --> Checkout["Checkout code"]
+    N24 --> Checkout
+    
+    Checkout --> Setup["Set up Node.js<br/>+ npm cache"]
+    Setup --> AngularCache["Cache Angular<br/>build artifacts"]
+    AngularCache --> Install["npm ci<br/>(install dependencies)"]
+    
+    Install --> Tests["npm test<br/>(with coverage)"]
+    Tests --> Coverage["Upload coverage<br/>to Codecov"]
+    
+    Coverage --> Build["npm run build<br/>(Angular AOT)"]
+    Build --> Verify["Verify dist/<br/>artifacts"]
+    
+    Verify -->|"All pass"| Success["✅ PR approved<br/>for merge"]
+    Verify -->|"Any fail"| Failure["❌ PR blocked<br/>until fixed"]
+    
+    Success --> Merge["Merge to base<br/>branch"]
+    Merge --> VercelBuild["Vercel deploys<br/>production"]
+```
+
+#### Workflow: `build-test.yml`
+
+The project's primary CI/CD pipeline runs automatically on every pull request to `main`, `master`, or `develop`:
+
+- **Trigger**: PR opened or updated against protected branches
+- **Matrix Strategy**: Tests run against Node.js 22.x and 24.x to ensure compatibility across LTS and current versions
+- **Steps**:
+  1. **Checkout** — fetches the PR branch
+  2. **Node.js Setup** — installs the specified Node version with npm cache restoration for faster builds
+  3. **Angular Cache** — restores `.angular/cache` from previous runs to speed up compilation
+  4. **Install** — runs `npm ci` for deterministic dependency installation
+  5. **Tests** — runs headless Chrome unit tests with code coverage (`karma`, `jasmine`)
+  6. **Coverage** — uploads test coverage reports to [Codecov](https://codecov.io) for coverage tracking
+  7. **Build** — compiles the Angular app with ahead-of-time (AOT) compilation
+  8. **Verify** — ensures the `dist/` directory was created and reports bundle size
+
+All steps must pass for the PR to be mergeable; any failure blocks the merge and requires a code fix + push to re-run.
+
 ## Code Structure
 
 ```
+.github/
+├── workflows/
+│   └── build-test.yml        # CI/CD pipeline: runs tests, coverage, and builds on PRs
 src/
 ├── app/
 │   ├── animations/           # Shared Angular animation triggers (e.g. fade-stagger)
