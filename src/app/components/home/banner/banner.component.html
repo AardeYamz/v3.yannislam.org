@@ -31,4 +31,9 @@
       </div>
     </div>
   </div>
+  @if (showScrollArrow()) {
+    <div class="scroll-indicator" (click)="$event.preventDefault()">
+      <div class="arrow-down"></div>
+    </div>
+  }
 </section>

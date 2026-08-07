@@ -43,7 +43,7 @@
                 line-height: 1.1;
                 margin: 0;
                 font-family: $MainFont;
-            } 
+            }
 
             h2 {
                 color: $LightestSlate;
@@ -67,5 +67,40 @@
                 gap: 20px;
             }
         }
+    }
+
+    .scroll-indicator {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: pulse 2s infinite;
+    }
+
+    .arrow-down {
+        width: 24px;
+        height: 24px;
+        border-right: 2px solid $Orange;
+        border-bottom: 2px solid $Orange;
+        transform: rotate(45deg);
+        animation: bounce 1.5s infinite;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: rotate(45deg) translateY(0);
+    }
+    50% {
+        transform: rotate(45deg) translateY(10px);
     }
 }
