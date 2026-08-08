@@ -4,7 +4,6 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Build & Test](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/build-test.yml/badge.svg)](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/build-test.yml)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3?logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
-[![Tests](https://img.shields.io/badge/Tests-118%2F118%20passing-brightgreen?logo=jasmine&logoColor=white)](DEPLOYMENT_STATUS.md)
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
 [![DNS & Email by Cloudflare](https://img.shields.io/badge/DNS%20%26%20Email-Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://www.cloudflare.com/)
 [![Google Analytics](https://img.shields.io/badge/Analytics-Google%20Analytics-E37400?logo=googleanalytics&logoColor=white)](https://analytics.google.com/)
@@ -125,22 +124,129 @@ flowchart TB
 
 ### Deployment & DNS
 
+#### GitHub Actions CI/CD Pipeline
+
+```mermaid
+flowchart TB
+    subgraph PR["Pull Request"]
+        GitPush["git push to<br/>main/master/develop"]
+    end
+    
+    subgraph GHA["GitHub Actions: Build & Test"]
+        subgraph MatrixStrategy["Matrix Strategy"]
+            N22["Node.js 22.x"]
+            N24["Node.js 24.x"]
+        end
+        
+        subgraph Pipeline["Pipeline Steps"]
+            Checkout["Checkout code"]
+            Setup["Set up Node.js<br/>+ npm cache"]
+            AngularCache["Cache Angular<br/>build artifacts"]
+            Install["npm ci<br/>(install deps)"]
+            Tests["npm test<br/>(with coverage)"]
+            Coverage["Upload to Codecov"]
+            Build["npm run build<br/>(Angular AOT)"]
+            Verify["Verify dist/"]
+        end
+        
+        Checkout --> Setup --> AngularCache --> Install --> Tests --> Coverage --> Build --> Verify
+    end
+    
+    subgraph GateAndDeploy["Merge Gating & Deployment"]
+        Mergeable["✅ All pass:<br/>PR mergeable"]
+        Blocked["❌ Any fail:<br/>PR blocked"]
+        Merged["Merge to base<br/>branch"]
+    end
+    
+    subgraph VercelBuild["Vercel Build & Deploy"]
+        VercelCheck["Webhook triggered"]
+        VercelBuild2["ng build +<br/>postbuild inject-env.js"]
+        VercelServe["Vercel Edge<br/>(static bundle)"]
+    end
+    
+    GitPush --> GHA
+    N22 & N24 --> Pipeline
+    Verify --> Mergeable
+    Verify --> Blocked
+    Blocked -.->|"Fix & re-push"| GitPush
+    Mergeable --> Merged
+    Merged --> VercelCheck
+    VercelCheck --> VercelBuild2 --> VercelServe
+```
+
+#### DNS & Content Delivery
+
 ```mermaid
 flowchart LR
-    Dev["git push"] --> GitHub["GitHub repo"]
-    GitHub -->|"build hook"| Vercel["Vercel<br/>ng build + postbuild inject-env.js"]
-
-    Visitor["Visitor's browser"] -->|"DNS lookup"| Cloudflare["Cloudflare<br/>DNS zone: yannislam.org"]
-    Cloudflare -->|"proxied A / CNAME"| Vercel
-    Vercel -->|"static Angular bundle"| Visitor
-
-    Cloudflare -->|"MX / SPF / DKIM / DMARC<br/>Email Routing"| Inbox["email@yannislam.org"]
-    Cloudflare -.->|"legacy CNAMEs<br/>(alpha., v1., v2.)"| Netlify["Netlify<br/>(older site versions)"]
+    subgraph UserBrowser["User"]
+        Visitor["Visitor's browser<br/>yannislam.org"]
+    end
+    
+    subgraph DNSResolution["DNS Resolution"]
+        CloudflareDNS["Cloudflare<br/>DNS zone:<br/>yannislam.org"]
+    end
+    
+    subgraph EdgeServing["Edge Network & Hosting"]
+        VercelEdge["Vercel Edge<br/>(static bundle)"]
+    end
+    
+    subgraph EmailInfra["Email Infrastructure"]
+        CloudflareEmail["Cloudflare Email<br/>Routing<br/>MX/SPF/DKIM/DMARC"]
+        Inbox["@yannislam.org<br/>inbox"]
+    end
+    
+    subgraph LegacyVersions["Legacy Versions"]
+        LegacyCNAME["Legacy CNAMEs<br/>(alpha., v1., v2.)"]
+        Netlify["Netlify<br/>(older site)"]
+    end
+    
+    Visitor -->|"DNS lookup"| CloudflareDNS
+    CloudflareDNS -->|"proxied A/CNAME"| VercelEdge
+    VercelEdge -->|"serves site"| Visitor
+    
+    CloudflareDNS --> CloudflareEmail
+    CloudflareEmail --> Inbox
+    
+    CloudflareDNS -.->|"legacy"| LegacyCNAME
+    LegacyCNAME -.-> Netlify
 ```
+
+#### GitHub Actions Workflow: `build-test.yml`
+
+Every pull request to `main`, `master`, or `develop` automatically triggers the CI/CD pipeline:
+
+**Matrix Strategy**
+- Runs against **Node.js 22.x** and **24.x** to ensure compatibility across LTS and current versions
+- Both matrix jobs must pass for PR approval
+
+**Pipeline Steps**
+1. **Checkout** — fetches the PR branch code
+2. **Node.js Setup** — installs specified Node version with npm cache for faster builds
+3. **Angular Cache** — restores `.angular/cache` from previous runs to speed up AOT compilation
+4. **Install** — runs `npm ci` for deterministic, reproducible dependency installation
+5. **Tests** — runs headless Chrome unit tests with code coverage (`karma`, `jasmine`)
+6. **Coverage Upload** — reports test coverage to [Codecov](https://codecov.io) for metrics tracking
+7. **Build** — compiles the Angular app with ahead-of-time (AOT) compilation
+8. **Artifact Verification** — ensures `dist/` directory was created and outputs bundle size
+
+**Merge Gating**
+- All matrix jobs and steps must pass for the PR to become mergeable
+- Any failure blocks the merge; fix the issue and push to re-run the workflow
+- Passing PR can be merged to the base branch, triggering Vercel's production build and deployment
+
+**After Merge: Production Deployment**
+- Merge to base branch → Vercel webhook triggers → Vercel builds production bundle
+- `scripts/inject-env.js` substitutes Google Analytics ID from Vercel environment
+- Cloudflare DNS routes `yannislam.org` to Vercel's edge network
+- Cloudflare also handles email routing (MX/SPF/DKIM/DMARC) for `@yannislam.org`
+- Legacy subdomains (`alpha.`, `v1.`, `v2.`) still resolve to Netlify via Cloudflare CNAMEs from earlier site iterations
 
 ## Code Structure
 
 ```
+.github/
+├── workflows/
+│   └── build-test.yml        # CI/CD pipeline: runs tests, coverage, and builds on PRs
 src/
 ├── app/
 │   ├── animations/           # Shared Angular animation triggers (e.g. fade-stagger)
@@ -272,27 +378,10 @@ CHROME_BIN=/opt/pw-browsers/chromium npm test -- --watch=false
 
 ### Test Coverage
 
-**Current Test Suite Statistics (as of 2026-08-01):**
-- **Total Tests**: 118
-- **Passing**: 118 (100%) ✅
-- **Failing**: 0
+Run tests with coverage reporting:
 
-**Test Files Created**:
-- `src/app/components/general/loading-screen/loading-screen.component.spec.ts` ✅
-- `src/app/components/home/floating-logos/floating-logos.component.spec.ts` ✅
-- `src/app/components/home/projects/projects.component.spec.ts` ✅
-- `src/app/components/home/projects-highschool/projects-highschool.component.spec.ts` ✅
+```bash
+npm test -- --watch=false --code-coverage
+```
 
-### Known Test Issues
-
-Some tests fail due to incomplete dependency setup (child components, router modules, etc.):
-1. **Component Template Errors**: Missing nested component declarations
-2. **Standalone Component Injectors**: Need provider configuration for `ActivatedRoute` and routing modules
-3. **Third-party Module Exports**: Missing `NgbNav` and other ng-bootstrap exports
-
-These are not code bugs but rather test setup improvements that can be addressed by:
-- Adding missing imports to component test modules
-- Providing mock or real implementations of injected services
-- Configuring proper test bed setup for standalone components
-
-For details on test status, see [`DEPLOYMENT_STATUS.md`](DEPLOYMENT_STATUS.md).
+Coverage reports are uploaded to [Codecov](https://codecov.io) automatically by the GitHub Actions CI/CD pipeline on every PR. View coverage metrics and trends at the project's [Codecov dashboard](https://codecov.io).

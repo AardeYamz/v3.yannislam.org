@@ -90,12 +90,58 @@ footer {
         }
     }
 
+    .footer-mobile-contact {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        margin-top: -40px;
+
+        .footer-mobile-email {
+            font-family: $CodeFont;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            color: $LightSlate;
+            text-decoration: none;
+
+            &:hover,
+            &:focus {
+                color: $Orange;
+            }
+        }
+
+        .footer-mobile-socials {
+            display: flex;
+            gap: 24px;
+            padding: 0;
+            margin: 0;
+
+            li {
+                list-style: none;
+            }
+
+            i {
+                font-size: 19px;
+                color: $LightSlate;
+
+                &:hover,
+                &:focus {
+                    color: $Orange;
+                }
+            }
+        }
+    }
+
     .footer-credits {
         font-family: $CodeFont;
         font-size: 12px;
         line-height: 1;
 
         padding: 40px 0 50px;
+
+        @media (max-width: 768px) {
+            padding: 16px 0 20px;
+        }
 
         a {
             color: $OnSurfaceVariant;
