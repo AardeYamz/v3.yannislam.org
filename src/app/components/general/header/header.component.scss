@@ -26,11 +26,6 @@
     height: 70px;
     background: $Surface;
     font-family: $CodeFont;
-    // M3 top app bar divider — was relying on .nav-shadow's box-shadow
-    // alone, which only reads as a crisp edge once scrolled and stays a
-    // soft blur otherwise. A flat border gives a consistent, more visible
-    // separation from page content at rest too.
-    border-bottom: 2px solid $Outline;
 
     .menu-ul {
         align-items: center;
@@ -360,12 +355,15 @@
     @extend %ease-transition;
 }
 
-// Translucent + blurred backdrop once scrolled. Scoped to .main-navbar
-// rather than the shared .nav-shadow rule above (which the mobile drawer
-// <aside> also picks up, but that gets its own always-on blur — see aside
-// {} above) since this one should only kick in once actually scrolled.
+// Translucent blurred backdrop + a divider, once scrolled. Scoped to
+// .main-navbar rather than the shared .nav-shadow rule above (which the
+// mobile drawer <aside> also picks up, but that gets its own always-on
+// blur and no divider of its own — see aside {} above) since these
+// should only kick in once actually scrolled, matching the original
+// at-rest-borderless look.
 .main-navbar.nav-shadow {
     background: color-mix(in srgb, $Surface 85%, transparent);
+    border-bottom: 2px solid $Outline;
     @extend %blur-backdrop;
 }
 
