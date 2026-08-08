@@ -10,7 +10,9 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-image: url('../../../../assets/images/covers/indexcover.jpg');
+        background-image:
+            linear-gradient(135deg, rgba(10, 25, 47, 0.7) 0%, rgba(30, 60, 114, 0.6) 50%, rgba(10, 25, 47, 0.7) 100%),
+            url('../../../../assets/images/covers/indexcover.jpg');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
