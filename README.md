@@ -157,7 +157,7 @@ flowchart TB
     Blocked -.->|"Fix & re-push"| GitHub
     
     Merged -->|"Vercel webhook"| Vercel["Vercel<br/>ng build + postbuild<br/>inject-env.js"]
-    Vercel -->|"production deploy"| VercelServe["Vercel Edge<br/>(static bundle)")
+    Vercel -->|"production deploy"| VercelServe["Vercel Edge<br/>(static bundle)"]
     
     Visitor["Visitor's browser"] -->|"DNS lookup"| Cloudflare["Cloudflare<br/>DNS zone: yannislam.org"]
     Cloudflare -->|"proxied A/CNAME"| VercelServe
