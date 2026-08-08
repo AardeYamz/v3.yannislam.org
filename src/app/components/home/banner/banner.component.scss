@@ -3,10 +3,27 @@
 .banner {
     position: relative;
     min-height: 100vh;
+    background-image: url('../../../../assets/images/covers/indexcover.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(10, 25, 47, 0.5);
+        z-index: 1;
+    }
 
     .container {
         display: table;
         height: 100vh;
+        position: relative;
+        z-index: 2;
 
         .section-box-banner {
             display: table-cell;
@@ -71,17 +88,18 @@
 
     .scroll-indicator {
         position: absolute;
-        bottom: 40px;
+        bottom: 80px;
         left: 50%;
         transform: translateX(-50%);
         animation: pulse 2s infinite;
+        z-index: 3;
     }
 
     .arrow-down {
-        width: 24px;
-        height: 24px;
-        border-right: 2px solid $Orange;
-        border-bottom: 2px solid $Orange;
+        width: 40px;
+        height: 40px;
+        border-right: 3px solid $Orange;
+        border-bottom: 3px solid $Orange;
         transform: rotate(45deg);
         animation: bounce 1.5s infinite;
     }
