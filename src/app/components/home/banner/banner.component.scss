@@ -2,11 +2,13 @@
 
 .banner {
     position: relative;
-    min-height: 100vh;
+    height: 100vh;
     background-image: url('../../../../assets/images/covers/indexcover.jpg');
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     background-attachment: fixed;
+    overflow: hidden;
 
     &::before {
         content: '';
@@ -22,6 +24,7 @@
     .container {
         display: table;
         height: 100vh;
+        width: 100%;
         position: relative;
         z-index: 2;
 
@@ -120,5 +123,16 @@
     }
     50% {
         transform: rotate(45deg) translateY(10px);
+    }
+}
+
+@media (max-width: 768px) {
+    .banner {
+        background-attachment: scroll;
+        height: 100vh;
+
+        .container {
+            height: 100vh;
+        }
     }
 }
