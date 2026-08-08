@@ -17,7 +17,7 @@
   <div class="footer-mobile-contact d-md-none">
     <a class="footer-mobile-email" href={{email.url}} target='_blank'>{{email.handle}}</a>
     <ul class="footer-mobile-socials">
-      @for (social of socials ; track social; let i = $index) {
+      @for (social of mobileSocials ; track social; let i = $index) {
         <li>
           <a href={{social.url}} target='_blank'>
             <i class="fab {{social.icon}}"></i>
