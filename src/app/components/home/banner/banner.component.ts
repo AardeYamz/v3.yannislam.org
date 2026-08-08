@@ -44,20 +44,44 @@ export class BannerComponent {
     private autoScrollPages() {
         const sections = ['education', 'experience', 'volunteering', 'projects'];
         let currentIndex = 0;
+        const scrollDuration = 5000; // 5 seconds per section
 
         const scrollToNextSection = () => {
             if (currentIndex < sections.length) {
                 const section = document.getElementById(sections[currentIndex]);
                 if (section) {
-                    setTimeout(() => {
-                        section.scrollIntoView({ behavior: 'smooth' });
-                        currentIndex++;
-                        scrollToNextSection();
-                    }, 3000);
+                    this.smoothScrollTo(section, scrollDuration);
+                    currentIndex++;
+                    setTimeout(scrollToNextSection, scrollDuration + 1000); // 1 second pause between sections
                 }
             }
         };
 
         scrollToNextSection();
+    }
+
+    private smoothScrollTo(element: HTMLElement, duration: number) {
+        const startPosition = window.scrollY;
+        const endPosition = element.offsetTop - 100; // 100px offset from top
+        const distance = endPosition - startPosition;
+        let start: number | null = null;
+
+        const animation = (timestamp: number) => {
+            if (start === null) start = timestamp;
+            const progress = (timestamp - start) / duration;
+
+            if (progress < 1) {
+                window.scrollTo(0, startPosition + distance * this.easeInOutQuad(progress));
+                requestAnimationFrame(animation);
+            } else {
+                window.scrollTo(0, endPosition);
+            }
+        };
+
+        requestAnimationFrame(animation);
+    }
+
+    private easeInOutQuad(t: number): number {
+        return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     }
 }
