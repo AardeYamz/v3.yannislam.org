@@ -14,6 +14,19 @@
     </div>
   </div>
 
+  <div class="footer-mobile-contact d-md-none">
+    <a class="footer-mobile-email" href={{email.url}} target='_blank'>{{email.handle}}</a>
+    <ul class="footer-mobile-socials">
+      @for (social of mobileSocials ; track social; let i = $index) {
+        <li>
+          <a href={{social.url}} target='_blank'>
+            <i class="fab {{social.icon}}"></i>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+
   <div class="footer-credits text-center">
     <div class="mt-2"><a href={{footer.repo.url}} target="_blank"
     rel="nofollow noopener noreferrer">{{footer.repo.text}}</a>
