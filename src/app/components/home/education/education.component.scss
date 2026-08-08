@@ -3,9 +3,53 @@
 
 ::ng-deep .education .education-tabs {
     display: flex;
+    // Centers the tab widget itself within the now much wider container —
+    // the section-title above stays full-width (see .education below), but
+    // the tabs/content pairing reads as its own centered block rather than
+    // pinned to the container's left edge with a large empty gap on the
+    // right. Width is the tab list (114.33px) + content's own gap (38px)
+    // + its max-width (700px) below.
+    max-width: 852.33px;
+    margin: 0 auto;
+    // A gap rather than a margin on .tab-content below: margin-left only
+    // makes sense for the tabs-then-content DOM order below, but
+    // reverse-layout (see &.reverse-layout) visually swaps which side
+    // each one renders on without touching that order — gap inserts the
+    // same space between flex items regardless of which edge either one
+    // ends up on.
+    gap: 38px;
 
+    // This section's own layout, reversed — see EducationComponent's
+    // isReversed (0-based SECTION_INDEX % 2), same convention About and
+    // workhistory use. Swaps the tab list to the right of its content
+    // instead of the left.
+    &.reverse-layout {
+        flex-direction: row-reverse;
+
+        li {
+            border-left: none;
+            border-right: 2px solid $OutlineVariant;
+        }
+
+        a.active {
+            box-shadow: inset -3px 0 0 0 $Primary;
+        }
+    }
+
+    // Caps line length on the actual readable text, not the section — the
+    // old approach (max-width on .education, the <section> element itself)
+    // also shrank the section-title above it to match, which looked
+    // undersized/misaligned next to every other section once the shared
+    // .container was widened to track the viewport (see .container in
+    // styles.scss).
     .tab-content {
-        margin-left: 38px;
+        max-width: 700px;
+        // Each tab's content is a different length (CICS BS, the tallest,
+        // runs ~315px), so switching tabs changed this element's own
+        // height and pushed every section below it up or down. A floor
+        // matching the tallest tab keeps the page layout stable — shorter
+        // tabs just leave blank space below rather than resizing it.
+        min-height: 325px;
     }
 
     ul {
@@ -14,16 +58,18 @@
         border: none;
     }
 
+    // M3 vertical tab: a colored leading-edge indicator plus filled
+    // surface-container for the active tab, with a plain state-layer
+    // (no fill/color swap) for hover so it reads distinctly from active.
     a.active {
-        background-color: $LightNavy !important;
-        color: $Orange !important;
+        background-color: $SurfaceContainerHigh !important;
+        color: $Primary !important;
         border-color: transparent !important;
         border-radius: 0px;
+        box-shadow: inset 3px 0 0 0 $Primary;
     }
 
-    a:hover {
-        background-color: $LightNavy !important;
-        color: $Orange !important;
+    a:not(.active):hover {
         border-color: transparent !important;
         border-radius: 0px;
     }
@@ -36,6 +82,7 @@
         text-decoration-skip-ink: auto;
         color: inherit;
         position: relative;
+        overflow: hidden;
         -webkit-transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
         transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
         cursor: pointer;
@@ -57,30 +104,26 @@
         white-space: nowrap;
         font-family: $CodeFont;
         font-size: 13px;
-        color: $Slate;
+        color: $OnSurfaceVariant;
+
+        @include md-state-layer($OnSurface);
     }
 
     li {
-        border-left: 2px solid $LightestNavy;
-        border-left-width: 2px;
-        border-left-style: solid;
-        border-left-color: rgb(48, 60, 85);
+        border-left: 2px solid $OutlineVariant;
     }
 }
 
 .education {
 
-    max-width: 700px;
-    margin: auto;
-
     .title-tab-content {
-        color: $LightestSlate;
+        color: $OnSurface;
         font-size: 22px;
         font-weight: 500;
         margin-bottom: 5px;
 
         .company-tab-content {
-            color: $Orange;
+            color: $Primary;
         }
     }
 
@@ -100,13 +143,13 @@
         position: relative;
         padding-left: 30px;
         margin-bottom: 10px;
-        font-size: 18px;
+        font-size: 20px;
 
         &:before {
             content: '▹';
             position: absolute;
             left: 0;
-            color: $Orange;
+            color: $Primary;
         }
     }
 }
@@ -116,10 +159,7 @@
 @media (max-width: 768px) {
     ::ng-deep .education-tabs {
         display: block !important;
-
-        .tab-content {
-            margin-left: 0px !important;
-        }
+        max-width: 100% !important;
 
         ul {
             display: block;

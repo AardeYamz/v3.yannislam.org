@@ -6,7 +6,7 @@
           <span class='code-font n-section-title'>02.</span> Where did I go to school?
         </h3>
       </div>
-      <div class="education-tabs" data-aos="fade-up" data-aos-duration="1000">
+      <div class="education-tabs" [class.reverse-layout]="isReversed" data-aos="fade-up" data-aos-duration="1000">
         <ul ngbNav #nav="ngbNav" [(activeId)]="active" orientation="vertical" class="nav-tabs education-tabs">
           @for (exp of experiences?.education ; track exp; let i = $index) {
             <li [title]="exp?.tab" [ngbNavItem]="i">
