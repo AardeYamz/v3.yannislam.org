@@ -32,4 +32,32 @@ export class BannerComponent {
         this.analyticsService.sendAnalyticEvent('click_open_resume', 'banner', 'resume');
         this.resumeService.open();
     }
+
+    scrollToAbout() {
+        const aboutSection = document.getElementById('about');
+        if (aboutSection) {
+            aboutSection.scrollIntoView({ behavior: 'smooth' });
+            this.autoScrollPages();
+        }
+    }
+
+    private autoScrollPages() {
+        const sections = ['education', 'experience', 'volunteering', 'projects'];
+        let currentIndex = 0;
+
+        const scrollToNextSection = () => {
+            if (currentIndex < sections.length) {
+                const section = document.getElementById(sections[currentIndex]);
+                if (section) {
+                    setTimeout(() => {
+                        section.scrollIntoView({ behavior: 'smooth' });
+                        currentIndex++;
+                        scrollToNextSection();
+                    }, 3000);
+                }
+            }
+        };
+
+        scrollToNextSection();
+    }
 }
