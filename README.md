@@ -125,46 +125,91 @@ flowchart TB
 
 ### Deployment & DNS
 
-#### CI/CD Pipeline: GitHub Actions → Vercel → Cloudflare
+#### GitHub Actions CI/CD Pipeline
 
 ```mermaid
 flowchart TB
-    Developer["Developer<br/>local machine"]
-    Developer -->|"git push"| GitHub["GitHub repo<br/>(PR to main/master/develop)"]
-    
-    GitHub -->|"triggers"| GHA["GitHub Actions<br/>Build & Test"]
-    
-    subgraph Matrix["Matrix Strategy"]
-        N22["Node.js 22.x"] 
-        N24["Node.js 24.x"]
+    subgraph PR["Pull Request"]
+        GitPush["git push to<br/>main/master/develop"]
     end
     
-    GHA --> Matrix
+    subgraph GHA["GitHub Actions: Build & Test"]
+        subgraph MatrixStrategy["Matrix Strategy"]
+            N22["Node.js 22.x"]
+            N24["Node.js 24.x"]
+        end
+        
+        subgraph Pipeline["Pipeline Steps"]
+            Checkout["Checkout code"]
+            Setup["Set up Node.js<br/>+ npm cache"]
+            AngularCache["Cache Angular<br/>build artifacts"]
+            Install["npm ci<br/>(install deps)"]
+            Tests["npm test<br/>(with coverage)"]
+            Coverage["Upload to Codecov"]
+            Build["npm run build<br/>(Angular AOT)"]
+            Verify["Verify dist/"]
+        end
+        
+        Checkout --> Setup --> AngularCache --> Install --> Tests --> Coverage --> Build --> Verify
+    end
     
-    N22 & N24 -->|"all steps"| Checkout["Checkout code"]
-    Checkout --> Setup["Set up Node.js<br/>+ npm cache"]
-    Setup --> AngularCache["Cache Angular<br/>build artifacts"]
-    AngularCache --> Install["npm ci<br/>(install deps)"]
-    Install --> Tests["npm test<br/>(with coverage)"]
-    Tests --> Coverage["Upload to Codecov"]
-    Coverage --> Build["npm run build<br/>(Angular AOT)"]
-    Build --> Verify["Verify dist/"]
+    subgraph GateAndDeploy["Merge Gating & Deployment"]
+        Mergeable["✅ All pass:<br/>PR mergeable"]
+        Blocked["❌ Any fail:<br/>PR blocked"]
+        Merged["Merge to base<br/>branch"]
+    end
     
-    Verify -->|"✅ All pass"| Mergeable["PR is mergeable"]
-    Verify -->|"❌ Any fail"| Blocked["PR blocked"]
+    subgraph VercelBuild["Vercel Build & Deploy"]
+        VercelCheck["Webhook triggered"]
+        VercelBuild2["ng build +<br/>postbuild inject-env.js"]
+        VercelServe["Vercel Edge<br/>(static bundle)"]
+    end
     
-    Mergeable -->|"Merge to base"| Merged["Commit on main/master"]
-    Blocked -.->|"Fix & re-push"| GitHub
+    GitPush --> GHA
+    N22 & N24 --> Pipeline
+    Verify --> Mergeable
+    Verify --> Blocked
+    Blocked -.->|"Fix & re-push"| GitPush
+    Mergeable --> Merged
+    Merged --> VercelCheck
+    VercelCheck --> VercelBuild2 --> VercelServe
+```
+
+#### DNS & Content Delivery
+
+```mermaid
+flowchart LR
+    subgraph UserBrowser["User"]
+        Visitor["Visitor's browser<br/>yannislam.org"]
+    end
     
-    Merged -->|"Vercel webhook"| Vercel["Vercel<br/>ng build + postbuild<br/>inject-env.js"]
-    Vercel -->|"production deploy"| VercelServe["Vercel Edge<br/>(static bundle)"]
+    subgraph DNSResolution["DNS Resolution"]
+        CloudflareDNS["Cloudflare<br/>DNS zone:<br/>yannislam.org"]
+    end
     
-    Visitor["Visitor's browser"] -->|"DNS lookup"| Cloudflare["Cloudflare<br/>DNS zone: yannislam.org"]
-    Cloudflare -->|"proxied A/CNAME"| VercelServe
-    VercelServe -->|"serves site"| Visitor
+    subgraph EdgeServing["Edge Network & Hosting"]
+        VercelEdge["Vercel Edge<br/>(static bundle)"]
+    end
     
-    Cloudflare -->|"MX/SPF/DKIM/DMARC<br/>Email Routing"| Inbox["@yannislam.org<br/>email"]
-    Cloudflare -.->|"legacy CNAMEs<br/>(alpha., v1., v2.)"| Netlify["Netlify<br/>(older versions)"]
+    subgraph EmailInfra["Email Infrastructure"]
+        CloudflareEmail["Cloudflare Email<br/>Routing<br/>MX/SPF/DKIM/DMARC"]
+        Inbox["@yannislam.org<br/>inbox"]
+    end
+    
+    subgraph LegacyVersions["Legacy Versions"]
+        LegacyCNAME["Legacy CNAMEs<br/>(alpha., v1., v2.)"]
+        Netlify["Netlify<br/>(older site)"]
+    end
+    
+    Visitor -->|"DNS lookup"| CloudflareDNS
+    CloudflareDNS -->|"proxied A/CNAME"| VercelEdge
+    VercelEdge -->|"serves site"| Visitor
+    
+    CloudflareDNS --> CloudflareEmail
+    CloudflareEmail --> Inbox
+    
+    CloudflareDNS -.->|"legacy"| LegacyCNAME
+    LegacyCNAME -.-> Netlify
 ```
 
 #### GitHub Actions Workflow: `build-test.yml`
