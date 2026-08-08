@@ -125,70 +125,77 @@ flowchart TB
 
 ### Deployment & DNS
 
-```mermaid
-flowchart LR
-    Dev["git push"] --> GitHub["GitHub repo"]
-    GitHub -->|"build hook"| Vercel["Vercel<br/>ng build + postbuild inject-env.js"]
-
-    Visitor["Visitor's browser"] -->|"DNS lookup"| Cloudflare["Cloudflare<br/>DNS zone: yannislam.org"]
-    Cloudflare -->|"proxied A / CNAME"| Vercel
-    Vercel -->|"static Angular bundle"| Visitor
-
-    Cloudflare -->|"MX / SPF / DKIM / DMARC<br/>Email Routing"| Inbox["email@yannislam.org"]
-    Cloudflare -.->|"legacy CNAMEs<br/>(alpha., v1., v2.)"| Netlify["Netlify<br/>(older site versions)"]
-```
-
-### GitHub Actions & CI/CD Pipeline
+#### CI/CD Pipeline: GitHub Actions → Vercel → Cloudflare
 
 ```mermaid
-flowchart LR
-    PR["Pull Request<br/>to main/master/develop"] -->|"triggers"| GHA["GitHub Actions<br/>Build & Test"]
+flowchart TB
+    Developer["Developer<br/>local machine"]
+    Developer -->|"git push"| GitHub["GitHub repo<br/>(PR to main/master/develop)"]
     
-    subgraph "Matrix Strategy"
+    GitHub -->|"triggers"| GHA["GitHub Actions<br/>Build & Test"]
+    
+    subgraph Matrix["Matrix Strategy"]
         N22["Node.js 22.x"] 
         N24["Node.js 24.x"]
     end
     
-    GHA --> N22
-    GHA --> N24
+    GHA --> Matrix
     
-    N22 --> Checkout["Checkout code"]
-    N24 --> Checkout
-    
+    N22 & N24 -->|"all steps"| Checkout["Checkout code"]
     Checkout --> Setup["Set up Node.js<br/>+ npm cache"]
     Setup --> AngularCache["Cache Angular<br/>build artifacts"]
-    AngularCache --> Install["npm ci<br/>(install dependencies)"]
-    
+    AngularCache --> Install["npm ci<br/>(install deps)"]
     Install --> Tests["npm test<br/>(with coverage)"]
-    Tests --> Coverage["Upload coverage<br/>to Codecov"]
-    
+    Tests --> Coverage["Upload to Codecov"]
     Coverage --> Build["npm run build<br/>(Angular AOT)"]
-    Build --> Verify["Verify dist/<br/>artifacts"]
+    Build --> Verify["Verify dist/"]
     
-    Verify -->|"All pass"| Success["✅ PR approved<br/>for merge"]
-    Verify -->|"Any fail"| Failure["❌ PR blocked<br/>until fixed"]
+    Verify -->|"✅ All pass"| Mergeable["PR is mergeable"]
+    Verify -->|"❌ Any fail"| Blocked["PR blocked"]
     
-    Success --> Merge["Merge to base<br/>branch"]
-    Merge --> VercelBuild["Vercel deploys<br/>production"]
+    Mergeable -->|"Merge to base"| Merged["Commit on main/master"]
+    Blocked -.->|"Fix & re-push"| GitHub
+    
+    Merged -->|"Vercel webhook"| Vercel["Vercel<br/>ng build + postbuild<br/>inject-env.js"]
+    Vercel -->|"production deploy"| VercelServe["Vercel Edge<br/>(static bundle)")
+    
+    Visitor["Visitor's browser"] -->|"DNS lookup"| Cloudflare["Cloudflare<br/>DNS zone: yannislam.org"]
+    Cloudflare -->|"proxied A/CNAME"| VercelServe
+    VercelServe -->|"serves site"| Visitor
+    
+    Cloudflare -->|"MX/SPF/DKIM/DMARC<br/>Email Routing"| Inbox["@yannislam.org<br/>email"]
+    Cloudflare -.->|"legacy CNAMEs<br/>(alpha., v1., v2.)"| Netlify["Netlify<br/>(older versions)"]
 ```
 
-#### Workflow: `build-test.yml`
+#### GitHub Actions Workflow: `build-test.yml`
 
-The project's primary CI/CD pipeline runs automatically on every pull request to `main`, `master`, or `develop`:
+Every pull request to `main`, `master`, or `develop` automatically triggers the CI/CD pipeline:
 
-- **Trigger**: PR opened or updated against protected branches
-- **Matrix Strategy**: Tests run against Node.js 22.x and 24.x to ensure compatibility across LTS and current versions
-- **Steps**:
-  1. **Checkout** — fetches the PR branch
-  2. **Node.js Setup** — installs the specified Node version with npm cache restoration for faster builds
-  3. **Angular Cache** — restores `.angular/cache` from previous runs to speed up compilation
-  4. **Install** — runs `npm ci` for deterministic dependency installation
-  5. **Tests** — runs headless Chrome unit tests with code coverage (`karma`, `jasmine`)
-  6. **Coverage** — uploads test coverage reports to [Codecov](https://codecov.io) for coverage tracking
-  7. **Build** — compiles the Angular app with ahead-of-time (AOT) compilation
-  8. **Verify** — ensures the `dist/` directory was created and reports bundle size
+**Matrix Strategy**
+- Runs against **Node.js 22.x** and **24.x** to ensure compatibility across LTS and current versions
+- Both matrix jobs must pass for PR approval
 
-All steps must pass for the PR to be mergeable; any failure blocks the merge and requires a code fix + push to re-run.
+**Pipeline Steps**
+1. **Checkout** — fetches the PR branch code
+2. **Node.js Setup** — installs specified Node version with npm cache for faster builds
+3. **Angular Cache** — restores `.angular/cache` from previous runs to speed up AOT compilation
+4. **Install** — runs `npm ci` for deterministic, reproducible dependency installation
+5. **Tests** — runs headless Chrome unit tests with code coverage (`karma`, `jasmine`)
+6. **Coverage Upload** — reports test coverage to [Codecov](https://codecov.io) for metrics tracking
+7. **Build** — compiles the Angular app with ahead-of-time (AOT) compilation
+8. **Artifact Verification** — ensures `dist/` directory was created and outputs bundle size
+
+**Merge Gating**
+- All matrix jobs and steps must pass for the PR to become mergeable
+- Any failure blocks the merge; fix the issue and push to re-run the workflow
+- Passing PR can be merged to the base branch, triggering Vercel's production build and deployment
+
+**After Merge: Production Deployment**
+- Merge to base branch → Vercel webhook triggers → Vercel builds production bundle
+- `scripts/inject-env.js` substitutes Google Analytics ID from Vercel environment
+- Cloudflare DNS routes `yannislam.org` to Vercel's edge network
+- Cloudflare also handles email routing (MX/SPF/DKIM/DMARC) for `@yannislam.org`
+- Legacy subdomains (`alpha.`, `v1.`, `v2.`) still resolve to Netlify via Cloudflare CNAMEs from earlier site iterations
 
 ## Code Structure
 
