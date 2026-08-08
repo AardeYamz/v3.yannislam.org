@@ -162,11 +162,23 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     if (!this.isBrowser) return;
 
     this.layoutLanes();
+
+    // layoutLanes() only computes each logo's lane/track assignment - it
+    // doesn't itself move anything, since the actual DOM write happens in
+    // render(). Without this call, the very first paint (whether that's a
+    // cold client bootstrap or hydrating a prerendered page, where the
+    // static HTML has no transform on these elements at all) shows every
+    // logo stacked at the container's (0,0) corner until the rAF loop's
+    // first tick fires and calls render() a frame later - a visible pile
+    // that then jumps out to its scattered layout. Rendering once here,
+    // synchronously, means the correct layout is what actually gets
+    // painted first.
+    this.render(0);
+
     window.addEventListener('resize', this.onResize);
     document.addEventListener('visibilitychange', this.onVisibilityChange);
 
     if (this.prefersReducedMotion) {
-      this.render(0);
       return;
     }
 

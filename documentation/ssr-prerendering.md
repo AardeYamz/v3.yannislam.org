@@ -350,3 +350,81 @@ event to act on anyway) and lets the real browser probe it — and correct
 to the fallback if needed — once it hydrates client-side. Re-ran `ng
 build` after the fix: zero `Image is not defined` errors, `Prerendered 4
 static routes.` still reported, build otherwise unchanged.
+
+## Fixed: everything flashing before the boot animation starts
+
+Reported after the above was already merged: loading a prerendered page
+showed the fully-rendered site for a moment, then the boot-time loading
+screen popped back up over it and replayed its full ~2s intro/outro
+animation before revealing the page again — on every load, not just the
+first one per session.
+
+**Root cause.** The server-side skip paths added above (`LoadingScreenComponent`
+emitting `finished` immediately, which flips `AppComponent.headerReady` to
+`true` so the header mounts) only run *during prerendering* — they don't
+tell the *client* that this already happened. `headerReady` and
+`LoadingScreenComponent.hidden` are both plain fields that start at their
+un-animated defaults (`false`) on every client bootstrap, hydrating or not.
+For a hydrating client, that default is simply wrong: it doesn't match
+what the server actually rendered (`headerReady: true`, `hidden: true`).
+Angular's hydration reconciliation has to resolve that mismatch, and the
+visible result was the loading screen re-asserting its "not finished yet"
+state and running the whole animation again from scratch, over an
+already-live page.
+
+**Fix — `src/app/utils/hydration.ts`, new:** `wasServerPrerendered()`,
+a small function that checks for `ng-server-context` on `<app-root>` (a
+static attribute `@angular/ssr`'s server renderer writes as metadata —
+unlike the `ngh` markers Angular's hydration runtime consumes and strips
+as it walks the tree, this one isn't part of that bookkeeping, so it's
+safe to read at any point during client bootstrap, including a
+component's constructor before its own view exists). `true` means: this
+HTML came from prerendering and the client is now hydrating it, not a
+cold client-only bootstrap (e.g. `ng serve`, which has nothing to
+hydrate).
+
+Both `LoadingScreenComponent` and `AppComponent` now check this in their
+constructors and set their initial state to match what the server
+rendered (`hidden = true` / `headerReady = true`) *before* Angular's
+first render pass, instead of only reacting to it after the fact via the
+`finished` event. `LoadingScreenComponent.ngAfterViewInit()`'s existing
+`!isBrowser` skip branch became `!isBrowser || skipAnimation`, covering
+both cases with the same "already finished" logic. A genuine cold client
+bootstrap (`wasServerPrerendered()` false) is unaffected — `hidden`/
+`headerReady` keep their normal `false` defaults there and the full
+animation still plays, exactly as before.
+
+**A second, independent contributor found while verifying the first fix:**
+`FloatingLogosComponent`'s SSR guard (above) means server-rendered HTML
+never gets a `transform` on any of its ~20-40 decorative logo elements —
+`layoutLanes()` only *computes* each one's lane position, the actual
+`style.transform` write happens in `render()`, which the original code
+only ever called from inside the `requestAnimationFrame` loop's first
+tick. Confirmed directly in the built output: every `.floating-logo`
+`<img>`'s inline `style` had `width`/`opacity` but no `transform` at all.
+Since the component's CSS positions these absolutely at `top: 0; left: 0`
+with no fallback layout, every logo rendered stacked in the container's
+corner — behind the banner greeting, above the fold — until the first rAF
+tick fired a frame later and scattered them into their real positions.
+This isn't hydration-specific (a cold client bootstrap has the exact same
+gap between "layout computed" and "layout painted"); fixed by calling
+`render(0)` synchronously right after `layoutLanes()` in
+`ngAfterViewInit()`, so the correct positions are what's actually in the
+DOM before the browser's first paint, for both prerendered and
+non-prerendered loads alike.
+
+**Verification.** Built the real prerendered output and served it with
+its actual client bundle attached (not `ng serve`) — the only way to
+observe genuine hydration behavior, since `ng serve` never prerenders
+anything to hydrate. Sampled the DOM every ~16ms for 3s starting at
+navigation: `.loading-screen`'s `--hidden` class (`visibility: hidden`,
+confirmed in `loading-screen.component.scss` — the thing that actually
+makes it invisible, not `opacity`) stayed applied for all 2164 samples
+across the whole window, `<app-header>` was present for all of them, and
+the first `.floating-logo`'s `transform` was already a real matrix (not
+`none`) from the very first sample (~53ms in) onward. Confirmed
+separately that the raw HTML response, before any client JS runs at all,
+already has both `loading-screen--hidden` and `<app-header` present —
+matching what the client then sees, so there's nothing left for hydration
+to reconcile. `ng build` still succeeds, all 4 routes still prerender,
+and the full Karma/Jasmine suite (117 specs) still passes unchanged.
