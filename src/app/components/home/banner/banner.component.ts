@@ -42,28 +42,30 @@ export class BannerComponent {
     }
 
     private autoScrollPages() {
-        const sections = ['education', 'experience', 'volunteering', 'projects'];
+        const sections = ['education', 'workhistory', 'volunteering'];
         let currentIndex = 0;
-        const scrollDuration = 5000; // 5 seconds per section
+        const scrollDuration = 4000; // 4 seconds per section
 
         const scrollToNextSection = () => {
             if (currentIndex < sections.length) {
                 const section = document.getElementById(sections[currentIndex]);
                 if (section) {
-                    this.smoothScrollTo(section, scrollDuration);
+                    this.smoothScrollTo(section.offsetTop - 80, scrollDuration);
                     currentIndex++;
-                    setTimeout(scrollToNextSection, scrollDuration + 1000); // 1 second pause between sections
+                    setTimeout(scrollToNextSection, scrollDuration + 1500); // 1.5 second pause between sections
+                } else {
+                    currentIndex++;
+                    scrollToNextSection();
                 }
             }
         };
 
-        scrollToNextSection();
+        setTimeout(scrollToNextSection, 500);
     }
 
-    private smoothScrollTo(element: HTMLElement, duration: number) {
+    private smoothScrollTo(targetPosition: number, duration: number) {
         const startPosition = window.scrollY;
-        const endPosition = element.offsetTop - 100; // 100px offset from top
-        const distance = endPosition - startPosition;
+        const distance = targetPosition - startPosition;
         let start: number | null = null;
 
         const animation = (timestamp: number) => {
@@ -74,7 +76,7 @@ export class BannerComponent {
                 window.scrollTo(0, startPosition + distance * this.easeInOutQuad(progress));
                 requestAnimationFrame(animation);
             } else {
-                window.scrollTo(0, endPosition);
+                window.scrollTo(0, targetPosition);
             }
         };
 
