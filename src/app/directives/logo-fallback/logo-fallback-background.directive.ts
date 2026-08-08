@@ -1,4 +1,5 @@
-import { Directive, effect, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Directive, effect, ElementRef, Inject, Input, OnChanges, PLATFORM_ID, SimpleChanges } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 import { buildFallbackLogoDataUri } from './logo-fallback';
 
@@ -16,8 +17,14 @@ export class LogoFallbackBackgroundDirective implements OnChanges {
   @Input() appLogoFallbackBgOrg = '';
 
   private failed = false;
+  private readonly isBrowser: boolean;
 
-  constructor(private el: ElementRef<HTMLElement>, private themeService: ThemeService) {
+  constructor(
+    private el: ElementRef<HTMLElement>,
+    private themeService: ThemeService,
+    @Inject(PLATFORM_ID) platformId: object,
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
     effect(() => {
       const color = this.themeService.accentColor();
       if (this.failed) {
@@ -29,7 +36,15 @@ export class LogoFallbackBackgroundDirective implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['src']) {
       this.failed = false;
-      this.probe(this.src);
+      // `Image` doesn't exist under Domino (server-side DOM emulation used
+      // during prerendering) - there's no error event to probe there anyway,
+      // so just set the background directly and let the real browser probe
+      // it (and correct to the fallback if needed) once it hydrates.
+      if (this.isBrowser) {
+        this.probe(this.src);
+      } else {
+        this.setBackground(this.src);
+      }
     }
   }
 

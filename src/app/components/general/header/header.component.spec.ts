@@ -31,7 +31,8 @@ describe('HeaderComponent', () => {
       analyticsService as any,
       themeService as any,
       resumeService as any,
-      configService as any
+      configService as any,
+      'browser' as any
     );
   });
 

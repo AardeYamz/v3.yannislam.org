@@ -1,6 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestroy, Output, PLATFORM_ID, ViewChild } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
 import { ThemeService } from 'src/app/services/theme/theme.service';
+import { wasServerPrerendered } from 'src/app/utils/hydration';
 
 // How far (in the artwork's 0 0 800 800 viewBox units) each piece starts
 // offset up and to the left of its resting position.
@@ -28,7 +30,41 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
 
   private breathe?: JSAnimation;
 
-  constructor(private themeService: ThemeService, private cdr: ChangeDetectorRef) { }
+  // `document` doesn't exist and animejs has nothing to animate during
+  // server-side prerendering (Node has no DOM), so the whole intro/outro
+  // sequence is skipped there in favor of immediately reporting "finished"
+  // so the header still renders into the static HTML.
+  private readonly isBrowser: boolean;
+
+  // A hydrating client needs to skip the intro/outro too, for a different
+  // reason: the prerendered HTML it's reusing already shows the finished
+  // state (overlay hidden, header mounted), so replaying the ~2s animation
+  // here would mean visibly popping the overlay back up over an
+  // already-rendered page before hiding it again a second time. See
+  // wasServerPrerendered()'s doc comment for the full mechanism. A genuine
+  // cold client bootstrap (e.g. `ng serve`, no SSR involved) still gets the
+  // full animation - only a hydrated prerendered page skips it.
+  private readonly skipAnimation: boolean;
+
+  constructor(
+    private themeService: ThemeService,
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) platformId: object,
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+    this.skipAnimation = this.isBrowser && wasServerPrerendered();
+
+    // Must be set here, not just in ngAfterViewInit: Angular's hydration
+    // reconciles the template's initial render against the server-rendered
+    // DOM before ngAfterViewInit runs, so `hidden` needs to already match
+    // what the server rendered (true) by the time that first pass happens -
+    // the `false` field default above is only correct for a genuine cold
+    // client bootstrap, which still needs to start visible and play the
+    // animation.
+    if (!this.isBrowser || this.skipAnimation) {
+      this.hidden = true;
+    }
+  }
 
   // Matches clearcolor/black/white.svg: full color for the default theme,
   // a single flat fill for light/dark so the intro matches the header logo.
@@ -41,6 +77,19 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    if (!this.isBrowser || this.skipAnimation) {
+      // Server: skip the animated intro/outro entirely and report
+      // completion right away, so prerendered HTML includes the header
+      // instead of being stuck behind a loading state that never finishes.
+      // Hydrating client: same skip, so as not to replay an animation the
+      // static HTML already shows the end state of (see skipAnimation's
+      // doc comment) - `hidden` was already set in the constructor for
+      // both cases, this just needs to (re-)emit `finished`.
+      this.hidden = true;
+      this.finished.emit();
+      return;
+    }
+
     document.body.style.overflow = 'hidden';
     this.playIntro();
 

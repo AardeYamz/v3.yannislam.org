@@ -1,4 +1,5 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, QueryList, ViewChildren, effect } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, PLATFORM_ID, QueryList, ViewChildren, effect } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
 interface FloatingLogo {
@@ -86,8 +87,14 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
 
   readonly logos: FloatingLogo[] = this.generateLogos();
 
-  private readonly prefersReducedMotion =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Domino (Angular's server-side DOM emulation used during prerendering)
+  // defines a `window` global but doesn't implement layout/media APIs like
+  // `matchMedia` or `getBoundingClientRect`, so a plain `typeof window`
+  // check isn't enough here - this uses Angular's PLATFORM_ID instead, and
+  // every browser-only code path below (including the resize listener and
+  // rAF-driven animation loop) is gated on it.
+  private readonly isBrowser: boolean;
+  private readonly prefersReducedMotion: boolean;
 
   private elements: HTMLElement[] = [];
   private rafId?: number;
@@ -104,7 +111,11 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     private host: ElementRef<HTMLElement>,
     private themeService: ThemeService,
     private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) platformId: object,
   ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+    this.prefersReducedMotion = this.isBrowser && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     // Re-randomize colors whenever the user toggles the theme. Skipped on
     // the first run (effects fire once immediately on creation) since
     // generateLogos() already picked initial colors.
@@ -144,14 +155,30 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.elements = this.logoEls.map(ref => ref.nativeElement);
+
+    // getBoundingClientRect(), the resize listener, and the rAF animation
+    // loop below all need real layout/browser APIs that don't exist during
+    // server-side prerendering.
+    if (!this.isBrowser) return;
+
     this.layoutLanes();
 
-    if (typeof window === 'undefined') return;
+    // layoutLanes() only computes each logo's lane/track assignment - it
+    // doesn't itself move anything, since the actual DOM write happens in
+    // render(). Without this call, the very first paint (whether that's a
+    // cold client bootstrap or hydrating a prerendered page, where the
+    // static HTML has no transform on these elements at all) shows every
+    // logo stacked at the container's (0,0) corner until the rAF loop's
+    // first tick fires and calls render() a frame later - a visible pile
+    // that then jumps out to its scattered layout. Rendering once here,
+    // synchronously, means the correct layout is what actually gets
+    // painted first.
+    this.render(0);
+
     window.addEventListener('resize', this.onResize);
     document.addEventListener('visibilitychange', this.onVisibilityChange);
 
     if (this.prefersReducedMotion) {
-      this.render(0);
       return;
     }
 
