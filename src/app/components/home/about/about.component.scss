@@ -1,6 +1,29 @@
 @use "./../../../../variables.scss"  as *;
 
 .about {
+    position: relative;
+    overflow: hidden;
+
+    .about-bg-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('../../../../assets/images/covers/indexcover.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        opacity: var(--bg-opacity, 0.3);
+        z-index: 0;
+        pointer-events: none;
+        transition: opacity 0.1s ease-out;
+    }
+
+    .container {
+        position: relative;
+        z-index: 1;
+    }
 
     .about-description {
         margin-top: 30px;
@@ -77,6 +100,14 @@
     .about-img-container {
         margin-left: auto;
         margin-right: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .about {
+        .about-bg-image {
+            background-attachment: scroll;
+        }
     }
 }
 

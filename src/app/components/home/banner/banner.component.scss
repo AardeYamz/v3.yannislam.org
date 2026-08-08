@@ -2,31 +2,11 @@
 
 .banner {
     position: relative;
-    height: 100vh;
-    background-image: url('../../../../assets/images/covers/indexcover.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(10, 25, 47, 0.5);
-        z-index: 1;
-    }
+    min-height: 100vh;
 
     .container {
         display: table;
         height: 100vh;
-        width: 100%;
-        position: relative;
-        z-index: 2;
 
         .section-box-banner {
             display: table-cell;
@@ -123,16 +103,5 @@
     }
     50% {
         transform: rotate(45deg) translateY(10px);
-    }
-}
-
-@media (max-width: 768px) {
-    .banner {
-        background-attachment: scroll;
-        height: 100vh;
-
-        .container {
-            height: 100vh;
-        }
     }
 }
