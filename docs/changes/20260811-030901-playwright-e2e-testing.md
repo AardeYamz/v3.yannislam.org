@@ -4,7 +4,7 @@ Date: 2026-08-11 03:09:01
 
 ## Context
 
-`todo/playwright-e2e-testing-plan.md` audited the existing Karma/Jasmine unit
+`docs/todo/playwright-e2e-testing-plan.md` audited the existing Karma/Jasmine unit
 suite (117 `it()` blocks, all `TestBed` fixtures with children stubbed) and
 found the gaps only a real browser closes: the boot sequence (anime.js intro,
 the 1400ms `MIN_DISPLAY_MS` gate, `headerReady`), whether nav clicks actually

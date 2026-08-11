@@ -62,7 +62,7 @@ filled in with the site's real identity, even though `src/assets/config.json`
 had already been carrying the real values for a while
 (`manifestName`, `manifestShortName`, `manifestThemeColor`,
 `manifestBackgroundColor`, `manifestDisplay`, `manifestStartUrl`,
-`manifestIcon`, added per `documentation/logo-svg-dark-mode.md`'s
+`manifestIcon`, added per `docs/changes/20260728-151017-logo-svg-dark-mode.md`'s
 `manifestIcon` update) — those fields aren't read by any code path, so they
 never made it into the actual manifest file.
 
@@ -106,7 +106,7 @@ carrying it forward unused.
 The single icon entry points at `clearcolor.svg`
 (`src/assets/images/logos/clearcolor.svg`, matching `config.json`'s
 `manifestIcon`), the same full-color vector logo already used everywhere
-else on the site (`documentation/logo-svg-dark-mode.md`). No PNG icon set
+else on the site (`docs/changes/20260728-151017-logo-svg-dark-mode.md`). No PNG icon set
 was (re-)generated: as that doc notes, this environment has no image
 rasterization tooling (no ImageMagick/`rsvg-convert`/`sharp`/`cairosvg`
 available), which is exactly why the site's logo assets were already moved

@@ -1,0 +1,120 @@
+# Dependabot configuration.
+#
+# Security updates (the alerts-driven PRs) are enabled in the repository
+# settings and do not need to be declared here — the `security-updates`
+# group below only controls how they are batched. Everything else in this
+# file drives scheduled *version* updates.
+#
+# Aikido (see .github/workflows/security.yml) is what triages whether an
+# advisory actually reaches our code; Dependabot is what opens the bump.
+
+version: 2
+
+updates:
+  # ---------------------------------------------------------------- npm ---
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - javascript
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+
+    groups:
+      # The Angular packages have to move in lockstep — a split bump leaves
+      # the workspace with mismatched @angular/* versions that fail to build.
+      angular:
+        patterns:
+          - "@angular/*"
+          - "@angular-devkit/*"
+          - "@ng-bootstrap/ng-bootstrap"
+          - "ngx-owl-carousel-o"
+          - "ngx-typed-js"
+        update-types:
+          - minor
+          - patch
+
+      # Karma/Jasmine/Playwright churn often and never ship in the bundle,
+      # so batching them keeps the PR count down without extra risk.
+      testing:
+        patterns:
+          - "@playwright/test"
+          - "karma"
+          - "karma-*"
+          - "jasmine-core"
+          - "@types/jasmine"
+          - "istanbul-lib-instrument"
+          - "http-server"
+        update-types:
+          - minor
+          - patch
+
+      # Everything else that isn't a major, in one PR. Majors are deliberately
+      # left ungrouped so each lands on its own and can be reverted alone.
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+      # Keep the alerts-driven PRs batched into a single branch (this is the
+      # behaviour PR #54 already had by default — pinned here so it survives
+      # any change to the platform default).
+      security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
+
+    ignore:
+      # Angular majors are done by hand, one major at a time, through
+      # `ng update` and its migration schematics — see
+      # docs/changes/20260727-205542-UPGRADE-NOTES.md. A Dependabot PR that
+      # jumps @angular/core alone would skip the schematics entirely.
+      - dependency-name: "@angular/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@angular-devkit/*"
+        update-types: ["version-update:semver-major"]
+
+      # These trail the Angular major they're built against, so they can only
+      # move as part of the manual Angular upgrade above.
+      - dependency-name: "@ng-bootstrap/ng-bootstrap"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "ngx-owl-carousel-o"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "ngx-typed-js"
+        update-types: ["version-update:semver-major"]
+
+      # TypeScript's supported range is dictated by the Angular compiler, not
+      # by what's latest on npm — `~6.0.3` in package.json is intentional.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
+  # ----------------------------------------------------- github-actions ---
+  # The workflows pin actions down to the patch (actions/checkout@v4.1.7),
+  # which is why they had drifted far enough to start warning about the
+  # Node 20 runtime deprecation. This keeps the pins current.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: "chore(actions)"
+    groups:
+      actions:
+        patterns:
+          - "*"
