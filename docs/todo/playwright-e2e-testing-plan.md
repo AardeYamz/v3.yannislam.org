@@ -2,8 +2,16 @@
 
 A plan for adding Playwright end-to-end testing to this repo and wiring it
 into GitHub Actions, written after auditing every existing test case and the
-current CI workflow. Nothing in this document has been implemented yet — it
-is the blueprint for the work.
+current CI workflow.
+
+> **Status.** Phases 1–3 have shipped; this document is kept as the original
+> blueprint. Phase 1–2 (foundation, CI wiring, P0 specs) landed in
+> `docs/changes/20260811-030901-playwright-e2e-testing.md`; Phase 3 (breadth:
+> `projects`, `resume`, `footer-and-links`, `responsive`, `assets`) in
+> `docs/changes/20260811-115249-playwright-e2e-phase-3.md`. **Phase 4
+> (`accessibility.spec.ts` with axe; visual regression, deferred) is what
+> remains.** §8's open decisions were all resolved — see the Phase 1–2 change
+> doc.
 
 ## 1. Where things stand today
 
