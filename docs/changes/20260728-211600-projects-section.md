@@ -6,7 +6,7 @@ A new "05. Projects" page was added as its own route (`/projects`) rather than a
 
 ## Data
 
-`src/assets/config.json` already had a populated `projects` key (ported from the legacy `yannislam.org` Gatsby site) that nothing consumed yet. It was reshaped to match the same `{ sectionId, navNumber, headingText, list }` envelope that `about.experiences.work` / `.volunteering` already use (see `documentation/volunteering-section.md`), plus a master-heading envelope of its own so the page reads as one "Projects" section with two subsections rather than two independent top-level sections:
+`src/assets/config.json` already had a populated `projects` key (ported from the legacy `yannislam.org` Gatsby site) that nothing consumed yet. It was reshaped to match the same `{ sectionId, navNumber, headingText, list }` envelope that `about.experiences.work` / `.volunteering` already use (see `docs/changes/20260727-214549-volunteering-section.md`), plus a master-heading envelope of its own so the page reads as one "Projects" section with two subsections rather than two independent top-level sections:
 
 ```json
 "projects": {

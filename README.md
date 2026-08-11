@@ -60,14 +60,14 @@ The application will automatically reload if you change any of the source files.
 - [@fortawesome/fontawesome-free](https://fontawesome.com/) 7 — iconography
 - [ngx-typed-js](https://www.npmjs.com/package/ngx-typed-js) — the banner's typewriter effect
 - [ngx-owl-carousel-o](https://www.npmjs.com/package/ngx-owl-carousel-o) — work history carousel
-- [animejs](https://animejs.com) 4 — the boot-time loading screen's logo assembly animation (see `documentation/animejs-loading-screen.md`)
+- [animejs](https://animejs.com) 4 — the boot-time loading screen's logo assembly animation (see `docs/changes/20260728-132036-animejs-loading-screen.md`)
 - AOS-style scroll reveal via a custom `AosDirective` (`src/app/directives/aos/`)
-- A hand-rolled `requestAnimationFrame` loop powers `FloatingLogosComponent`, a field of falling logo marks behind the banner greeting (see `documentation/floating-logos-banner.md`)
+- A hand-rolled `requestAnimationFrame` loop powers `FloatingLogosComponent`, a field of falling logo marks behind the banner greeting (see `docs/changes/20260729-090717-floating-logos-banner.md`)
 - `LogoFallbackDirective` (`src/app/directives/logo-fallback/`) generates a data-URI SVG placeholder — the organization's name as themed accent-colored text — for work/education entries with no logo image
-- All page copy (nav, banner, about, education, work history, contact, footer socials) is data-driven from `src/assets/config.json`, read through a single `SiteConfigService` (see `documentation/config-dedup-refactor.md`)
+- All page copy (nav, banner, about, education, work history, contact, footer socials) is data-driven from `src/assets/config.json`, read through a single `SiteConfigService` (see `docs/changes/20260728-160203-config-dedup-refactor.md`)
 
 **Analytics**
-- Google Analytics 4 via the global `gtag.js` site tag, loaded inline in `src/index.html`; `AnalyticsService` calls the global `gtag()` directly — no analytics npm package is used (an earlier `ngx-google-analytics` integration was removed since it was never wired up) — see `documentation/google-analytics.md`
+- Google Analytics 4 via the global `gtag.js` site tag, loaded inline in `src/index.html`; `AnalyticsService` calls the global `gtag()` directly — no analytics npm package is used (an earlier `ngx-google-analytics` integration was removed since it was never wired up) — see `docs/changes/20260727-205542-google-analytics-1.md`
 
 **Infrastructure & deployment**
 - **Hosting/build**: [Vercel](https://vercel.com) builds and serves the production app (`vercel.json`); a `postbuild` step (`scripts/inject-env.js`) substitutes `%GOOGLE_ANALYTICS_ID%` in `index.html` from Vercel's environment at build time so the ID isn't hardcoded in source
@@ -237,7 +237,7 @@ three jobs, `build` and `e2e` chained so the app is only compiled once:
 **2. `build`** (Node 22.x)
 - `npm run build` — Angular AOT build, prerendering every known route
   (`/`, `/projects`, `/projects/highschool`, `/aardeyamz`, `**`) to static
-  HTML (see `documentation/20260811-013939-ssr-prerendering.md`)
+  HTML (see `docs/changes/20260811-013939-ssr-prerendering.md`)
 - Verifies `dist/` exists, then uploads it as a build artifact
   (`retention-days: 1`) for the `e2e` job to reuse
 
@@ -326,9 +326,9 @@ change required.
 Every component under `components/` follows the standard Angular trio
 (`*.component.ts` / `.html` / `.scss`, plus a `.spec.ts` where present).
 Components read content through `SiteConfigService` rather than importing
-`config.json` directly — see `documentation/config-dedup-refactor.md` for why.
+`config.json` directly — see `docs/changes/20260728-160203-config-dedup-refactor.md` for why.
 Other write-ups worth skimming when touching a specific area live in
-`documentation/` (loading screen animation, Google Analytics wiring, the
+`docs/changes/` (loading screen animation, Google Analytics wiring, the
 projects and volunteering sections, the falling-logos banner background,
 SVG logo conversion + the 3-state light/dark theme system, the header's
 scroll-translucency and left-to-right entrance animation, and Angular
@@ -420,9 +420,9 @@ stubbed — real page composition, boot-time animation, nav clicks, and theme
 switching aren't exercised at all there. [Playwright](https://playwright.dev)
 end-to-end tests in `e2e/` close that gap by driving a real browser against
 the actual built app. See
-`documentation/20260811-030901-playwright-e2e-testing.md` for the full
+`docs/changes/20260811-030901-playwright-e2e-testing.md` for the full
 write-up (what's covered, why, and non-obvious fixture decisions);
-`todo/playwright-e2e-testing-plan.md` for the original plan this implements
+`docs/todo/playwright-e2e-testing-plan.md` for the original plan this implements
 (P0 coverage so far — P1/P2 phases like `projects`/`resume`/`accessibility`
 specs and visual regression are still just that document, not yet built).
 

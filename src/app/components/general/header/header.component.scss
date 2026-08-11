@@ -155,7 +155,7 @@
         // top of its wrapper and only snapped down to its real position
         // once the animation finished and released the property.
         // Converted from a <div> to a <button> for keyboard/screen-reader
-        // accessibility (see documentation/fix-hamburger-menu-accessibility.md);
+        // accessibility (see docs/changes/20260810-211125-fix-hamburger-menu-accessibility.md);
         // these reset the browser's default button chrome (border, padding,
         // background, font) so it still renders as the plain animated bars
         // below, identical to the old <div>.

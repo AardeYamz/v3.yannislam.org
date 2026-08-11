@@ -10,7 +10,7 @@
 // angular.json — on top of this same full import already living in
 // styles.scss, i.e. Bootstrap was being shipped twice), this file forwards
 // only the partials that are actually needed. See
-// documentation/css-bundle-trim.md for the audit behind this list.
+// docs/changes/20260731-184800-css-bundle-trim.md for the audit behind this list.
 //
 // Usage audit performed via:
 //   grep -roE 'class="[^"]*"' src/app --include=*.html
