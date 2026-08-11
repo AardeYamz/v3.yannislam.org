@@ -47,6 +47,10 @@ testem.log
 /playwright/.cache
 /e2e/**/*-snapshots/**/*-actual.png
 
+# Lighthouse CI
+/.lighthouseci
+/lhci-report
+
 # System files
 .DS_Store
 Thumbs.db

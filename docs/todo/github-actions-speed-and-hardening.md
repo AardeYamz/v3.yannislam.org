@@ -514,7 +514,113 @@ the coverage thresholds and the weekly `@external` run are all untouched; the
 gain is entirely from not re-downloading half a gigabyte of browsers on every
 job and from using the whole runner.
 
-## 6. Tooling summary
+## 6. Performance testing (shipped — Lighthouse CI)
+
+A `lighthouse` job now runs on every PR and push, in parallel with `e2e` off
+the **same `dist` artifact**, so it rebuilds nothing and adds nothing to the
+critical path (e2e is ~6 min; this is ~4 min). Config lives in
+`lighthouserc.js`; `@lhci/cli` is a pinned devDependency rather than a floating
+`npx --yes` fetch, and no new third-party action was introduced — both
+deliberate, given §3.2.
+
+### 6.1 Why it runs both mobile and desktop
+
+This is the finding that shaped the whole job. Measured on the same commit,
+same bundle, same machine:
+
+| | Desktop preset | Mobile preset (default) | Field (Vercel, real users) |
+| --- | --- | --- | --- |
+| Performance | **93** | **48** | RES 37 |
+| FCP | 1.0 s | 5.7 s | 3.17 s |
+| LCP | 1.3 s | 6.2 s | 3.62 s |
+| CLS | **0.022** | **0.181** | **0.68** |
+| TBT | 60 ms | 330 ms | — |
+| TTFB | ~0 ms | ~0 ms | 1.68 s |
+
+A desktop-only run on localhost scores **93 and reports the site as healthy**,
+while `docs/todo/desktop-performance.md` documents real users seeing a 37 with
+CLS 0.68. Mobile throttling (slow 4G + 4× CPU slowdown, which is Lighthouse's
+*default* — `preset: 'desktop'` is what opts out) is the only one of the two
+that reproduces the layout shift at all.
+
+So: **mobile is the sensitive regression detector, desktop is the one that
+matches the metric currently being tracked.** Both run, in parallel, matrixed.
+
+### 6.2 What this can and cannot tell you
+
+It runs against the prerendered static bundle over localhost — genuinely the
+same bytes Vercel serves, since `vercel.json` points `outputDirectory` at
+`dist/v3.yannislam.org/browser` and all four routes are prerendered
+(`app.routes.server.ts`). But there is no network in between.
+
+**It will catch:** bundle-size growth, new render-blocking resources,
+accessibility and SEO regressions, layout shift under throttling.
+
+**It will never catch:** the 1.68 s TTFB. That reads ~0 ms on localhost and is
+a Vercel/CDN/cold-start property. Nothing in CI substitutes for the field data.
+Do not close out `desktop-performance.md` on the strength of a green
+Lighthouse job.
+
+### 6.3 Measured baseline (the numbers the budgets come from)
+
+Per-route, desktop preset, transferred bytes:
+
+| Route | Perf | Script | CSS | Font | Total |
+| --- | --- | --- | --- | --- | --- |
+| `/` | 92 | 619,387 | 209,307 | 375,344 | **5,180,809** |
+| `/projects/` | 90 | 621,575 | 209,307 | 375,344 | 2,185,126 |
+| `/projects/highschool/` | 87 | 621,108 | 209,307 | 375,344 | 2,357,363 |
+| `/aardeyamz/` | 95 | 626,761 | 209,307 | 373,696 | 1,271,815 |
+
+Budgets are set at these values plus ~12-16% headroom. Byte budgets are
+`error` because they are deterministic; score and timing budgets are `warn`,
+because this baseline was captured on a dev box and the GitHub runner is
+slower. **Re-baseline the timing thresholds from the first few CI runs before
+promoting any of them to `error`.**
+
+Note the homepage's 5.18 MB total, of which **3.77 MB is images across 26
+requests**. That dwarfs JS and CSS combined and is the largest single
+performance lever in the repo — worth its own entry in
+`desktop-performance.md`.
+
+Angular's own budget in `angular.json` is `initial` 2 MB warning / 5 MB error
+against an actual initial payload of ~808 KiB. It is loose enough that it can
+never fire; the LHCI byte budgets are what actually ratchet.
+
+### 6.4 Accessibility findings surfaced immediately
+
+Lighthouse flagged four failing audits on the first run. These are DOM-derived
+and fully deterministic — no CI noise, and they overlap directly with Phase 4
+of `playwright-e2e-testing-plan.md` (the unbuilt axe spec):
+
+| Audit | Nodes | What it is |
+| --- | --- | --- |
+| `link-name` | **17** | Icon-only links (`about.contact` socials — `<a>` wrapping a Font Awesome `<i>` with no text and no `aria-label`) |
+| `color-contrast` | 5 | `.nav-number` spans in the header |
+| `heading-order` | 2 | `h5.workhistory-title` skipping a level |
+| `aria-valid-attr-value` | 1 | ng-bootstrap nav tab `aria-selected` |
+
+All four are set to `warn` so they surface in the report without blocking a
+repo that already has them. `categories:accessibility` is gated at `error`
+`minScore 0.85` (measured: 87 desktop / 95 mobile) so the score can't slide
+further while they're outstanding. **Flip each audit to `error` as it's
+fixed.** `link-name` at 17 nodes is the one worth doing first — icon-only
+social links are unusable with a screen reader.
+
+### 6.5 Follow-ups
+
+- [ ] Fix `link-name` (17 nodes), then flip it to `error`.
+- [ ] Re-baseline `categories:performance` / `cumulative-layout-shift` /
+      `total-blocking-time` from CI runs; promote to `error`.
+- [ ] Consider a scheduled Lighthouse run against **production**
+      (`https://yannislam.org`) on the existing weekly cron — that is the only
+      way to get TTFB and CDN behaviour into CI at all.
+- [ ] Pin the Chrome version. The job uses whatever Chrome ships in the
+      `ubuntu-latest` image, so scores shift when GitHub updates it. If
+      timing thresholds ever become `error`, this becomes a real flake source.
+- [ ] Add the image weight (3.77 MB on `/`) to `desktop-performance.md`.
+
+## 7. Tooling summary
 
 | Tool | Cost | Open source | Fills |
 | --- | --- | --- | --- |
@@ -524,7 +630,7 @@ job and from using the whole runner.
 | [OpenSSF Scorecard](https://github.com/ossf/scorecard-action) | free | yes | §3.8 |
 | [harden-runner](https://github.com/step-security/harden-runner) | free Community tier | partly | §3.8 |
 
-## 7. Open decisions
+## 8. Open decisions
 
 1. **Are `build` / `unit-tests` / `e2e` required status checks?** Decides
    whether §2.4 ships as written or needs a reporting shim. Blocks Phase 4.

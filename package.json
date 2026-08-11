@@ -16,7 +16,9 @@
     "pretest:e2e": "node scripts/generate-resume-manifest.js",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:report": "playwright show-report"
+    "test:e2e:report": "playwright show-report",
+    "test:perf": "lhci autorun --config=./lighthouserc.js",
+    "test:perf:desktop": "LH_PRESET=desktop lhci autorun --config=./lighthouserc.js"
   },
   "private": true,
   "dependencies": {
@@ -47,6 +49,7 @@
     "@angular/cli": "~22.0.8",
     "@angular/compiler-cli": "^22.0.8",
     "@angular/localize": "^22.0.8",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.62.1",
     "@types/express": "^5.0.1",
     "@types/jasmine": "~6.0.0",

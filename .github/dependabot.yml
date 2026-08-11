@@ -46,6 +46,7 @@ updates:
       testing:
         patterns:
           - "@playwright/test"
+          - "@lhci/cli"
           - "karma"
           - "karma-*"
           - "jasmine-core"
