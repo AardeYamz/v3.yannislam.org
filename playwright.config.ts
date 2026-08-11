@@ -4,7 +4,7 @@ const isCI = !!process.env.CI;
 const PORT = 4200;
 
 // PR runs are Chromium + mobile only to keep wall clock down (see
-// todo/playwright-e2e-testing-plan.md §5 "Cost control"); push-to-main and
+// docs/todo/playwright-e2e-testing-plan.md §5 "Cost control"); push-to-main and
 // scheduled runs opt into the full browser matrix.
 const fullMatrix = process.env.PLAYWRIGHT_FULL_MATRIX === '1';
 

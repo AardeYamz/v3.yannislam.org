@@ -4,7 +4,7 @@ Date: 2026-07-31 21:06:05
 
 ## Context
 
-`FloatingLogosComponent` (see `documentation/floating-logos-banner.md`)
+`FloatingLogosComponent` (see `docs/changes/20260729-090717-floating-logos-banner.md`)
 drives 20-40 falling logos with a hand-rolled `requestAnimationFrame` loop
 started in `ngAfterViewInit`. It already skips the loop entirely under
 `prefers-reduced-motion`, but had no awareness of tab visibility — the rAF
@@ -46,7 +46,7 @@ the existing `resize` cleanup.
 - `src/app/components/home/floating-logos/floating-logos.component.ts` —
   `startLoop()`/`stopLoop()` extraction, `onVisibilityChange` handler,
   listener registration in `ngAfterViewInit` and cleanup in `ngOnDestroy`.
-- `documentation/pause-floating-logos-visibility.md` — this file.
+- `docs/changes/20260731-210605-pause-floating-logos-visibility.md` — this file.
 
 ## Verification
 

@@ -20,6 +20,11 @@ describe('SiteConfigService', () => {
     expect(service.menu.some((item: any) => item.navTitle === 'Projects')).toBeTrue();
   });
 
+  it('filters out hidden entries (the AardeYamz easter egg) from the rendered menu', () => {
+    expect(service.menu.some((item: any) => item.navTitle === 'AardeYamz')).toBeFalse();
+    expect(service.data.siteMenu.some((item: any) => item.navTitle === 'AardeYamz' && item.hidden)).toBeTrue();
+  });
+
   it('exposes work/education/volunteering/skills under experiences', () => {
     expect(service.experiences.work?.list?.length).toBeGreaterThan(0);
     expect(service.experiences.volunteering?.list?.length).toBeGreaterThan(0);

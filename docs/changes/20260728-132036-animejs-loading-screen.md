@@ -120,6 +120,6 @@ the build.
 - `src/assets/images/logos/logo.svg` — new hand-reconstructed vector version of
   `clearcolor.png`. Later renamed to `clearcolor.svg` when the rest of the logo
   set (black/white/gray) was converted to SVG too — see
-  `documentation/logo-svg-dark-mode.md`.
+  `docs/changes/20260728-151017-logo-svg-dark-mode.md`.
 - `package.json` / `package-lock.json` — added `animejs`, `@types/node`.
 - `tsconfig.app.json` — added `"node"` to `compilerOptions.types`.
