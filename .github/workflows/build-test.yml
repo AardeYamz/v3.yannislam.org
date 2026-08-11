@@ -102,6 +102,65 @@ jobs:
           path: dist/
           retention-days: 1
 
+  # Runs in parallel with e2e off the same dist artifact, so it adds nothing
+  # to the critical path (e2e is ~6min, this is ~4min). Never rebuilds.
+  #
+  # Scope: this catches regressions in what the repo controls — bundle size,
+  # render-blocking resources, accessibility, SEO, layout stability. It is
+  # explicitly NOT a proxy for production field data; see the header comment
+  # in lighthouserc.js and docs/todo/desktop-performance.md.
+  lighthouse:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Both, deliberately. Desktop matches the field metric currently
+        # tracked in docs/todo/desktop-performance.md; mobile applies
+        # Lighthouse's default slow-4G + 4x-CPU throttling and is the only
+        # one of the two that reproduces the real layout shift.
+        preset: [mobile, desktop]
+
+    env:
+      LH_PRESET: ${{ matrix.preset }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist
+
+      - name: Run Lighthouse CI
+        run: npx lhci autorun --config=./lighthouserc.js
+
+      - name: Upload Lighthouse report
+        uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: lighthouse-report-${{ matrix.preset }}
+          path: lhci-report/
+          retention-days: 7
+
   e2e:
     needs: build
     runs-on: ubuntu-latest
