@@ -2,7 +2,6 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, E
 import { isPlatformBrowser } from '@angular/common';
 import { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
 import { ThemeService } from 'src/app/services/theme/theme.service';
-import { wasServerPrerendered } from 'src/app/utils/hydration';
 
 // How far (in the artwork's 0 0 800 800 viewBox units) each piece starts
 // offset up and to the left of its resting position.
@@ -26,25 +25,28 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
 
   @Output() finished = new EventEmitter<void>();
 
+  // Deliberately the same default on the server and on every client boot
+  // (cold or hydrating a prerendered page) - see ngAfterViewInit's server
+  // branch for why that consistency matters.
   hidden = false;
 
   private breathe?: JSAnimation;
 
   // `document` doesn't exist and animejs has nothing to animate during
-  // server-side prerendering (Node has no DOM), so the whole intro/outro
-  // sequence is skipped there in favor of immediately reporting "finished"
-  // so the header still renders into the static HTML.
+  // server-side prerendering (Node has no DOM), so the intro/outro sequence
+  // is skipped there - but unlike an earlier version of this guard, it does
+  // NOT jump `hidden` to `true`/emit `finished` to fake a "just finished"
+  // state. Doing that made the prerendered HTML's overlay already hidden,
+  // which is a *different* value than the `false` a real client naturally
+  // boots with - hydrating that mismatch made the loading screen visibly
+  // pop back up over an already-rendered page and replay the whole ~2s
+  // animation a second time. Leaving `hidden` at its plain default here
+  // means server and client always agree on the starting point, so the
+  // animation just plays once, normally, exactly like a non-SSR boot -
+  // AppComponent.headerReady is what actually keeps the header (and the
+  // rest of the page underneath this overlay) present in the prerendered
+  // HTML for SEO/crawlability, independent of this component entirely.
   private readonly isBrowser: boolean;
-
-  // A hydrating client needs to skip the intro/outro too, for a different
-  // reason: the prerendered HTML it's reusing already shows the finished
-  // state (overlay hidden, header mounted), so replaying the ~2s animation
-  // here would mean visibly popping the overlay back up over an
-  // already-rendered page before hiding it again a second time. See
-  // wasServerPrerendered()'s doc comment for the full mechanism. A genuine
-  // cold client bootstrap (e.g. `ng serve`, no SSR involved) still gets the
-  // full animation - only a hydrated prerendered page skips it.
-  private readonly skipAnimation: boolean;
 
   constructor(
     private themeService: ThemeService,
@@ -52,18 +54,6 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
     @Inject(PLATFORM_ID) platformId: object,
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
-    this.skipAnimation = this.isBrowser && wasServerPrerendered();
-
-    // Must be set here, not just in ngAfterViewInit: Angular's hydration
-    // reconciles the template's initial render against the server-rendered
-    // DOM before ngAfterViewInit runs, so `hidden` needs to already match
-    // what the server rendered (true) by the time that first pass happens -
-    // the `false` field default above is only correct for a genuine cold
-    // client bootstrap, which still needs to start visible and play the
-    // animation.
-    if (!this.isBrowser || this.skipAnimation) {
-      this.hidden = true;
-    }
   }
 
   // Matches clearcolor/black/white.svg: full color for the default theme,
@@ -77,16 +67,11 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (!this.isBrowser || this.skipAnimation) {
-      // Server: skip the animated intro/outro entirely and report
-      // completion right away, so prerendered HTML includes the header
-      // instead of being stuck behind a loading state that never finishes.
-      // Hydrating client: same skip, so as not to replay an animation the
-      // static HTML already shows the end state of (see skipAnimation's
-      // doc comment) - `hidden` was already set in the constructor for
-      // both cases, this just needs to (re-)emit `finished`.
-      this.hidden = true;
-      this.finished.emit();
+    if (!this.isBrowser) {
+      // No DOM/animejs on the server, so there's nothing to animate - but
+      // also nothing has actually finished yet, so `hidden` is deliberately
+      // left at its plain `false` default here (see the field's doc
+      // comment) rather than being forced to `true`/emitting `finished`.
       return;
     }
 

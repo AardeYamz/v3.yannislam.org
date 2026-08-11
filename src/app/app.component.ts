@@ -17,9 +17,22 @@ export class AppComponent implements OnInit {
   // Header is kept out of the DOM (see app.component.html's `@if`) until the
   // loading screen finishes: it mounts underneath that opaque, full-screen
   // overlay otherwise, so its :enter stagger animation plays out completely
-  // hidden and is never actually seen. On the server this resolves
-  // synchronously (LoadingScreenComponent has nothing to animate there), so
-  // prerendered HTML always has the header already mounted.
+  // hidden and is never actually seen. For a genuine cold client bootstrap
+  // that's exactly right, and this field's `false` default handles it -
+  // onLoadingScreenFinished() flips it once the real animation completes.
+  //
+  // Two other cases need `headerReady` true immediately instead, set below:
+  // server rendering (nothing animates there at all - LoadingScreenComponent
+  // never even calls playIntro()/playOutro() server-side, so nothing would
+  // ever flip this if it waited on the event) and a client hydrating that
+  // server output (needs to start matching what the server rendered, or
+  // Angular's hydration reconciliation sees this `@if` block disagree with
+  // what the prerendered DOM actually contains). Both keep the header (and
+  // everything under router-outlet, which isn't gated at all) present in
+  // the HTML for SEO/crawlability, independent of whether the loading
+  // screen's animation has visually finished - that overlay covers the
+  // whole viewport (z-index 9999) regardless, so it doesn't matter that
+  // what's under it is already "ready" before the animation reveals it.
   headerReady = false;
 
   constructor(
@@ -27,17 +40,7 @@ export class AppComponent implements OnInit {
     private metaService: Meta,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {
-    // A hydrating client has to start with the same value the server
-    // rendered - `false` here is only correct for a genuine cold client
-    // bootstrap (no SSR involved). Otherwise Angular's hydration
-    // reconciliation sees this `@if` block disagree with what the
-    // prerendered DOM actually contains (the header IS there), which is
-    // what caused the page to visibly flash: the already-rendered header
-    // gets treated as a mismatch and the loading screen's onLoadingScreenFinished
-    // path has to fire again from scratch to bring it back. LoadingScreenComponent
-    // independently skips its own replay for the same reason (see its
-    // skipAnimation field) - this covers the header side of the same bug.
-    if (isPlatformBrowser(this.platformId) && wasServerPrerendered()) {
+    if (!isPlatformBrowser(this.platformId) || wasServerPrerendered()) {
       this.headerReady = true;
     }
   }

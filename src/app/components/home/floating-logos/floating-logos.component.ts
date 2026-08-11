@@ -292,6 +292,17 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
       const trackLength = Math.max(height + MAX_SIZE_PX * 2, column.length * VERTICAL_SPACING_PX);
       const speed = MIN_SPEED_PX_S + Math.random() * (MAX_SPEED_PX_S - MIN_SPEED_PX_S);
       const step = trackLength / column.length;
+      // Every column's k=0 item would otherwise sit at the exact same
+      // phase (0) as every other column's k=0 item - each column's own
+      // track is independent, so "phase 0" means something different in
+      // absolute pixels per column, but they all still land at the same
+      // relative y (-size) at elapsedS=0, which reads as one dead-straight
+      // horizontal line of logos rather than a scatter. A random per-column
+      // offset (added to, not replacing, k*step - so it doesn't disturb the
+      // even in-column spacing) breaks that alignment without touching the
+      // non-overlap guarantee, which only depends on neighbors within the
+      // same column staying `step` apart.
+      const phaseOffset = Math.random() * trackLength;
 
       column.forEach((logo, k) => {
         logo.laneX = laneX;
@@ -299,7 +310,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
         // Exact multiples of `step` (no jitter) — this is what keeps the
         // gap between lane-mates at a guaranteed >= VERTICAL_SPACING_PX,
         // so they can never overlap each other on the shared track.
-        logo.phase = k * step;
+        logo.phase = (k * step + phaseOffset) % trackLength;
         logo.speed = speed;
 
         // Use this item's own rotated footprint (not just its raw size) so

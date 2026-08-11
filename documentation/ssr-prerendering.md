@@ -372,29 +372,35 @@ visible result was the loading screen re-asserting its "not finished yet"
 state and running the whole animation again from scratch, over an
 already-live page.
 
-**Fix — `src/app/utils/hydration.ts`, new:** `wasServerPrerendered()`,
-a small function that checks for `ng-server-context` on `<app-root>` (a
-static attribute `@angular/ssr`'s server renderer writes as metadata —
-unlike the `ngh` markers Angular's hydration runtime consumes and strips
-as it walks the tree, this one isn't part of that bookkeeping, so it's
-safe to read at any point during client bootstrap, including a
-component's constructor before its own view exists). `true` means: this
-HTML came from prerendering and the client is now hydrating it, not a
-cold client-only bootstrap (e.g. `ng serve`, which has nothing to
-hydrate).
+**First attempt (overcorrected, then reverted):** made the *client* match
+what the server rendered — `wasServerPrerendered()` (`src/app/utils/hydration.ts`,
+still used elsewhere below) checks for `ng-server-context` on `<app-root>`,
+and both components used it to jump straight to the "already finished"
+state on a hydrating client, same as the server. This did stop the flash,
+but as a side effect it also meant the boot animation stopped playing for
+*any* real visitor — production always prerenders, so "hydrating a
+prerendered page" was every real page load, not an edge case. Reported
+back (screenshot showed the loading screen never appearing at all), and
+that's a real regression: the animation is a deliberate piece of the
+site's identity, not just an artifact of not-yet-being-SSR'd.
 
-Both `LoadingScreenComponent` and `AppComponent` now check this in their
-constructors and set their initial state to match what the server
-rendered (`hidden = true` / `headerReady = true`) *before* Angular's
-first render pass, instead of only reacting to it after the fact via the
-`finished` event. `LoadingScreenComponent.ngAfterViewInit()`'s existing
-`!isBrowser` skip branch became `!isBrowser || skipAnimation`, covering
-both cases with the same "already finished" logic. A genuine cold client
-bootstrap (`wasServerPrerendered()` false) is unaffected — `hidden`/
-`headerReady` keep their normal `false` defaults there and the full
-animation still plays, exactly as before.
+**Actual fix — make the *server* stop skipping to "finished", instead of
+making the client skip its animation.** `LoadingScreenComponent.hidden`
+now stays at its plain `false` default on the server too (no more forcing
+it to `true`/emitting `finished` there) — server and every real client
+boot (cold *or* hydrating) all agree on the same starting point, so
+there's nothing for hydration to reconcile, and the real animation just
+plays once, normally, for everyone, exactly like a non-SSR boot always
+worked. `AppComponent.headerReady` still needs its own immediate-`true`
+path (server, and a hydrating client matching it via `wasServerPrerendered()`)
+so the header — and the real page content under `router-outlet`, which
+isn't gated at all — stays in the prerendered HTML for SEO/crawlability.
+That's fine to keep decoupled from the loading screen entirely: the
+overlay is `position: fixed; inset: 0; z-index: 9999`, so it covers
+whatever's already "ready" underneath regardless, until its own animation
+reveals it.
 
-**A second, independent contributor found while verifying the first fix:**
+**A second, independent contributor found while verifying the fix:**
 `FloatingLogosComponent`'s SSR guard (above) means server-rendered HTML
 never gets a `transform` on any of its ~20-40 decorative logo elements —
 `layoutLanes()` only *computes* each one's lane position, the actual
@@ -413,18 +419,52 @@ gap between "layout computed" and "layout painted"); fixed by calling
 DOM before the browser's first paint, for both prerendered and
 non-prerendered loads alike.
 
+**A third bug the `render(0)` fix exposed:** calling it synchronously
+revealed the logos landing in a dead-straight horizontal line instead of
+a scatter — also reported back with a screenshot. `layoutLanes()` assigns
+each logo `phase = k * step` (`k` = its index within its column), fully
+deterministic and with no randomized offset between *different* columns.
+At `elapsedS = 0` that means every column's `k=0` item sits at the exact
+same relative y (`phase - size`) as every other column's `k=0` item —
+they'd always have lined up this way at t=0, it just used to be
+invisible, masked by the "everything piled at (0,0)" bug above (which
+made the true starting layout unobservable until a frame later, by which
+point ~16ms of drift already blurred the alignment). Fixed by adding a
+random per-column `phaseOffset` (`Math.random() * trackLength`), added to
+— not replacing — `k * step`, so it shifts each column's whole sequence
+together rather than perturbing individual items relative to each other.
+The non-overlap guarantee (lane-mates staying `step` apart) only depends
+on that in-column spacing, so it's unaffected.
+
 **Verification.** Built the real prerendered output and served it with
 its actual client bundle attached (not `ng serve`) — the only way to
 observe genuine hydration behavior, since `ng serve` never prerenders
-anything to hydrate. Sampled the DOM every ~16ms for 3s starting at
-navigation: `.loading-screen`'s `--hidden` class (`visibility: hidden`,
-confirmed in `loading-screen.component.scss` — the thing that actually
-makes it invisible, not `opacity`) stayed applied for all 2164 samples
-across the whole window, `<app-header>` was present for all of them, and
-the first `.floating-logo`'s `transform` was already a real matrix (not
-`none`) from the very first sample (~53ms in) onward. Confirmed
-separately that the raw HTML response, before any client JS runs at all,
-already has both `loading-screen--hidden` and `<app-header` present —
-matching what the client then sees, so there's nothing left for hydration
-to reconcile. `ng build` still succeeds, all 4 routes still prerender,
-and the full Karma/Jasmine suite (117 specs) still passes unchanged.
+anything to hydrate. Sampled the DOM every ~16ms for 4s starting at
+navigation, reading `getComputedStyle(overlay).visibility` (not just the
+`--hidden` class — see below) and `<app-header>` presence:
+
+- Overlay `visibility` was `"visible"` from the very first sample (~58ms
+  in) and transitioned exactly **once**, `visible → hidden` — the
+  animation genuinely plays (it wasn't just skipped again), and there's
+  no flash (never went visible → hidden → visible or any other pattern).
+- `<app-header>` was present in every single sample throughout.
+- The first sample where any `.floating-logo` had a real `matrix(...)`
+  transform applied (~480ms in, once the client JS had actually loaded
+  and hydrated) showed 8 sampled logos at 8 distinct y-positions — no
+  line.
+
+One methodology note worth recording: an earlier pass at this same
+verification used a naive `rawHtml.includes('loading-screen--hidden')`
+check on the raw server response and got a false positive (`true`) that
+looked like the old bug was still there. That string is *always* present
+in the response regardless of whether the class is applied to anything —
+it's also the CSS rule's own selector, inlined in a `<style>` block that
+exists on every load. The actual signal (confirmed via
+`element.classList.contains(...)` / `getComputedStyle(...).visibility`,
+and separately via `grep -o '<div[^>]*loading-screen[^>]*>'` against the
+raw HTML to check the real attribute) was correct the whole time; the
+verification script had the bug, not the app. Left as a note here in
+case this trips up whoever touches this next.
+
+`ng build` still succeeds, all 4 routes still prerender, and the full
+Karma/Jasmine suite (117 specs) still passes unchanged.
