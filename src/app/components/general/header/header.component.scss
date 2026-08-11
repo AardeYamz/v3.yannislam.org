@@ -226,8 +226,17 @@
 // No border-radius on the button itself — see the md-state-layer mixin
 // comment in variables.scss for why (it'd shrink the clickable area to a
 // circle, leaving the square button's corners dead to clicks).
+//
+// z-index: the mobile drawer's full-screen overlay (.menu-responsive,
+// z-index 10) sits above .main-navbar (z-index 9) once open — by design,
+// so the drawer's own contents aren't hidden behind the bar — but that
+// also covers both of these buttons, which sit outside the drawer's own
+// visible area but still fall within the overlay's full-viewport hit
+// region. Lifting them above the overlay's z-index keeps them live
+// regardless of drawer state.
 %icon-button {
     position: relative;
+    z-index: 12;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -257,17 +266,6 @@
 .theme-toggle,
 .menu-toggle {
     @extend %icon-button;
-}
-
-// The mobile drawer's full-screen overlay (.menu-responsive, z-index 10)
-// sits above .main-navbar (z-index 9) once open — by design, so the
-// drawer's own contents aren't hidden behind the bar — but that also
-// covers .menu-toggle, the only control that closes it, leaving the X icon
-// visible but genuinely unclickable underneath the overlay. Lifting just
-// this button above the overlay's z-index keeps it live regardless of
-// drawer state.
-.menu-toggle {
-    z-index: 12;
 }
 
 @media (max-width: 1050px) {
