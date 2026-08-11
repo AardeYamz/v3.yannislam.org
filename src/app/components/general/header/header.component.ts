@@ -1,4 +1,5 @@
-import { Component, HostListener, ChangeDetectionStrategy, AfterViewInit, OnDestroy, signal } from '@angular/core';
+import { Component, HostListener, ChangeDetectionStrategy, AfterViewInit, OnDestroy, signal, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
@@ -49,17 +50,30 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   private sectionObserver?: IntersectionObserver;
   private routerSubscription?: Subscription;
 
+  // Domino (Angular's server-side DOM emulation) provides a `window`/`document`
+  // stand-in during prerendering, but layout/scroll APIs like `scrollY`,
+  // `innerHeight` and `scrollIntoView` aren't meaningfully implemented there,
+  // so scroll-driven behavior is gated on this flag and only runs client-side.
+  private readonly isBrowser: boolean;
+
   constructor(
     private router: Router,
     public analyticsService: AnalyticsService,
     public themeService: ThemeService,
     private resumeService: ResumeService,
     configService: SiteConfigService,
+    @Inject(PLATFORM_ID) platformId: object,
   ) {
     this.menu = configService.menu;
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
   ngAfterViewInit() {
+    // IntersectionObserver doesn't exist in Domino's server-side DOM
+    // emulation (see isBrowser above) — scroll-spy is a browser-only
+    // enhancement, so skip setting it up entirely during prerendering.
+    if (!this.isBrowser) return;
+
     this.setupSectionObserver();
     // Routes other than "/" (e.g. /projects, /aardeyamz) don't have these
     // section ids in the DOM at all, and navigating back to "/" mounts a
@@ -107,6 +121,8 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   }
 
   scroll(el: string) {
+    if (!this.isBrowser) return;
+
     if (document.getElementById(el)) {
       document?.getElementById(el)?.scrollIntoView({ behavior: 'smooth' });
     } else {
@@ -135,6 +151,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   @HostListener('window:scroll')
   getScrollPosition() {
+    if (!this.isBrowser) return;
     this.pageYPosition = window.scrollY;
   }
 
@@ -142,6 +159,8 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   private static readonly LOGO_ROTATION_SCROLL_PX = 900;
 
   get logoRotationDeg(): number {
+    if (!this.isBrowser) return 0;
+
     // On a page shorter than LOGO_ROTATION_SCROLL_PX, scrollY can never
     // reach it, so the spin used to stall partway through and just sit
     // there. Scale the distance-per-turn down to whatever's actually
