@@ -1,3 +1,5 @@
+Date: 2026-07-31 18:48:00
+
 # Header: translucent scroll state + left-to-right entrance
 
 Three small, related changes around `HeaderComponent`
