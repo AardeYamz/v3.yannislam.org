@@ -1,0 +1,113 @@
+@use "./variables.scss" as *;
+
+$frame-width: 280px;
+$frame-height: 175px;
+
+// The floating hover-preview card built by LinkPreviewService. It's a
+// single node appended to <body> (position: fixed, computed per-show from
+// the trigger's own rect - see the service), so it lives outside any
+// component's view and needs global, not scoped, styles.
+//
+// Two visual states: the icon/title/domain "caption" card, shown
+// immediately on hover, and (if the target page proves it actually
+// rendered inside an iframe rather than being blocked - see the service's
+// attemptIframe()) the same card with a live scaled-down preview above it.
+.link-preview-card {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    max-width: 280px;
+    border-radius: 6px;
+    background-color: $LightNavy;
+    border: 1px solid $LightestNavy;
+    box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
+    font-family: $MainFont;
+    pointer-events: none;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+
+    &--visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    &__caption {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+
+        > i {
+            flex: 0 0 auto;
+            font-size: 20px;
+            color: $Orange;
+        }
+    }
+
+    &__text {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    &__title {
+        color: $LightestSlate;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__domain {
+        color: $Slate;
+        font-size: 11px;
+        font-family: $CodeFont;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    // Hidden until a live preview actually loads - see &--iframe below.
+    &__frame-wrap {
+        display: none;
+        width: $frame-width;
+        height: $frame-height;
+        overflow: hidden;
+        position: relative;
+        background-color: $LightestNavy;
+    }
+
+    &__frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 0;
+        transform-origin: top left;
+    }
+
+    &--iframe {
+        width: $frame-width;
+
+        .link-preview-card__frame-wrap {
+            display: block;
+        }
+
+        // The caption becomes a compact footer under the live preview
+        // instead of the card's only content.
+        .link-preview-card__caption {
+            padding: 8px 10px;
+
+            > i {
+                font-size: 14px;
+            }
+        }
+
+        .link-preview-card__title {
+            font-size: 12px;
+        }
+    }
+}

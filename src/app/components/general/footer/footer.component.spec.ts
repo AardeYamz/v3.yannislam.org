@@ -4,6 +4,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FooterComponent } from './footer.component';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { LinkPreviewDirective } from 'src/app/directives/link-preview/link-preview.directive';
 
 describe('FooterComponent', () => {
   let component: FooterComponent;
@@ -24,6 +25,7 @@ describe('FooterComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [FooterComponent],
+      imports: [LinkPreviewDirective],
       providers: [
         provideNoopAnimations(),
         { provide: AnalyticsService, useValue: analyticsServiceSpy },
