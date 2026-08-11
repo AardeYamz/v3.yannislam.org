@@ -7,34 +7,10 @@
     // the section-title above stays full-width (see .education below), but
     // the tabs/content pairing reads as its own centered block rather than
     // pinned to the container's left edge with a large empty gap on the
-    // right. Width is the tab list (114.33px) + content's own gap (38px)
-    // + its max-width (700px) below.
+    // right. Width is the tab list (114.33px) + content's own left margin
+    // (38px) + its max-width (700px) below.
     max-width: 852.33px;
     margin: 0 auto;
-    // A gap rather than a margin on .tab-content below: margin-left only
-    // makes sense for the tabs-then-content DOM order below, but
-    // reverse-layout (see &.reverse-layout) visually swaps which side
-    // each one renders on without touching that order — gap inserts the
-    // same space between flex items regardless of which edge either one
-    // ends up on.
-    gap: 38px;
-
-    // This section's own layout, reversed — see EducationComponent's
-    // isReversed (0-based SECTION_INDEX % 2), same convention About and
-    // workhistory use. Swaps the tab list to the right of its content
-    // instead of the left.
-    &.reverse-layout {
-        flex-direction: row-reverse;
-
-        li {
-            border-left: none;
-            border-right: 2px solid $OutlineVariant;
-        }
-
-        a.active {
-            box-shadow: inset -3px 0 0 0 $Primary;
-        }
-    }
 
     // Caps line length on the actual readable text, not the section — the
     // old approach (max-width on .education, the <section> element itself)
@@ -43,6 +19,7 @@
     // .container was widened to track the viewport (see .container in
     // styles.scss).
     .tab-content {
+        margin-left: 38px;
         max-width: 700px;
         // Each tab's content is a different length (CICS BS, the tallest,
         // runs ~315px), so switching tabs changed this element's own
@@ -160,6 +137,10 @@
     ::ng-deep .education-tabs {
         display: block !important;
         max-width: 100% !important;
+
+        .tab-content {
+            margin-left: 0px !important;
+        }
 
         ul {
             display: block;
