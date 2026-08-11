@@ -1,3 +1,5 @@
+Date: 2026-07-31 18:48:00
+
 # Header: scroll state, entrance animation, and the mobile menu toggle
 
 A series of related changes around `HeaderComponent`

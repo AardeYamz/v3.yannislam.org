@@ -1,3 +1,5 @@
+Date: 2026-07-31 18:48:00
+
 # Service worker: asset caching + offline support
 
 Adds `@angular/service-worker` to the project via `ng add @angular/pwa`, so
