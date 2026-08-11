@@ -1,3 +1,5 @@
+Date: 2026-07-31 21:06:05
+
 # Trimming the `NgbModule` (`@ng-bootstrap/ng-bootstrap`) import
 
 ## Context

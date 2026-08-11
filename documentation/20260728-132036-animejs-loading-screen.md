@@ -1,3 +1,5 @@
+Date: 2026-07-28 13:20:36
+
 # Animated Loading Screen
 
 A full-screen loading overlay plays while the app boots: the site's tangram-style
