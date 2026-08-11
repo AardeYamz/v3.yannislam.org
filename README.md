@@ -128,51 +128,62 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-    subgraph PR["Pull Request"]
-        GitPush["git push to<br/>main/master/develop"]
+    subgraph Trigger["Triggers"]
+        PRPush["PR to main/master/develop"]
+        MainPush["push to main"]
+        Manual["workflow_dispatch"]
+        Nightly["schedule: Mon 07:00 UTC"]
     end
-    
+
     subgraph GHA["GitHub Actions: Build & Test"]
-        subgraph MatrixStrategy["Matrix Strategy"]
-            N22["Node.js 22.x"]
-            N24["Node.js 24.x"]
+        subgraph UnitJob["unit-tests (matrix: Node 22.x, 24.x)"]
+            UTest["npm test --code-coverage<br/>(Karma + Jasmine, 117 specs)"]
+            UCov["Upload to Codecov"]
+            UTest --> UCov
         end
-        
-        subgraph Pipeline["Pipeline Steps"]
-            Checkout["Checkout code"]
-            Setup["Set up Node.js<br/>+ npm cache"]
-            AngularCache["Cache Angular<br/>build artifacts"]
-            Install["npm ci<br/>(install deps)"]
-            Tests["npm test<br/>(with coverage)"]
-            Coverage["Upload to Codecov"]
-            Build["npm run build<br/>(Angular AOT)"]
-            Verify["Verify dist/"]
+
+        subgraph BuildJob["build (Node 22.x)"]
+            BBuild["npm run build<br/>(prerenders every route)"]
+            BUpload["Upload dist/ as artifact"]
+            BBuild --> BUpload
         end
-        
-        Checkout --> Setup --> AngularCache --> Install --> Tests --> Coverage --> Build --> Verify
+
+        subgraph E2EJob["e2e — needs: build (2 shards)"]
+            EBrowsers["Install Playwright browsers<br/>(cached on package-lock.json)"]
+            EDownload["Download dist/ artifact<br/>(no rebuild)"]
+            ERun["playwright test<br/>chromium+mobile on PRs,<br/>+firefox+webkit on push/schedule"]
+            EReport["Upload HTML report<br/>(always, pass or fail)"]
+            EBrowsers --> EDownload --> ERun --> EReport
+        end
+
+        BuildJob -->|"dist/ artifact"| E2EJob
     end
-    
+
     subgraph GateAndDeploy["Merge Gating & Deployment"]
-        Mergeable["✅ All pass:<br/>PR mergeable"]
-        Blocked["❌ Any fail:<br/>PR blocked"]
-        Merged["Merge to base<br/>branch"]
+        Mergeable["✅ unit-tests + build + e2e pass:<br/>PR mergeable"]
+        Blocked["❌ any job fails:<br/>PR blocked"]
+        Merged["Merge to main"]
     end
-    
+
     subgraph VercelBuild["Vercel Build & Deploy"]
         VercelCheck["Webhook triggered"]
         VercelBuild2["ng build +<br/>postbuild inject-env.js"]
-        VercelServe["Vercel Edge<br/>(static bundle)"]
+        VercelServe["Vercel Edge"]
     end
-    
-    GitPush --> GHA
-    N22 & N24 --> Pipeline
-    Verify --> Mergeable
-    Verify --> Blocked
-    Blocked -.->|"Fix & re-push"| GitPush
+
+    Trigger --> GHA
+    UnitJob & E2EJob --> Mergeable
+    UnitJob & E2EJob --> Blocked
+    Blocked -.->|"Fix & re-push"| Trigger
     Mergeable --> Merged
     Merged --> VercelCheck
     VercelCheck --> VercelBuild2 --> VercelServe
 ```
+
+A push that supersedes an in-flight run (e.g. two commits pushed to the same
+PR seconds apart) cancels the older run via `concurrency: cancel-in-progress`
+— `e2e` is the most expensive job here, so stacked runs on a rapid push
+sequence would otherwise waste CI minutes.
 
 #### DNS & Content Delivery
 
@@ -213,24 +224,34 @@ flowchart LR
 
 #### GitHub Actions Workflow: `build-test.yml`
 
-Every pull request to `main`, `master`, or `develop` automatically triggers the CI/CD pipeline:
+Triggers: pull requests into `main`/`master`/`develop`, pushes to `main`,
+manual `workflow_dispatch`, and a Monday 07:00 UTC schedule. The workflow is
+three jobs, `build` and `e2e` chained so the app is only compiled once:
 
-**Matrix Strategy**
-- Runs against **Node.js 22.x** and **24.x** to ensure compatibility across LTS and current versions
-- Both matrix jobs must pass for PR approval
+**1. `unit-tests`** (matrix: Node 22.x, 24.x — both must pass)
+- `npm ci`, then `npm test -- --watch=false --browsers=ChromeHeadless --code-coverage`
+  (Karma + Jasmine, 117 specs against `TestBed` fixtures)
+- Uploads `coverage/v3.yannislam.org/lcov.info` to [Codecov](https://codecov.io)
 
-**Pipeline Steps**
-1. **Checkout** — fetches the PR branch code
-2. **Node.js Setup** — installs specified Node version with npm cache for faster builds
-3. **Angular Cache** — restores `.angular/cache` from previous runs to speed up AOT compilation
-4. **Install** — runs `npm ci` for deterministic, reproducible dependency installation
-5. **Tests** — runs headless Chrome unit tests with code coverage (`karma`, `jasmine`)
-6. **Coverage Upload** — reports test coverage to [Codecov](https://codecov.io) for metrics tracking
-7. **Build** — compiles the Angular app with ahead-of-time (AOT) compilation
-8. **Artifact Verification** — ensures `dist/` directory was created and outputs bundle size
+**2. `build`** (Node 22.x)
+- `npm run build` — Angular AOT build, prerendering every known route
+  (`/`, `/projects`, `/projects/highschool`, `/aardeyamz`, `**`) to static
+  HTML (see `documentation/20260811-013939-ssr-prerendering.md`)
+- Verifies `dist/` exists, then uploads it as a build artifact
+  (`retention-days: 1`) for the `e2e` job to reuse
+
+**3. `e2e`** (`needs: build`, sharded 2-way, `fail-fast: false`)
+- Installs Playwright's browsers (cached on `package-lock.json`) and
+  downloads the `build` job's `dist/` artifact — no second build
+- Runs `playwright test` against that artifact via a static server
+  (Chromium + mobile on PRs; adds Firefox + WebKit on push-to-`main` and the
+  nightly schedule — see [E2E Testing](#e2e-testing-playwright) below)
+- Always uploads the HTML report/traces/videos, pass or fail, per shard —
+  that's the whole debugging story for a flaky E2E failure
 
 **Merge Gating**
-- All matrix jobs and steps must pass for the PR to become mergeable
+- All three jobs (both `unit-tests` matrix legs, `build`, both `e2e` shards)
+  must pass for the PR to become mergeable
 - Any failure blocks the merge; fix the issue and push to re-run the workflow
 - Passing PR can be merged to the base branch, triggering Vercel's production build and deployment
 
@@ -246,7 +267,14 @@ Every pull request to `main`, `master`, or `develop` automatically triggers the 
 ```
 .github/
 ├── workflows/
-│   └── build-test.yml        # CI/CD pipeline: runs tests, coverage, and builds on PRs
+│   └── build-test.yml        # CI/CD: unit-tests -> build -> e2e, see "GitHub Actions Workflow" above
+e2e/                          # Playwright E2E specs — see "E2E Testing" below
+├── fixtures.ts               # gotoAndSettle() boot-wait helper, analytics blocking, SW isolation
+├── smoke.spec.ts
+├── home-sections.spec.ts
+├── navigation.spec.ts
+└── theme.spec.ts
+playwright.config.ts
 src/
 ├── app/
 │   ├── animations/           # Shared Angular animation triggers (e.g. fade-stagger)
@@ -383,5 +411,69 @@ Run tests with coverage reporting:
 ```bash
 npm test -- --watch=false --code-coverage
 ```
+
+## E2E Testing (Playwright)
+
+Unit tests above run every spec against a `TestBed` fixture with children
+stubbed — real page composition, boot-time animation, nav clicks, and theme
+switching aren't exercised at all there. [Playwright](https://playwright.dev)
+end-to-end tests in `e2e/` close that gap by driving a real browser against
+the actual built app. See
+`documentation/20260811-030901-playwright-e2e-testing.md` for the full
+write-up (what's covered, why, and non-obvious fixture decisions);
+`todo/playwright-e2e-testing-plan.md` for the original plan this implements
+(P0 coverage so far — P1/P2 phases like `projects`/`resume`/`accessibility`
+specs and visual regression are still just that document, not yet built).
+
+### Running Tests
+
+```bash
+# Headless — against the production build in CI (CI=1), against `ng serve` locally
+npm run test:e2e
+
+# Playwright's interactive UI mode (recommended for writing/debugging specs)
+npm run test:e2e:ui
+
+# Open the last run's HTML report (traces, screenshots, videos on failure)
+npm run test:e2e:report
+```
+
+Locally, `npm run test:e2e` starts its own `ng serve` dev server via
+Playwright's `webServer` config (`reuseExistingServer` if one's already
+running) — no separate build step needed. In CI, it instead serves the
+`build` job's `dist/v3.yannislam.org/browser` output through a static
+server with SPA-fallback routing, matching what Vercel actually deploys.
+
+### Browser Setup
+
+```bash
+npx playwright install --with-deps chromium firefox webkit
+```
+
+Only needed once per machine — CI installs fresh on every run, cached on
+`package-lock.json` so a cache hit is a fast no-op verification rather than
+a full re-download.
+
+### What's covered
+
+- **`smoke.spec.ts`** — the boot sequence (loading overlay → header mounts →
+  `document.body` scroll restored), the page `<title>`, and zero console
+  errors / failed same-origin requests on every route
+- **`home-sections.spec.ts`** — every home-page section (banner, about,
+  education, work, volunteering) renders real content sourced from
+  `config.json`, not hardcoded copy
+- **`navigation.spec.ts`** — desktop nav scroll-to-section and route clicks,
+  hard navigation to every lazy-loaded route, the wildcard-to-`/` redirect,
+  and browser back/forward
+- **`theme.spec.ts`** — the `default → light → dark → default` cycle
+  actually recolors the live DOM (not just the service's internal signal),
+  persists across reload via `localStorage`, and resolves correctly from the
+  OS `prefers-color-scheme` when nothing's stored
+
+Determinism controls worth knowing about if you're adding a spec: never
+`waitForTimeout()` past the loading screen — use `gotoAndSettle()` from
+`e2e/fixtures.ts`, which waits for the header nav to actually be visible.
+Third-party analytics requests (`gtag.js`, Vercel Analytics/Speed Insights)
+are blocked automatically for every test via the same fixture.
 
 Coverage reports are uploaded to [Codecov](https://codecov.io) automatically by the GitHub Actions CI/CD pipeline on every PR. View coverage metrics and trends at the project's [Codecov dashboard](https://codecov.io).
