@@ -147,8 +147,12 @@ jobs:
           name: dist
           path: dist
 
+      # @external-tagged tests HEAD third-party URLs (social profiles, design
+      # credits). A site being down or rate-limiting CI egress is not a
+      # regression here, so they run on the weekly schedule only and can
+      # never redden a pull request.
       - name: Run Playwright tests
-        run: npx playwright test --shard=${{ matrix.shard }}/2
+        run: npx playwright test --shard=${{ matrix.shard }}/2 ${{ github.event_name == 'schedule' && ' ' || '--grep-invert @external' }}
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
