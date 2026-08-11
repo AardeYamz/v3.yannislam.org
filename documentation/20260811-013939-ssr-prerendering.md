@@ -470,3 +470,52 @@ case this trips up whoever touches this next.
 
 `ng build` still succeeds, all 4 routes still prerender, and the full
 Karma/Jasmine suite (117 specs) still passes unchanged.
+
+## Fixed: prerendering baked in weaker, duplicate SEO tags
+
+Reported after PR #24 merged: "SEO isn't rendering." `src/index.html`
+already carries a full, deliberate set of primary meta tags — `<title>Yannis
+Lam | Software Developer</title>`, a rich `description`/`keywords`, plus
+Open Graph and Twitter tags (all added in
+`20260731-184800-seo-fixes-4.md`). But the actual built output disagreed
+with it: `dist/v3.yannislam.org/browser/index.html` (and every other
+prerendered route) shipped `<title>Yannis Lam</title>` and **two** conflicting
+`<meta name="description">` tags.
+
+**Root cause.** `AppComponent.ngOnInit()`
+(`src/app/app.component.ts`) unconditionally called
+`titleService.setTitle("Yannis Lam")` and `metaService.addTags([...])` with a
+generic keywords/description pair, on every component init. Before this
+project had SSR, that only ran client-side, after boot — invisible to a
+static-HTML view of `index.html`, though still live in the DOM by the time
+any real browser (including JS-executing crawlers) inspected it. Once
+`app.routes.server.ts` started prerendering `AppComponent` at build time,
+`ngOnInit()` runs during prerendering too, and its output is what got
+serialized into the static file. `Meta.addTags()` *adds* tags rather than
+replacing existing ones by name, so the `description`/`keywords` already in
+`index.html`'s `<head>` weren't overwritten in place — a second, weaker pair
+was appended alongside them. `setTitle()` does replace (there's only ever
+one `<title>`), which is why the title silently downgraded from the
+carefully-written one to a bare `"Yannis Lam"` instead of also duplicating.
+
+**Fix.** Deleted the `setTitle()`/`addTags()` calls (and the now-unused
+`Title`/`Meta` constructor injections and import) from `ngOnInit()` entirely
+— there is no per-route SEO content in this app, so `index.html`'s
+statically-authored tags are already complete and correct on their own, and
+nothing should be mutating them at runtime.
+
+**Verification.** Rebuilt (with the same local Node-version `node_modules`
+patch described above this environment still needs) and diffed the
+`<title>`/`description`/`keywords` tags across all four prerendered
+`index.html` files before and after:
+
+- Before: `<title>Yannis Lam</title>`, plus a duplicate
+  `<meta name="description" content="Yannis Lam Personal Website">` on every
+  route.
+- After: `<title>Yannis Lam | Software Developer</title>`, a single
+  `description` tag with the original rich copy, and a single `keywords`
+  tag — identical across `/`, `/projects`, `/projects/highschool`, and
+  `/aardeyamz`.
+
+Full Karma/Jasmine suite (117 specs) still passes — nothing depended on the
+removed `Title`/`Meta` calls.
