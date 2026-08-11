@@ -574,7 +574,7 @@
     "greeting": "Hello! My name is",
     "name": "Yannis Lam;",
     "blurb": [
-      "I'm a <span class='underline'>Full Stack Software Developer</span> and technical leader transforming legacy systems into cloud-native platforms at <span class='underline'>Voya Financial</span>. I lead teams of 50+ engineers, decompose complex problems into elegant solutions, and elevate capability through knowledge sharing. I graduated from the <span class='underline'>University of Massachusetts Amherst</span> Commonwealth Honors College with dual degrees in Computer Science <i>(B.S.)</i> and Economics <i>(B.A.)</i>."
+      "I'm a <a class='underline' href='https://linkedin.com/in/yannis-lam/' target='_blank' rel='noopener noreferrer'>Full Stack Software Developer</a> and technical leader transforming legacy systems into cloud-native platforms at <a class='underline' href='https://www.voya.com/' target='_blank' rel='noopener noreferrer'>Voya Financial</a>. I lead teams of 50+ engineers, decompose complex problems into elegant solutions, and elevate capability through knowledge sharing. I graduated from the <a class='underline' href='https://www.umass.edu/' target='_blank' rel='noopener noreferrer'>University of Massachusetts Amherst</a> Commonwealth Honors College with dual degrees in Computer Science <i>(B.S.)</i> and Economics <i>(B.A.)</i>."
     ],
     "typeSection": [
       "I am a Full Stack Software Developer",

@@ -9,13 +9,12 @@
         @for (menuItem of menu ; track menuItem; let i = $index) {
           <li [ngbNavItem]="i" ngbNavItem
             (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
-            @if (menuItem?.navNumber) {
-              <a ngbNavLink (click)='navigate(menuItem)'
-                [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection"><span
-                class='nav-number'>
-              {{menuItem?.navNumber}}</span> <span
-            class="nav-text">{{menuItem?.navTitle}}</span></a>
-          }
+            <a ngbNavLink (click)='navigate(menuItem)'
+              [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
+              @if (menuItem?.navNumber) {
+                <span class='nav-number'>{{menuItem?.navNumber}}</span>
+              }
+              <span class="nav-text">{{menuItem?.navTitle}}</span></a>
           <ng-template ngbNavContent>{{menuItem?.navContent}}</ng-template>
         </li>
       }
@@ -41,12 +40,13 @@
             @for (menuItem of menu ; track menuItem; let i = $index) {
               <li
                 (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
-                @if (menuItem?.navNumber) {
-                  <a (click)='navigate(menuItem)'
-                    [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
-                    <span>{{menuItem?.navNumber}}</span>{{menuItem?.navTitle}}
-                  </a>
-                }
+                <a (click)='navigate(menuItem)'
+                  [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
+                  @if (menuItem?.navNumber) {
+                    <span>{{menuItem?.navNumber}}</span>
+                  }
+                  {{menuItem?.navTitle}}
+                </a>
               </li>
             }
           </ol>
