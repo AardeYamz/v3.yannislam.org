@@ -1,7 +1,14 @@
 import { test, expect, gotoAndSettle, headerNav } from './fixtures';
 import config from '../src/assets/config.json';
 
-const firstScrollItem = config.siteMenu.find((item) => item.scrollSection)!;
+// AardeYamz is marked `hidden` in config.json and filtered out of the rendered
+// nav by SiteConfigService, so the drawer only ever shows the visible entries —
+// same filter navigation.spec.ts applies for the desktop nav.
+const visibleMenuItems = config.siteMenu.filter((item) => !item.hidden);
+const firstScrollItem = visibleMenuItems.find((item) => item.scrollSection)!;
+const firstRouteItem = visibleMenuItems.find(
+  (item) => !item.scrollSection && item.siteLocation.startsWith('/') && !item.siteLocation.startsWith('/#'),
+)!;
 
 test.describe('mobile layout', () => {
   test.beforeEach(async ({ page, isMobile }) => {
@@ -35,15 +42,21 @@ test.describe('mobile layout', () => {
     await expect(page.locator('.hamburger-menu')).toHaveAttribute('aria-label', 'Toggle menu');
   });
 
-  test('the drawer lists every nav entry from config', async ({ page }) => {
+  test('the drawer lists every visible nav entry from config', async ({ page }) => {
     await page.locator('.hamburger-menu').click();
 
     const links = page.locator('#mobile-menu a');
-    await expect(links).toHaveCount(config.siteMenu.length);
+    await expect(links).toHaveCount(visibleMenuItems.length);
 
-    for (const item of config.siteMenu) {
+    for (const item of visibleMenuItems) {
       await expect(links.filter({ hasText: item.navTitle })).toHaveCount(1);
     }
+  });
+
+  test('the drawer hides the AardeYamz easter egg, like the desktop nav', async ({ page }) => {
+    await page.locator('.hamburger-menu').click();
+
+    await expect(page.locator('#mobile-menu a').filter({ hasText: 'AardeYamz' })).toHaveCount(0);
   });
 
   test('choosing a section scrolls to it and closes the drawer', async ({ page }) => {
@@ -57,9 +70,9 @@ test.describe('mobile layout', () => {
 
   test('choosing a routed entry navigates and closes the drawer', async ({ page }) => {
     await page.locator('.hamburger-menu').click();
-    await page.locator('#mobile-menu a').filter({ hasText: 'AardeYamz' }).click();
+    await page.locator('#mobile-menu a').filter({ hasText: firstRouteItem.navTitle }).click();
 
-    await expect(page).toHaveURL('/aardeyamz');
+    await expect(page).toHaveURL(firstRouteItem.siteLocation);
     await expect(page.locator('#mobile-menu')).not.toHaveClass(/aside-show/);
   });
 
