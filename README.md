@@ -3,6 +3,7 @@
 [![Angular](https://img.shields.io/badge/Angular-22-DD0031?logo=angular&logoColor=white)](https://angular.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Build & Test](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/build-test.yml/badge.svg)](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/build-test.yml)
+[![Security](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/security.yml/badge.svg)](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/security.yml)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3?logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
 [![DNS & Email by Cloudflare](https://img.shields.io/badge/DNS%20%26%20Email-Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://www.cloudflare.com/)
@@ -477,3 +478,38 @@ Third-party analytics requests (`gtag.js`, Vercel Analytics/Speed Insights)
 are blocked automatically for every test via the same fixture.
 
 Coverage reports are uploaded to [Codecov](https://codecov.io) automatically by the GitHub Actions CI/CD pipeline on every PR. View coverage metrics and trends at the project's [Codecov dashboard](https://codecov.io).
+
+## Dependency Security
+
+Two tools split the job, because neither does the whole of it well:
+
+- **[Dependabot](https://docs.github.com/en/code-security/dependabot)** opens
+  the bump PRs. `.github/dependabot.yml` configures the weekly *version*
+  updates (Monday 06:00 UTC) for both `npm` and `github-actions`; the
+  alerts-driven *security* updates come from the repository's security
+  settings and are batched into a single PR by the `security-updates` group.
+- **[Aikido](https://www.aikido.dev)** triages. Dependabot will happily open a
+  PR for a critical advisory in a transitive dev dependency that no shipped
+  code path can reach; Aikido scans the repo and tells you whether the
+  finding is actually reachable, so the PR queue stays signal.
+
+Bumps are grouped rather than one-per-package: `angular` (the `@angular/*`
+packages plus the libraries pinned to an Angular major, which have to move in
+lockstep or the workspace won't build), `testing`, and a `minor-and-patch`
+catch-all. Majors are deliberately left ungrouped so each arrives alone and
+can be reverted alone — and Angular majors are ignored outright, since they're
+upgraded by hand through `ng update` and its migration schematics (see
+`docs/changes/20260727-205542-UPGRADE-NOTES.md`).
+
+The Aikido scan (`.github/workflows/security.yml`) runs on PRs, on pushes to
+`main`, and weekly at 06:30 UTC — half an hour behind Dependabot, so it sees
+whatever was just opened. It **skips itself, green, until it's activated**:
+install the [Aikido GitHub App](https://github.com/marketplace/aikido-security),
+then add the CI secret key as `AIKIDO_SECRET_KEY` under both
+*Settings → Secrets and variables → Actions* **and** *→ Dependabot*. That
+second copy is not optional — Dependabot PRs read from a separate secret
+store, so without it the scan skips on exactly the PRs it was added for.
+
+See `docs/changes/20260811-124323-dependabot-aikido-integration.md` for the
+full write-up, including the failure modes this configuration is shaped
+around.
