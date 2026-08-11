@@ -1,3 +1,5 @@
+Date: 2026-07-28 21:16:00
+
 # Projects Section
 
 A new "05. Projects" page was added as its own route (`/projects`) rather than a scroll-anchor section on the home page — reached only via a menu click. It lists "5.1. College Projects" directly; "5.2. High School Projects" is a separate `/projects/highschool` route, reachable only via a "View High School Projects" link at the bottom of the College Projects list (with a "← Back to Projects" link on the way back) — it isn't rendered on `/projects` and isn't in the nav.

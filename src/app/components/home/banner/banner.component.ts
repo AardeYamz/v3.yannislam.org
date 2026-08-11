@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, signal, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Inject, PLATFORM_ID, signal, OnDestroy } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
@@ -21,6 +22,12 @@ const AUTO_SCROLL_PIXELS_PER_SECOND = 140;
     standalone: false
 })
 export class BannerComponent implements OnDestroy {
+    // ngx-typed-js (and the typed.js library it wraps) calls getComputedStyle()
+    // and otherwise assumes a real browser, which throws under Domino during
+    // server-side prerendering - so it's only rendered client-side (see
+    // banner.component.html), with a static first line shown on the server.
+    readonly isBrowser: boolean;
+
     showScrollArrow = signal(false);
 
     private autoScrollFrame: number | null = null;
@@ -29,9 +36,13 @@ export class BannerComponent implements OnDestroy {
     constructor(
         public analyticsService: AnalyticsService,
         public configService: SiteConfigService,
-        private resumeService: ResumeService
+        private resumeService: ResumeService,
+        @Inject(PLATFORM_ID) platformId: object,
     ) {
-        setTimeout(() => this.showScrollArrow.set(true), 5000);
+        this.isBrowser = isPlatformBrowser(platformId);
+        if (this.isBrowser) {
+            setTimeout(() => this.showScrollArrow.set(true), 5000);
+        }
     }
 
     get data() { return this.configService.data; }
@@ -51,6 +62,8 @@ export class BannerComponent implements OnDestroy {
     // the moment the user scrolls, drags, or presses a key, so it never fights
     // with manual scrolling.
     scrollToAbout() {
+        if (!this.isBrowser) return;
+
         const volunteeringSection = document.getElementById('volunteering');
         const startPosition = window.scrollY;
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
