@@ -41,7 +41,7 @@ translucency instead).
 `color-mix(in srgb, $Surface 85%, transparent)` was used instead of `rgba()`
 because `$Surface` (`src/variables.scss`) resolves to an MD3 color-role
 custom property (`var(--md-sys-color-surface)`, itself aliasing
-`--color-navy` — see `documentation/material-design-3-tokens.md`) — not a
+`--color-navy` — see `docs/changes/20260811-225106-material-design-3-tokens.md`) — not a
 bare RGB triplet `rgba()` could blend against. `color-mix` works directly on
 any valid CSS color, so the translucent tint automatically follows whichever
 theme is active. If a browser doesn't support `color-mix()`, the whole
@@ -240,7 +240,7 @@ pass: `.on-top` height, the logo's width, `.nav-link`/`.nav-number` font
 sizes, `.nav-right`'s gap, and `.theme-toggle`'s size all scale up at
 1600px/2200px+ viewport widths, matching the same treatment given to body
 text, section titles, and the banner/contact hero headings elsewhere on the
-site (see `documentation/material-design-3-tokens.md` for the shape/
+site (see `docs/changes/20260811-225106-material-design-3-tokens.md` for the shape/
 elevation side of the MD3 work these sit alongside). These rules live in
 `src/styles.scss` rather than `header.component.scss`, with `!important` on
 each property — not a style choice, but a hard constraint: `header.

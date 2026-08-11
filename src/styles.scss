@@ -294,7 +294,7 @@ a {
 // which otherwise outranks a plain selector here regardless of source
 // order. (header.component.scss runs close to this project's
 // per-component style budget, so the nav-bar rules live here rather than
-// there — see documentation/material-design-3-tokens.md.)
+// there — see docs/changes/20260811-225106-material-design-3-tokens.md.)
 @media (min-width: 1600px) {
     body {
         font-size: 22px;

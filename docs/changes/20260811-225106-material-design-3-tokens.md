@@ -1,10 +1,12 @@
+Date: 2026-08-11 22:51:06
+
 # Material Design 3 token layer
 
 ## Context
 
 Ask: bring the site up to "the latest Material Design 3 standards." The site's
 visual identity (navy/slate/orange, `src/theme.scss` + `src/variables.scss`,
-see `documentation/logo-svg-dark-mode.md` for how the 3-mode color system
+see `docs/changes/20260728-151017-logo-svg-dark-mode.md` for how the 3-mode color system
 came about) is a deliberate, hand-tuned part of the brand — replacing it with
 a fresh MD3 seed-color palette would throw that away for no real benefit. So
 the scope agreed on was narrower than "restyle from scratch": **keep the
@@ -52,7 +54,7 @@ contrast against the mid-tone orange primary), but which raw variable is
 dark flips between modes: `--color-navy` is dark in the default/dark themes
 but is the near-white *background* in light mode (light mode's dark extreme
 is `--color-white` instead — see the existing per-mode table in
-`documentation/logo-svg-dark-mode.md`). So `on-primary` (and `on-secondary`,
+`docs/changes/20260728-151017-logo-svg-dark-mode.md`). So `on-primary` (and `on-secondary`,
 same reasoning) is set at `:root` to `var(--color-navy)`, then the
 `[data-theme="light"]` block overrides just those two properties to
 `var(--color-white)`. Every other role tier didn't need this — it's specific
@@ -196,3 +198,24 @@ out separately:
   `provideAnimations()` for `@animateFooter`, etc.) unrelated to this
   change — confirmed by their signatures, which are all Angular
   module/DI wiring errors, not styling assertions.
+
+## Fixed: `.main-btn` border contrast and the style budget (2026-08-11)
+
+A later measured review (`docs/pr-review/pr-16-material-design-3-review.md`)
+caught two regressions from the work above:
+
+- **`.main-btn`'s border was `$Outline`**, which aliases a near-background
+  tone in every mode — ~1.2:1 contrast against the light-mode page
+  background, well under WCAG's 3:1 non-text minimum. The "Email Me!" /
+  "Resume" buttons read as floating text with no visible affordance until
+  hovered. Reverted to `$Primary` (2.93:1), which also fixed the
+  now-redundant `&:hover, &:focus-visible { border-color: $Primary }` rule
+  duplicating the base color.
+- **The style budget was loosened after all.** The Verification section
+  above frames staying under the original 5kb/6kb budget as a deliberate
+  choice over loosening it, but `header.component.scss` kept growing with
+  later, unrelated work (mobile-drawer sizing, the MD3 nav pills,
+  scroll-spy) until it sat within double-digit bytes of the *error*
+  threshold — one small rule away from failing CI for a reason unrelated to
+  whatever change tripped it. `angular.json`'s `anyComponentStyle` budget is
+  now 6kb warning / 8kb error.

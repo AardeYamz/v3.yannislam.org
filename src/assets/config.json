@@ -42,7 +42,8 @@
       "navTitle": "AardeYamz",
       "navContent": "",
       "scrollSection": "",
-      "siteLocation": "/aardeyamz"
+      "siteLocation": "/aardeyamz",
+      "hidden": true
     }
   ],
   "logos": {

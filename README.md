@@ -3,6 +3,7 @@
 [![Angular](https://img.shields.io/badge/Angular-22-DD0031?logo=angular&logoColor=white)](https://angular.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Build & Test](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/build-test.yml/badge.svg)](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/build-test.yml)
+[![Security](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/security.yml/badge.svg)](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/security.yml)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3?logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
 [![DNS & Email by Cloudflare](https://img.shields.io/badge/DNS%20%26%20Email-Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://www.cloudflare.com/)
@@ -59,14 +60,14 @@ The application will automatically reload if you change any of the source files.
 - [@fortawesome/fontawesome-free](https://fontawesome.com/) 7 — iconography
 - [ngx-typed-js](https://www.npmjs.com/package/ngx-typed-js) — the banner's typewriter effect
 - [ngx-owl-carousel-o](https://www.npmjs.com/package/ngx-owl-carousel-o) — work history carousel
-- [animejs](https://animejs.com) 4 — the boot-time loading screen's logo assembly animation (see `documentation/animejs-loading-screen.md`)
+- [animejs](https://animejs.com) 4 — the boot-time loading screen's logo assembly animation (see `docs/changes/20260728-132036-animejs-loading-screen.md`)
 - AOS-style scroll reveal via a custom `AosDirective` (`src/app/directives/aos/`)
-- A hand-rolled `requestAnimationFrame` loop powers `FloatingLogosComponent`, a field of falling logo marks behind the banner greeting (see `documentation/floating-logos-banner.md`)
+- A hand-rolled `requestAnimationFrame` loop powers `FloatingLogosComponent`, a field of falling logo marks behind the banner greeting (see `docs/changes/20260729-090717-floating-logos-banner.md`)
 - `LogoFallbackDirective` (`src/app/directives/logo-fallback/`) generates a data-URI SVG placeholder — the organization's name as themed accent-colored text — for work/education entries with no logo image
-- All page copy (nav, banner, about, education, work history, contact, footer socials) is data-driven from `src/assets/config.json`, read through a single `SiteConfigService` (see `documentation/config-dedup-refactor.md`)
+- All page copy (nav, banner, about, education, work history, contact, footer socials) is data-driven from `src/assets/config.json`, read through a single `SiteConfigService` (see `docs/changes/20260728-160203-config-dedup-refactor.md`)
 
 **Analytics**
-- Google Analytics 4 via the global `gtag.js` site tag, loaded inline in `src/index.html`; `AnalyticsService` calls the global `gtag()` directly — no analytics npm package is used (an earlier `ngx-google-analytics` integration was removed since it was never wired up) — see `documentation/google-analytics.md`
+- Google Analytics 4 via the global `gtag.js` site tag, loaded inline in `src/index.html`; `AnalyticsService` calls the global `gtag()` directly — no analytics npm package is used (an earlier `ngx-google-analytics` integration was removed since it was never wired up) — see `docs/changes/20260727-205542-google-analytics-1.md`
 
 **Infrastructure & deployment**
 - **Hosting/build**: [Vercel](https://vercel.com) builds and serves the production app (`vercel.json`); a `postbuild` step (`scripts/inject-env.js`) substitutes `%GOOGLE_ANALYTICS_ID%` in `index.html` from Vercel's environment at build time so the ID isn't hardcoded in source
@@ -236,7 +237,7 @@ three jobs, `build` and `e2e` chained so the app is only compiled once:
 **2. `build`** (Node 22.x)
 - `npm run build` — Angular AOT build, prerendering every known route
   (`/`, `/projects`, `/projects/highschool`, `/aardeyamz`, `**`) to static
-  HTML (see `documentation/20260811-013939-ssr-prerendering.md`)
+  HTML (see `docs/changes/20260811-013939-ssr-prerendering.md`)
 - Verifies `dist/` exists, then uploads it as a build artifact
   (`retention-days: 1`) for the `e2e` job to reuse
 
@@ -325,9 +326,9 @@ change required.
 Every component under `components/` follows the standard Angular trio
 (`*.component.ts` / `.html` / `.scss`, plus a `.spec.ts` where present).
 Components read content through `SiteConfigService` rather than importing
-`config.json` directly — see `documentation/config-dedup-refactor.md` for why.
+`config.json` directly — see `docs/changes/20260728-160203-config-dedup-refactor.md` for why.
 Other write-ups worth skimming when touching a specific area live in
-`documentation/` (loading screen animation, Google Analytics wiring, the
+`docs/changes/` (loading screen animation, Google Analytics wiring, the
 projects and volunteering sections, the falling-logos banner background,
 SVG logo conversion + the 3-state light/dark theme system, the header's
 scroll-translucency and left-to-right entrance animation, and Angular
@@ -419,9 +420,9 @@ stubbed — real page composition, boot-time animation, nav clicks, and theme
 switching aren't exercised at all there. [Playwright](https://playwright.dev)
 end-to-end tests in `e2e/` close that gap by driving a real browser against
 the actual built app. See
-`documentation/20260811-030901-playwright-e2e-testing.md` for the full
+`docs/changes/20260811-030901-playwright-e2e-testing.md` for the full
 write-up (what's covered, why, and non-obvious fixture decisions);
-`todo/playwright-e2e-testing-plan.md` for the original plan this implements
+`docs/todo/playwright-e2e-testing-plan.md` for the original plan this implements
 (P0 coverage so far — P1/P2 phases like `projects`/`resume`/`accessibility`
 specs and visual regression are still just that document, not yet built).
 
@@ -477,3 +478,38 @@ Third-party analytics requests (`gtag.js`, Vercel Analytics/Speed Insights)
 are blocked automatically for every test via the same fixture.
 
 Coverage reports are uploaded to [Codecov](https://codecov.io) automatically by the GitHub Actions CI/CD pipeline on every PR. View coverage metrics and trends at the project's [Codecov dashboard](https://codecov.io).
+
+## Dependency Security
+
+Two tools split the job, because neither does the whole of it well:
+
+- **[Dependabot](https://docs.github.com/en/code-security/dependabot)** opens
+  the bump PRs. `.github/dependabot.yml` configures the weekly *version*
+  updates (Monday 06:00 UTC) for both `npm` and `github-actions`; the
+  alerts-driven *security* updates come from the repository's security
+  settings and are batched into a single PR by the `security-updates` group.
+- **[Aikido](https://www.aikido.dev)** triages. Dependabot will happily open a
+  PR for a critical advisory in a transitive dev dependency that no shipped
+  code path can reach; Aikido scans the repo and tells you whether the
+  finding is actually reachable, so the PR queue stays signal.
+
+Bumps are grouped rather than one-per-package: `angular` (the `@angular/*`
+packages plus the libraries pinned to an Angular major, which have to move in
+lockstep or the workspace won't build), `testing`, and a `minor-and-patch`
+catch-all. Majors are deliberately left ungrouped so each arrives alone and
+can be reverted alone — and Angular majors are ignored outright, since they're
+upgraded by hand through `ng update` and its migration schematics (see
+`docs/changes/20260727-205542-UPGRADE-NOTES.md`).
+
+The Aikido scan (`.github/workflows/security.yml`) runs on PRs, on pushes to
+`main`, and weekly at 06:30 UTC — half an hour behind Dependabot, so it sees
+whatever was just opened. It **skips itself, green, until it's activated**:
+install the [Aikido GitHub App](https://github.com/marketplace/aikido-security),
+then add the CI secret key as `AIKIDO_SECRET_KEY` under both
+*Settings → Secrets and variables → Actions* **and** *→ Dependabot*. That
+second copy is not optional — Dependabot PRs read from a separate secret
+store, so without it the scan skips on exactly the PRs it was added for.
+
+See `docs/changes/20260811-124323-dependabot-aikido-integration.md` for the
+full write-up, including the failure modes this configuration is shaped
+around.
