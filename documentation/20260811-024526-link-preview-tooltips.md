@@ -163,3 +163,116 @@ serve` never prerenders anything, so it can't stand in for this):
   earlier links in the paragraph en route, firing (and immediately
   superseding) their preview first. That's expected behavior for a
   hover-delegation implementation, not a bug in it.
+
+## Follow-up: attempt a live iframe preview before falling back to the card
+
+Reported after the above shipped: the user wanted the "live page" option
+reconsidered — try embedding the real target page first, and only fall back
+to the icon/title/domain card if that fails.
+
+### Approach
+
+`LinkPreviewService.show()` now always displays the fallback card
+immediately (unchanged - it's the known-good baseline), then separately
+calls `attemptIframe(url)`, which points a hidden real `<iframe>` at the
+target and decides whether to reveal it based on how its `load` event
+behaves:
+
+- The iframe is rendered at a real desktop size (1120×700) and CSS-scaled
+  down (`transform: scale(0.25)`) to fit the card (280×175), clipped by an
+  `overflow: hidden` wrapper - so a target page lays out the way it
+  actually does full-size instead of squashing into a tiny viewport and
+  looking broken regardless of whether framing succeeded.
+- `sandbox="allow-scripts"` (no `allow-top-navigation*`, no
+  `allow-same-origin`) - loaded scripts still run so the page looks right,
+  but the frame can never navigate the top-level tab even if the target
+  page defends against being framed with a `top.location = ...` redirect
+  script rather than (or in addition to) an `X-Frame-Options` header. No
+  `allow-same-origin` also means the framed page can't read/write real
+  cookies for that site, so it won't render as "logged in" even if the
+  visitor has a session with it elsewhere - a privacy plus, not just a
+  security one.
+- `referrerpolicy="no-referrer"` so hovering doesn't send the visitor's
+  presence on this site to every linked platform as a referrer on every
+  hover.
+
+### The core problem: there is no reliable "was this blocked" signal
+
+A blocked (`X-Frame-Options`/CSP) navigation still fires the iframe's
+`load` event - the browser just refuses to paint the response, it doesn't
+refuse to load it. The working theory going in was that a blocked load
+resolves faster than a real one, since nothing actually gets rendered.
+Verified against a local test server: a `X-Frame-Options: DENY` response
+resolved in ~50ms locally vs. ~145ms for a deliberately-delayed real page -
+looked like a clean, usable signal.
+
+That result doesn't hold up once real network latency is added to *both*
+sides of the comparison, though, which a second local test made concrete:
+delaying the blocked response by a simulated 180ms round trip (still far
+below real internet latency to LinkedIn et al.) pushed its resolution time
+past 200ms too - because the block happens via an HTTP response *header*,
+which still requires the full DNS+TLS+request/response round trip before
+the browser can even see it. "Blocked" and "real-but-quick" become
+genuinely hard to tell apart once both need the same network trip. There's
+no fallback signal available either: `iframe.contentDocument` on a
+cross-origin frame is `null` regardless of whether the load was blocked or
+genuinely succeeded - that's the browser's cross-origin isolation kicking
+in either way, not something specific to being blocked.
+
+Given that, and that several of this app's actual targets (LinkedIn,
+GitHub, Facebook, Instagram, TikTok) are all but certain to block framing
+in production, the failure mode of guessing wrong in the "real" direction
+is a visibly blank box flashing above the caption before (if ever) real
+content arrives - worse than just showing the clean card, which is what
+was happening before this change. Asked the user how to weight that
+tradeoff; chose biasing the threshold conservatively toward the safe
+fallback (`MIN_REAL_LOAD_MS = 800`, well above realistic round-trip time)
+over either leaving it aggressive (~200ms, un-tuned) or skipping the
+attempt entirely for the platforms already known to block it. Re-verified
+against the same local server with the new threshold: the 180ms-RTT
+blocked case now correctly resolves `'blocked'` (215ms, comfortably under
+800), and the delayed real case (900ms) correctly resolves `'real'`.
+`IFRAME_TIMEOUT_MS` (falls back if `load` never fires, seen with some CSP
+`frame-ancestors` cases that cancel navigation pre-commit) raised to 2600ms
+alongside it, to keep a genuinely slow-but-real load a fair chance to clear
+the higher bar before that cuts it off.
+
+### Files touched
+
+- `src/app/directives/link-preview/link-preview.service.ts` -
+  `attemptIframe()`, the iframe element itself, and the
+  `link-preview-card--iframe` mode toggle. An `attemptToken` counter
+  invalidates any in-flight attempt's eventual `load`/timeout callback once
+  a newer `show()` or a `hide()` has superseded it, so a late signal from
+  an abandoned hover can't retroactively flip the card's state.
+- `src/link-preview.scss` - `&__frame-wrap`/`&__frame`/`&--iframe` rules;
+  restructured the card's icon/title/domain markup into a `&__caption`
+  block so it can sit as a compact footer under the live preview instead
+  of being the card's only content.
+- `link-preview.service.spec.ts` - new cases for the iframe src wiring,
+  the succeed/fail classification (via `spyOn(performance, 'now')` rather
+  than real waits, so the suite stays fast and deterministic), the
+  late-callback-after-hide guard, and hide() resetting the iframe to
+  `about:blank` to stop it loading in the background.
+
+### Verification
+
+Full Karma/Jasmine suite: 143 specs, all passing (`ng build` also still
+completes cleanly). The succeed/fail *classification logic* is covered by
+mocked-timing unit tests as above; the underlying *browser behavior it
+depends on* (does a real `X-Frame-Options: DENY` response actually resolve
+`load` fast, does a real allowed page actually resolve it slow) was
+validated against a local Node test server standing in for both cases, not
+against the actual internet - this sandbox's network egress proxy 403s
+requests to linkedin.com, github.com, voya.com, umass.edu, etc. outright
+(confirmed with `curl -I`), so there was no way to exercise the real
+targets end-to-end here. Confirmed the safe path holds even when the
+target is entirely unreachable (rather than actively blocked): hovering
+"Voya Financial" against the real prerendered build in this sandbox - where
+the request to voya.com fails outright - correctly stays on the clean
+fallback card with no blank-box artifact, screenshotted for confirmation.
+**Not verified**: the "succeeds and shows a live thumbnail" path against a
+real allowing site, and the actual blocked-timing behavior of the real
+target platforms under real internet latency (only a local stand-in for
+both was available) - worth a spot-check after this deploys somewhere with
+normal internet access.
