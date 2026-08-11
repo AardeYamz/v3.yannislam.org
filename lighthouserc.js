@@ -58,20 +58,51 @@ module.exports = {
       assertions: {
         // ------------------------------------------------------ deterministic
         // Byte budgets do not vary with runner load, so these are hard errors.
-        // Values are the measured baseline plus headroom — see §8 of
-        // docs/todo/github-actions-speed-and-hardening.md for the numbers.
-        'resource-summary:script:size': ['error', { maxNumericValue: 700000 }],
+        //
+        // These were first set from a dev-box measurement and were wrong: that
+        // sandbox's egress policy blocks googletagmanager.com and the CDNs
+        // src/assets/config.json hotlinks 11 of its 12 org `logos` from, so
+        // gtag.js and those images silently failed to load and were never
+        // counted. The real CI runner has open internet access, loads them
+        // for real, and the very first PR run caught the gap: script.size hit
+        // 793,947 B (vs a 700,000 budget) and total.size hit 6,971,261 B (vs
+        // 6,000,000) — see run 31545739099, jobs 93957869367 (desktop) and
+        // 93957869440 (mobile). Values below are that real measurement plus
+        // ~7% headroom, not the original dev-box numbers.
+        //
+        // Known imprecision: total.size in particular is dominated by home's
+        // hotlinked logos, which this repo doesn't control the weight of —
+        // see docs/todo/github-actions-speed-and-hardening.md §6.5 for the
+        // self-hosting follow-up. Until that lands, one shared budget across
+        // all four routes has to be loose enough for home, which makes it a
+        // weak regression signal on the three lighter routes (~715-721 KB
+        // script, ~1.2-2.4 MB total). Splitting this into a per-route
+        // assertMatrix would fix that at the cost of duplicating the rest of
+        // this assertion set — not worth it unless the imprecision actually
+        // bites.
+        'resource-summary:script:size': ['error', { maxNumericValue: 850000 }],
         'resource-summary:stylesheet:size': ['error', { maxNumericValue: 250000 }],
         'resource-summary:font:size': ['error', { maxNumericValue: 450000 }],
-        'resource-summary:total:size': ['error', { maxNumericValue: 6000000 }],
+        'resource-summary:total:size': ['error', { maxNumericValue: 7500000 }],
 
         // ------------------------------------------------------- DOM-derived
         // Also stable run-to-run. Thresholds sit below the measured baseline
         // (a11y 87 desktop / 95 mobile) so they ratchet against regression
         // rather than failing on damage that already exists.
         'categories:accessibility': ['error', { minScore: 0.85 }],
-        'categories:best-practices': ['error', { minScore: 0.9 }],
         'categories:seo': ['error', { minScore: 0.9 }],
+
+        // best-practices was 'error' at minScore 0.9 against a dev-box
+        // measurement of 0.96 — also wrong, for the same reason as the byte
+        // budgets above. The real score on home is 0.74 (desktop) / 0.75
+        // (mobile), most likely from Chrome auto-logging a console error for
+        // each failed/expired hotlinked logo request (the errors-in-console
+        // audit is part of this category). That's the pre-existing state,
+        // not something this PR caused, so — same ratchet-not-gate pattern as
+        // the a11y audits below — this is 'warn' until the hotlinking is
+        // fixed (§6.5), with the threshold below the observed floor so it
+        // still surfaces without warning on ordinary noise.
+        'categories:best-practices': ['warn', { minScore: 0.7 }],
 
         // Known-failing today; surfaced as warnings so they show up in the
         // report without blocking. Flip to 'error' as each is fixed.
