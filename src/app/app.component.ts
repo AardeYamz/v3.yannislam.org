@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Meta, Title } from '@angular/platform-browser';
 import { inject as injectVercelAnalytics } from '@vercel/analytics';
 import { injectSpeedInsights } from '@vercel/speed-insights';
 import { wasServerPrerendered } from 'src/app/utils/hydration';
@@ -36,8 +35,6 @@ export class AppComponent implements OnInit {
   headerReady = false;
 
   constructor(
-    private titleService: Title,
-    private metaService: Meta,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {
     if (!isPlatformBrowser(this.platformId) || wasServerPrerendered()) {
@@ -46,17 +43,16 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle("Yannis Lam");
-    this.metaService.addTags([
-      { name: 'keywords', content: 'Web, software, developer, portfolio, resume, photography' },
-      { name: 'description', content: 'Yannis Lam Personal Website' },
-    ]);
+    // Title/description/keywords/OG/Twitter tags are authored once in index.html -
+    // do not touch them here. This used to call Title/Meta service setters, but
+    // since app.routes.server.ts prerenders this component at build time, that
+    // overwrote the real tags with weaker, duplicate ones in every static page.
 
     // Vercel Web Analytics + Speed Insights, additive to the existing
     // gtag.js-based AnalyticsService (see analytics.service.ts). Both
-    // `inject()` calls are already no-ops when `window` is undefined, but
-    // this app currently has no SSR, so the isPlatformBrowser() guard is
-    // just defensive belt-and-braces should that change later.
+    // `inject()` calls are already no-ops when `window` is undefined, but the
+    // isPlatformBrowser() guard is kept as defensive belt-and-braces since this
+    // component is now also rendered server-side during prerendering.
     if (isPlatformBrowser(this.platformId)) {
       injectVercelAnalytics();
       injectSpeedInsights();
