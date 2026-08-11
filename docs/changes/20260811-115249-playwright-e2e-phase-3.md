@@ -28,12 +28,13 @@ Five new spec files, all reusing the existing `e2e/fixtures.ts` helpers
   render the high-school list" rule — `navigation.spec.ts` already owns
   those.
 - **`resume.spec.ts`** (§4.6) — clicking the banner's resume button opens a
-  popup at `/assets/resume/<name>.pdf`, that URL returns 200 with
-  `content-type: application/pdf`, and the resolved filename still matches
-  the `"<name> YYYYMMDD.pdf"` pattern `generate-resume-manifest.js` sorts
-  on. The unit spec only asserts the URL string `ResumeService` builds; the
-  failure this guards is a manifest pointing at a file that isn't in the
-  build.
+  new tab, the URL it opens is `/assets/resume/<name>.pdf`, that URL returns
+  200 with `content-type: application/pdf`, and the resolved filename still
+  matches the `"<name> YYYYMMDD.pdf"` pattern `generate-resume-manifest.js`
+  sorts on. The unit spec only asserts the URL string `ResumeService`
+  builds; the failure this guards is a manifest pointing at a file that
+  isn't in the build. See "Reading the opened URL" below for why three of
+  the four tests stub `window.open` rather than reading the popup's URL.
 - **`footer-and-links.spec.ts`** (§4.7) — one side-bar link per
   `about.contact` entry, socials opening in a new tab, the `mailto:` email
   link, the repo/built-with/design-credit links carrying
@@ -105,21 +106,66 @@ run: npx playwright test --shard=${{ matrix.shard }}/2 ${{ github.event_name == 
 A third-party site being down or rate-limiting a CI egress IP is not a
 regression in this repo, so those tests can never redden a pull request.
 
+## Reading the opened URL: headless shell vs. full Chromium
+
+`resume.spec.ts` originally read the URL straight off the popup:
+
+```ts
+const [popup] = await Promise.all([context.waitForEvent('page'), click]);
+expect(decodeURIComponent(popup.url())).toMatch(RESUME_URL_PATTERN);
+```
+
+That passed locally and failed all three tests in CI with
+`Received string: ""`. Two things combine to make it racy:
+
+1. `context.waitForEvent('page')` resolves the moment the tab is *created*,
+   before it has committed a navigation, so `popup.url()` is still empty.
+2. The target is a PDF, and headless Chromium downloads PDFs rather than
+   rendering them — so the popup may never commit a navigation at all and
+   the URL never becomes readable.
+
+The local/CI split was the browser binary, not luck: Playwright launches
+`chromium_headless_shell` for `headless: true`, and the failure reproduces
+100% of the time when the shell is used and not at all under full Chromium.
+
+Three of the four tests now record the `window.open()` argument via an
+`addInitScript` stub, which tests the same contract — *which URL the click
+opens* — with no dependency on how the browser treats a PDF target:
+
+```ts
+await page.addInitScript(() => {
+  window.__openedUrls = [];
+  window.open = (url?: string | URL) => { window.__openedUrls?.push(String(url)); return null; };
+});
+```
+
+The fourth test deliberately leaves `window.open` alone and only asserts
+that a tab opens at all, so the real call is still covered — that is what
+proves it still runs inside the click handler's stack rather than being
+treated as a blocked popup, which is the reason `ResumeService.open()` is
+synchronous in the first place.
+
+**Worth remembering for future specs in this repo: verify against
+`chromium_headless_shell`, not full Chromium.** Anything involving
+downloads, popups, or PDF targets can differ between them.
+
 ## Verification
 
 Everything below was run locally against the real production build
 (`npm run build`, then `http-server dist/v3.yannislam.org/browser` the way
-CI does it), not `ng serve`:
+CI does it), not `ng serve`, and against
+`chromium_headless_shell` — the binary CI actually launches:
 
-- **Chromium project**: 60 passed, 10 skipped (the mobile-only file).
-- **Mobile (Pixel 7) project**: 50 passed, 20 skipped (the desktop-only
-  navigation and footer files).
+- **Both projects, zero retries**: 112 passed, 30 skipped.
+  - Chromium: 61 passed, 10 skipped (the mobile-only file).
+  - Mobile (Pixel 7): 51 passed, 20 skipped (the desktop-only navigation and
+    footer files).
 - **`@external` block**: 10 passed.
 - **Unit suite**: 143/143 passing — the `rel` template change breaks nothing.
 - **`npx tsc -p e2e/tsconfig.json --noEmit`**: clean.
 
-Suite total is now 70 tests per project (up from 30), and the two-project PR
-run finishes in roughly 2 minutes of wall clock per project before sharding.
+Suite total is now 71 tests per project (up from 30), finishing in roughly
+3.2 minutes for both projects before sharding.
 
 Two type errors surfaced only under `tsc` (Playwright transpiles specs
 without typechecking, so both suites were green while the types were wrong)
