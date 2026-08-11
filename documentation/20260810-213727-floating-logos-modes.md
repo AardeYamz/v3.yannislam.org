@@ -1,11 +1,14 @@
+Date: 2026-08-10 21:37:27
+
 # Background Animation Modes (Banner)
 
 `FloatingLogosComponent` used to do exactly one thing: rain little YL logos
-down the banner (see `documentation/floating-logos-banner.md` for how that was
-built). It now picks a **mode** per page load, so more background animations
-can be added without another component or a rewrite of this one. The first new
-mode is `mosaic`: instead of falling, the little logos are scattered inside the
-outline of the YL mark, so the crowd reads as one big YL.
+down the banner (see `documentation/20260729-090717-floating-logos-banner.md`
+for how that was built). It now picks a **mode** per page load, so more
+background animations can be added without another component or a rewrite of
+this one. The first new mode is `mosaic`: instead of falling, the little logos
+are scattered inside the outline of the YL mark, so the crowd reads as one big
+YL.
 
 ## Current state: falling is temporarily off
 
