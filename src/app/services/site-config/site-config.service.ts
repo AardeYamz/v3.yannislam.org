@@ -15,7 +15,10 @@ interface Logo {
 export class SiteConfigService {
   readonly data: any = siteConfig;
   readonly logos: Record<string, Logo> = this.data.logos;
-  readonly menu: any[] = this.data.siteMenu;
+  // AardeYamz is an easter egg route: it stays in config.json (and is still
+  // reachable by navigating to /aardeyamz directly) but is marked "hidden"
+  // so it's filtered out of the rendered nav.
+  readonly menu: any[] = this.data.siteMenu.filter((item: any) => !item.hidden);
   readonly experiences: any = this.resolveLogoKeys(this.data.about.experiences);
   readonly contacts: any[] = this.data.about.contact;
   readonly projects: any = this.resolveLogoKeys(this.data.projects);
