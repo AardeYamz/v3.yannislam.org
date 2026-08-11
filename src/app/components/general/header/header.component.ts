@@ -49,6 +49,10 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   private sectionObserver?: IntersectionObserver;
   private routerSubscription?: Subscription;
+  // Sections currently intersecting the observed band, tracked across
+  // callbacks — see setupSectionObserver() for why a single callback's
+  // `entries` isn't enough on its own.
+  private readonly visibleSections = new Set<string>();
 
   // Domino (Angular's server-side DOM emulation) provides a `window`/`document`
   // stand-in during prerendering, but layout/scroll APIs like `scrollY`,
@@ -91,6 +95,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   private setupSectionObserver() {
     this.sectionObserver?.disconnect();
+    this.visibleSections.clear();
 
     const sections = this.menu
       .map((menuItem) => menuItem?.scrollSection)
@@ -107,15 +112,36 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     // just below the fixed nav bar and ending halfway down — a section is
     // "active" once its content crosses that band, which reads as the
     // section the user is currently looking at rather than merely
-    // scrolled past.
+    // scrolled past. Measuring the nav's actual rendered height rather
+    // than hardcoding it keeps the band correctly placed at the
+    // 120px/140px nav heights the large-viewport breakpoints use (see
+    // styles.scss), not just the base 100px bar.
+    const navHeight = document.querySelector('nav.on-top')?.getBoundingClientRect().height ?? 100;
+
+    // A section taller than the band (workhistory/volunteering both are)
+    // can still be intersecting when the *next* section enters the band,
+    // so a single callback's `entries` only ever contains the sections
+    // whose state just changed — not the full set of what's currently
+    // visible. Tracking membership in visibleSections across callbacks
+    // fixes two bugs a per-batch read had: a still-active section's exit
+    // (like workhistory's, while volunteering is entering) would count as
+    // "nothing visible" and freeze the stale highlight instead of just
+    // dropping the section that actually left, and reducing over only the
+    // batch could hand the win to whichever section happened to fire last
+    // rather than whichever is actually topmost.
     this.sectionObserver = new IntersectionObserver((entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting);
-      if (!visible.length) {
-        return;
-      }
-      const topmost = visible.reduce((a, b) => (a.boundingClientRect.top <= b.boundingClientRect.top ? a : b));
-      this.activeSection.set(topmost.target.id);
-    }, { rootMargin: '-110px 0px -55% 0px', threshold: 0 });
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          this.visibleSections.add(entry.target.id);
+        } else {
+          this.visibleSections.delete(entry.target.id);
+        }
+      });
+      // `sections` is already in document order, so the first one that's
+      // still visible is the topmost.
+      const topmost = sections.find((section) => this.visibleSections.has(section.id));
+      this.activeSection.set(topmost?.id ?? '');
+    }, { rootMargin: `-${navHeight + 10}px 0px -55% 0px`, threshold: 0 });
 
     sections.forEach((section) => this.sectionObserver!.observe(section));
   }

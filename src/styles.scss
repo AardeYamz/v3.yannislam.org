@@ -110,7 +110,12 @@ app-footer {
     position: relative;
     color: $Primary;
     background-color: transparent;
-    border: 1px solid $Outline;
+    // $Outline (aliases a near-background tone in every mode) leaves this
+    // at ~1.2:1 contrast against the page background in light mode —
+    // well under WCAG's 3:1 non-text minimum, so the button read as
+    // floating text with no visible affordance until hovered. $Primary
+    // keeps the pill shape and state layer while actually being visible.
+    border: 1px solid $Primary;
     border-radius: $ShapeFull;
     font-size: 13px;
     font-family: $CodeFont;
@@ -123,11 +128,6 @@ app-footer {
     padding: 1.25rem 1.75rem;
 
     @include md-state-layer($Primary, $ShapeFull);
-
-    &:hover,
-    &:focus-visible {
-        border-color: $Primary;
-    }
 
     &:focus-visible {
         outline: 2px solid $Primary;
@@ -204,11 +204,14 @@ a {
 // under the ~110px those fixed bars need and let them sit on top of
 // whatever section content is currently at the bottom of the window
 // (confirmed overlapping the About section's skill list at ~1280px
-// wide). Below the ~2040px width where the 94vw margin naturally clears
-// that on its own, reserve a flat 110px per side instead.
+// wide). Reserve a flat 110px per side instead — 94vw is dropped here
+// (not just made redundant): it's never actually the smallest of the
+// three terms at any real viewport width, since 94vw only undercuts
+// 100vw-220px above ~3667px, by which point the 1800px cap is already
+// smaller than either.
 @media (min-width: 768px) {
     .container {
-        max-width: min(94vw, 1800px, calc(100vw - 220px)) !important;
+        max-width: min(1800px, calc(100vw - 220px)) !important;
     }
 }
 
@@ -289,19 +292,7 @@ a {
 // above do — their own component stylesheets' base rules get a
 // component-scoped attribute selector from Angular's view encapsulation,
 // which otherwise outranks a plain selector here regardless of source
-// order. (header.component.scss itself is already right at this project's
-// per-component style budget, so the nav-bar rules live here rather than
-// there — see documentation/material-design-3-tokens.md.)
-
-// Scale typography and the nav bar up on large/ultra-wide displays: the
-// container caps out at 1320px (Bootstrap's xxl breakpoint), so past that
-// the page just gets wider margins rather than bigger content, which reads
-// as undersized on a big monitor. The banner/nav-bar overrides need
-// !important here for the same reason the downward banner breakpoints
-// above do — their own component stylesheets' base rules get a
-// component-scoped attribute selector from Angular's view encapsulation,
-// which otherwise outranks a plain selector here regardless of source
-// order. (header.component.scss itself is already right at this project's
+// order. (header.component.scss runs close to this project's
 // per-component style budget, so the nav-bar rules live here rather than
 // there — see documentation/material-design-3-tokens.md.)
 @media (min-width: 1600px) {
