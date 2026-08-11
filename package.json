@@ -12,7 +12,11 @@
     "watch": "ng build --watch --configuration development",
     "pretest": "node scripts/generate-resume-manifest.js",
     "test": "ng test",
-    "serve:ssr:v3.yannislam.org": "node dist/v3.yannislam.org/server/server.mjs"
+    "serve:ssr:v3.yannislam.org": "node dist/v3.yannislam.org/server/server.mjs",
+    "pretest:e2e": "node scripts/generate-resume-manifest.js",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report"
   },
   "private": true,
   "dependencies": {
@@ -43,9 +47,11 @@
     "@angular/cli": "~22.0.8",
     "@angular/compiler-cli": "^22.0.8",
     "@angular/localize": "^22.0.8",
+    "@playwright/test": "^1.62.1",
     "@types/express": "^5.0.1",
     "@types/jasmine": "~6.0.0",
     "@types/node": "^26.1.2",
+    "http-server": "^14.1.1",
     "istanbul-lib-instrument": "^6.0.3",
     "jasmine-core": "~6.3.0",
     "karma": "~6.4.4",

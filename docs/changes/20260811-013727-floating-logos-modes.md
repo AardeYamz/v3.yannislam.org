@@ -1,9 +1,9 @@
-Date: 2026-08-10 21:37:27
+Date: 2026-08-11 01:37:27
 
 # Background Animation Modes (Banner)
 
 `FloatingLogosComponent` used to do exactly one thing: rain little YL logos
-down the banner (see `documentation/20260729-090717-floating-logos-banner.md`
+down the banner (see `docs/changes/20260729-090717-floating-logos-banner.md`
 for how that was built). It now picks a **mode** per page load, so more
 background animations can be added without another component or a rewrite of
 this one. The first new mode is `mosaic`: instead of falling, the little logos
@@ -125,7 +125,7 @@ Measured at 60fps in headless Chromium at 1440x900 with 232 logos.
 
 ## Prerendering / hydration
 
-The SSR work in `documentation/20260811-013939-ssr-prerendering.md` landed
+The SSR work in `docs/changes/20260811-013939-ssr-prerendering.md` landed
 alongside this, and mode dispatch sits behind the same browser gate everything
 else here does:
 

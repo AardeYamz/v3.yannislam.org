@@ -4,7 +4,7 @@ Date: 2026-07-29 09:07:17
 
 > **Follow-up:** the component now supports multiple background animations and
 > picks one per load — see
-> `documentation/20260810-213727-floating-logos-modes.md`. The falling
+> `docs/changes/20260811-013727-floating-logos-modes.md`. The falling
 > animation described here is currently commented out of the rotation for
 > testing, but its code and tests are untouched.
 
