@@ -1,4 +1,5 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, OnDestroy, QueryList, ViewChild, ViewChildren, effect } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, OnDestroy, PLATFORM_ID, QueryList, ViewChild, ViewChildren, effect } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 import { YL_SHAPE_BOUNDS, packPointsInYlShape } from './yl-shape';
 
@@ -245,8 +246,14 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   // Lets the stylesheet tell the modes apart (see the .scss).
   @HostBinding('class') readonly modeClass = `mode-${this.mode}`;
 
-  private readonly prefersReducedMotion =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Domino (Angular's server-side DOM emulation used during prerendering)
+  // defines a `window` global but doesn't implement layout/media APIs like
+  // `matchMedia` or `getBoundingClientRect`, so a plain `typeof window`
+  // check isn't enough here - this uses Angular's PLATFORM_ID instead, and
+  // every browser-only code path below (including the resize listener and
+  // rAF-driven animation loop) is gated on it.
+  private readonly isBrowser: boolean;
+  private readonly prefersReducedMotion: boolean;
 
   private elements: HTMLElement[] = [];
   private rafId?: number;
@@ -263,7 +270,11 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     private host: ElementRef<HTMLElement>,
     private themeService: ThemeService,
     private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) platformId: object,
   ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+    this.prefersReducedMotion = this.isBrowser && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     // Re-randomize colors whenever the user toggles the theme. Skipped on
     // the first run (effects fire once immediately on creation) since
     // generateLogos() already picked initial colors.
@@ -303,14 +314,31 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.elements = this.logoEls.map(ref => ref.nativeElement);
+
+    // getBoundingClientRect(), the resize listener, and the rAF animation
+    // loop below all need real layout/browser APIs that don't exist during
+    // server-side prerendering.
+    if (!this.isBrowser) return;
+
     this.layout();
 
-    if (typeof window === 'undefined') return;
+    // layout() only computes where each logo belongs - it doesn't itself
+    // move anything, since the actual DOM write happens in render(). Without
+    // this call, the very first paint (whether that's a cold client bootstrap
+    // or hydrating a prerendered page, where the static HTML has no transform
+    // on these elements at all) shows every logo stacked at the container's
+    // (0,0) corner until the rAF loop's first tick fires and calls render() a
+    // frame later - a visible pile that then jumps out to its real layout.
+    // Rendering once here, synchronously, means the correct layout is what
+    // actually gets painted first. (Mosaic logos are also transparent until
+    // their entrance starts, so for them this is what puts them in the right
+    // place to fade in from, rather than fixing a visible pile.)
+    this.render(0);
+
     window.addEventListener('resize', this.onResize);
     document.addEventListener('visibilitychange', this.onVisibilityChange);
 
     if (this.prefersReducedMotion) {
-      this.render(0);
       return;
     }
 
@@ -320,7 +348,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopLoop();
     clearTimeout(this.resizeTimeout);
-    if (typeof window !== 'undefined') {
+    if (this.isBrowser) {
       window.removeEventListener('resize', this.onResize);
       document.removeEventListener('visibilitychange', this.onVisibilityChange);
     }
@@ -481,6 +509,17 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
       const trackLength = Math.max(height + FALLING.maxSize * 2, column.length * VERTICAL_SPACING_PX);
       const speed = randomBetween(MIN_SPEED_PX_S, MAX_SPEED_PX_S);
       const step = trackLength / column.length;
+      // Every column's k=0 item would otherwise sit at the exact same
+      // phase (0) as every other column's k=0 item - each column's own
+      // track is independent, so "phase 0" means something different in
+      // absolute pixels per column, but they all still land at the same
+      // relative y (-size) at elapsedS=0, which reads as one dead-straight
+      // horizontal line of logos rather than a scatter. A random per-column
+      // offset (added to, not replacing, k*step - so it doesn't disturb the
+      // even in-column spacing) breaks that alignment without touching the
+      // non-overlap guarantee, which only depends on neighbors within the
+      // same column staying `step` apart.
+      const phaseOffset = Math.random() * trackLength;
 
       column.forEach((logo, k) => {
         logo.laneX = laneX;
@@ -488,7 +527,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
         // Exact multiples of `step` (no jitter) — this is what keeps the
         // gap between lane-mates at a guaranteed >= VERTICAL_SPACING_PX,
         // so they can never overlap each other on the shared track.
-        logo.phase = k * step;
+        logo.phase = (k * step + phaseOffset) % trackLength;
         logo.speed = speed;
 
         // Use this item's own rotated footprint (not just its raw size) so

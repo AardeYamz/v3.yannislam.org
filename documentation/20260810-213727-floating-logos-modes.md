@@ -123,6 +123,38 @@ for the extra elements:
 
 Measured at 60fps in headless Chromium at 1440x900 with 232 logos.
 
+## Prerendering / hydration
+
+The SSR work in `documentation/20260811-013939-ssr-prerendering.md` landed
+alongside this, and mode dispatch sits behind the same browser gate everything
+else here does:
+
+- `layout()` (both modes) and the rAF loop are inside `ngAfterViewInit`'s
+  `if (!this.isBrowser) return;`, since `getBoundingClientRect()` doesn't exist
+  under Domino. The server therefore renders the logo elements with no
+  transform at all.
+- The synchronous `render(0)` after `layout()` covers both modes. Falling mode
+  needs it to avoid a visible pile at (0,0) on the first paint; mosaic logos
+  are transparent until their entrance starts, so for them it's what puts them
+  in the right place to fade in *from*.
+
+**Known wart (pre-existing, now bigger).** `generateLogos()` runs on the server
+too, so the prerendered HTML contains a full set of logo elements — and since
+count, colors, sizes and positions are all random per instance, the hydrating
+client generates a different set. Hydration silently discards the prerendered
+elements and re-creates them: harmless (verified below — no errors, no flash,
+correct first frame), but it means ~200 decorative `<img>` tags, roughly 20KB,
+are shipped in every prerendered page's HTML only to be thrown away. Falling
+mode had the same mismatch at 20–40 elements; mosaic scales it up ~6x.
+
+The idiomatic fix is to render nothing on the server *and* nothing on the
+client's initial (hydrating) render, then create the layer from
+`afterNextRender()` — the two sides agree, the mismatch disappears, and the
+HTML gets smaller. That's deliberately not done here: it changes this
+component's hydration behavior, which the SSR work was actively stabilizing at
+the time (boot animation, first-paint flash), and it belongs in its own change
+rather than riding along with a background animation.
+
 ## Verification
 
 `ng build` + `ng test` (133 specs), plus Playwright against `ng serve` driving
@@ -139,6 +171,15 @@ headless Chromium:
 - Falling mode re-enabled temporarily and re-checked for regressions after the
   refactor: 33 logos, all moving, 0 overlaps across 5 time samples, opacity
   0.17–0.38.
+
+After merging the SSR work, re-verified against the *real* prerendered output
+(`dist/v3.yannislam.org/browser` served statically, so the client bundle
+actually hydrates a prerendered page — something `ng serve` can never
+exercise), across 3 fresh loads: no hydration or `NG0xxx` console errors, 0
+logos piled at the origin on the first rendered frame, and every logo visible
+and correctly placed once settled (201/210/212 logos, ~300px x-spread). The
+only console noise is this sandbox's proxy blocking `gtag`/fonts. The mosaic's
+prerendered-page screenshot matches the `ng serve` one.
 
 ## Known interaction (pre-existing)
 
