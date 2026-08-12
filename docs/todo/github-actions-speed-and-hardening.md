@@ -481,7 +481,7 @@ phase.
 
 - [x] **§3.7** Add zizmor (`security.yml`, SARIF to the Security tab).
 - [x] **§3.6** Add `dependency-review-action` to the PR path (`build-test.yml`, gated on `pull_request`).
-- [x] **§3.5** Add CodeQL on PR + a weekly cron (`codeql.yml`, report-only per open decision 3).
+- [x] **§3.5** CodeQL coverage — **not** via a custom workflow: this repo already has GitHub's CodeQL *default setup* enabled at the repo level, and a custom `codeql.yml` conflicts with it ("CodeQL analyses from advanced configurations cannot be processed when the default setup is enabled" — confirmed on PR #62). Default setup already covers `javascript-typescript` on PR/push/schedule for free, so the fix was to *not* add a workflow file, not to work around the conflict. Verify at Settings → Code security → Code scanning that default setup's language/trigger config matches what this section wanted (PR-triggered, weekly cron) before considering this fully closed.
 
 ### Phase 4 — the remaining slices
 

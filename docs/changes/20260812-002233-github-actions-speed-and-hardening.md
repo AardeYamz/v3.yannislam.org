@@ -110,3 +110,35 @@ A comment ties `PW_BROWSERS` to the `fullMatrix` branch in
 
 See `docs/todo/github-actions-speed-and-hardening.md` §4 for the updated
 phase checklist and the "still open" list carried forward from this pass.
+
+## Fixed: dropped the custom CodeQL workflow — default setup already covers it
+
+The first push of this branch (PR #62) added `.github/workflows/codeql.yml`
+per §3.5 above. Both the `CodeQL` check and the downstream `Code scanning AI
+findings on PR #62` check failed:
+
+```
+Code Scanning could not process the submitted SARIF file:
+CodeQL analyses from advanced configurations cannot be processed when the
+default setup is enabled
+```
+
+`github-advanced-security[bot]`'s comment on the PR confirmed why: this repo
+already has GitHub's CodeQL **default setup** turned on at the repo level
+(Settings → Code security → Code scanning). Default setup and a custom
+("advanced configuration") workflow can't both analyze the same language —
+GitHub rejects the custom one's SARIF outright rather than merging results.
+
+Default setup already does everything §3.5 wanted — `javascript-typescript`
+scanning on pushes, PRs, and a periodic schedule — for zero workflow-file
+maintenance. So the fix is to delete `codeql.yml` rather than route around
+the conflict (e.g. by disabling default setup to make room for the custom
+file): the custom file added nothing default setup didn't already provide,
+and removing it is strictly less to maintain. `Build & Test` and `Security`
+(including zizmor and dependency-review, both new in this same push) passed
+on the first run without changes.
+
+**Not verified from this session:** whether default setup's actual trigger
+configuration matches what §3.5 assumed (PR-triggered plus the existing
+weekly cron slot) — that's a Settings page, not a file in this repo, so
+confirm it there if the exact schedule matters.
