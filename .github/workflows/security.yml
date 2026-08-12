@@ -30,7 +30,9 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Scoped to PRs: cancelling an in-progress push-to-main run would leave
+  # main without a green run of its own if two merges land close together.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -43,6 +45,7 @@ jobs:
   credentials:
     name: Check Aikido credentials
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       configured: ${{ steps.probe.outputs.configured }}
     steps:
@@ -67,10 +70,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Detect new vulnerabilities
-        uses: AikidoSec/github-actions-workflow@v1.0.13
+        uses: AikidoSec/github-actions-workflow@47d83dbcf3e6635044c4b31cef590c1e095217cc # v1.0.13
         with:
           secret-key: ${{ secrets.AIKIDO_SECRET_KEY }}
           # A scan that never came back is an infrastructure problem, not a
@@ -86,3 +91,26 @@ jobs:
           post-scan-status-comment: 'off'
           post-sast-review-comments: 'off'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Static analysis of the workflow files themselves — template injection,
+  # credential persistence, overscoped tokens, unpinned actions, cache
+  # poisoning, impostor commits. Catches regressions in §3.1-3.4 of
+  # docs/todo/github-actions-speed-and-hardening.md automatically instead of
+  # relying on the next manual audit.
+  zizmor:
+    name: Lint workflows (zizmor)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
