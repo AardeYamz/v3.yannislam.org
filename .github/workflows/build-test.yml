@@ -1,8 +1,5 @@
 name: Build & Test
 
-permissions:
-  contents: read
-
 on:
   pull_request:
     branches:
@@ -18,9 +15,6 @@ on:
     # in footer-and-links.spec.ts that are excluded from PR runs.
     - cron: '0 7 * * 1'
 
-permissions:
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   # Scoped to PRs: cancelling an in-progress push-to-main run would leave
@@ -31,9 +25,6 @@ concurrency:
 # hundred npm packages' worth of install scripts and test code, so the
 # default token is scoped to read-only rather than inheriting the repo
 # default (read/write on all scopes for older repos).
-permissions:
-  contents: read
-
 permissions:
   contents: read
 

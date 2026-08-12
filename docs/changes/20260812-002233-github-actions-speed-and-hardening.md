@@ -170,3 +170,29 @@ shell expansion (`$PW_BROWSERS`) instead — GitHub Actions already exports
 `env:` entries as real environment variables for `run:` steps, so this loses
 nothing and closes the finding at the source rather than suppressing it.
 `zizmor --no-online-audits` reports clean after both fixes.
+
+## Fixed: duplicate `permissions:` key broke `build-test.yml` on merge
+
+After PR #62 merged, `Build & Test` started failing outright with `Invalid
+workflow file: 'permissions' is already defined` at four different line
+numbers. This wasn't caused by anything in PR #62 alone — it was a silent
+collision with two other PRs (`#65`, `#66`, both GitHub Copilot Autofix
+suggestions) that merged into `main` while #62 was still open. Both those
+PRs independently added their own `permissions: contents: read` block to
+`build-test.yml` to address the same "no `permissions:` set" finding this
+plan's §3.1 was fixing — at different line ranges than PR #62's edit, so
+git's merge saw no textual conflict and silently combined all of them,
+leaving four top-level `permissions:` keys in one file. Generic YAML parsers
+tolerate duplicate mapping keys (last one wins); GitHub's own workflow-file
+parser does not, and rejects the file outright.
+
+Collapsed back down to the single top-level block (plus the legitimate,
+distinct job-level override already on `lighthouse`), verified with a
+duplicate-key-strict YAML loader (not just `yaml.safe_load`, which would
+have missed this) and a fresh `zizmor --no-online-audits` run — both clean.
+
+**Takeaway for future edits here:** a clean git merge is not proof a
+workflow file is still valid when multiple PRs land near-simultaneous
+changes to the same file's top-level keys — worth an explicit
+`actionlint`/`yaml`-with-duplicate-key-detection check after any merge that
+touches `.github/workflows/*.yml` alongside other in-flight PRs.
