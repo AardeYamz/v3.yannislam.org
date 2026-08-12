@@ -1,13 +1,37 @@
 @use "./../../../../variables.scss"  as *;
 
+// Shared by several selectors below (menu-responsive/aside-show/aside,
+// the drawer's nav links, .on-top, .nav-shadow) — a placeholder + @extend
+// merges them into one shared rule in the compiled CSS instead of
+// repeating this exact declaration six times.
+%ease-transition {
+    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+}
+
+// Shared by aside and .main-navbar.nav-shadow's translucent backdrops.
+%blur-backdrop {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+// Shared by the desktop nav pill and the mobile drawer's link, both of
+// which mark the section currently scrolled into view (activeSection in
+// header.component.ts) the same way: a filled tonal-container pill.
+%nav-active-pill {
+    background-color: $SecondaryContainer;
+    color: $OnSecondaryContainer;
+}
+
 .main-navbar {
     height: 70px;
-    background: $Navy;
+    background: $Surface;
     font-family: $CodeFont;
 
     .menu-ul {
+        align-items: center;
+
         li {
-            margin: 0px 13px;
+            margin: 0px 4px;
         }
 
         // First and Last li has no margin
@@ -32,7 +56,7 @@
         transform: translateX(0vw);
         visibility: visible;
         outline: 0px;
-        transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+        @extend %ease-transition;
 
         li {
             a {
@@ -42,17 +66,23 @@
     }
 
     .aside-show {
-        transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+        @extend %ease-transition;
         right: 0px;
     }
 
     aside {
-        width: 75vw;
+        // Was a flat 75vw — on anything but a narrow phone that's a lot of
+        // screen for a handful of links; capping it keeps the drawer from
+        // dominating the viewport on wider/tablet-ish widths while still
+        // scaling down further on small phones.
+        width: min(75vw, 320px);
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        background-color: $LightNavy;
+        // Translucent + blurred, same treatment as .main-navbar.nav-shadow.
+        background-color: color-mix(in srgb, $SurfaceContainerHigh 85%, transparent);
+        @extend %blur-backdrop;
         height: 100%;
         position: relative;
         // -625px was a magic number that only clears the drawer's own
@@ -62,9 +92,10 @@
         right: -100vw;
         margin-left: auto;
         font-family: $CodeFont;
-        box-shadow: rgba(2, 12, 27, 0.7) -10px 0px 30px -15px;
+        // M3 modal navigation drawer elevation.
+        box-shadow: $Elevation3;
         padding: 25px;
-        transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+        @extend %ease-transition;
 
         nav {
             display: flex;
@@ -73,7 +104,7 @@
             width: 100%;
             flex-direction: column;
             text-align: center;
-            color: $LightestSlate;
+            color: $OnSurface;
 
             ol {
                 width: 100%;
@@ -82,14 +113,15 @@
                 list-style: none;
 
                 li {
-                    font-size: 16px;
+                    font-size: 18px;
                     margin: 0px auto 10px;
 
                     span {
                         display: block;
-                        color: $Orange;
-                        font-size: 14px;
+                        color: $Primary;
+                        font-size: 15px;
                         margin-bottom: 5px;
+                        transition: color 0.2s ease;
                     }
 
                     a {
@@ -100,112 +132,65 @@
                         cursor: pointer;
                         width: 100%;
                         text-decoration: none;
-                        transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
-                        padding: 3px 20px 20px;
+                        border-radius: $ShapeSmall;
+                        @extend %ease-transition;
+                        padding: 8px 20px;
+
+                        @include md-state-layer($OnSurface, $ShapeSmall);
+
+                        &.nav-link-active {
+                            @extend %nav-active-pill;
+
+                            span {
+                                color: $OnSecondaryContainer;
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
+    // M3 navigation pill: a rounded state layer for hover/focus/press, and
+    // a filled tonal-container background once the corresponding section
+    // is scrolled into view (see activeSection in header.component.ts) —
+    // replaces the old underlined-text treatment, which had no way to show
+    // an "active" state at all.
     .nav-link {
-        padding: 5px 0px;
-        color: inherit;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: $ShapeFull;
+        color: $OnSurfaceVariant;
         margin: 0px;
         font-size: 13px;
+        cursor: pointer;
+        transition: color 0.2s ease, background-color 0.2s ease;
+
+        @include md-state-layer($Primary, $ShapeFull);
 
         &:hover {
-            color: $Orange;
+            color: $Primary;
+        }
+
+        &.nav-link-active {
+            @extend %nav-active-pill;
+
+            .nav-number {
+                color: $OnSecondaryContainer;
+            }
         }
     }
 
     .nav-number {
-        color: $Orange;
+        color: $Primary;
         font-size: 12px;
     }
 
     .nav-text {
-        color: $LightestSlate !important;
-        padding-bottom: 4px;
-    }
-
-    .menu-wrapper {
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        width: 36px;
-        height: 60px;
-        cursor: pointer;
-        z-index: 11;
-
-        .hamburger-menu,
-        .hamburger-menu:after,
-        .hamburger-menu:before {
-            width: 36px;
-            height: 1.5px;
-        }
-
-        // Centered via the wrapper's flex align-items rather than a
-        // transform: translateY() here, because this div is also a target
-        // of the header's entrance stagger animation (fadeStaggerAnimation),
-        // which animates `transform` from translateX(-20px) to none. A
-        // transform-based vertical offset would get clobbered for the
-        // duration of that animation, so the icon appeared pinned to the
-        // top of its wrapper and only snapped down to its real position
-        // once the animation finished and released the property.
-        // Converted from a <div> to a <button> for keyboard/screen-reader
-        // accessibility (see docs/changes/20260810-211125-fix-hamburger-menu-accessibility.md);
-        // these reset the browser's default button chrome (border, padding,
-        // background, font) so it still renders as the plain animated bars
-        // below, identical to the old <div>.
-        .hamburger-menu {
-            display: block;
-            position: relative;
-            background: $Orange;
-            border: none;
-            padding: 0;
-            margin: 0;
-            font: inherit;
-            appearance: none;
-            -webkit-appearance: none;
-            cursor: pointer;
-            transition: all 0ms 300ms;
-
-            &:before {
-                content: "";
-                position: absolute;
-                left: 0;
-                bottom: 8px;
-                background: $Orange;
-                transition: bottom 300ms 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms cubic-bezier(0.23, 1, 0.32, 1);
-            }
-
-            &:after {
-                content: "";
-                position: absolute;
-                left: 0;
-                top: 8px;
-                background: $Orange;
-                transition: top 300ms 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms cubic-bezier(0.23, 1, 0.32, 1);
-            }
-
-            &.animate {
-                background: rgba(255, 255, 255, 0);
-
-                &:after {
-                    top: 0;
-                    transform: rotate(45deg);
-                    transition: top 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms 300ms cubic-bezier(0.23, 1, 0.32, 1);
-                }
-
-                &:before {
-                    bottom: 0;
-                    transform: rotate(-45deg);
-                    transition: bottom 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms 300ms cubic-bezier(0.23, 1, 0.32, 1);
-                }
-            }
-        }
+        color: inherit;
     }
 }
 
@@ -223,9 +208,9 @@
     }
 
     &:focus-visible {
-        outline: 2px solid $Orange;
+        outline: 2px solid $Primary;
         outline-offset: 3px;
-        border-radius: 4px;
+        border-radius: $ShapeExtraSmall;
     }
 }
 
@@ -235,32 +220,52 @@
     gap: 18px;
 }
 
-.theme-toggle {
+// M3 standard icon button: circular state layer behind the glyph, no
+// border/scale hack — the layer opacity is what communicates hover/focus/press.
+// Shared by .theme-toggle and .menu-toggle, which are otherwise identical.
+// No border-radius on the button itself — see the md-state-layer mixin
+// comment in variables.scss for why (it'd shrink the clickable area to a
+// circle, leaving the square button's corners dead to clicks).
+//
+// z-index: the mobile drawer's full-screen overlay (.menu-responsive,
+// z-index 10) sits above .main-navbar (z-index 9) once open — by design,
+// so the drawer's own contents aren't hidden behind the bar — but that
+// also covers both of these buttons, which sit outside the drawer's own
+// visible area but still fall within the overlay's full-viewport hit
+// region. Lifting them above the overlay's z-index keeps them live
+// regardless of drawer state.
+%icon-button {
+    position: relative;
+    z-index: 12;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 46px;
     height: 46px;
     padding: 0;
-    border: 1px solid transparent;
-    border-radius: 50%;
+    border: none;
     background: none;
-    color: $LightestSlate;
+    color: $OnSurface;
     cursor: pointer;
     font-size: 20px;
-    transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    transition: color 0.2s ease;
+
+    @include md-state-layer($Primary, $ShapeFull);
 
     &:hover,
     &:focus-visible {
-        color: $Orange;
-        border-color: $Orange;
-        transform: scale(1.08);
+        color: $Primary;
     }
 
     &:focus-visible {
-        outline: 2px solid $Orange;
+        outline: 2px solid $Primary;
         outline-offset: 2px;
     }
+}
+
+.theme-toggle,
+.menu-toggle {
+    @extend %icon-button;
 }
 
 @media (max-width: 1050px) {
@@ -273,8 +278,17 @@
     // out of the flex row and center it absolutely so it stays centered
     // regardless of the toggle/hamburger widths, and let the toggle take
     // the brand's old spot on the left.
+    //
+    // height: 100% matters here: .container's flex children (nav-right,
+    // menu-toggle) are both exactly 46px tall, so without it .container
+    // shrink-wraps to 46px instead of filling nav's own (100px/70px)
+    // height — the buttons then center fine within that shrunk box, but
+    // .navbar-brand's inset: 0 below centers against a *different,
+    // shorter* box, landing the logo above the buttons' centerline
+    // instead of level with it.
     .container {
         position: relative;
+        height: 100%;
     }
 
     // Centered via auto margins on all four insets rather than
@@ -282,11 +296,32 @@
     // animation (see fadeStaggerAnimation) queries every descendant of
     // <nav> and finishes by setting transform: none on each one, which
     // would wipe out a transform-based centering offset here.
+    //
+    // Both width AND height need a real value here, not just width: with
+    // top/bottom both 0 and height left auto, auto-margin centering only
+    // applies once every one of top/height/bottom is non-auto — leave
+    // height out and the spec's fallback kicks in instead (margins forced
+    // to 0, height stretched to fill), which is what silently pinned the
+    // logo to the container's top edge instead of centering it.
+    // 46px matches %icon-button's fixed size so the logo reads as the
+    // same scale as the theme/menu toggles either side of it.
     .navbar-brand {
         position: absolute;
         inset: 0;
         margin: auto;
-        width: 55px;
+        width: 46px;
+        height: 46px;
+        // Bootstrap's own .navbar-brand rule (unscoped, so it still
+        // applies) sets top/bottom padding — with box-sizing: border-box
+        // that shrinks the *content* box the img's height: 100% below
+        // resolves against, so the image quietly rendered a few px short
+        // instead of filling the full 46px box.
+        padding: 0;
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
     }
 
     .nav-right {
@@ -301,24 +336,33 @@
     right: 0;
     z-index: 9;
     height: 100px;
-    padding: 0 6%;
-    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+    // No horizontal padding here (was 0 6%): that inset was on top of
+    // .container's own centering/gutter logic, so the nav's available
+    // width for its .container was narrower than every section's, and a
+    // fixed percentage can't track .container's `min(94vw, 1800px)` cap
+    // at every viewport size anyway. Leaving this at 0 makes the nav's
+    // .container resolve identically to a section's, so the logo and
+    // theme toggle line up with the section content's edges exactly.
+    @extend %ease-transition;
 }
 
 .nav-shadow {
     height: 70px;
-    box-shadow: 0 10px 30px -10px rgba(2, 12, 27, 0.7);
-    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+    // M3 elevation for an app bar that's scrolled off its resting surface.
+    box-shadow: $Elevation2;
+    @extend %ease-transition;
 }
 
-// Translucent + blurred backdrop for the fixed navbar once the page has
-// scrolled. Scoped to .main-navbar (rather than the shared .nav-shadow
-// rule above, which is also applied to the mobile drawer <aside>) so the
-// full-screen mobile menu stays opaque and readable.
+// Translucent blurred backdrop + a divider, once scrolled. Scoped to
+// .main-navbar rather than the shared .nav-shadow rule above (which the
+// mobile drawer <aside> also picks up, but that gets its own always-on
+// blur and no divider of its own — see aside {} above) since these
+// should only kick in once actually scrolled, matching the original
+// at-rest-borderless look.
 .main-navbar.nav-shadow {
-    background: color-mix(in srgb, $Navy 85%, transparent);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: color-mix(in srgb, $Surface 85%, transparent);
+    border-bottom: 2px solid $Outline;
+    @extend %blur-backdrop;
 }
 
 @media (max-width: 1050px) {
@@ -326,24 +370,16 @@
         display: none;
     }
 
+    // Was 0 — the theme/menu toggle icons sat flush against the true
+    // viewport edge with no breathing room at all below this width.
     .on-top {
-        padding: 0;
-    }
-
-    // display: flex belongs here rather than on the unconditional
-    // .main-navbar .menu-wrapper rule above: two classes there would
-    // outrank the single-class ".menu-wrapper { display: none }" rule
-    // below that hides the hamburger above 1050px, leaving it visible
-    // on desktop regardless of viewport width.
-    .menu-wrapper {
-        display: flex;
-        align-items: center;
+        padding: 0 20px;
     }
 }
 
 @media (min-width: 1050px) {
 
-    .menu-wrapper,
+    .menu-toggle,
     .menu-responsive {
         display: none;
     }
