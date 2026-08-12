@@ -473,7 +473,7 @@ phase.
 ### Phase 2 — token & supply-chain hardening (low risk, no behavior change)
 
 - [x] **§3.1** `permissions: contents: read` at the top of `build-test.yml`. *(Flipping the repo-wide default at Settings → Actions → General is a manual step outside version control — still open, see below.)*
-- [x] **§3.2** SHA-pin `codecov/codecov-action` and `AikidoSec/github-actions-workflow`, version comment retained.
+- [x] **§3.2** SHA-pin `codecov/codecov-action` and `AikidoSec/github-actions-workflow`, version comment retained. **Extended beyond the plan's original scope**: zizmor's default policy (added in §3.7) flags *every* unpinned `uses:`, `actions/*` included, as an error — not just the two P0 third-party actions. All `actions/checkout`, `actions/setup-node`, `actions/cache`, `actions/upload-artifact`, and `actions/download-artifact` references in both workflows are now SHA-pinned too.
 - [x] **§3.3** `persist-credentials: false` on all five checkout steps.
 - [x] **§3.4** `timeout-minutes` on `unit-tests`, `build`, `credentials`.
 

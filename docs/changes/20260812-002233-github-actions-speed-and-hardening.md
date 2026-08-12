@@ -142,3 +142,31 @@ on the first run without changes.
 configuration matches what §3.5 assumed (PR-triggered plus the existing
 weekly cron slot) — that's a Settings page, not a file in this repo, so
 confirm it there if the exact schedule matters.
+
+## Fixed: zizmor's own blanket policy caught the `actions/*` pins it wasn't asked to check
+
+Once zizmor (added in this same push) actually ran, it failed the PR on its
+own `unpinned-uses` audit — not on `codecov/*` or `AikidoSec/*` (already
+SHA-pinned per §3.2 above), but on `actions/checkout@v7.0.1` inside zizmor's
+*own* new job in `security.yml`. The plan had explicitly deprioritized
+pinning first-party `actions/*` references ("lower urgency... do
+`codecov/*` and `AikidoSec/*` first"), but zizmor's default policy doesn't
+distinguish first-party from third-party — any mutable tag is an error.
+
+Rather than suppress the rule, pinned everything it flagged: every
+`actions/checkout`, `actions/setup-node`, `actions/cache`,
+`actions/upload-artifact`, and `actions/download-artifact` reference in both
+workflow files now resolves to a 40-character commit SHA with the version
+kept as a trailing comment, same pattern as the two P0 pins. Dependabot's
+`github-actions` ecosystem config already tracks and updates SHA pins in
+place, so this doesn't add ongoing maintenance.
+
+While fixing that, `zizmor --no-online-audits` (run locally against the
+workflow files, `pip install zizmor`) also turned up two `low`-severity
+`template-injection` findings: the new `PW_BROWSERS` job-level env var was
+interpolated into `run:` steps via `${{ env.PW_BROWSERS }}`, which pastes the
+value into the script text before the shell sees it. Switched both to plain
+shell expansion (`$PW_BROWSERS`) instead — GitHub Actions already exports
+`env:` entries as real environment variables for `run:` steps, so this loses
+nothing and closes the finding at the source rather than suppressing it.
+`zizmor --no-online-audits` reports clean after both fixes.
