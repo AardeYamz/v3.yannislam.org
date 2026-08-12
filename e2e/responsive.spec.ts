@@ -19,31 +19,31 @@ test.describe('mobile layout', () => {
   });
 
   test('the hamburger replaces the desktop nav links', async ({ page }) => {
-    await expect(page.locator('.hamburger-menu')).toBeVisible();
+    await expect(page.locator('.menu-toggle')).toBeVisible();
     await expect(page.locator('.nav-right ul.menu-ul')).toBeHidden();
   });
 
   test('the drawer starts closed and reports it via aria-expanded', async ({ page }) => {
-    await expect(page.locator('.hamburger-menu')).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('.menu-toggle')).toHaveAttribute('aria-expanded', 'false');
     await expect(page.locator('#mobile-menu')).not.toHaveClass(/aside-show/);
   });
 
   test('tapping the hamburger opens the drawer', async ({ page }) => {
-    await page.locator('.hamburger-menu').click();
+    await page.locator('.menu-toggle').click();
 
-    await expect(page.locator('.hamburger-menu')).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.locator('.menu-toggle')).toHaveAttribute('aria-expanded', 'true');
     await expect(page.locator('#mobile-menu')).toHaveClass(/aside-show/);
     await expect(page.locator('#mobile-menu a').first()).toBeVisible();
   });
 
   test('the hamburger controls the drawer it labels', async ({ page }) => {
     // Regression cover for docs/changes/…-fix-hamburger-menu-accessibility.md.
-    await expect(page.locator('.hamburger-menu')).toHaveAttribute('aria-controls', 'mobile-menu');
-    await expect(page.locator('.hamburger-menu')).toHaveAttribute('aria-label', 'Toggle menu');
+    await expect(page.locator('.menu-toggle')).toHaveAttribute('aria-controls', 'mobile-menu');
+    await expect(page.locator('.menu-toggle')).toHaveAttribute('aria-label', 'Open menu');
   });
 
   test('the drawer lists every visible nav entry from config', async ({ page }) => {
-    await page.locator('.hamburger-menu').click();
+    await page.locator('.menu-toggle').click();
 
     const links = page.locator('#mobile-menu a');
     await expect(links).toHaveCount(visibleMenuItems.length);
@@ -54,22 +54,22 @@ test.describe('mobile layout', () => {
   });
 
   test('the drawer hides the AardeYamz easter egg, like the desktop nav', async ({ page }) => {
-    await page.locator('.hamburger-menu').click();
+    await page.locator('.menu-toggle').click();
 
     await expect(page.locator('#mobile-menu a').filter({ hasText: 'AardeYamz' })).toHaveCount(0);
   });
 
   test('choosing a section scrolls to it and closes the drawer', async ({ page }) => {
-    await page.locator('.hamburger-menu').click();
+    await page.locator('.menu-toggle').click();
     await page.locator('#mobile-menu a').filter({ hasText: firstScrollItem.navTitle }).click();
 
     await expect(page.locator(`#${firstScrollItem.scrollSection}`)).toBeInViewport();
-    await expect(page.locator('.hamburger-menu')).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('.menu-toggle')).toHaveAttribute('aria-expanded', 'false');
     await expect(page.locator('#mobile-menu')).not.toHaveClass(/aside-show/);
   });
 
   test('choosing a routed entry navigates and closes the drawer', async ({ page }) => {
-    await page.locator('.hamburger-menu').click();
+    await page.locator('.menu-toggle').click();
     await page.locator('#mobile-menu a').filter({ hasText: firstRouteItem.navTitle }).click();
 
     await expect(page).toHaveURL(firstRouteItem.siteLocation);
