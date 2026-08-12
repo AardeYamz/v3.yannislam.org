@@ -466,31 +466,37 @@ phase.
 
 ### Phase 1 — critical path (target: 409s → ~230s)
 
-- [ ] **§2.2** `workers: isCI ? 4 : undefined` in `playwright.config.ts`. Measure. Fall back to `3` on flake.
-- [ ] **§2.1** Rewrite the Playwright cache block: version-keyed, shard-suffixed, `cache-hit` guarded, `PW_BROWSERS`-scoped. Add the sync comment tying `PW_BROWSERS` to `playwright.config.ts`.
-- [ ] Confirm from the run log that the browser download block is **absent** on the second run and that no `Failed to save` line appears.
+- [x] **§2.2** `workers: isCI ? 4 : undefined` in `playwright.config.ts`. Measure. Fall back to `3` on flake.
+- [x] **§2.1** Rewrite the Playwright cache block: version-keyed, shard-suffixed, `cache-hit` guarded, `PW_BROWSERS`-scoped. Add the sync comment tying `PW_BROWSERS` to `playwright.config.ts`.
+- [ ] Confirm from the run log that the browser download block is **absent** on the second run and that no `Failed to save` line appears. *(Needs a real CI run to verify — not observable from a diff.)*
 
 ### Phase 2 — token & supply-chain hardening (low risk, no behavior change)
 
-- [ ] **§3.1** `permissions: contents: read` at the top of `build-test.yml`; flip the repo-wide default.
-- [ ] **§3.2** SHA-pin `codecov/codecov-action` and `AikidoSec/github-actions-workflow`, version comment retained.
-- [ ] **§3.3** `persist-credentials: false` on all five checkout steps.
-- [ ] **§3.4** `timeout-minutes` on `unit-tests`, `build`, `credentials`.
+- [x] **§3.1** `permissions: contents: read` at the top of `build-test.yml`. *(Flipping the repo-wide default at Settings → Actions → General is a manual step outside version control — still open, see below.)*
+- [x] **§3.2** SHA-pin `codecov/codecov-action` and `AikidoSec/github-actions-workflow`, version comment retained.
+- [x] **§3.3** `persist-credentials: false` on all five checkout steps.
+- [x] **§3.4** `timeout-minutes` on `unit-tests`, `build`, `credentials`.
 
 ### Phase 3 — close the coverage gaps
 
-- [ ] **§3.7** Add zizmor. Fix whatever it finds beyond the above.
-- [ ] **§3.6** Add `dependency-review-action` to the PR path.
-- [ ] **§3.5** Add CodeQL on PR + the existing weekly cron.
+- [x] **§3.7** Add zizmor (`security.yml`, SARIF to the Security tab).
+- [x] **§3.6** Add `dependency-review-action` to the PR path (`build-test.yml`, gated on `pull_request`).
+- [x] **§3.5** Add CodeQL on PR + a weekly cron (`codeql.yml`, report-only per open decision 3).
 
 ### Phase 4 — the remaining slices
 
-- [ ] **§2.4** `paths-ignore` for `docs/**` and `**/*.md` — *after* checking required status checks.
-- [ ] **§2.3** Third shard, only if Phase 1 leaves enough test time to justify it.
-- [ ] **§2.5** Gate the Codecov upload to `22.x`.
-- [ ] **§2.7** Scope `cancel-in-progress` to pull requests.
-- [ ] **§2.6** Fold the `credentials` job into a step, if the reporting change is acceptable.
-- [ ] **§3.8** Scorecard, harden-runner in audit mode, `CODECOV_TOKEN`.
+- [ ] **§2.4** `paths-ignore` for `docs/**` and `**/*.md` — *deferred: still needs the branch-protection check called out below before it's safe to land.*
+- [ ] **§2.3** Third shard — deferred until Phase 1 is measured on a real run; do this only if it still nets ~30s+ after §2.1/§2.2 land.
+- [x] **§2.5** Gate the Codecov upload to `22.x`.
+- [x] **§2.7** Scope `cancel-in-progress` to pull requests (both workflows).
+- [ ] **§2.6** Fold the `credentials` job into a step — left alone; open decision 4 below.
+- [ ] **§3.8** Scorecard, harden-runner in audit mode, `CODECOV_TOKEN` — optional P2, not yet done.
+
+**Still open before Phase 4 can fully close:**
+
+1. Whether `build` / `unit-tests` / `e2e` are required status checks on `main` — this repo's session has no branch-protection read access, so it couldn't be verified here. Check Settings → Branches before adding `paths-ignore`; if any of the three are required, add an always-runs shim job first (see §2.4).
+2. The repo-wide Settings → Actions → General → Workflow permissions default hasn't been flipped to read-only — that's an account-level setting this session can't reach from the repo.
+3. `workers: 4` (§2.2) and the CodeQL report-vs-gate question (§3.5) are both explicitly empirical/staged decisions in the original plan; nothing above forces a resolution before the next real CI run reports back.
 
 ---
 

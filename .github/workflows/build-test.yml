@@ -17,11 +17,21 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Scoped to PRs: cancelling an in-progress push-to-main run would leave
+  # main without a green run of its own if two merges land close together.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# No job here writes to the repo; the e2e and unit-tests jobs run several
+# hundred npm packages' worth of install scripts and test code, so the
+# default token is scoped to read-only rather than inheriting the repo
+# default (read/write on all scopes for older repos).
+permissions:
+  contents: read
 
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     strategy:
       matrix:
@@ -30,6 +40,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v7.0.0
@@ -51,8 +63,12 @@ jobs:
       - name: Run tests with coverage
         run: npm test -- --watch=false --browsers=ChromeHeadless --code-coverage
 
+      # Both matrix legs produce identical coverage; uploading from both
+      # doubles the Codecov report for no benefit, so only the primary
+      # version reports.
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v7.0.0
+        if: matrix.node-version == '22.x'
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         with:
           files: ./coverage/v3.yannislam.org/lcov.info
           flags: unittests
@@ -61,10 +77,13 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v7.0.0
@@ -176,10 +195,17 @@ jobs:
       # Full 4-browser matrix on push-to-main and the nightly schedule;
       # Chromium + mobile only on PRs to keep wall clock down.
       PLAYWRIGHT_FULL_MATRIX: ${{ (github.event_name == 'push' || github.event_name == 'schedule') && '1' || '0' }}
+      # Keep in sync with the `fullMatrix` branch in playwright.config.ts —
+      # they are two expressions of the same decision. `mobile` is a
+      # `devices['Pixel 7']` chromium context, so it never needs its own
+      # browser binary.
+      PW_BROWSERS: ${{ (github.event_name == 'push' || github.event_name == 'schedule') && 'chromium firefox webkit' || 'chromium' }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v7.0.0
@@ -190,15 +216,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Resolve Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
       - name: Cache Playwright browsers
         uses: actions/cache@v6
         id: pw-cache
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          # Shard is part of the key so the two matrix legs never race to
+          # reserve the same cache entry (previously: "Unable to reserve
+          # cache ... another job may be creating this cache").
+          key: ${{ runner.os }}-playwright-${{ steps.pw.outputs.version }}-${{ env.PW_BROWSERS }}-${{ matrix.shard }}
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium firefox webkit
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps ${{ env.PW_BROWSERS }}
+
+      # On a cache hit the binaries are restored but the apt packages
+      # (`--with-deps`) are not persisted by actions/cache; this is the
+      # cheap half of the install and takes ~10s rather than ~60s.
+      - name: Install system dependencies
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps ${{ env.PW_BROWSERS }}
 
       - name: Download dist artifact
         uses: actions/download-artifact@v8
@@ -223,3 +264,24 @@ jobs:
             test-results/
             blob-report/
           retention-days: 7
+
+  # Diffs the lockfile on every PR and fails on a newly-introduced
+  # known-vulnerable or disallowed-license package, before it merges.
+  # Complements Dependabot (reactive: opens a PR after an advisory exists)
+  # and Aikido (security.yml, reachability triage) rather than duplicating
+  # either.
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Dependency review
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
