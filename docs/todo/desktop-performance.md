@@ -41,7 +41,7 @@ TTFB 1.68s ──► download+parse main.js & styles.css ──► Angular boots
 CLS is by far the worst metric and the cheapest to fix. Everything below is
 a genuine layout shift, not a repaint.
 
-- [ ] **Reserve height for the typewriter heading.**
+- [x] **Reserve height for the typewriter heading.**
       `src/app/components/home/banner/banner.component.html:13` renders
       `<h3 class="typing">` empty, and `ngx-typed-js` fills it in after
       boot. An empty block box has **zero** height, so the h3 jumps from
@@ -57,7 +57,7 @@ a genuine layout shift, not a repaint.
       breakpoint where `h3`'s font-size changes) so the box is full-height
       before a single glyph arrives.
 
-- [ ] **Stop the font swap from reflowing text.** Every face in
+- [x] **Stop the font swap from reflowing text.** Every face in
       `src/fonts.scss` uses `font-display: swap` with no metric-matched
       fallback. Calibre and SF Mono have different advance widths from the
       system fallbacks in `src/variables.scss:11-12`, so every line of text
@@ -72,7 +72,13 @@ a genuine layout shift, not a repaint.
          which makes the browser either use the web font immediately or
          skip it for that load — never swap. Requires the preloads below.
 
-- [ ] **Preload SF Mono Regular.** `src/index.html:56` preloads only
+      **Shipped: option 2 only** (`font-display: optional` on Calibre
+      Semibold and SF Mono Regular, paired with the preloads below).
+      Metric-adjusted fallback faces (option 1) are not done — revisit if
+      `optional`'s fallback-for-the-whole-load behavior proves too
+      aggressive on slow connections.
+
+- [x] **Preload SF Mono Regular.** `src/index.html:56` preloads only
       `Calibre-Semibold.woff2`. But the banner's greeting (`h1`,
       `banner.component.scss:22`) and the header's nav numbers both use
       `$CodeFont` → `SFMono-Regular.woff2` (44 KB), and neither is
@@ -80,7 +86,7 @@ a genuine layout shift, not a repaint.
       second `<link rel="preload" as="font" crossorigin>` for it. Also
       preload `Calibre-Regular.woff2` — it is what the body copy uses.
 
-- [ ] **Do not toggle `body { overflow }` for the loading screen.**
+- [x] **Do not toggle `body { overflow }` for the loading screen.**
       `loading-screen.component.ts:44` sets `document.body.style.overflow =
       'hidden'` and `:112` restores it. On desktop that removes and then
       re-adds the scrollbar, changing the viewport width by ~15px. Because
@@ -88,6 +94,10 @@ a genuine layout shift, not a repaint.
       Bootstrap container, *every element on the page* shifts horizontally
       twice. Use `scrollbar-gutter: stable` on the root element, or lock
       scrolling with `position: fixed` on a wrapper instead of `overflow`.
+
+      **Shipped:** `scrollbar-gutter: stable` on `html` in `styles.scss`.
+      The `overflow` toggle itself is unchanged — it no longer needs to be,
+      since the gutter is now always reserved.
 
 - [ ] **Give the work-history images an aspect ratio.**
       `workhistory.component.html:18,30,89,101` render `<img [src]>` with
@@ -99,6 +109,17 @@ a genuine layout shift, not a repaint.
       reserved. Same for the floating logos in
       `floating-logos.component.html:3-9`, which set `[style.width.px]` but
       no height.
+
+      **Partially shipped:** floating logos now also set
+      `[style.height.px]`, matching the existing `[style.width.px]` (they
+      were `position: absolute` already, so this is a correctness/decode
+      fix more than a CLS one — they don't participate in layout either
+      way). The work-history `<img>` fix is still open: these are
+      per-organization photos of varying, unknown aspect ratios pulled
+      from `config.json`, and guessing a single `aspect-ratio` risks
+      cropping or distorting them via `object-fit`. Needs real per-image
+      dimensions (or a per-entry aspect-ratio field in `config.json`)
+      before it can be done safely — left for a follow-up.
 
 - [ ] **Re-check CLS after the loading screen work in P1.** A large share
       of the shifts above happen *behind* the opaque overlay during its
@@ -122,7 +143,7 @@ a genuine layout shift, not a repaint.
       dynamic blocking it. This turns FCP into roughly TTFB + paint and
       makes the banner text the LCP element at first byte.
 
-- [ ] **Cut or shorten the loading screen.** `MIN_DISPLAY_MS = 1400`
+- [x] **Cut or shorten the loading screen.** `MIN_DISPLAY_MS = 1400`
       (`loading-screen.component.ts:12`) plus the outro timeline
       (200ms scale + 150ms offset + 500ms fade, `:98-115`) holds the real
       page behind an opaque overlay for **~2.25 s after Angular boots** —
@@ -132,6 +153,10 @@ a genuine layout shift, not a repaint.
       impact: drop it entirely; cut `MIN_DISPLAY_MS` to ~400ms; or show it
       only on first visit (`sessionStorage` flag) so repeat navigations go
       straight to content.
+
+      **Shipped: cut `MIN_DISPLAY_MS` to 400ms** (the one-line option).
+      Dropping the overlay entirely or gating it to first-visit only is not
+      done — both are bigger product decisions than this pass covers.
 
 - [ ] **Trim Font Awesome — 227 KB of CSS for 11 icons.**
       `angular.json:35-37` loads `fontawesome.css` (**104 KB**),
@@ -164,7 +189,7 @@ a genuine layout shift, not a repaint.
 
 ## P2 — asset weight
 
-- [ ] **`src/assets/images` is 16 MB.** The profile shots are shipped at
+- [x] **`src/assets/images` is 16 MB.** The profile shots are shipped at
       full camera resolution and never resized:
 
       | File | Size |
@@ -185,12 +210,28 @@ a genuine layout shift, not a repaint.
       and `profileedit.png` — nothing in `src/` links to them. This alone
       should take the assets directory under 1 MB.
 
-- [ ] **Add `loading="lazy"` and `decoding="async"` to below-the-fold
+      **Shipped:** `profile4.jpg` resized to `profile.jpg`/`profile@2x.jpg`
+      (300×400 / 600×800, mozjpeg) plus `profile.webp`/`profile@2x.webp`,
+      served via `<picture>` with a WebP source and JPEG `srcset` fallback.
+      `profile0/1/2/3.jpg` and `profileedit.png` deleted.
+      `src/assets/images` is now ~2.3 MB (was 16 MB); AVIF not added (WebP
+      already covers the "modern format" win here, and mozjpeg fallback
+      keeps Safari-without-WebP working without a third encode).
+
+- [x] **Add `loading="lazy"` and `decoding="async"` to below-the-fold
       images.** There is not a single `loading`, `decoding`, or
       `fetchpriority` attribute anywhere in `src/app` — every work-history
       logo and the About portrait is fetched eagerly during initial load.
       Conversely, add `fetchpriority="high"` to whatever ends up being the
       LCP element.
+
+      **Shipped:** `loading="lazy" decoding="async"` on all four
+      work-history `<img>` variants (carousel + static, both column
+      positions). The About portrait is left eager/undecorated — it now
+      weighs ~22 KB after the resize above and sits close enough to the
+      fold that lazy-loading it risked a late pop-in for no real byte
+      savings; `fetchpriority="high"` on it (or on the true LCP element,
+      once prerendering picks one) is still open.
 
 - [ ] **Compress the project images.** `projects/IMG_20160311_201710.jpg`
       (310 KB), `20181013_141834.jpg` (285 KB),
