@@ -14,7 +14,7 @@
             <owl-carousel-o class='owl-carousel-o' [options]="customOptions">
               @for (img of exp.imgs; track img) {
                 <ng-template carouselSlide [id]="exp.title + i">
-                  <div #imgContainer class='img-container'>
+                  <div class='img-container'>
                     <img class='img-feature-workhistory rounded' [class.img-feature-workhistory--logo]="!!exp.logoKey"
                       [src]="img" [alt]="exp.image_alt || exp.title"
                       width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization">
@@ -45,7 +45,7 @@
                   class="workhistory-subtitle">
                 &#64; {{exp.organization}}</h4>
               }
-              <div class="workhistory-description-box" (click)='debug()'>
+              <div class="workhistory-description-box">
                 @if (exp?.timeframe) {
                   <p class="text-right mb-2">
                     <i>{{exp?.timeframe}}</i>
@@ -63,11 +63,11 @@
                   class="workhistory-links">
                   @if (exp['link']) {
                     <a class="mx-3" style='color: inherit' [href]="exp['link']"
-                      target="_blank"><i class="ml-3 fa-solid fa-up-right-from-square"></i></a>
+                      target="_blank" rel="noopener noreferrer"><i class="ml-3 fa-solid fa-up-right-from-square"></i></a>
                     }
                     @if (exp['demoLink']) {
                       <a style='color: inherit' [href]="exp['demoLink']"
-                        target="_blank"><i class="ml-3 fas fa-external-link-alt"></i></a>
+                        target="_blank" rel="noopener noreferrer"><i class="ml-3 fas fa-external-link-alt"></i></a>
                       }
                     </div>
                   </div>

@@ -10,3 +10,98 @@ $OrangeOpacity : var(--color-orange-opacity);
 
 $MainFont: Calibre, San Francisco, SF Pro Text, -apple-system, system-ui, BlinkMacSystemFont, Roboto, Helvetica Neue, Segoe UI, Arial, sans-serif;
 $CodeFont: SF Mono, Fira Code, Fira Mono, Roboto Mono, Lucida Console, Monaco, Monospace;
+
+// --- Material Design 3 tokens (see theme.scss for the underlying custom properties) ---
+
+$Primary: var(--md-sys-color-primary);
+$OnPrimary: var(--md-sys-color-on-primary);
+$PrimaryContainer: var(--md-sys-color-primary-container);
+$OnPrimaryContainer: var(--md-sys-color-on-primary-container);
+$Secondary: var(--md-sys-color-secondary);
+$OnSecondary: var(--md-sys-color-on-secondary);
+$SecondaryContainer: var(--md-sys-color-secondary-container);
+$OnSecondaryContainer: var(--md-sys-color-on-secondary-container);
+$Surface: var(--md-sys-color-surface);
+$OnSurface: var(--md-sys-color-on-surface);
+$OnSurfaceVariant: var(--md-sys-color-on-surface-variant);
+$SurfaceContainerLowest: var(--md-sys-color-surface-container-lowest);
+$SurfaceContainerLow: var(--md-sys-color-surface-container-low);
+$SurfaceContainer: var(--md-sys-color-surface-container);
+$SurfaceContainerHigh: var(--md-sys-color-surface-container-high);
+$SurfaceContainerHighest: var(--md-sys-color-surface-container-highest);
+$Outline: var(--md-sys-color-outline);
+$OutlineVariant: var(--md-sys-color-outline-variant);
+$Scrim: var(--md-sys-color-scrim);
+
+$ShapeNone: var(--md-sys-shape-corner-none);
+$ShapeExtraSmall: var(--md-sys-shape-corner-extra-small);
+$ShapeSmall: var(--md-sys-shape-corner-small);
+$ShapeMedium: var(--md-sys-shape-corner-medium);
+$ShapeLarge: var(--md-sys-shape-corner-large);
+$ShapeExtraLarge: var(--md-sys-shape-corner-extra-large);
+$ShapeFull: var(--md-sys-shape-corner-full);
+
+$Elevation0: var(--md-sys-elevation-level0);
+$Elevation1: var(--md-sys-elevation-level1);
+$Elevation2: var(--md-sys-elevation-level2);
+$Elevation3: var(--md-sys-elevation-level3);
+$Elevation4: var(--md-sys-elevation-level4);
+$Elevation5: var(--md-sys-elevation-level5);
+
+$MotionEasingStandard: var(--md-sys-motion-easing-standard);
+
+// M3 state layer: a full-bleed pseudo-element whose opacity ramps up on
+// hover/focus/press, layered in the given $color. Requires the host to be
+// `position: relative`.
+//
+// $corner sets the *pseudo's own* border-radius. Deliberately not on the
+// host: a `border-radius` on a clickable element gets its own corners
+// (the parts of its rectangular layout box outside the rounded shape)
+// excluded from hit-testing in this engine — confirmed via
+// `elementFromPoint` on a circular 46px .theme-toggle/.menu-toggle, with
+// and without `overflow: hidden` (made no difference either way — this
+// isn't an overflow-clipping thing, `border-radius` alone does it). Since
+// the pseudo is `pointer-events: none`, giving *it* the rounded corners
+// instead gets the same visual result with a full rectangular hit area on
+// the actual interactive element. Only safe to drop the host's own
+// border-radius where the host has no visible fill/border of its own to
+// round (icon buttons, plain text links) — elsewhere (.main-btn's outline,
+// namecard-box's card fill) the host keeps its border-radius and accepts
+// a small hit-testing dead zone right at its corners, since those
+// elements are large enough that it isn't a practical problem.
+//
+// The host also gets `isolation: isolate` here so it forms its own
+// stacking context: without one, an auto-z-index absolutely-positioned
+// ::before paints *after* (on top of) the host's own in-flow inline
+// content (e.g. raw text or an unwrapped icon) per the CSS painting-order
+// spec. `isolation: isolate` forces the new stacking context without
+// touching `z-index` itself, so it can't clobber a z-index the host sets
+// for its own unrelated reasons (e.g. namecard-box layering against its
+// siblings) the way setting `z-index: 0` here would.
+@mixin md-state-layer($color: currentColor, $corner: 0) {
+    isolation: isolate;
+
+    &::before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        inset: 0;
+        border-radius: $corner;
+        background-color: $color;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s $MotionEasingStandard;
+    }
+
+    &:hover::before {
+        opacity: var(--md-sys-state-hover-opacity);
+    }
+
+    &:focus-visible::before {
+        opacity: var(--md-sys-state-focus-opacity);
+    }
+
+    &:active::before {
+        opacity: var(--md-sys-state-pressed-opacity);
+    }
+}

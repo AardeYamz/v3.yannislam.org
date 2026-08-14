@@ -7,6 +7,7 @@ import { NgxTypedJsModule } from 'ngx-typed-js';
 import { AosDirective } from '../../directives/aos/aos.directive';
 import { LogoFallbackDirective } from '../../directives/logo-fallback/logo-fallback.directive';
 import { LogoFallbackBackgroundDirective } from '../../directives/logo-fallback/logo-fallback-background.directive';
+import { LinkPreviewDelegateDirective } from '../../directives/link-preview/link-preview-delegate.directive';
 import { AboutComponent } from './about/about.component';
 import { BannerComponent } from './banner/banner.component';
 import { ContactComponent } from './contact/contact.component';
@@ -37,7 +38,8 @@ import { LinkifyPipe } from '../../pipes/linkify/linkify.pipe';
     NgxTypedJsModule,
     AosDirective,
     LogoFallbackDirective,
-    LogoFallbackBackgroundDirective
+    LogoFallbackBackgroundDirective,
+    LinkPreviewDelegateDirective
   ],
   // WorkHistoryComponent is exported (in addition to ContactComponent) so the
   // now-standalone, lazy-loaded ProjectsComponent/ProjectsHighschoolComponent
