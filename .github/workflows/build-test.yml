@@ -17,11 +17,21 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Scoped to PRs: cancelling an in-progress push-to-main run would leave
+  # main without a green run of its own if two merges land close together.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# No job here writes to the repo; the e2e and unit-tests jobs run several
+# hundred npm packages' worth of install scripts and test code, so the
+# default token is scoped to read-only rather than inheriting the repo
+# default (read/write on all scopes for older repos).
+permissions:
+  contents: read
 
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     strategy:
       matrix:
@@ -29,16 +39,18 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
       - name: Cache Angular build artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: .angular/cache
           key: ${{ runner.os }}-angular-${{ hashFiles('package-lock.json') }}
@@ -51,8 +63,12 @@ jobs:
       - name: Run tests with coverage
         run: npm test -- --watch=false --browsers=ChromeHeadless --code-coverage
 
+      # Both matrix legs produce identical coverage; uploading from both
+      # doubles the Codecov report for no benefit, so only the primary
+      # version reports.
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v4.5.0
+        if: matrix.node-version == '22.x'
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         with:
           files: ./coverage/v3.yannislam.org/lcov.info
           flags: unittests
@@ -61,19 +77,22 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22.x
           cache: 'npm'
 
       - name: Cache Angular build artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: .angular/cache
           key: ${{ runner.os }}-angular-${{ hashFiles('package-lock.json') }}
@@ -96,11 +115,70 @@ jobs:
           du -sh dist/
 
       - name: Upload dist artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: dist
           path: dist/
           retention-days: 1
+
+  # Runs in parallel with e2e off the same dist artifact, so it adds nothing
+  # to the critical path (e2e is ~6min, this is ~4min). Never rebuilds.
+  #
+  # Scope: this catches regressions in what the repo controls — bundle size,
+  # render-blocking resources, accessibility, SEO, layout stability. It is
+  # explicitly NOT a proxy for production field data; see the header comment
+  # in lighthouserc.js and docs/todo/desktop-performance.md.
+  lighthouse:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Both, deliberately. Desktop matches the field metric currently
+        # tracked in docs/todo/desktop-performance.md; mobile applies
+        # Lighthouse's default slow-4G + 4x-CPU throttling and is the only
+        # one of the two that reproduces the real layout shift.
+        preset: [mobile, desktop]
+
+    env:
+      LH_PRESET: ${{ matrix.preset }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: dist
+          path: dist
+
+      - name: Run Lighthouse CI
+        run: npx lhci autorun --config=./lighthouserc.js
+
+      - name: Upload Lighthouse report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: ${{ !cancelled() }}
+        with:
+          name: lighthouse-report-${{ matrix.preset }}
+          path: lhci-report/
+          retention-days: 7
 
   e2e:
     needs: build
@@ -117,13 +195,20 @@ jobs:
       # Full 4-browser matrix on push-to-main and the nightly schedule;
       # Chromium + mobile only on PRs to keep wall clock down.
       PLAYWRIGHT_FULL_MATRIX: ${{ (github.event_name == 'push' || github.event_name == 'schedule') && '1' || '0' }}
+      # Keep in sync with the `fullMatrix` branch in playwright.config.ts —
+      # they are two expressions of the same decision. `mobile` is a
+      # `devices['Pixel 7']` chromium context, so it never needs its own
+      # browser binary.
+      PW_BROWSERS: ${{ (github.event_name == 'push' || github.event_name == 'schedule') && 'chromium firefox webkit' || 'chromium' }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22.x
           cache: 'npm'
@@ -131,27 +216,49 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Resolve Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         id: pw-cache
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          # Shard is part of the key so the two matrix legs never race to
+          # reserve the same cache entry (previously: "Unable to reserve
+          # cache ... another job may be creating this cache").
+          key: ${{ runner.os }}-playwright-${{ steps.pw.outputs.version }}-${{ env.PW_BROWSERS }}-${{ matrix.shard }}
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium firefox webkit
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        # $PW_BROWSERS via plain shell expansion, not ${{ env.PW_BROWSERS }}
+        # template interpolation — the latter pastes the value into the
+        # script text before the shell ever sees it (zizmor: template-injection).
+        run: npx playwright install --with-deps $PW_BROWSERS
+
+      # On a cache hit the binaries are restored but the apt packages
+      # (`--with-deps`) are not persisted by actions/cache; this is the
+      # cheap half of the install and takes ~10s rather than ~60s.
+      - name: Install system dependencies
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps $PW_BROWSERS
 
       - name: Download dist artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: dist
           path: dist
 
+      # @external-tagged tests HEAD third-party URLs (social profiles, design
+      # credits). A site being down or rate-limiting CI egress is not a
+      # regression here, so they run on the weekly schedule only and can
+      # never redden a pull request.
       - name: Run Playwright tests
-        run: npx playwright test --shard=${{ matrix.shard }}/2
+        run: npx playwright test --shard=${{ matrix.shard }}/2 ${{ github.event_name == 'schedule' && ' ' || '--grep-invert @external' }}
 
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-report-${{ matrix.shard }}
@@ -160,3 +267,24 @@ jobs:
             test-results/
             blob-report/
           retention-days: 7
+
+  # Diffs the lockfile on every PR and fails on a newly-introduced
+  # known-vulnerable or disallowed-license package, before it merges.
+  # Complements Dependabot (reactive: opens a PR after an advisory exists)
+  # and Aikido (security.yml, reachability triage) rather than duplicating
+  # either.
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Dependency review
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high

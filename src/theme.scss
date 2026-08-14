@@ -19,6 +19,38 @@
     // a background fixed to dark navy goes invisible against light mode's
     // near-black text.
     --color-card-overlay: rgba(10, 25, 47, 0.89);
+
+    // Material Design 3 color roles, mapped onto the palette above rather
+    // than a separate hue set — custom properties resolve at use time, so
+    // defining these once here means they automatically pick up whatever
+    // --color-* values the active [data-theme] block below has set.
+    // --md-sys-color-on-primary is the one role that can't just alias a
+    // --color-* variable: it always needs to be the *dark* extreme, but
+    // which of --color-navy / --color-white is dark flips between modes
+    // (see the light-mode block below), so it's overridden there instead.
+    --md-sys-color-primary: var(--color-orange);
+    --md-sys-color-on-primary: var(--color-navy);
+    --md-sys-color-primary-container: color-mix(in srgb, var(--color-orange) 30%, var(--color-navy) 70%);
+    --md-sys-color-on-primary-container: var(--color-lightest-slate);
+    --md-sys-color-secondary: var(--color-light-slate);
+    --md-sys-color-on-secondary: var(--color-navy);
+    --md-sys-color-secondary-container: var(--color-lightest-navy);
+    --md-sys-color-on-secondary-container: var(--color-lightest-slate);
+    --md-sys-color-background: var(--color-navy);
+    --md-sys-color-on-background: var(--color-lightest-slate);
+    --md-sys-color-surface: var(--color-navy);
+    --md-sys-color-on-surface: var(--color-lightest-slate);
+    --md-sys-color-on-surface-variant: var(--color-slate);
+    --md-sys-color-surface-container-lowest: var(--color-navy);
+    --md-sys-color-surface-container-low: color-mix(in srgb, var(--color-light-navy) 60%, var(--color-navy) 40%);
+    --md-sys-color-surface-container: var(--color-light-navy);
+    --md-sys-color-surface-container-high: var(--color-lightest-navy);
+    --md-sys-color-surface-container-highest: color-mix(in srgb, var(--color-lightest-navy) 88%, var(--color-lightest-slate) 12%);
+    --md-sys-color-outline: var(--color-lightest-navy);
+    --md-sys-color-outline-variant: color-mix(in srgb, var(--color-lightest-navy) 55%, transparent);
+    --md-sys-color-inverse-surface: var(--color-lightest-slate);
+    --md-sys-color-inverse-on-surface: var(--color-navy);
+    --md-sys-color-scrim: #000000;
 }
 
 // Light mode: light background, black logo.
@@ -39,6 +71,13 @@
     // rather than warm/saturated, so it reads as its own color rather than
     // a shade of the other two.
     --name-gradient: linear-gradient(90deg, #5c5c5c, #9c1f0f, #5c1010);
+
+    // Light mode is the one place --color-navy is the *light* extreme and
+    // --color-white is the *dark* one, so the on-primary/on-secondary roles
+    // (which always need to sit on the dark extreme for contrast against
+    // the mid-tone primary/secondary colors) have to swap accordingly.
+    --md-sys-color-on-primary: var(--color-white);
+    --md-sys-color-on-secondary: var(--color-white);
 }
 
 // Dark mode: darker-than-default background, white logo.
@@ -59,4 +98,41 @@
     // logo hues: foot-orange ff7f27 → diamond-red ed1c24) so default reads
     // as gold and dark reads as flame, clearly two different colors.
     --name-gradient: linear-gradient(90deg, #ff7f27, #ff3d1a, #ed1c24);
+}
+
+// Material Design 3 shape, elevation, and state-layer tokens. These don't
+// vary per color mode, so they live at :root rather than inside the
+// [data-theme] blocks above.
+:root {
+    // Shape scale (M3 corner radii).
+    --md-sys-shape-corner-none: 0px;
+    --md-sys-shape-corner-extra-small: 4px;
+    --md-sys-shape-corner-small: 8px;
+    --md-sys-shape-corner-medium: 12px;
+    --md-sys-shape-corner-large: 16px;
+    --md-sys-shape-corner-extra-large: 28px;
+    --md-sys-shape-corner-full: 999px;
+
+    // Elevation scale (M3's key+ambient shadow pairs, levels 0-5). Dark
+    // surfaces get most of their "elevation" read from the
+    // surface-container tiers above rather than these shadows, matching
+    // M3's dark-theme guidance of favoring tonal elevation over shadow.
+    --md-sys-elevation-level0: none;
+    --md-sys-elevation-level1: 0px 1px 2px rgba(0, 0, 0, 0.30), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-level2: 0px 1px 2px rgba(0, 0, 0, 0.30), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-level3: 0px 1px 3px rgba(0, 0, 0, 0.30), 0px 4px 8px 3px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-level4: 0px 2px 3px rgba(0, 0, 0, 0.30), 0px 6px 10px 4px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-level5: 0px 4px 4px rgba(0, 0, 0, 0.30), 0px 8px 12px 6px rgba(0, 0, 0, 0.15);
+
+    // State-layer opacities, applied over the interactive element's content
+    // color (see the state-layer mixin in variables.scss).
+    --md-sys-state-hover-opacity: 0.08;
+    --md-sys-state-focus-opacity: 0.10;
+    --md-sys-state-pressed-opacity: 0.10;
+    --md-sys-state-dragged-opacity: 0.16;
+
+    // Motion easing M3 uses for its "emphasized" transitions — kept
+    // alongside the tokens above since components reach for it together
+    // with shape/elevation when animating state changes.
+    --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
 }

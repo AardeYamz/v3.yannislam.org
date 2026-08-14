@@ -1,8 +1,9 @@
 import { test, expect, gotoAndSettle } from './fixtures';
 import config from '../src/assets/config.json';
 
-const scrollableMenuItems = config.siteMenu.filter((item) => item.scrollSection);
-const routeMenuItems = config.siteMenu.filter((item) => !item.scrollSection && item.siteLocation.startsWith('/') && !item.siteLocation.startsWith('/#'));
+const visibleMenuItems = config.siteMenu.filter((item) => !item.hidden);
+const scrollableMenuItems = visibleMenuItems.filter((item) => item.scrollSection);
+const routeMenuItems = visibleMenuItems.filter((item) => !item.scrollSection && item.siteLocation.startsWith('/') && !item.siteLocation.startsWith('/#'));
 
 test.describe('navigation', () => {
   // The desktop nav links are hidden below 1050px in favor of the hamburger
@@ -64,6 +65,10 @@ test.describe('navigation', () => {
     await expect(page.locator('.section.namecard')).toBeVisible();
   });
 
+  test('AardeYamz is an easter egg: reachable directly but absent from the visible nav', async ({ page }) => {
+    await expect(page.locator('.nav-right ul.menu-ul').getByText('AardeYamz', { exact: true })).toHaveCount(0);
+  });
+
   test('unknown routes redirect to home', async ({ page }) => {
     await gotoAndSettle(page, '/does-not-exist');
     await expect(page).toHaveURL('/');
@@ -72,9 +77,8 @@ test.describe('navigation', () => {
 
   test('browser back/forward move between routes', async ({ page }) => {
     await gotoAndSettle(page, '/');
-    await page.locator('a.navbar-brand').click();
 
-    await page.locator('.nav-right ul.menu-ul').getByText('AardeYamz', { exact: true }).click();
+    await gotoAndSettle(page, '/aardeyamz');
     await expect(page).toHaveURL('/aardeyamz');
 
     await page.goBack();

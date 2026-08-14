@@ -4,7 +4,7 @@ const isCI = !!process.env.CI;
 const PORT = 4200;
 
 // PR runs are Chromium + mobile only to keep wall clock down (see
-// todo/playwright-e2e-testing-plan.md §5 "Cost control"); push-to-main and
+// docs/todo/playwright-e2e-testing-plan.md §5 "Cost control"); push-to-main and
 // scheduled runs opt into the full browser matrix.
 const fullMatrix = process.env.PLAYWRIGHT_FULL_MATRIX === '1';
 
@@ -13,7 +13,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
-  workers: isCI ? 2 : undefined,
+  workers: isCI ? 4 : undefined,
   reporter: isCI
     ? [['github'], ['html', { open: 'never' }], ['blob']]
     : [['html', { open: 'on-failure' }]],

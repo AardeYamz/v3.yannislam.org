@@ -5,7 +5,7 @@ Date: 2026-08-10 21:11:25
 ## Context
 
 `header.component.html`'s mobile menu toggle (visible below the 1050px
-breakpoint, see `documentation/logo-svg-dark-mode.md`'s "Breakpoint
+breakpoint, see `docs/changes/20260728-151017-logo-svg-dark-mode.md`'s "Breakpoint
 widening" section) was a plain `<div>` with a click handler:
 
 ```html
@@ -120,7 +120,7 @@ does, so the whole animated-bars-to-X transition keeps working unmodified.
   - No console errors from either interaction path (the only console
     output seen in this sandbox at all is `gtag.js` being blocked by
     network-egress rules — pre-existing and unrelated, per
-    `documentation/consolidate-header-scss.md`'s verification notes).
+    `docs/changes/20260803-211756-consolidate-header-scss.md`'s verification notes).
   - Screenshotted the header before/after opening via both mouse and
     keyboard: the closed state shows the same three orange bars in the
     same position as before this change, and both activation paths
