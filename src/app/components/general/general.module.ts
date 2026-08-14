@@ -6,6 +6,7 @@ import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
+import { LinkPreviewDirective } from '../../directives/link-preview/link-preview.directive';
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -17,7 +18,8 @@ import { LoadingScreenComponent } from './loading-screen/loading-screen.componen
     RouterModule,
     NgbNavModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    LinkPreviewDirective
   ],
   exports: [HeaderComponent, FooterComponent, LoadingScreenComponent]
 })

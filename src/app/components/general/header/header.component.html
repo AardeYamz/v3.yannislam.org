@@ -9,12 +9,12 @@
         @for (menuItem of menu ; track menuItem; let i = $index) {
           <li [ngbNavItem]="i" ngbNavItem
             (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
-            @if (menuItem?.navNumber) {
-              <a ngbNavLink (click)='navigate(menuItem)'><span
-                class='nav-number'>
-              {{menuItem?.navNumber}}</span> <span
-            class="underline nav-text">{{menuItem?.navTitle}}</span></a>
-          }
+            <a ngbNavLink (click)='navigate(menuItem)'
+              [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
+              @if (menuItem?.navNumber) {
+                <span class='nav-number'>{{menuItem?.navNumber}}</span>
+              }
+              <span class="nav-text">{{menuItem?.navTitle}}</span></a>
           <ng-template ngbNavContent>{{menuItem?.navContent}}</ng-template>
         </li>
       }
@@ -28,11 +28,11 @@
           [class.fa-moon]="themeService.mode() === 'dark'"></i>
       </button>
     </div>
-    <div class="menu-wrapper">
-      <button type="button" [class.animate]='responsiveMenuVisible' (click)='responsiveMenuVisible = !responsiveMenuVisible'
-      class="hamburger-menu" [attr.aria-expanded]="responsiveMenuVisible" aria-label="Toggle menu"
-      aria-controls="mobile-menu"></button>
-    </div>
+    <button type="button" class="menu-toggle" (click)="responsiveMenuVisible = !responsiveMenuVisible"
+      [attr.aria-label]="responsiveMenuVisible ? 'Close menu' : 'Open menu'"
+      [attr.aria-expanded]="responsiveMenuVisible" aria-controls="mobile-menu">
+      <i class="fa-solid" [class.fa-bars]="!responsiveMenuVisible" [class.fa-xmark]="responsiveMenuVisible"></i>
+    </button>
     <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }">
       <aside id="mobile-menu" [class.aside-show]='responsiveMenuVisible' [class.nav-shadow]='this.pageYPosition>0' class="on-top">
         <nav>
@@ -40,11 +40,13 @@
             @for (menuItem of menu ; track menuItem; let i = $index) {
               <li
                 (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
-                @if (menuItem?.navNumber) {
-                  <a (click)='navigate(menuItem)'>
-                    <span>{{menuItem?.navNumber}}</span>{{menuItem?.navTitle}}
-                  </a>
-                }
+                <a (click)='navigate(menuItem)'
+                  [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
+                  @if (menuItem?.navNumber) {
+                    <span>{{menuItem?.navNumber}}</span>
+                  }
+                  {{menuItem?.navTitle}}
+                </a>
               </li>
             }
           </ol>

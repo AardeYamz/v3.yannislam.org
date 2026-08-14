@@ -176,11 +176,15 @@ ng test --include='**/component-name.component.spec.ts'
 
 ## Documentation
 
-Additional context lives in `documentation/` (how the logo intro animation works, scroll reveals, projects section structure, Google Analytics wiring, header scroll effects, and Angular upgrade notes). Skim relevant files when touching their area.
+Additional context lives under `docs/`, split three ways:
+
+- **`docs/changes/`** — write-ups of work already done (how the logo intro animation works, scroll reveals, projects section structure, Google Analytics wiring, header scroll effects, Angular upgrade notes). Skim relevant files when touching their area.
+- **`docs/todo/`** — plans for work not yet built (or only partly built).
+- **`docs/pr-review/`** — reviews of specific pull requests, named `pr-<number>-<slug>.md`.
 
 ### Naming convention
 
-Every file in `documentation/` is named `YYYYMMDD-HHMMSS-kebab-case-title.md` and starts with a `Date:` header matching that timestamp:
+Every file in `docs/changes/` is named `YYYYMMDD-HHMMSS-kebab-case-title.md` and starts with a `Date:` header matching that timestamp:
 
 ```
 Date: 2026-08-11 01:39:39
@@ -192,4 +196,4 @@ Date: 2026-08-11 01:39:39
 - The timestamp is when the file is finalized/committed (UTC), not when work on the underlying feature started — get it with `date -u "+%Y-%m-%d %H:%M:%S"` (header) and `date -u "+%Y%m%d-%H%M%S"` (filename), run once and reused for both so they match exactly.
 - If another file already has that exact `YYYYMMDD-HHMMSS`, append `-1`, `-2`, etc. to the *new* file's slug (the first file at a given timestamp keeps no suffix; only later collisions at the same second get numbered, in order).
 - Filenames stay stable once committed — a later update to the same doc (e.g. a follow-up fix) is a new section appended to the existing file (see `20260811-013939-ssr-prerendering.md`'s "Fixed: ..." sections for the pattern), not a rename to a new timestamp. Only rename when a file is genuinely being created for the first time.
-- This applies to `documentation/` specifically — `todo/`, `README.md`, and root-level docs like `CLAUDE.md` itself are not part of this convention.
+- This applies to `docs/changes/` specifically — `docs/todo/`, `docs/pr-review/`, `README.md`, and root-level docs like `CLAUDE.md` itself are not part of this convention.

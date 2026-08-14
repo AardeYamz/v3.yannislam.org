@@ -2,8 +2,16 @@
 
 A plan for adding Playwright end-to-end testing to this repo and wiring it
 into GitHub Actions, written after auditing every existing test case and the
-current CI workflow. Nothing in this document has been implemented yet — it
-is the blueprint for the work.
+current CI workflow.
+
+> **Status.** Phases 1–3 have shipped; this document is kept as the original
+> blueprint. Phase 1–2 (foundation, CI wiring, P0 specs) landed in
+> `docs/changes/20260811-030901-playwright-e2e-testing.md`; Phase 3 (breadth:
+> `projects`, `resume`, `footer-and-links`, `responsive`, `assets`) in
+> `docs/changes/20260811-115249-playwright-e2e-phase-3.md`. **Phase 4
+> (`accessibility.spec.ts` with axe; visual regression, deferred) is what
+> remains.** §8's open decisions were all resolved — see the Phase 1–2 change
+> doc.
 
 ## 1. Where things stand today
 
@@ -224,7 +232,7 @@ These belong in a shared fixture at `e2e/fixtures.ts`, applied to every test:
    comparison. If visual regression is adopted (§4.9), add a
    `body.e2e-no-motion` class via `addInitScript` and have the component
    honor it, or pause via the existing visibility-pause path documented in
-   `documentation/pause-floating-logos-visibility.md`.
+   `docs/changes/20260731-210605-pause-floating-logos-visibility.md`.
 4. **Disable Angular animations for non-animation specs.** The
    `@fadeStagger` / `@animateMenu` / `@animateFooter` triggers gate element
    visibility. Playwright's auto-waiting handles most of this, but stability
@@ -306,7 +314,7 @@ Driven from `config.json`:
 - The "View High School Projects" link navigates to `/projects/highschool`;
   the "← Back to Projects" link returns.
 - `/projects` does **not** render the high-school list (documented behavior
-  in `documentation/projects-section.md`).
+  in `docs/changes/20260728-211600-projects-section.md`).
 - Project entries with a `link` render an anchor with
   `target="_blank"` and a `rel` containing `noopener`.
 
@@ -348,7 +356,7 @@ Runs only in the `mobile` project:
   build. This is a fast request-level test with no page rendering, and it
   catches the most common content-editing mistake in this repo.
 - `robots.txt`, `sitemap.xml`, `manifest.webmanifest`, `favicon.ico` all
-  return 200 — regression cover for `documentation/seo-fixes.md`.
+  return 200 — regression cover for `docs/changes/20260731-184800-seo-fixes-4.md`.
 - Every route listed in `sitemap.xml` loads.
 
 ### 4.10 `accessibility.spec.ts` — P1
@@ -359,7 +367,7 @@ Add `@axe-core/playwright`:
   failing on `serious` and `critical` violations only, with a documented
   allowlist for known third-party (owl-carousel, ng-bootstrap) findings.
 - Explicit checks for the fixes in
-  `documentation/fix-hamburger-menu-accessibility.md`: hamburger has
+  `docs/changes/20260810-211125-fix-hamburger-menu-accessibility.md`: hamburger has
   `aria-label` and `aria-controls="mobile-menu"`, theme toggle's
   `aria-label` reflects the current mode, brand link has
   `aria-label="Yannis Lam, home"`.
@@ -587,7 +595,7 @@ weeks.
    `AppComponent.ngOnInit` overwrites it with `Yannis Lam`. The runtime value
    is what search engines and browser tabs see. Which is intended? The smoke
    test needs one answer, and the SEO work in
-   `documentation/seo-fixes.md` suggests the longer form was deliberate.
+   `docs/changes/20260731-184800-seo-fixes-4.md` suggests the longer form was deliberate.
 2. **Should `MIN_DISPLAY_MS` be overridable for tests?** Shortening it in E2E
    saves ~1.4 s per test (roughly 90 s across the suite), but it means E2E
    runs against a slightly different app than users get. Recommendation: keep

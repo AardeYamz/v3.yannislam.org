@@ -22,7 +22,7 @@ exactly that section's box, not the viewport.
 ## 1. New logo colors
 
 `src/assets/images/logos/clearcolor.svg` already existed (11 flat-colored
-`<polygon>` pieces — see `documentation/animejs-loading-screen.md`), alongside
+`<polygon>` pieces — see `docs/changes/20260728-132036-animejs-loading-screen.md`), alongside
 single-flat-color `black.svg`/`gray.svg`/`white.svg` variants used for the
 theme-matched header logo. The distinct fill colors used across
 `clearcolor.svg`'s pieces became new single-color logo files, one flat color
@@ -195,4 +195,4 @@ checks described in each section above.
   `FloatingLogosComponent`.
 - `src/assets/images/logos/{yellow,gold,red,lime,green,orange,cream}.svg` —
   new flat-color logo variants (§1).
-- `documentation/floating-logos-banner.md` — this file.
+- `docs/changes/20260729-090717-floating-logos-banner.md` — this file.

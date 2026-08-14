@@ -19,7 +19,7 @@
             <h3 class="typing">{{ data.banner.typeSection[0] }}</h3>
           }
         </div>
-        <div class='banner-description'>
+        <div class='banner-description' appLinkPreviewDelegate>
           @for (text of this.data.banner.blurb; track text) {
             <p class="mt-4" [innerHTML]="text">
             </p>
