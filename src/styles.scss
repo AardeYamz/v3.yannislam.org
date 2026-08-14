@@ -8,8 +8,8 @@ body {
     overflow-x: hidden;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    background-color: $Navy;
-    color: $Slate;
+    background-color: $Surface;
+    color: $OnSurfaceVariant;
     line-height: 1.3;
     font-family: $MainFont;
     font-size: 20px;
@@ -32,23 +32,23 @@ app-footer {
 }
 
 .section-box {
-    padding: 130px 0;
+    padding: 90px 0;
 }
 
 @media (max-width: 768px) {
-    .section-box {
-        padding: 80px 0;
-    }
-}
-
-@media (max-width: 480px) {
     .section-box {
         padding: 60px 0;
     }
 }
 
+@media (max-width: 480px) {
+    .section-box {
+        padding: 40px 0;
+    }
+}
+
 .section {
-    background: $Navy;
+    background: $Surface;
 }
 
 .code-font {
@@ -75,7 +75,7 @@ app-footer {
     white-space: nowrap;
     font-size: 32px;
     font-weight: 600;
-    color: $LightestSlate;
+    color: $OnSurface;
     font-family: $MainFont;
     margin: 0 0 10px 0;
 
@@ -83,7 +83,7 @@ app-footer {
         margin-right: 10px;
         font-family: $CodeFont;
         font-weight: normal;
-        color: $Orange;
+        color: $Primary;
         font-size: 20px;
         position: relative;
         bottom: 4px;
@@ -94,7 +94,7 @@ app-footer {
         display: block;
         height: 1px;
         width: 300px;
-        background-color: $LightestNavy;
+        background-color: $Outline;
         position: relative;
         top: -5px;
         margin-left: 20px;
@@ -103,25 +103,38 @@ app-footer {
 
 
 
+// M3 outlined button: pill shape, primary-colored outline/label, and a
+// primary-tinted state layer instead of the old hardcoded teal hover fill
+// (which didn't match this site's orange accent at all).
 .main-btn {
-    color: $Orange;
+    position: relative;
+    color: $Primary;
     background-color: transparent;
-    border: 1px solid $Orange;
-    border-radius: 3px;
+    // $Outline (aliases a near-background tone in every mode) leaves this
+    // at ~1.2:1 contrast against the page background in light mode —
+    // well under WCAG's 3:1 non-text minimum, so the button read as
+    // floating text with no visible affordance until hovered. $Primary
+    // keeps the pill shape and state layer while actually being visible.
+    border: 1px solid $Primary;
+    border-radius: $ShapeFull;
     font-size: 13px;
     font-family: $CodeFont;
     line-height: 1;
     -webkit-text-decoration: none;
     text-decoration: none;
     cursor: pointer;
-    -webkit-transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-transition: border-color 0.25s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transition: border-color 0.25s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
     padding: 1.25rem 1.75rem;
 
-    &:hover,
-    &:focus,
-    &:active {
-        background-color: rgba(100, 255, 218, 0.07);
+    @include md-state-layer($Primary, $ShapeFull);
+
+    &:focus-visible {
+        outline: 2px solid $Primary;
+        outline-offset: 2px;
+    }
+
+    &:focus:not(:focus-visible) {
         outline: none;
     }
 }
@@ -131,7 +144,7 @@ a {
 
     &:hover {
         text-decoration: none;
-        color: $Orange;
+        color: $Primary;
     }
 }
 
@@ -139,7 +152,7 @@ a {
     text-decoration: none;
     display: inline-block;
     position: relative;
-    color: $Orange !important;
+    color: $Primary !important;
 }
 
 .underline:after {
@@ -150,7 +163,7 @@ a {
     height: 1px;
     left: 50%;
     position: absolute;
-    background: $Orange;
+    background: $Primary;
     transition: width 0.3s ease 0s, left 0.3s ease 0s;
     width: 0%;
 }
@@ -168,38 +181,43 @@ a {
 
 }
 
-@media (min-width: 1100px) and (max-width: 1300px) {
+// Bootstrap's own .container snaps to a handful of fixed max-widths per
+// breakpoint (540/720/960/1140/1320px) rather than tracking the viewport
+// continuously, so as a window grows within one of those bands the content
+// column just sits there while empty margin grows around it — worse once
+// `body` also had `class="container"` (removed from index.html), which
+// made every *nested* .container compute its own width against an
+// already-narrowed parent instead of the viewport, shrinking things
+// further. This replaces Bootstrap's stepped caps with one that tracks
+// viewport width continuously, capped so it doesn't get unreasonably wide
+// on an ultra-wide monitor.
+.container {
+    max-width: min(94vw, 1800px) !important;
+}
+
+// footer-left-bar/footer-right-bar (the social-icon column and the
+// rotated email link) are position: fixed to the viewport's bottom
+// corners and only appear from this same breakpoint up (d-md-block in
+// footer.component.html), so they're always on screen wherever the page
+// happens to be scrolled to — not just over the true <footer>. The 94vw
+// cap above only reserves ~3% of the viewport per side, which is well
+// under the ~110px those fixed bars need and let them sit on top of
+// whatever section content is currently at the bottom of the window
+// (confirmed overlapping the About section's skill list at ~1280px
+// wide). Reserve a flat 110px per side instead — 94vw is dropped here
+// (not just made redundant): it's never actually the smallest of the
+// three terms at any real viewport width, since 94vw only undercuts
+// 100vw-220px above ~3667px, by which point the 1800px cap is already
+// smaller than either.
+@media (min-width: 768px) {
     .container {
-        max-width: 950px;
+        max-width: min(1800px, calc(100vw - 220px)) !important;
     }
 }
 
-@media (min-width: 992px) and (max-width: 1100px) {
-    .container {
-        max-width: 800px;
-    }
-
-}
-
-@media (min-width: 880px) and (max-width: 992px) {
-    .container {
-        max-width: 700px;
-    }
-}
-
-@media (min-width: 768px) and (max-width: 880px) {
-    .container {
-        max-width: 600px;
-    }
-}
-
-@media (max-width: 768em) {
+@media (max-width: 768px) {
     .section-title {
         font-size: 24px;
-    }
-
-    .container {
-        width: 90%;
     }
 }
 
@@ -250,5 +268,172 @@ a {
 @media (max-width: 30em) {
     body {
         font-size: 18px;
+    }
+}
+
+// The logo's scroll-driven rotation (logoRotationDeg in
+// header.component.ts) spins its square img via a CSS transform, which
+// enlarges its axis-aligned bounding box up to ~1.41x its own width at a
+// 45deg angle. That comfortably clears the tall, unscrolled nav bar, but
+// at every breakpoint the shorter scrolled one (.nav-shadow) is not
+// enough taller than the logo's own size to give the rotated corners
+// clearance — they visually crowd/overflow the bar's top and bottom
+// edges. Shrinking the logo specifically in that state restores a real
+// buffer around it, at every breakpoint's own scale.
+.nav-shadow .navbar-brand img {
+    width: 42px;
+}
+
+// Scale typography and the nav bar up on large/ultra-wide displays: the
+// container caps out at 1320px (Bootstrap's xxl breakpoint), so past that
+// the page just gets wider margins rather than bigger content, which reads
+// as undersized on a big monitor. The banner/nav-bar overrides need
+// !important here for the same reason the downward banner breakpoints
+// above do — their own component stylesheets' base rules get a
+// component-scoped attribute selector from Angular's view encapsulation,
+// which otherwise outranks a plain selector here regardless of source
+// order. (header.component.scss runs close to this project's
+// per-component style budget, so the nav-bar rules live here rather than
+// there — see docs/changes/20260811-225106-material-design-3-tokens.md.)
+@media (min-width: 1600px) {
+    body {
+        font-size: 22px;
+    }
+
+    .section-title {
+        font-size: 38px;
+
+        .n-section-title {
+            font-size: 22px;
+        }
+    }
+
+    .banner h2,
+    .banner h3,
+    .big-title {
+        font-size: 100px !important;
+    }
+
+    .on-top {
+        height: 120px !important;
+    }
+
+    .nav-shadow {
+        height: 88px !important;
+    }
+
+    .navbar-brand img {
+        width: 64px !important;
+    }
+
+    .nav-shadow .navbar-brand img {
+        width: 54px !important;
+    }
+
+    .nav-right {
+        gap: 22px !important;
+    }
+
+    .main-navbar .nav-link {
+        font-size: 15px !important;
+    }
+
+    .main-navbar .nav-number {
+        font-size: 14px !important;
+    }
+
+    .theme-toggle {
+        width: 54px !important;
+        height: 54px !important;
+        font-size: 23px !important;
+    }
+
+    .main-btn {
+        font-size: 15px;
+        padding: 1.5rem 2.25rem;
+    }
+
+    // Paired with .main-navbar .nav-link's scaling above, same ratio.
+    .footer-credits {
+        font-size: 14px !important;
+    }
+
+    .footer-right-bar a {
+        font-size: 16px !important;
+    }
+
+    .footer-left-bar i {
+        font-size: 22px !important;
+    }
+}
+
+@media (min-width: 2200px) {
+    body {
+        font-size: 24px;
+    }
+
+    .section-title {
+        font-size: 44px;
+
+        .n-section-title {
+            font-size: 24px;
+        }
+    }
+
+    .banner h2,
+    .banner h3,
+    .big-title {
+        font-size: 120px !important;
+    }
+
+    .on-top {
+        height: 140px !important;
+    }
+
+    .nav-shadow {
+        height: 100px !important;
+    }
+
+    .navbar-brand img {
+        width: 72px !important;
+    }
+
+    .nav-shadow .navbar-brand img {
+        width: 60px !important;
+    }
+
+    .nav-right {
+        gap: 26px !important;
+    }
+
+    .main-navbar .nav-link {
+        font-size: 17px !important;
+    }
+
+    .main-navbar .nav-number {
+        font-size: 16px !important;
+    }
+
+    .theme-toggle {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 26px !important;
+    }
+
+    .main-btn {
+        font-size: 17px;
+        padding: 1.75rem 2.75rem;
+    }
+
+    .footer-credits {
+        font-size: 16px !important;
+    }
+
+    .footer-right-bar a {
+        font-size: 18px !important;
+    }
+
+    .footer-left-bar i {
+        font-size: 25px !important;
     }
 }

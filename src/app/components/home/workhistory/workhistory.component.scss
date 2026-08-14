@@ -13,7 +13,14 @@
 
 .workhistory {
     .workhistory-container {
-        margin: 75px 0;
+        margin: 75px auto;
+        // The carousel/photo column is a fixed 600px and the info column is
+        // only ever 50% of *this* container (not the section), so once
+        // .container tracks the viewport instead of Bootstrap's 1320px cap
+        // (see .container in styles.scss) a wide window left this row
+        // packed to the left with a large gap on the right. 1320px matches
+        // the width these proportions were originally tuned against.
+        max-width: 1320px;
         .workhistory-info-left {
             width: 50%;
             margin-right: -57px;
@@ -32,7 +39,7 @@
             .feature-workhistory {
                 font-size: 13px;
                 font-weight: normal;
-                color: $Orange;
+                color: $Primary;
                 font-family: $CodeFont;
                 margin-top: 10px;
                 padding-top: 0;
@@ -40,22 +47,28 @@
             .workhistory-title {
                 font-size: 28px;
                 margin: 0 0 10px;
-                color: $LightestSlate;
+                color: $OnSurface;
             }
             .workhistory-subtitle {
-                color: $Orange;
+                color: $Primary;
             }
+            // M3 elevated card: surface-container fill, medium corner, and
+            // a shadow that steps up a level on hover/focus like an M3 card.
             .workhistory-description-box {
-                box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
-                -webkit-transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-                transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+                box-shadow: $Elevation1;
+                -webkit-transition: box-shadow 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+                transition: box-shadow 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
                 position: relative;
                 z-index: 2;
                 padding: 25px;
-                background-color: $LightNavy;
-                color: $LightSlate;
-                font-size: 18px;
-                border-radius: 3px;
+                background-color: $SurfaceContainer;
+                color: $OnSurfaceVariant;
+                font-size: 19px;
+                border-radius: $ShapeMedium;
+
+                &:hover, &:focus-within {
+                    box-shadow: $Elevation2;
+                }
             }
             .workhistory-skills {
                 position: relative;
@@ -74,7 +87,7 @@
                     margin-right: 0;
                     font-family: $CodeFont;
                     font-size: 13px;
-                    color: $Slate;
+                    color: $OnSurfaceVariant;
                     margin-bottom: 7px;
                     white-space: nowrap;
                     .skills{
@@ -150,9 +163,9 @@
                 z-index: 2;
                 padding: 25px;
                 background-color: transparent !important;
-                color: $LightSlate;
-                font-size: 18px;
-                border-radius: 3px;
+                color: $OnSurfaceVariant;
+                font-size: 19px;
+                border-radius: $ShapeMedium;
             }
             .workhistory-info-right,
             .workhistory-info-left {
@@ -161,7 +174,7 @@
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
-                border-radius: 3px;
+                border-radius: $ShapeMedium;
                 .workhistory-box {
                     display: block;
                 }
@@ -206,7 +219,7 @@
 .img-container {
     width: 400px;
     overflow: auto;
-    border-radius: 3px;
+    border-radius: $ShapeMedium;
 }
 
 
@@ -228,7 +241,7 @@
 /* Handle */
 
  ::-webkit-scrollbar-thumb {
-    background: $Orange;
+    background: $Primary;
     border-radius: 3px;
 }
 
@@ -236,7 +249,7 @@
 /* Handle on hover */
 
 ::-webkit-scrollbar-thumb:hover {
-    background: $Orange;
+    background: $Primary;
 }
 
 .text-left {

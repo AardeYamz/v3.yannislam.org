@@ -21,7 +21,7 @@
               "base": "dist/v3.yannislam.org"
             },
             "index": "src/index.html",
-            "polyfills": ["zone.js"],
+            "polyfills": [],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -40,6 +40,7 @@
               "src/theme.scss",
               "src/styles.scss",
               "src/aos.scss",
+              "src/link-preview.scss",
               "src/fonts.scss"
             ],
             "browser": "src/main.ts",
@@ -47,6 +48,14 @@
               "includePaths": [
                 "."
               ]
+            },
+            "server": "src/main.server.ts",
+            "outputMode": "server",
+            "security": {
+              "allowedHosts": []
+            },
+            "ssr": {
+              "entry": "src/server.ts"
             }
           },
           "configurations": {
@@ -59,8 +68,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "5kb",
-                  "maximumError": "6kb"
+                  "maximumWarning": "6kb",
+                  "maximumError": "8kb"
                 }
               ],
               "outputHashing": "all",
@@ -96,7 +105,7 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing"],
+            "polyfills": [],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
