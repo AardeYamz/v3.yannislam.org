@@ -9,7 +9,7 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
   selector: 'app-namecard',
   imports: [AosDirective],
   templateUrl: './namecard.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './namecard.component.scss'
 })
 export class NamecardComponent {

@@ -29,7 +29,7 @@
         white-space: nowrap;
         font-size: 60px;
         font-weight: 600;
-        color: $LightestSlate;
+        color: $OnSurface;
         margin: auto;
         width: fit-content;
     }
@@ -49,7 +49,7 @@
         white-space: nowrap;
         font-size: 32px;
         display: block;
-        color: $Orange;
+        color: $Primary;
         font-size: 16px;
         font-family: $CodeFont;
         font-weight: normal;
@@ -74,6 +74,30 @@
         .container {
             display: table-cell;
             vertical-align: middle;
+        }
+    }
+}
+
+@media (min-width: 1600px) {
+    .contact {
+        .contact-title {
+            font-size: 76px;
+        }
+
+        .contact-pre-title {
+            font-size: 18px;
+        }
+    }
+}
+
+@media (min-width: 2200px) {
+    .contact {
+        .contact-title {
+            font-size: 90px;
+        }
+
+        .contact-pre-title {
+            font-size: 20px;
         }
     }
 }

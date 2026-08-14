@@ -1,3 +1,5 @@
+Date: 2026-07-28 15:10:17
+
 # Logo → SVG conversion + 3-state color theme toggle
 
 ## Context
@@ -6,7 +8,7 @@ The site's logo lived only as raster PNGs (`clearcolor.png`, `black.png`,
 `white.png`, `gray.png`, `clearcolorfull.png` in
 `src/assets/images/logos/`), except for one hand-reconstructed vector,
 `logo.svg`, built for the anime.js loading-screen animation (see
-`documentation/animejs-loading-screen.md`). The goal of this change is
+`docs/changes/20260728-132036-animejs-loading-screen.md`). The goal of this change is
 two-fold:
 
 1. Replace every raster logo variant with SVG (reusing the already-solved
@@ -241,7 +243,7 @@ old breakpoint.
 ## Loading-screen intro colors
 
 The boot-time loading-screen animation inlines its own copy of the 11
-polygons (see `documentation/animejs-loading-screen.md`) rather than
+polygons (see `docs/changes/20260728-132036-animejs-loading-screen.md`) rather than
 loading a logo file, so it didn't pick up the theme at all — it always
 showed the full-color mark regardless of the selected theme. `pieceFill(
 defaultColor)` on `LoadingScreenComponent` now mirrors `ThemeService`'s
@@ -260,7 +262,7 @@ applied, with no flash of the wrong colors.
 - `src/app/services/theme/theme.service.ts` — new.
 - `src/variables.scss`, new `src/theme.scss`, `src/styles.scss` (import).
 - `src/assets/config.json` — `manifestIcon` path.
-- `documentation/animejs-loading-screen.md` — note the `logo.svg` →
+- `docs/changes/20260728-132036-animejs-loading-screen.md` — note the `logo.svg` →
   `clearcolor.svg` rename.
 - `src/app/components/home/banner/banner.component.scss` — name-text
   gradient switched to the `--name-gradient` token (see above).

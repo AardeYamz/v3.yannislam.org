@@ -21,19 +21,23 @@
         min-width: 0;
         overflow: hidden;
         cursor: pointer;
-        border-radius: 3px;
-        background-color: $LightNavy;
-        box-shadow: 0 10px 30px -15px rgba(2,12,27,0.7);
+        border-radius: $ShapeLarge;
+        background-color: $SurfaceContainer;
+        // M3 elevated card: level1 at rest, level3 while it's the
+        // hovered/expanded card in the row.
+        box-shadow: $Elevation1;
         -webkit-transition: flex-grow 0.5s cubic-bezier(0.55,0.055,0.675,0.19), box-shadow 0.25s ease;
         transition: flex-grow 0.5s cubic-bezier(0.55,0.055,0.675,0.19), box-shadow 0.25s ease;
 
+        @include md-state-layer($Primary, $ShapeLarge);
+
         &:hover, &:focus, &:focus-within {
             flex-grow: 3;
-            box-shadow: 0 20px 30px -15px rgba(2,12,27,0.7);
+            box-shadow: $Elevation3;
         }
 
         &:focus-visible {
-            outline: 2px solid $Orange;
+            outline: 2px solid $Primary;
             outline-offset: -2px;
         }
     }
@@ -74,7 +78,7 @@
 
     .namecard-description {
         font-size: 15px;
-        color: $Orange;
+        color: $Primary;
         -webkit-transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
         transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
     }

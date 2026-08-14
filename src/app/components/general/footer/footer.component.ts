@@ -10,11 +10,12 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
     animations: [
         fadeStaggerAnimation('animateFooter', 'translateY(100%)')
     ],
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
 })
 export class FooterComponent {
     socials: any;
+    mobileSocials: any;
     email: any;
     footer: any;
     currentDate = new Date();
@@ -25,6 +26,7 @@ export class FooterComponent {
     ) {
         this.socials = this.configService.contacts;
         this.email = this.socials.find((item: { name: string; }) => item?.name === "Email");
+        this.mobileSocials = this.socials.filter((item: { name: string; }) => item?.name !== "Email");
         this.footer = this.configService.footer;
     }
 }

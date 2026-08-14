@@ -5,6 +5,12 @@
   <meta charset="utf-8">
 
   <!-- Google tag (gtag.js) -->
+  <!-- Preconnect to the origins gtag.js needs: googletagmanager.com serves the
+       script itself, google-analytics.com is where it sends hit/collect
+       requests once loaded — warming up both overlaps DNS/TCP/TLS setup with
+       the rest of page load instead of starting only once the script parses. -->
+  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+  <link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
   <!-- %GOOGLE_ANALYTICS_ID% is substituted at build time by scripts/inject-env.js -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=%GOOGLE_ANALYTICS_ID%"></script>
   <script>
@@ -55,7 +61,7 @@
   <meta name="theme-color" content="#131f31">
 </head>
 
-<body class="container">
+<body>
   <app-root></app-root>
   <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>

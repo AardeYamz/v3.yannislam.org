@@ -1,4 +1,5 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestroy, Output, PLATFORM_ID, ViewChild } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
@@ -15,7 +16,7 @@ const MIN_DISPLAY_MS = 1400;
   selector: 'app-loading-screen',
   templateUrl: './loading-screen.component.html',
   styleUrls: ['./loading-screen.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
@@ -24,11 +25,36 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
 
   @Output() finished = new EventEmitter<void>();
 
+  // Deliberately the same default on the server and on every client boot
+  // (cold or hydrating a prerendered page) - see ngAfterViewInit's server
+  // branch for why that consistency matters.
   hidden = false;
 
   private breathe?: JSAnimation;
 
-  constructor(private themeService: ThemeService) { }
+  // `document` doesn't exist and animejs has nothing to animate during
+  // server-side prerendering (Node has no DOM), so the intro/outro sequence
+  // is skipped there - but unlike an earlier version of this guard, it does
+  // NOT jump `hidden` to `true`/emit `finished` to fake a "just finished"
+  // state. Doing that made the prerendered HTML's overlay already hidden,
+  // which is a *different* value than the `false` a real client naturally
+  // boots with - hydrating that mismatch made the loading screen visibly
+  // pop back up over an already-rendered page and replay the whole ~2s
+  // animation a second time. Leaving `hidden` at its plain default here
+  // means server and client always agree on the starting point, so the
+  // animation just plays once, normally, exactly like a non-SSR boot -
+  // AppComponent.headerReady is what actually keeps the header (and the
+  // rest of the page underneath this overlay) present in the prerendered
+  // HTML for SEO/crawlability, independent of this component entirely.
+  private readonly isBrowser: boolean;
+
+  constructor(
+    private themeService: ThemeService,
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) platformId: object,
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   // Matches clearcolor/black/white.svg: full color for the default theme,
   // a single flat fill for light/dark so the intro matches the header logo.
@@ -41,6 +67,14 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    if (!this.isBrowser) {
+      // No DOM/animejs on the server, so there's nothing to animate - but
+      // also nothing has actually finished yet, so `hidden` is deliberately
+      // left at its plain `false` default here (see the field's doc
+      // comment) rather than being forced to `true`/emitting `finished`.
+      return;
+    }
+
     document.body.style.overflow = 'hidden';
     this.playIntro();
 
@@ -102,7 +136,13 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
         duration: 500,
         ease: 'inOutQuad',
         onComplete: () => {
+          // `hidden` gates the template's [class.loading-screen--hidden]
+          // binding, but this callback comes from animejs's own rAF-driven
+          // timeline, not an Angular-bound event, so under OnPush the view
+          // wouldn't otherwise be marked dirty here — without markForCheck()
+          // the overlay would never actually fade/hide.
           this.hidden = true;
+          this.cdr.markForCheck();
           document.body.style.overflow = '';
           this.finished.emit();
         }

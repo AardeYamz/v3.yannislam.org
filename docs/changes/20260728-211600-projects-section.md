@@ -1,10 +1,12 @@
+Date: 2026-07-28 21:16:00
+
 # Projects Section
 
 A new "05. Projects" page was added as its own route (`/projects`) rather than a scroll-anchor section on the home page — reached only via a menu click. It lists "5.1. College Projects" directly; "5.2. High School Projects" is a separate `/projects/highschool` route, reachable only via a "View High School Projects" link at the bottom of the College Projects list (with a "← Back to Projects" link on the way back) — it isn't rendered on `/projects` and isn't in the nav.
 
 ## Data
 
-`src/assets/config.json` already had a populated `projects` key (ported from the legacy `yannislam.org` Gatsby site) that nothing consumed yet. It was reshaped to match the same `{ sectionId, navNumber, headingText, list }` envelope that `about.experiences.work` / `.volunteering` already use (see `documentation/volunteering-section.md`), plus a master-heading envelope of its own so the page reads as one "Projects" section with two subsections rather than two independent top-level sections:
+`src/assets/config.json` already had a populated `projects` key (ported from the legacy `yannislam.org` Gatsby site) that nothing consumed yet. It was reshaped to match the same `{ sectionId, navNumber, headingText, list }` envelope that `about.experiences.work` / `.volunteering` already use (see `docs/changes/20260727-214549-volunteering-section.md`), plus a master-heading envelope of its own so the page reads as one "Projects" section with two subsections rather than two independent top-level sections:
 
 ```json
 "projects": {

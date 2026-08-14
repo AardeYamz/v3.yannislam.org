@@ -1,0 +1,116 @@
+name: Security
+
+# Aikido is the triage layer over Dependabot: Dependabot opens the bump PRs,
+# Aikido decides whether an advisory is actually reachable from this app
+# before it becomes a merge blocker.
+#
+# Activation (the scan self-skips until all of this is done):
+#   1. Install the Aikido GitHub App on this repository
+#      (https://github.com/marketplace/aikido-security).
+#   2. Add the CI secret key as `AIKIDO_SECRET_KEY` under
+#      Settings → Secrets and variables → Actions.
+#   3. Add the *same* value under Settings → Secrets and variables →
+#      Dependabot. Dependabot PRs read from a separate secret store, so
+#      without this step the scan skips on exactly the PRs it exists for.
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+  push:
+    branches:
+      - main
+  schedule:
+    # Mondays, 06:30 UTC — after Dependabot's 06:00 window, so the weekly
+    # scan sees whatever it just opened.
+    - cron: '30 6 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Scoped to PRs: cancelling an in-progress push-to-main run would leave
+  # main without a green run of its own if two merges land close together.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  # `secrets` isn't available to a job-level `if:`, so the presence check has
+  # to happen inside a job and be handed forward as an output. This is what
+  # keeps forks, and a repo whose key hasn't been added yet, from failing on
+  # an empty credential rather than reporting no scan.
+  credentials:
+    name: Check Aikido credentials
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      configured: ${{ steps.probe.outputs.configured }}
+    steps:
+      - name: Probe for AIKIDO_SECRET_KEY
+        id: probe
+        env:
+          AIKIDO_SECRET_KEY: ${{ secrets.AIKIDO_SECRET_KEY }}
+        run: |
+          if [ -n "$AIKIDO_SECRET_KEY" ]; then
+            echo 'configured=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'configured=false' >> "$GITHUB_OUTPUT"
+            echo "::notice title=Aikido scan skipped::AIKIDO_SECRET_KEY is not readable for this event. See the activation notes at the top of .github/workflows/security.yml."
+          fi
+
+  aikido:
+    name: Aikido scan
+    needs: credentials
+    if: needs.credentials.outputs.configured == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Detect new vulnerabilities
+        uses: AikidoSec/github-actions-workflow@47d83dbcf3e6635044c4b31cef590c1e095217cc # v1.0.13
+        with:
+          secret-key: ${{ secrets.AIKIDO_SECRET_KEY }}
+          # A scan that never came back is an infrastructure problem, not a
+          # finding — Dependabot alerts still cover us, so don't red the PR.
+          fail-on-timeout: false
+          fail-on-dependency-scan: true
+          # SAST/IaC gating is a paid Aikido tier; leave the gates off so the
+          # job reports rather than fails if the plan doesn't cover them.
+          fail-on-sast-scan: false
+          fail-on-iac-scan: false
+          minimum-severity: 'CRITICAL'
+          timeout-seconds: 180
+          post-scan-status-comment: 'off'
+          post-sast-review-comments: 'off'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Static analysis of the workflow files themselves — template injection,
+  # credential persistence, overscoped tokens, unpinned actions, cache
+  # poisoning, impostor commits. Catches regressions in §3.1-3.4 of
+  # docs/todo/github-actions-speed-and-hardening.md automatically instead of
+  # relying on the next manual audit.
+  zizmor:
+    name: Lint workflows (zizmor)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2

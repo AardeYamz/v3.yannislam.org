@@ -8,12 +8,18 @@
         </div>
         <div class='banner-title'>
           <h2 class="text-capitalize">{{ data.banner.name }}</h2>
-          <ngx-typed-js [strings]=this.data.banner.typeSection [loop]="true" [shuffle]="true" [backSpeed]="60"
-            [typeSpeed]="60" [cursorChar]="'_'" [showCursor]="false">
-            <h3 class="typing"></h3>
-          </ngx-typed-js>
+          @if (isBrowser) {
+            <ngx-typed-js [strings]=this.data.banner.typeSection [loop]="true" [shuffle]="true" [backSpeed]="60"
+              [typeSpeed]="60" [cursorChar]="'_'" [showCursor]="false">
+              <h3 class="typing"></h3>
+            </ngx-typed-js>
+          } @else {
+            <!-- typed.js needs a real browser (getComputedStyle, etc.), so during
+                 server-side prerendering just show the first line statically. -->
+            <h3 class="typing">{{ data.banner.typeSection[0] }}</h3>
+          }
         </div>
-        <div class='banner-description'>
+        <div class='banner-description' appLinkPreviewDelegate>
           @for (text of this.data.banner.blurb; track text) {
             <p class="mt-4" [innerHTML]="text">
             </p>

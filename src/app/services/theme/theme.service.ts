@@ -1,4 +1,5 @@
-import { Injectable, computed, effect, signal } from '@angular/core';
+import { Injectable, PLATFORM_ID, computed, effect, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 export type ThemeMode = 'default' | 'light' | 'dark';
 
@@ -28,6 +29,11 @@ const ORANGE_BY_MODE: Record<ThemeMode, string> = {
 })
 export class ThemeService {
 
+  // `window`/`localStorage`/`document` don't exist during server-side
+  // prerendering (Node has no DOM), so every touch of them below is gated
+  // on this flag and falls back to a fixed default on the server.
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   private readonly modeSignal = signal<ThemeMode>(this.resolveInitialMode());
   readonly mode = this.modeSignal.asReadonly();
   readonly logoVariant = computed<'clearcolor' | 'black' | 'white'>(() => {
@@ -42,6 +48,8 @@ export class ThemeService {
   constructor() {
     effect(() => this.applyToDom(this.modeSignal()));
 
+    if (!this.isBrowser) return;
+
     // Follow the OS setting live as long as the user hasn't made an
     // explicit choice (i.e. nothing saved yet) — once they click the logo,
     // that choice is stored and wins over the system preference from then on.
@@ -54,11 +62,15 @@ export class ThemeService {
   cycle(): void {
     const nextIndex = (CYCLE_ORDER.indexOf(this.modeSignal()) + 1) % CYCLE_ORDER.length;
     const next = CYCLE_ORDER[nextIndex];
-    localStorage.setItem(STORAGE_KEY, next);
+    if (this.isBrowser) {
+      localStorage.setItem(STORAGE_KEY, next);
+    }
     this.modeSignal.set(next);
   }
 
   private resolveInitialMode(): ThemeMode {
+    if (!this.isBrowser) return 'default';
+
     const stored = localStorage.getItem(STORAGE_KEY);
     if ((CYCLE_ORDER as string[]).includes(stored ?? '')) {
       return stored as ThemeMode;
@@ -67,6 +79,8 @@ export class ThemeService {
   }
 
   private applyToDom(mode: ThemeMode): void {
+    if (!this.isBrowser) return;
+
     if (mode === 'default') {
       document.documentElement.removeAttribute('data-theme');
     } else {
