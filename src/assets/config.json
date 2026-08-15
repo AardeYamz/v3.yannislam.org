@@ -102,6 +102,12 @@
     "email": "email@yannislam.org",
     "contact": [
       {
+        "icon": "fa-envelope",
+        "name": "Email",
+        "url": "mailto:email@yannislam.org",
+        "handle": "email@yannislam.org"
+      },
+      {
         "icon": "fa-linkedin-in",
         "name": "Linkedin",
         "url": "https://linkedin.com/in/yannis-lam/",
@@ -111,12 +117,6 @@
         "icon": "fa-github",
         "name": "Github",
         "url": "https://github.com/AardeYamz"
-      },
-      {
-        "icon": "fa-envelope",
-        "name": "Email",
-        "url": "mailto:email@yannislam.org",
-        "handle": "email@yannislam.org"
       },
       {
         "icon": "fa-tiktok",
