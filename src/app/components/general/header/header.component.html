@@ -5,9 +5,9 @@
         [style.transform]="'rotate(' + logoRotationDeg + 'deg)'" />
     </a>
     <div class="nav-right">
-      <ul class="menu-ul">
+      <ul class="menu-ul nav">
         @for (menuItem of menu ; track menuItem; let i = $index) {
-          <li (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
+          <li class="nav-item" (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
             <a class="nav-link" (click)='navigate(menuItem)'
               [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
               @if (menuItem?.navNumber) {

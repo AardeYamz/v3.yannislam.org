@@ -105,9 +105,9 @@ list pattern the mobile drawer already uses — real navigation with no
 panel to control, so no tab/tabpanel ARIA role applies:
 
 ```html
-<ul class="menu-ul">
+<ul class="menu-ul nav">
   @for (menuItem of menu ; track menuItem; let i = $index) {
-    <li (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
+    <li class="nav-item" (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
       <a class="nav-link" (click)='navigate(menuItem)'
         [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
         @if (menuItem?.navNumber) {
@@ -120,15 +120,57 @@ panel to control, so no tab/tabpanel ARIA role applies:
 </ul>
 ```
 
-`class="nav-link"` is added explicitly since it was previously supplied
-implicitly by `ngbNavLink`'s host binding
-(`classAttribute: "nav-link"`) — `header.component.scss` styles off
-that class name, so this keeps the existing visual appearance
-unchanged. `[class.nav-link-active]` (the component's own, correct
-active-state mechanism) is untouched. `NgbNavModule` stays imported —
-`education.component.html` still uses `ngbNav` correctly there, with
-both `[ngbNavOutlet]="nav"` and `[(activeId)]="active"` present, so its
-`aria-controls` genuinely resolves to a rendered panel.
+`ngbNav`/`ngbNavItem`/`ngbNavLink` each implicitly added a Bootstrap
+class via a host binding — `classAttribute: "nav"`, `"nav-item"`, and
+`"nav-link"` respectively (same `nav.mjs` source as above). All three
+are added back explicitly here since removing the directives would
+otherwise remove the CSS classes along with them, not just the ARIA
+attributes. This isn't just cosmetic: `header.component.scss` has
+
+```scss
+@media (max-width: 1050px) {
+    nav .nav {
+        display: none;
+    }
+    ...
+}
+```
+
+which hides the desktop nav below the hamburger breakpoint by
+targeting Bootstrap's `.nav` class specifically — not `.menu-ul`. A
+first pass at this fix dropped `ngbNav` without restoring `.nav`, which
+silently broke two things at once, caught by this PR's own CI run
+(`e2e (1)` and `e2e (2)` both failed — see "CI caught a regression"
+below) rather than by hand: the nav lost the `.nav` class's flex
+layout (Bootstrap's base rule, since `.menu-ul`'s own rule only adds
+`align-items: center` on top of it, not a full layout) and, on mobile,
+stayed visible instead of yielding to the hamburger drawer, since `nav
+.nav` no longer matched anything. `[class.nav-link-active]` (the
+component's own, correct active-state mechanism) is untouched
+throughout. `NgbNavModule` stays imported — `education.component.html`
+still uses `ngbNav` correctly there, with both `[ngbNavOutlet]="nav"`
+and `[(activeId)]="active"` present, so its `aria-controls` genuinely
+resolves to a rendered panel.
+
+### CI caught a regression
+
+The first commit on this PR (`ngbNav` removed, ARIA fixed, but without
+restoring `.nav`/`.nav-item`) passed every local check available at the
+time — build, `tsc`, the axe scan, even a from-scratch `lhci autorun` —
+because none of those exercise cross-viewport layout or full-page click
+interactions. `build-test.yml`'s `e2e` jobs did, and both failed:
+
+- `e2e/responsive.spec.ts:23` — `.nav-right ul.menu-ul` expected
+  `toBeHidden()` at mobile width, found visible. Direct fallout of `nav
+  .nav` no longer matching.
+- `e2e/navigation.spec.ts:59` — clicking "← Back to Projects" timed
+  out: `<div class="container"> from <app-header> subtree intercepts
+  pointer events`. The desktop `.container`, no longer flex-laid-out by
+  `.nav`, grew and started overlapping page content below the header,
+  eating clicks meant for the page.
+
+Both traced to the same missing classes and were fixed by the class
+restoration above, then re-verified — see Verification below.
 
 ## Verification
 
@@ -167,12 +209,33 @@ end-to-end, rather than reasoning about the fix without executing it.
   regression. Re-ran `lhci autorun` after the promotion: still exit
   code 0, confirming the assertion actually passes at the stricter
   level rather than just not being checked.
+- After CI caught the layout regression (above) and it was fixed by
+  restoring the `.nav`/`.nav-item` classes, re-verified all of the
+  above still holds — the axe scan (7 scenarios, 0 violations) and
+  `lhci autorun` (exit 0) were both re-run against the corrected
+  build, not just the first pass.
+- Ran the actual e2e suite the failing CI jobs ran
+  (`e2e/navigation.spec.ts` + `e2e/responsive.spec.ts`, chromium +
+  mobile projects, against the corrected build via `http-server` —
+  same as CI's `webServer` config): 25 passed, 0 failed, where the
+  same run had 2 real failures (not flakes) against the first-pass fix.
+  (This sandbox has no network path to `cdn.playwright.dev` for the
+  pinned browser revision, so `playwright.config.ts` was pointed at
+  the pre-installed Chromium via `launchOptions.executablePath` for
+  this run only, then reverted — not part of the committed diff.)
+- Screenshotted the header at 1280px and 390px widths against the
+  corrected build to confirm the restored classes produce the same
+  layout as before this PR: desktop shows the horizontal nav row
+  (numbered items + theme toggle), mobile shows just the theme toggle
+  and hamburger with the desktop links hidden.
 
 ## Files touched
 
 - `src/app/components/general/header/header.component.html` — desktop
-  nav: `ngbNav`/`ngbNavItem`/`ngbNavLink`/`ngbNavContent` removed,
-  replaced with the plain link-list pattern already used by the mobile
-  drawer nav in the same file.
+  nav: `ngbNav`/`ngbNavItem`/`ngbNavLink`/`ngbNavContent` removed
+  (drops the invalid ARIA), `nav`/`nav-item`/`nav-link` Bootstrap
+  classes added back explicitly (keeps the existing layout/CSS
+  working) — replaced with the plain link-list pattern already used by
+  the mobile drawer nav in the same file.
 - `lighthouserc.js` — `aria-valid-attr-value` promoted from `warn` to
   `error`, with a comment explaining the fix and pointing here.
