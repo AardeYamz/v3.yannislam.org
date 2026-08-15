@@ -377,6 +377,22 @@
     }
 }
 
+// The global `.container` rule (styles.scss) reserves 110px per side from
+// 768px up so sections don't sit under footer-left-bar/right-bar, which are
+// fixed to the viewport's bottom corners. Nav is fixed to the *top*, so it
+// never shares space with those bars — except in this band, where the
+// hamburger toggle shows in place of the desktop nav links (see the
+// max-width: 1050px rule above) and inherited the reservation anyway,
+// stranding it ~110px from the edge instead of hugging it like it does
+// below 768px. Only this band needs the override: below 768px the
+// unreserved base rule already applies, and at 1050px+ the real nav links
+// return and should stay aligned with the reserved section content below.
+@media (min-width: 768px) and (max-width: 1050px) {
+    .container {
+        max-width: min(94vw, 1800px) !important;
+    }
+}
+
 @media (min-width: 1050px) {
 
     .menu-toggle,
