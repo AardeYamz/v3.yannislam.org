@@ -160,7 +160,6 @@ footer {
     .footer-bottom-contact {
         align-items: center;
         justify-content: center;
-        gap: 24px;
         overflow: hidden;
         max-height: 0;
         margin-top: 0;
@@ -178,21 +177,12 @@ footer {
             transform: translateY(0);
         }
 
-        .footer-bottom-email {
-            font-family: $CodeFont;
-            font-size: 12px;
-            letter-spacing: 0.1em;
-            color: $LightSlate;
-            text-decoration: none;
-
-            &:hover,
-            &:focus {
-                color: $Primary;
-            }
-        }
-
+        // The mail link lives in this same list as the social icons (see
+        // footer.component.html) so the collapsed row reads as one uniform
+        // strip of icons rather than text-plus-icons.
         .footer-bottom-socials {
             display: flex;
+            align-items: center;
             gap: 24px;
             padding: 0;
             margin: 0;
@@ -208,6 +198,41 @@ footer {
                 &:hover,
                 &:focus {
                     color: $Primary;
+                }
+            }
+        }
+
+        // At rest the mail icon looks identical to the social icons beside
+        // it; hovering/focusing it expands a label with the full address
+        // instead of permanently spending width on text the way the
+        // mobile-only .footer-mobile-email link does.
+        .footer-bottom-email {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+
+            .footer-bottom-email-text {
+                display: inline-block;
+                max-width: 0;
+                margin-left: 0;
+                overflow: hidden;
+                white-space: nowrap;
+                opacity: 0;
+                font-family: $CodeFont;
+                font-size: 12px;
+                letter-spacing: 0.1em;
+                color: $LightSlate;
+                transition: max-width 0.35s cubic-bezier(0.645, 0.045, 0.355, 1),
+                    margin-left 0.35s cubic-bezier(0.645, 0.045, 0.355, 1),
+                    opacity 0.25s ease;
+            }
+
+            &:hover,
+            &:focus {
+                .footer-bottom-email-text {
+                    max-width: 220px;
+                    margin-left: 8px;
+                    opacity: 1;
                 }
             }
         }
