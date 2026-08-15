@@ -109,7 +109,17 @@ module.exports = {
         'link-name': 'warn',
         'color-contrast': 'warn',
         'heading-order': 'warn',
-        'aria-valid-attr-value': 'warn',
+
+        // Fixed: header.component.html's desktop nav used ngbNav purely for
+        // its `.active`/`.nav-link` styling, with no [ngbNavOutlet] panel
+        // and no [(activeId)] binding. ngbNavLink still emitted
+        // role="tab"/aria-selected/aria-controls regardless, and
+        // aria-controls pointed at a "#ngb-nav-0-panel" that was never
+        // rendered anywhere — an invalid ID reference, and also a
+        // meaningless "active tab" on whichever menu item happened to be
+        // first. See docs/changes/ for the write-up. Promoted to 'error' to
+        // gate against this regressing.
+        'aria-valid-attr-value': 'error',
 
         // ---------------------------------------------------- timing-derived
         // Machine-dependent. Left as warnings until a baseline has been
