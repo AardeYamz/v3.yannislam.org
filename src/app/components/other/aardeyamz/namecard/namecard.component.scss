@@ -100,9 +100,6 @@
         padding: 0 0 0 1.1em;
         margin: 20px 0 0 0;
         list-style-type: disc;
-        opacity: 0;
-        -webkit-transition: opacity 0.4s ease;
-        transition: opacity 0.4s ease;
 
         li {
             font-size: 12px;
@@ -115,12 +112,6 @@
                 color: $White;
             }
         }
-    }
-
-    .namecard-item:hover .namecard-skills,
-    .namecard-item:focus .namecard-skills,
-    .namecard-item:focus-within .namecard-skills {
-        opacity: 1;
     }
 }
 
