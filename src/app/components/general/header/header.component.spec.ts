@@ -70,6 +70,33 @@ describe('HeaderComponent', () => {
     });
   });
 
+  describe('onBackdropClick()', () => {
+    it('closes the mobile menu when the click lands directly on the overlay', () => {
+      component.responsiveMenuVisible = true;
+      const overlay = document.createElement('div');
+      const event = new MouseEvent('click');
+      Object.defineProperty(event, 'target', { value: overlay });
+      Object.defineProperty(event, 'currentTarget', { value: overlay });
+
+      component.onBackdropClick(event);
+
+      expect(component.responsiveMenuVisible).toBeFalse();
+    });
+
+    it('leaves the menu open when the click bubbled up from inside the drawer', () => {
+      component.responsiveMenuVisible = true;
+      const overlay = document.createElement('div');
+      const drawerLink = document.createElement('a');
+      const event = new MouseEvent('click');
+      Object.defineProperty(event, 'target', { value: drawerLink });
+      Object.defineProperty(event, 'currentTarget', { value: overlay });
+
+      component.onBackdropClick(event);
+
+      expect(component.responsiveMenuVisible).toBeTrue();
+    });
+  });
+
   it('toggleTheme() cycles the theme and logs the resulting mode as an analytics event', () => {
     component.toggleTheme();
 
