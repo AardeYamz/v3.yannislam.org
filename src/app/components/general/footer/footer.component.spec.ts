@@ -63,4 +63,61 @@ describe('FooterComponent', () => {
     expect(component.currentDate).toBeDefined();
     expect(component.currentDate.getFullYear()).toBe(new Date().getFullYear());
   });
+
+  describe('checkScrollPosition() / atBottom', () => {
+    // atBottom reads live window/document geometry, so pin those rather
+    // than relying on whatever size the Karma test page happens to be.
+    // Spies are created once per test and their return values updated on
+    // reuse, since Jasmine disallows spying on the same property twice.
+    let scrollYSpy: jasmine.Spy;
+    let innerHeightSpy: jasmine.Spy;
+    let scrollHeightSpy: jasmine.Spy;
+
+    beforeEach(() => {
+      scrollYSpy = spyOnProperty(window, 'scrollY', 'get').and.returnValue(0);
+      innerHeightSpy = spyOnProperty(window, 'innerHeight', 'get').and.returnValue(0);
+      scrollHeightSpy = spyOnProperty(document.documentElement, 'scrollHeight', 'get').and.returnValue(0);
+    });
+
+    function mockScrollPosition(scrollY: number, innerHeight: number, scrollHeight: number): void {
+      scrollYSpy.and.returnValue(scrollY);
+      innerHeightSpy.and.returnValue(innerHeight);
+      scrollHeightSpy.and.returnValue(scrollHeight);
+    }
+
+    it('is false while there is more of the page left to scroll', () => {
+      mockScrollPosition(0, 800, 3000);
+
+      component.checkScrollPosition();
+
+      expect(component.atBottom()).toBeFalse();
+    });
+
+    it('becomes true once the viewport reaches the bottom of the page', () => {
+      mockScrollPosition(2200, 800, 3000);
+
+      component.checkScrollPosition();
+
+      expect(component.atBottom()).toBeTrue();
+    });
+
+    it('counts landing within the bottom threshold as being at the bottom', () => {
+      mockScrollPosition(2197, 800, 3000);
+
+      component.checkScrollPosition();
+
+      expect(component.atBottom()).toBeTrue();
+    });
+
+    it('flips back to false after scrolling back up from the bottom', () => {
+      mockScrollPosition(2200, 800, 3000);
+      component.checkScrollPosition();
+      expect(component.atBottom()).toBeTrue();
+
+      mockScrollPosition(1000, 800, 3000);
+      component.checkScrollPosition();
+
+      expect(component.atBottom()).toBeFalse();
+    });
+  });
 });
