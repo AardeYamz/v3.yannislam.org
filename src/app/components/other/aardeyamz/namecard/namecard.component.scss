@@ -125,13 +125,21 @@
     }
 }
 
-// Below tablet width there isn't enough room to keep every sub-box
-// side-by-side, so the accordion turns on its side and stacks vertically.
+// Below this width there isn't enough room for the horizontal row's
+// hover-grow to have any real breathing room — even with the min-width
+// floor and gentler growth above, 3 columns plus gaps barely fit at rest,
+// so hovering had nowhere to redistribute space from and the "collapsed"
+// siblings stayed pinned at their floor, cramped, no matter what. Matches
+// the header's own 1050px breakpoint (header.component.scss) rather than
+// the old 767px, so the accordion switches to a stacked layout at the same
+// width the header switches to its compact one, instead of sitting in a
+// no-man's-land where the header's already compact but the row still is.
+//
 // Unlike the desktop row, which grows the hovered box via flex-grow within
 // a shared height budget, each box here sizes to its own content instead
 // of splitting a fixed container height three ways — a fixed height
 // clipped the description list before this changed to height: auto below.
-@media(max-width: 767px){
+@media(max-width: 1050px){
     .namecard{
         .namecard-accordion {
             flex-direction: column;
@@ -162,14 +170,31 @@
         // tabindex="0" and cursor: pointer for desktop's hover-expand)
         // reveals the rest, growing the tile's own height since it's
         // height: auto above rather than clipping.
+        //
+        // max-height (not display: none) so the reveal can transition
+        // smoothly instead of popping straight to full height — display
+        // can't be animated at all, and height: auto isn't a transitionable
+        // value either. 200px is a ceiling well above any real point's
+        // wrapped height at mobile widths, not a real cap; transitioning
+        // toward an oversized ceiling like this reaches the content's
+        // actual height quickly and then just stops early rather than
+        // visibly overshooting, since nothing constrains it from growing
+        // past its own content size.
         .namecard-skills li:nth-child(n+3) {
-            display: none;
+            max-height: 0;
+            margin-bottom: 0;
+            opacity: 0;
+            overflow: hidden;
+            -webkit-transition: max-height 0.4s ease, margin-bottom 0.4s ease, opacity 0.3s ease;
+            transition: max-height 0.4s ease, margin-bottom 0.4s ease, opacity 0.3s ease;
         }
 
         .namecard-item:hover .namecard-skills li:nth-child(n+3),
         .namecard-item:focus .namecard-skills li:nth-child(n+3),
         .namecard-item:focus-within .namecard-skills li:nth-child(n+3) {
-            display: list-item;
+            max-height: 200px;
+            margin-bottom: 8px;
+            opacity: 1;
         }
     }
 }
