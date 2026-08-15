@@ -3,7 +3,7 @@
     <ul class="footer-left-bar d-none d-md-block">
       @for (social of socials ; track social; let i = $index) {
         <li>
-          <a href={{social.url}} target='_blank'
+          <a href={{social.url}} target='_blank' rel="noopener noreferrer"
             [appLinkPreview]="{ icon: socialIconClass(social), title: social.name, url: social.url }">
             <i [class]="socialIconClass(social)"></i>
           </a>
@@ -11,16 +11,16 @@
       }
     </ul>
     <div class="footer-right-bar d-none d-md-block">
-      <a href={{email.url}} target='_blank'>{{email.handle}}</a>
+      <a href={{email.url}} target='_blank' rel="noopener noreferrer">{{email.handle}}</a>
     </div>
   </div>
 
   <div class="footer-mobile-contact d-md-none">
-    <a class="footer-mobile-email" href={{email.url}} target='_blank'>{{email.handle}}</a>
+    <a class="footer-mobile-email" href={{email.url}} target='_blank' rel="noopener noreferrer">{{email.handle}}</a>
     <ul class="footer-mobile-socials">
       @for (social of mobileSocials ; track social; let i = $index) {
         <li>
-          <a href={{social.url}} target='_blank'
+          <a href={{social.url}} target='_blank' rel="noopener noreferrer"
             [appLinkPreview]="{ icon: 'fab ' + social.icon, title: social.name, url: social.url }">
             <i class="fab {{social.icon}}"></i>
           </a>
@@ -33,14 +33,14 @@
     [attr.inert]="atBottom() ? null : ''">
     <ul class="footer-bottom-socials">
       <li>
-        <a class="footer-bottom-email" href={{email.url}} target='_blank' [attr.aria-label]="'Email ' + email.handle">
+        <a class="footer-bottom-email" href={{email.url}} target='_blank' rel="noopener noreferrer" [attr.aria-label]="'Email ' + email.handle">
           <i class="fas {{email.icon}}"></i>
           <span class="footer-bottom-email-text">{{email.handle}}</span>
         </a>
       </li>
       @for (social of mobileSocials ; track social; let i = $index) {
         <li>
-          <a href={{social.url}} target='_blank'
+          <a href={{social.url}} target='_blank' rel="noopener noreferrer"
             [appLinkPreview]="{ icon: 'fab ' + social.icon, title: social.name, url: social.url }">
             <i class="fab {{social.icon}}"></i>
           </a>
