@@ -180,21 +180,46 @@
         // actual height quickly and then just stops early rather than
         // visibly overshooting, since nothing constrains it from growing
         // past its own content size.
+        //
+        // The max-height/overflow live on an inner <span> rather than the
+        // <li> itself: Chromium drops a list item's ::marker (the bullet)
+        // entirely once overflow: hidden lands directly on the <li>, so
+        // clipping there silently loses the bullet for every revealed
+        // point. margin-bottom stays on the <li> since it's what closes
+        // the vertical gap and isn't clipped either way.
+        //
+        // list-style: none while collapsed for the same reason in reverse —
+        // an outside marker isn't inside the span's own box, so it isn't
+        // touched by the span's overflow: hidden and stays painted even
+        // while the span it's labelling has no visible text, leaving a
+        // bullet with nothing next to it. Toggling list-style alongside
+        // the span keeps a collapsed point fully invisible, marker and all.
         .namecard-skills li:nth-child(n+3) {
-            max-height: 0;
             margin-bottom: 0;
-            opacity: 0;
-            overflow: hidden;
-            -webkit-transition: max-height 0.4s ease, margin-bottom 0.4s ease, opacity 0.3s ease;
-            transition: max-height 0.4s ease, margin-bottom 0.4s ease, opacity 0.3s ease;
+            list-style: none;
+            -webkit-transition: margin-bottom 0.4s ease;
+            transition: margin-bottom 0.4s ease;
+
+            > span {
+                display: block;
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                -webkit-transition: max-height 0.4s ease, opacity 0.3s ease;
+                transition: max-height 0.4s ease, opacity 0.3s ease;
+            }
         }
 
         .namecard-item:hover .namecard-skills li:nth-child(n+3),
         .namecard-item:focus .namecard-skills li:nth-child(n+3),
         .namecard-item:focus-within .namecard-skills li:nth-child(n+3) {
-            max-height: 200px;
             margin-bottom: 8px;
-            opacity: 1;
+            list-style: disc;
+
+            > span {
+                max-height: 200px;
+                opacity: 1;
+            }
         }
     }
 }
