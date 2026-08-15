@@ -87,6 +87,10 @@ footer {
 
         a {
             position: relative;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
             font-family: $CodeFont;
             font-size: 14px;
             -webkit-letter-spacing: 0.1em;
@@ -101,6 +105,14 @@ footer {
             color: $OnSurfaceVariant;
 
             @include md-state-layer($Primary, $ShapeSmall);
+
+            // The icon is flex-laid-out content, not a character in the
+            // vertical-rl text run, so it doesn't inherit the rotation
+            // that makes the email address itself read sideways below it —
+            // it stays upright without needing an explicit counter-rotate.
+            i {
+                font-size: 16px;
+            }
 
             &:hover,
             &:focus {
