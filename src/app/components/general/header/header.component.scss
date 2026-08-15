@@ -116,16 +116,26 @@
                     font-size: 18px;
                     margin: 0px auto 10px;
 
+                    // Was display: block + margin-bottom, stacking the
+                    // number on its own line above the label with a visible
+                    // gap between them — this pairs it inline instead,
+                    // matching how the desktop nav pill sets .nav-number
+                    // beside .nav-text (see the .nav-link rule below).
                     span {
-                        display: block;
                         color: $Primary;
-                        font-size: 15px;
-                        margin-bottom: 5px;
+                        font-size: 16px;
                         transition: color 0.2s ease;
                     }
 
                     a {
-                        display: inline-block;
+                        display: inline-flex;
+                        align-items: center;
+                        // Left-aligned by request: flex's own layout
+                        // doesn't inherit the drawer nav's text-align:
+                        // center the way the old stacked/inline content
+                        // did, so this stays flex-start (the default)
+                        // rather than adding justify-content: center.
+                        gap: 8px;
                         text-decoration-skip-ink: auto;
                         color: inherit;
                         position: relative;
