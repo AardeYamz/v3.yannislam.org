@@ -18,7 +18,14 @@
     .namecard-item {
         position: relative;
         flex: 1 1 0;
-        min-width: 0;
+        // A real floor rather than 0: at flex-grow: 3 on the hovered card,
+        // the other two split what's left at flex-grow: 1 each — plenty of
+        // room most of the time, but with min-width: 0 there was nothing
+        // stopping them from being squeezed well past comfortable if the
+        // row itself is narrow, wrapping their text tightly against the
+        // padding. This caps how far a collapsed sibling can shrink so its
+        // text always keeps some breathing room.
+        min-width: 190px;
         overflow: hidden;
         cursor: pointer;
         border-radius: $ShapeLarge;
@@ -31,8 +38,11 @@
 
         @include md-state-layer($Primary, $ShapeLarge);
 
+        // Was flex-grow: 3 — with only two siblings splitting the leftover
+        // space, that grew the hovered card enough to crowd both of them
+        // against their new min-width floor above instead of just one.
         &:hover, &:focus, &:focus-within {
-            flex-grow: 3;
+            flex-grow: 2;
             box-shadow: $Elevation3;
         }
 
@@ -117,11 +127,10 @@
 
 // Below tablet width there isn't enough room to keep every sub-box
 // side-by-side, so the accordion turns on its side and stacks vertically.
-// Content is always visible (no opacity/hover reveal), so — unlike the
-// desktop row, which grows the hovered box via flex-grow within a shared
-// height budget — each box here just sizes to its own content instead of
-// splitting a fixed container height three ways; a fixed height clipped
-// the description list before this changed to overflow: visible below.
+// Unlike the desktop row, which grows the hovered box via flex-grow within
+// a shared height budget, each box here sizes to its own content instead
+// of splitting a fixed container height three ways — a fixed height
+// clipped the description list before this changed to height: auto below.
 @media(max-width: 767px){
     .namecard{
         .namecard-accordion {
@@ -144,6 +153,23 @@
             min-width: unset;
             width: 100%;
             height: auto;
+        }
+
+        // Collapsed by default to only the first 2 points — showing every
+        // point for all 3 cards at once (mobile has no hover to reveal
+        // them on demand like desktop does) left little room for the tiles
+        // to visually expand into. Tapping/focusing the tile (it's already
+        // tabindex="0" and cursor: pointer for desktop's hover-expand)
+        // reveals the rest, growing the tile's own height since it's
+        // height: auto above rather than clipping.
+        .namecard-skills li:nth-child(n+3) {
+            display: none;
+        }
+
+        .namecard-item:hover .namecard-skills li:nth-child(n+3),
+        .namecard-item:focus .namecard-skills li:nth-child(n+3),
+        .namecard-item:focus-within .namecard-skills li:nth-child(n+3) {
+            display: list-item;
         }
     }
 }
