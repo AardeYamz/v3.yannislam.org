@@ -116,28 +116,34 @@
 }
 
 // Below tablet width there isn't enough room to keep every sub-box
-// side-by-side and still show a collapsed sibling's title, so the
-// accordion turns on its side: boxes stack vertically and grow in
-// height instead of width on hover/focus.
+// side-by-side, so the accordion turns on its side and stacks vertically.
+// Content is always visible (no opacity/hover reveal), so — unlike the
+// desktop row, which grows the hovered box via flex-grow within a shared
+// height budget — each box here just sizes to its own content instead of
+// splitting a fixed container height three ways; a fixed height clipped
+// the description list before this changed to overflow: visible below.
 @media(max-width: 767px){
     .namecard{
         .namecard-accordion {
             flex-direction: column;
-            // flex-grow only has room to redistribute if the container
-            // itself has a fixed height for the items to grow within —
-            // without this the column shrinks to fit its collapsed
-            // items and hover has nowhere to expand into.
-            height: 420px;
-            min-height: 420px;
+            height: auto;
+            min-height: 0;
         }
 
         .namecard-item {
-            min-height: 70px;
+            flex: none;
+            min-height: 0;
+            overflow: visible;
+
+            &:hover, &:focus, &:focus-within {
+                flex-grow: 0;
+            }
         }
 
         .namecard-item-inner {
             min-width: unset;
             width: 100%;
+            height: auto;
         }
     }
 }
