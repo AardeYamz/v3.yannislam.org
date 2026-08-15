@@ -116,16 +116,26 @@
                     font-size: 18px;
                     margin: 0px auto 10px;
 
+                    // Was display: block + margin-bottom, stacking the
+                    // number on its own line above the label with a visible
+                    // gap between them — this pairs it inline instead,
+                    // matching how the desktop nav pill sets .nav-number
+                    // beside .nav-text (see the .nav-link rule below).
                     span {
-                        display: block;
                         color: $Primary;
-                        font-size: 15px;
-                        margin-bottom: 5px;
+                        font-size: 16px;
                         transition: color 0.2s ease;
                     }
 
                     a {
-                        display: inline-block;
+                        display: inline-flex;
+                        align-items: center;
+                        // Left-aligned by request: flex's own layout
+                        // doesn't inherit the drawer nav's text-align:
+                        // center the way the old stacked/inline content
+                        // did, so this stays flex-start (the default)
+                        // rather than adding justify-content: center.
+                        gap: 8px;
                         text-decoration-skip-ink: auto;
                         color: inherit;
                         position: relative;
@@ -374,6 +384,22 @@
     // viewport edge with no breathing room at all below this width.
     .on-top {
         padding: 0 20px;
+    }
+}
+
+// The global `.container` rule (styles.scss) reserves 110px per side from
+// 768px up so sections don't sit under footer-left-bar/right-bar, which are
+// fixed to the viewport's bottom corners. Nav is fixed to the *top*, so it
+// never shares space with those bars — except in this band, where the
+// hamburger toggle shows in place of the desktop nav links (see the
+// max-width: 1050px rule above) and inherited the reservation anyway,
+// stranding it ~110px from the edge instead of hugging it like it does
+// below 768px. Only this band needs the override: below 768px the
+// unreserved base rule already applies, and at 1050px+ the real nav links
+// return and should stay aligned with the reserved section content below.
+@media (min-width: 768px) and (max-width: 1050px) {
+    .container {
+        max-width: min(94vw, 1800px) !important;
     }
 }
 

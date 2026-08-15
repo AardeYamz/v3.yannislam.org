@@ -19,6 +19,8 @@ updates:
       day: monday
       time: "06:00"
       timezone: Etc/UTC
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 5
     labels:
       - dependencies
@@ -109,6 +111,8 @@ updates:
       day: monday
       time: "06:00"
       timezone: Etc/UTC
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 3
     labels:
       - dependencies
