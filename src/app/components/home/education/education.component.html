@@ -24,7 +24,7 @@
                 @if (exp?.link) {
                   <div class="education-link">
                     @for (link of exp?.link; track link) {
-                      <a href="{{link}}" target="_blank">
+                      <a href="{{link}}" target="_blank" rel="noopener noreferrer">
                         <i class="ml-3"></i> &nbsp;
                         {{link}}
                       </a>
