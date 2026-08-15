@@ -14,14 +14,6 @@
     -webkit-backdrop-filter: blur(10px);
 }
 
-// Shared by the desktop nav pill and the mobile drawer's link, both of
-// which mark the section currently scrolled into view (activeSection in
-// header.component.ts) the same way: a filled tonal-container pill.
-%nav-active-pill {
-    background-color: $SecondaryContainer;
-    color: $OnSecondaryContainer;
-}
-
 .main-navbar {
     height: 70px;
     background: $Surface;
@@ -148,10 +140,9 @@
 
                         @include md-state-layer($OnSurface, $ShapeSmall);
 
-                        // Per request: the mobile drawer's selected item
-                        // reads as inverted text instead of the filled
-                        // tonal pill the desktop nav-link below still uses
-                        // (%nav-active-pill) — no fill, and the number/label
+                        // Per request: the selected item reads as inverted
+                        // text rather than a filled pill — same treatment
+                        // as the desktop .nav-link below. The number/label
                         // colors swap relative to their inactive roles
                         // (number normally orange, label normally neutral):
                         // here the label goes orange and the number goes
@@ -169,11 +160,12 @@
         }
     }
 
-    // M3 navigation pill: a rounded state layer for hover/focus/press, and
-    // a filled tonal-container background once the corresponding section
-    // is scrolled into view (see activeSection in header.component.ts) —
-    // replaces the old underlined-text treatment, which had no way to show
-    // an "active" state at all.
+    // M3 navigation pill: a rounded state layer for hover/focus/press.
+    // The active state (the section currently scrolled into view — see
+    // activeSection in header.component.ts) inverts the number/label
+    // colors from their default roles instead of filling in a pill:
+    // the label goes orange and the number goes to a muted gray, matching
+    // the mobile drawer's .nav-link-active treatment above.
     .nav-link {
         position: relative;
         display: inline-flex;
@@ -194,10 +186,10 @@
         }
 
         &.nav-link-active {
-            @extend %nav-active-pill;
+            color: $Primary;
 
             .nav-number {
-                color: $OnSecondaryContainer;
+                color: $OnSurfaceVariant;
             }
         }
     }
