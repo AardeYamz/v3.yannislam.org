@@ -130,7 +130,11 @@
                     a {
                         display: inline-flex;
                         align-items: center;
-                        justify-content: center;
+                        // Left-aligned by request: flex's own layout
+                        // doesn't inherit the drawer nav's text-align:
+                        // center the way the old stacked/inline content
+                        // did, so this stays flex-start (the default)
+                        // rather than adding justify-content: center.
                         gap: 8px;
                         text-decoration-skip-ink: auto;
                         color: inherit;
