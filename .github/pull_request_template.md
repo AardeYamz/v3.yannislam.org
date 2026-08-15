@@ -13,10 +13,26 @@
 ## Screenshots
 
 <!--
-  Required for any visual/UI change (layout, styling, animation, responsive behavior).
-  Before/after screenshots or a short screen recording. Delete this section for
-  non-visual changes (config, docs, dependency bumps, etc.).
+  Optional, but appreciated for any visual/UI change (layout, styling,
+  animation, responsive behavior) — before/after screenshots or a short
+  screen recording make review a lot faster. Delete this section if it
+  doesn't apply.
 -->
+
+## Docs
+
+<!--
+  If this change affects build/test commands, architecture, or anything
+  else CLAUDE.md or README.md documents, update those files as part of
+  this PR — don't let them drift. For a change substantial enough to
+  deserve a longer write-up, add one under docs/changes/ following the
+  naming convention in CLAUDE.md (YYYYMMDD-HHMMSS-kebab-case-title.md,
+  with a matching `Date:` header) and link it below. Delete this section
+  if neither applies.
+-->
+
+- [ ] Updated CLAUDE.md / README.md, if this changes build/test commands, architecture, or conventions
+- [ ] Added a docs/changes/ write-up, if this is substantial enough to warrant one
 
 ## Test plan
 
@@ -31,6 +47,17 @@
 - [ ] Manually exercised the change in a browser (`npm start`), including the golden path and relevant edge cases
 - [ ] Checked both light and dark theme, if the change touches UI
 - [ ] Checked mobile/responsive layout, if the change touches UI
+- [ ] Added or updated tests to cover this change, if applicable
+
+## Merge notes
+
+<!--
+  Only if this PR merged in another branch (e.g. catching up with main) and
+  had to resolve conflicts: what conflicted, how it was resolved, and how
+  you verified the resolution didn't silently drop or duplicate either
+  side's changes (e.g. a hand-diff against both parents, not just "it
+  compiled"). Delete this section if there was nothing to merge.
+-->
 
 ## Notes for reviewers
 
