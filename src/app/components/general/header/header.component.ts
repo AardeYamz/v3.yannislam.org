@@ -157,6 +157,17 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.responsiveMenuVisible = false;
   }
 
+  // .menu-responsive is a full-viewport overlay with the drawer <aside>
+  // docked to its right edge — clicking anywhere in the remaining space is
+  // a click on the overlay itself, not on anything nested inside it, so
+  // target === currentTarget is enough to tell "outside the drawer" apart
+  // from a click that bubbled up from a link/button within it.
+  onBackdropClick(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      this.responsiveMenuVisible = false;
+    }
+  }
+
   navigate(menuItem: any) {
     if (menuItem?.scrollSection) {
       this.scroll(menuItem.scrollSection);
