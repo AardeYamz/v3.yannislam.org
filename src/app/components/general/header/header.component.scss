@@ -140,14 +140,18 @@
 
                         @include md-state-layer($OnSurface, $ShapeSmall);
 
-                        // Per request: the selected item reads as inverted
-                        // text rather than a filled pill — same treatment
-                        // as the desktop .nav-link below. The number/label
-                        // colors swap relative to their inactive roles
-                        // (number normally orange, label normally neutral):
-                        // here the label goes orange and the number goes
-                        // to the same muted gray the label used to be.
+                        // Per request: the number/label colors invert
+                        // relative to their inactive roles (number normally
+                        // orange, label normally neutral) — the label goes
+                        // orange and the number goes to the muted gray the
+                        // label used to be — same treatment as the desktop
+                        // .nav-link below. A tonal-container background
+                        // still marks which item is actually selected:
+                        // without it, an active item and a merely-hovered
+                        // one both just read as "some orange text" with
+                        // nothing to tell them apart.
                         &.nav-link-active {
+                            background-color: $SecondaryContainer;
                             color: $Primary;
 
                             span {
@@ -160,12 +164,14 @@
         }
     }
 
-    // M3 navigation pill: a rounded state layer for hover/focus/press.
-    // The active state (the section currently scrolled into view — see
-    // activeSection in header.component.ts) inverts the number/label
-    // colors from their default roles instead of filling in a pill:
-    // the label goes orange and the number goes to a muted gray, matching
-    // the mobile drawer's .nav-link-active treatment above.
+    // M3 navigation pill: a rounded state layer for hover/focus/press, plus
+    // a tonal-container background on the active item (the section
+    // currently scrolled into view — see activeSection in
+    // header.component.ts) so it stays visually distinct from a merely
+    // -hovered link, which also turns orange via :hover below. The active
+    // item's number/label colors invert from their default roles — the
+    // label goes orange and the number goes to a muted gray — matching the
+    // mobile drawer's .nav-link-active treatment above.
     .nav-link {
         position: relative;
         display: inline-flex;
@@ -186,6 +192,7 @@
         }
 
         &.nav-link-active {
+            background-color: $SecondaryContainer;
             color: $Primary;
 
             .nav-number {
