@@ -33,7 +33,8 @@
       [attr.aria-expanded]="responsiveMenuVisible" aria-controls="mobile-menu">
       <i class="fa-solid" [class.fa-bars]="!responsiveMenuVisible" [class.fa-xmark]="responsiveMenuVisible"></i>
     </button>
-    <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }">
+    <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }"
+      (click)="onBackdropClick($event)">
       <aside id="mobile-menu" [class.aside-show]='responsiveMenuVisible' [class.nav-shadow]='this.pageYPosition>0' class="on-top">
         <nav>
           <ol>
