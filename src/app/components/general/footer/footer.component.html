@@ -1,5 +1,5 @@
 <footer>
-  <div [@animateFooter]>
+  <div [@animateFooter] class="footer-sides" [class.footer-sides-collapsed]="atBottom()">
     <ul class="footer-left-bar d-none d-md-block">
       @for (social of socials ; track social; let i = $index) {
         <li>
@@ -18,6 +18,21 @@
   <div class="footer-mobile-contact d-md-none">
     <a class="footer-mobile-email" href={{email.url}} target='_blank'>{{email.handle}}</a>
     <ul class="footer-mobile-socials">
+      @for (social of mobileSocials ; track social; let i = $index) {
+        <li>
+          <a href={{social.url}} target='_blank'
+            [appLinkPreview]="{ icon: 'fab ' + social.icon, title: social.name, url: social.url }">
+            <i class="fab {{social.icon}}"></i>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+
+  <div class="footer-bottom-contact d-none d-md-flex" [class.footer-bottom-contact-visible]="atBottom()"
+    [attr.inert]="atBottom() ? null : ''">
+    <a class="footer-bottom-email" href={{email.url}} target='_blank'>{{email.handle}}</a>
+    <ul class="footer-bottom-socials">
       @for (social of mobileSocials ; track social; let i = $index) {
         <li>
           <a href={{social.url}} target='_blank'
