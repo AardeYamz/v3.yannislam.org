@@ -148,11 +148,16 @@
 
                         @include md-state-layer($OnSurface, $ShapeSmall);
 
+                        // Per request: the mobile drawer's selected item
+                        // reads as inverted accent-colored text instead of
+                        // the filled tonal pill the desktop nav-link below
+                        // still uses (%nav-active-pill) — no fill, just
+                        // orange text for both the number and the label.
                         &.nav-link-active {
-                            @extend %nav-active-pill;
+                            color: $Primary;
 
                             span {
-                                color: $OnSecondaryContainer;
+                                color: $Primary;
                             }
                         }
                     }
