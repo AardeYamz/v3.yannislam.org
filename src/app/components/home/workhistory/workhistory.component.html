@@ -15,8 +15,9 @@
               @for (img of exp.imgs; track img) {
                 <ng-template carouselSlide [id]="exp.title + i">
                   <div class='img-container'>
-                    <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.image_alt || exp.title"
-                      [appLogoFallback]="exp.organization">
+                    <img class='img-feature-workhistory rounded' [class.img-feature-workhistory--logo]="!!exp.logoKey"
+                      [src]="img" [alt]="exp.image_alt || exp.title"
+                      width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization">
                   </div>
                 </ng-template>
               }
@@ -27,8 +28,9 @@
               >
               <div class="img-feature-workhistory-box">
                 <div class="img-container" style='width: auto;'>
-                  <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.image_alt || exp.title"
-                    [appLogoFallback]="exp.organization">
+                  <img class='img-feature-workhistory rounded' [class.img-feature-workhistory--logo]="!!exp.logoKey"
+                    [src]="exp.imgs[0]" [alt]="exp.image_alt || exp.title"
+                    width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization">
                 </div>
               </div>
             </div>
@@ -86,8 +88,9 @@
                   @for (img of exp.imgs; track img) {
                     <ng-template carouselSlide [id]="exp.title + i">
                       <div class='img-container'>
-                        <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.image_alt || exp.title"
-                          [appLogoFallback]="exp.organization">
+                        <img class='img-feature-workhistory rounded' [class.img-feature-workhistory--logo]="!!exp.logoKey"
+                          [src]="img" [alt]="exp.image_alt || exp.title"
+                          width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization">
                       </div>
                     </ng-template>
                   }
@@ -98,8 +101,9 @@
                   >
                   <div class="img-feature-workhistory-box">
                     <div class="img-container" style='width: auto;'>
-                      <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.image_alt || exp.title"
-                        [appLogoFallback]="exp.organization">
+                      <img class='img-feature-workhistory rounded' [class.img-feature-workhistory--logo]="!!exp.logoKey"
+                        [src]="exp.imgs[0]" [alt]="exp.image_alt || exp.title"
+                        width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization">
                     </div>
                   </div>
                 </div>
