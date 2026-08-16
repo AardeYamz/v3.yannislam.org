@@ -18,6 +18,25 @@ footer {
         list-style: none;
     }
 
+    // The fixed side bars fade + slide away once the page is scrolled to
+    // the bottom (see FooterComponent.atBottom) and the collapsed contact
+    // row below (.footer-bottom-contact) takes their place inline within
+    // the footer, matching the mobile layout.
+    .footer-left-bar,
+    .footer-right-bar {
+        transition: opacity 0.4s cubic-bezier(0.645, 0.045, 0.355, 1),
+            transform 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+
+    .footer-sides-collapsed {
+        .footer-left-bar,
+        .footer-right-bar {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(16px);
+        }
+    }
+
     .footer-left-bar {
         position: fixed;
         bottom: -16px;
@@ -127,6 +146,93 @@ footer {
                 &:hover,
                 &:focus {
                     color: $Orange;
+                }
+            }
+        }
+    }
+
+    // Desktop-only counterpart to .footer-mobile-contact: hidden/collapsed
+    // by default (the fixed side bars handle contact links at that width),
+    // and grown into view — with the side bars fading out in tandem, see
+    // .footer-sides-collapsed above — once FooterComponent.atBottom flips
+    // true. max-height (rather than just opacity) gives the row an actual
+    // collapse/expand motion instead of a plain crossfade.
+    .footer-bottom-contact {
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        max-height: 0;
+        margin-top: 0;
+        opacity: 0;
+        transform: translateY(16px);
+        transition: max-height 0.4s cubic-bezier(0.645, 0.045, 0.355, 1),
+            margin-top 0.4s cubic-bezier(0.645, 0.045, 0.355, 1),
+            opacity 0.3s ease,
+            transform 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+
+        &-visible {
+            max-height: 80px;
+            margin-top: 24px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        // The mail link lives in this same list as the social icons (see
+        // footer.component.html) so the collapsed row reads as one uniform
+        // strip of icons rather than text-plus-icons.
+        .footer-bottom-socials {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 0;
+            margin: 0;
+
+            li {
+                list-style: none;
+            }
+
+            i {
+                font-size: 19px;
+                color: $LightSlate;
+
+                &:hover,
+                &:focus {
+                    color: $Primary;
+                }
+            }
+        }
+
+        // At rest the mail icon looks identical to the social icons beside
+        // it; hovering/focusing it expands a label with the full address
+        // instead of permanently spending width on text the way the
+        // mobile-only .footer-mobile-email link does.
+        .footer-bottom-email {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+
+            .footer-bottom-email-text {
+                display: inline-block;
+                max-width: 0;
+                margin-left: 0;
+                overflow: hidden;
+                white-space: nowrap;
+                opacity: 0;
+                font-family: $CodeFont;
+                font-size: 12px;
+                letter-spacing: 0.1em;
+                color: $LightSlate;
+                transition: max-width 0.35s cubic-bezier(0.645, 0.045, 0.355, 1),
+                    margin-left 0.35s cubic-bezier(0.645, 0.045, 0.355, 1),
+                    opacity 0.25s ease;
+            }
+
+            &:hover,
+            &:focus {
+                .footer-bottom-email-text {
+                    max-width: 220px;
+                    margin-left: 8px;
+                    opacity: 1;
                 }
             }
         }

@@ -5,17 +5,15 @@
         [style.transform]="'rotate(' + logoRotationDeg + 'deg)'" />
     </a>
     <div class="nav-right">
-      <ul ngbNav #nav="ngbNav" class="menu-ul">
+      <ul class="menu-ul nav">
         @for (menuItem of menu ; track menuItem; let i = $index) {
-          <li [ngbNavItem]="i" ngbNavItem
-            (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
-            <a ngbNavLink (click)='navigate(menuItem)'
+          <li class="nav-item" (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
+            <a class="nav-link" (click)='navigate(menuItem)'
               [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
               @if (menuItem?.navNumber) {
                 <span class='nav-number'>{{menuItem?.navNumber}}</span>
               }
               <span class="nav-text">{{menuItem?.navTitle}}</span></a>
-          <ng-template ngbNavContent>{{menuItem?.navContent}}</ng-template>
         </li>
       }
 
@@ -33,7 +31,8 @@
       [attr.aria-expanded]="responsiveMenuVisible" aria-controls="mobile-menu">
       <i class="fa-solid" [class.fa-bars]="!responsiveMenuVisible" [class.fa-xmark]="responsiveMenuVisible"></i>
     </button>
-    <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }">
+    <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }"
+      (click)="onBackdropClick($event)">
       <aside id="mobile-menu" [class.aside-show]='responsiveMenuVisible' [class.nav-shadow]='this.pageYPosition>0' class="on-top">
         <nav>
           <ol>
