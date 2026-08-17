@@ -12,16 +12,6 @@ import { YL_SHAPE_BOUNDS, packPointsInYlShape } from './yl-shape';
 //               crowd reads as one big YL, then idle in place.
 export type BackgroundMode = 'falling' | 'mosaic';
 
-// The modes a page load is allowed to pick from. Commenting a mode out of
-// this list disables it without deleting any of its code.
-const ENABLED_MODES: readonly BackgroundMode[] = [
-  // TEMP (testing the mosaic): the original falling animation is commented
-  // out so every load shows the new one. Un-comment this line to put it back
-  // in the rotation.
-  // 'falling',
-  'mosaic'
-];
-
 export interface ModeConfig {
   /** Random logo count per load, inclusive range. */
   readonly minCount: number;
@@ -171,6 +161,14 @@ const MOSAIC_FILL = 0.72;
 const MOSAIC_WIDE_HOST_PX = 992;
 const MOSAIC_WIDE_CENTER_RATIO = 0.72;
 
+// Same threshold, doing double duty: chooseMode() below uses it against
+// window.innerWidth to decide mosaic vs. falling for the whole page load,
+// since a viewport too narrow to park the mark beside the copy (the
+// `centered` case above) is exactly the case not worth attempting on mobile
+// at all — better to fall back to the lighter falling animation than show a
+// dimmed, centered mosaic sitting on top of the banner copy.
+const MOSAIC_MIN_VIEWPORT_PX = MOSAIC_WIDE_HOST_PX;
+
 // A centered mark lands squarely on the banner copy, so the whole layer is
 // dimmed as a group (this multiplies with each logo's own opacity) to keep the
 // text readable. Off to the side there's no such conflict and the logos are
@@ -239,12 +237,30 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   @ViewChildren('logoEl') private logoEls!: QueryList<ElementRef<HTMLElement>>;
   @ViewChild('layer') private layer!: ElementRef<HTMLElement>;
 
-  readonly mode: BackgroundMode = ENABLED_MODES[Math.floor(Math.random() * ENABLED_MODES.length)];
-  readonly config: ModeConfig = MODE_CONFIG[this.mode];
-  readonly logos: FloatingLogo[] = this.generateLogos();
+  readonly mode: BackgroundMode;
+  readonly config: ModeConfig;
+  readonly logos: FloatingLogo[];
 
-  // Lets the stylesheet tell the modes apart (see the .scss).
-  @HostBinding('class') readonly modeClass = `mode-${this.mode}`;
+  // Lets the stylesheet tell the modes apart (see the .scss). Two discrete
+  // per-class boolean bindings, not a single `@HostBinding('class')` string
+  // getter: SSR has no viewport, so chooseMode() always guesses 'falling'
+  // server-side (see its comment - the guess doesn't matter, since
+  // generateLogos() output is discarded and regenerated on hydration
+  // regardless). On a desktop load the client then decides 'mosaic', and a
+  // string-valued `class` binding's first write after hydration only *adds*
+  // "mode-mosaic" to the server-rendered "mode-falling" - it isn't diffed
+  // against that pre-existing static value, since Angular's binding
+  // bookkeeping has no "previous" value of its own to diff against yet - so
+  // both classes stuck around together, with both modes' styles active at
+  // once. `[class.foo]` bindings toggle one specific class by boolean value
+  // and don't have that gap.
+  @HostBinding('class.mode-falling') get isFallingMode(): boolean {
+    return this.mode === 'falling';
+  }
+
+  @HostBinding('class.mode-mosaic') get isMosaicMode(): boolean {
+    return this.mode === 'mosaic';
+  }
 
   // Domino (Angular's server-side DOM emulation used during prerendering)
   // defines a `window` global but doesn't implement layout/media APIs like
@@ -275,6 +291,10 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     this.isBrowser = isPlatformBrowser(platformId);
     this.prefersReducedMotion = this.isBrowser && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    this.mode = this.chooseMode();
+    this.config = MODE_CONFIG[this.mode];
+    this.logos = this.generateLogos();
+
     // Re-randomize colors whenever the user toggles the theme. Skipped on
     // the first run (effects fire once immediately on creation) since
     // generateLogos() already picked initial colors.
@@ -295,6 +315,26 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
       this.reshuffleColors();
       this.cdr.markForCheck();
     });
+  }
+
+  // Desktop gets the mosaic (the whole point is reading as one big YL, which
+  // needs room to park beside the banner copy); mobile keeps the lighter
+  // falling animation, both because there's nowhere to put a mosaic that
+  // size without sitting on top of the copy and because mobile is already
+  // the more render-constrained device class (see docs/todo/desktop-performance.md).
+  //
+  // Decided once, here, rather than in layout(): window.innerWidth is a
+  // synchronous global that's accurate before any layout pass, unlike the
+  // host element's own getBoundingClientRect() (used for placement, not
+  // mode selection), which needs the element actually laid out — not
+  // guaranteed yet this early. SSR has no viewport at all, but it doesn't
+  // matter which mode the server guesses: generateLogos() is fully random
+  // per instance regardless of mode, so hydration's client-side
+  // reconstruction (see docs/changes/20260811-013727-floating-logos-modes.md's
+  // "Known wart") always discards and replaces the server's guess anyway.
+  private chooseMode(): BackgroundMode {
+    if (!this.isBrowser) return 'falling';
+    return window.innerWidth >= MOSAIC_MIN_VIEWPORT_PX ? 'mosaic' : 'falling';
   }
 
   // Pauses/resumes the rAF loop when the tab is hidden/shown, so a

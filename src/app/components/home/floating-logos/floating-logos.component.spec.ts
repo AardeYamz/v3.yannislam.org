@@ -33,6 +33,34 @@ describe('FloatingLogosComponent', () => {
     expect(component.config).toBe(MODE_CONFIG[component.mode]);
   });
 
+  // Mode is decided once, in the constructor, from window.innerWidth (see
+  // chooseMode()) - stub it before TestBed.createComponent() so the
+  // component reads the stubbed value rather than this runner's actual
+  // headless window size.
+  it('should choose mosaic mode at desktop widths', () => {
+    spyOnProperty(window, 'innerWidth', 'get').and.returnValue(1440);
+    const desktopFixture = TestBed.createComponent(FloatingLogosComponent);
+    expect(desktopFixture.componentInstance.mode).toBe('mosaic');
+  });
+
+  it('should choose falling mode at mobile widths', () => {
+    spyOnProperty(window, 'innerWidth', 'get').and.returnValue(390);
+    const mobileFixture = TestBed.createComponent(FloatingLogosComponent);
+    expect(mobileFixture.componentInstance.mode).toBe('falling');
+  });
+
+  it('should treat the mosaic breakpoint as inclusive on its low end', () => {
+    const innerWidthSpy = spyOnProperty(window, 'innerWidth', 'get');
+
+    innerWidthSpy.and.returnValue(992);
+    const atBreakpoint = TestBed.createComponent(FloatingLogosComponent);
+    expect(atBreakpoint.componentInstance.mode).toBe('mosaic');
+
+    innerWidthSpy.and.returnValue(991);
+    const justBelow = TestBed.createComponent(FloatingLogosComponent);
+    expect(justBelow.componentInstance.mode).toBe('falling');
+  });
+
   it('should expose the mode as a host class', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.className).toBe(`mode-${component.mode}`);

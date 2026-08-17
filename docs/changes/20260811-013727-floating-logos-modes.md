@@ -10,23 +10,40 @@ this one. The first new mode is `mosaic`: instead of falling, the little logos
 are scattered inside the outline of the YL mark, so the crowd reads as one big
 YL.
 
-## Current state: falling is temporarily off
+## Current state: mode follows viewport width, not chance
+
+Mosaic only reads as "one big YL" with room to park beside the banner copy —
+on a narrow viewport there's nowhere to put it without sitting on top of the
+text (see the `centered`/dimmed fallback in `mosaicPlacement()` below). So
+rather than a random per-load pick across both modes, `chooseMode()` decides
+deterministically from `window.innerWidth`, reusing the same
+`MOSAIC_WIDE_HOST_PX` (992px) threshold `mosaicPlacement()` already uses to
+decide whether to center-and-dim:
 
 ```ts
-const ENABLED_MODES: readonly BackgroundMode[] = [
-  // TEMP (testing the mosaic): the original falling animation is commented
-  // out so every load shows the new one. Un-comment this line to put it back
-  // in the rotation.
-  // 'falling',
-  'mosaic'
-];
+private chooseMode(): BackgroundMode {
+  if (!this.isBrowser) return 'falling';
+  return window.innerWidth >= MOSAIC_MIN_VIEWPORT_PX ? 'mosaic' : 'falling';
+}
 ```
 
-The mode is drawn at random from `ENABLED_MODES` in the component's field
-initializer. Commenting an entry out disables that animation without deleting
-any of its code, which is how the falling animation is currently parked — the
-lane math, sway, and its `MODE_CONFIG` entry are all still there and still
-tested. Un-comment `'falling'` to get both, one at random per load.
+Desktop gets the mosaic; mobile keeps the lighter falling animation. Decided
+once, in the constructor (after `isBrowser` is known), not in `layout()`:
+`window.innerWidth` is a synchronous global, accurate before any layout pass,
+unlike the host element's own `getBoundingClientRect()` (used for placement,
+not mode selection) which needs the element actually laid out first — not
+guaranteed this early. SSR has no viewport, so the server always guesses
+`'falling'`; that guess doesn't matter functionally (see "Known wart" below —
+hydration discards and regenerates the whole random logo set regardless of
+mode), but it did surface a real bug — see "Fixed: SSR/hydration host class"
+further down.
+
+Mode is still decided once per component instance, same as before — resizing
+an already-loaded page across 992px re-runs `layout()` (repositioning within
+the current mode) but doesn't switch modes mid-session. Live-switching modes
+on resize wasn't asked for and would need regenerating an entirely different
+`logos` array (different count/size ranges per `MODE_CONFIG`), so it was left
+alone.
 
 ## Adding a mode
 
@@ -38,7 +55,8 @@ tested. Un-comment `'falling'` to get both, one at random per load.
    debounced, on resize) and a `case` to `restPosition()` for per-frame motion.
    Both `switch` on `this.mode` and are exhaustive over the union, so the
    compiler points at anything left unimplemented.
-4. Add the name to `ENABLED_MODES`.
+4. Extend `chooseMode()`'s decision to route to the new mode under whatever
+   condition makes sense for it.
 
 Everything else — the rAF loop, the pause-on-hidden handling, the hover dodge,
 the theme-change recolor, and `prefers-reduced-motion` — is mode-agnostic and
@@ -181,6 +199,55 @@ and correctly placed once settled (201/210/212 logos, ~300px x-spread). The
 only console noise is this sandbox's proxy blocking `gtag`/fonts. The mosaic's
 prerendered-page screenshot matches the `ng serve` one.
 
+**Device-based mode selection** (added after the desktop/mobile split
+requested in review):
+
+- New unit tests in `floating-logos.component.spec.ts` stub
+  `window.innerWidth` before `TestBed.createComponent()` and assert `mode`
+  follows: desktop width → `'mosaic'`, mobile width → `'falling'`, and the
+  992px breakpoint is inclusive on its low end (992 → mosaic, 991 →
+  falling). Full suite: 168 passed, 1 pre-existing skip (the mosaic-only
+  assertion self-skips when this runner's default headless viewport happens
+  to land below the breakpoint).
+- `npx ng build --configuration production` — succeeds (only the
+  pre-existing, unrelated `header.component.scss` byte-budget warning).
+- Visually verified against the real prerendered + hydrated output (built
+  bundle served via `http-server`, matching how CI/Vercel actually serve
+  it) with headless Chromium: 1440px width shows the mosaic assembled into
+  the YL silhouette beside the banner copy; 390px width shows the sparse
+  falling field, matching the pre-mosaic look. Screenshotted both.
+- Caught and fixed the host-class hydration bug above by checking the live
+  `className` post-hydration, not just the final screenshot — a visual
+  screenshot alone wouldn't have shown two classes both being present, only
+  a rendering artifact if their styles happened to visibly conflict.
+
+## Fixed: SSR/hydration host class
+
+Making the server and client genuinely disagree on mode (server always
+guesses `'falling'`; a desktop client now deterministically picks `'mosaic'`,
+not just occasionally by chance) surfaced a real bug that random selection
+had mostly hidden: a single `@HostBinding('class')` getter returning
+`` `mode-${this.mode}` `` doesn't reliably clear a class that arrived as
+static SSR markup. On a desktop load, the rendered HTML from the server had
+`class="... mode-falling"`; after hydration the client wrote `"mode-mosaic"`
+as the new binding value, but `"mode-falling"` stayed too — Angular had no
+"previous" value of its own to diff against for that binding's very first
+write, so it only *added* the new class. Both modes' styles were active on
+the host at once (verified via a headless Chromium check of the live
+`className` after hydration, held stable for 3+ seconds — not a transient
+hydration flicker).
+
+Fixed by splitting the one string-valued binding into two discrete
+`[class.mode-falling]` / `[class.mode-mosaic]` boolean `@HostBinding`s. Each
+toggles one specific class by boolean value and doesn't have that gap — the
+false one is never added at all when there's nothing stale to clear, and the
+true one lands cleanly whether or not this is a hydration boundary.
+
+Random mode selection never fully exercised this: with a single-entry
+`ENABLED_MODES`, server and client always agreed by construction, and even
+with both modes enabled, a mismatch was only a 50/50 chance per load rather
+than something every desktop visitor would hit.
+
 ## Known interaction (pre-existing)
 
 The layer is `position: absolute; z-index: 1` inside `.banner`, so it paints
@@ -197,9 +264,12 @@ boxes overlap the mark, so it was left alone.
   stencil and the packing.
 - `src/app/components/home/floating-logos/floating-logos.component.ts` — mode
   selection, `MODE_CONFIG`, `mosaicPlacement`, `layoutMosaic`, mode-dispatched
-  `layout()`/`restPosition()`, entrance easing, redundant-write skip.
+  `layout()`/`restPosition()`, entrance easing, redundant-write skip;
+  `chooseMode()` (device-width mode selection) and the
+  `class.mode-falling`/`class.mode-mosaic` host bindings, added later.
 - `floating-logos.component.html` — `#layer` ref for the group opacity, binds
   `initialOpacity`.
 - `floating-logos.component.scss` — `:host(.mode-mosaic)` shadow opt-out.
 - `floating-logos.component.spec.ts` — assertions now read the active mode's
-  config instead of hardcoded falling-mode numbers.
+  config instead of hardcoded falling-mode numbers; new tests for the
+  device-width mode decision, added later.
