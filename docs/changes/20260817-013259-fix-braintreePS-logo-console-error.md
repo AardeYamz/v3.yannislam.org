@@ -51,3 +51,31 @@ expected, by-design no-ops per
 `console.log` (never `console.error`/throw) and are triggered by
 ad-blockers or content blockers intercepting the request client-side, not
 by a bug in the app.
+
+## Updated: pinned to Braintree Public Schools' live Facebook profile picture
+
+Requested as a follow-up: instead of the `data:,` placeholder, always show
+whatever Braintree Public Schools' Facebook Page (`facebook.com/BraintreeEDU`)
+currently has as its profile picture.
+
+Changed `logos.braintreePS.src` to
+`https://graph.facebook.com/BraintreeEDU/picture?type=large`. This is
+Facebook's public Graph API picture endpoint — unlike the original
+`scontent-bos5-1.xx.fbcdn.net` CDN link, it takes a stable Page
+username/ID rather than a signed, expiring token, and 302-redirects to
+whatever the Page's current profile picture is on every request. No app
+code changes needed: it's a normal `<img src>`, so it updates automatically
+whenever the Page's picture changes, with no build step or manual
+maintenance.
+
+Trade-off, noted deliberately rather than overlooked: this reintroduces a
+live external request on every page load — the same category of risk
+(rate limiting, referrer/CORS policy changes, Facebook blocking automated
+access) that motivated switching away from a hotlink in the first place.
+`LogoFallbackDirective`'s existing `error` handler still covers the failure
+case, so a blocked or failing request falls back to the generated
+placeholder exactly as before — but a failure will still log a console
+error, same as the original bug. This was a deliberate choice over the
+alternative (a scheduled GitHub Action that self-hosts a periodic snapshot
+of the picture, matching the deferred §6.5 self-hosting plan) in favor of
+staying current with zero added infrastructure.
