@@ -1,6 +1,15 @@
 @use "./variables.scss" as *;
 @use "./bootstrap-custom.scss" as *;
 
+html {
+    // LoadingScreenComponent toggles body { overflow: hidden } while its
+    // overlay is up; without a reserved gutter that removes and re-adds
+    // the scrollbar, shifting the viewport (and every element in this
+    // centred Bootstrap container) ~15px horizontally on both edges of
+    // the boot animation.
+    scrollbar-gutter: stable;
+}
+
 body {
     margin: 0;
     width: 100%;
