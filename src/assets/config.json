@@ -64,7 +64,7 @@
       "alt": "UMass Amherst Manning College of Computer & Information Sciences Logo"
     },
     "braintreePS": {
-      "src": "https://graph.facebook.com/BraintreeEDU/picture?type=large",
+      "src": "https://graph.facebook.com/BraintreeEDU/picture?width=720&height=720",
       "alt": "Braintree Public Schools Logo"
     },
     "homeDepot": {

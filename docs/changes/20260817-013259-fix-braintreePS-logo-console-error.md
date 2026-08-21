@@ -59,7 +59,9 @@ whatever Braintree Public Schools' Facebook Page (`facebook.com/BraintreeEDU`)
 currently has as its profile picture.
 
 Changed `logos.braintreePS.src` to
-`https://graph.facebook.com/BraintreeEDU/picture?type=large`. This is
+`https://graph.facebook.com/BraintreeEDU/picture?width=720&height=720`
+(`width`/`height` requests a larger image than the biggest named `type`
+bucket, `large`, capped by the source photo's actual resolution). This is
 Facebook's public Graph API picture endpoint — unlike the original
 `scontent-bos5-1.xx.fbcdn.net` CDN link, it takes a stable Page
 username/ID rather than a signed, expiring token, and 302-redirects to
