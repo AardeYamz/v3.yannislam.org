@@ -157,7 +157,24 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.responsiveMenuVisible = false;
   }
 
-  navigate(menuItem: any) {
+  // .menu-responsive is a full-viewport overlay with the drawer <aside>
+  // docked to its right edge — clicking anywhere in the remaining space is
+  // a click on the overlay itself, not on anything nested inside it, so
+  // target === currentTarget is enough to tell "outside the drawer" apart
+  // from a click that bubbled up from a link/button within it.
+  onBackdropClick(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      this.responsiveMenuVisible = false;
+    }
+  }
+
+  navigate(menuItem: any, event?: Event) {
+    // The nav <a> now carries a real href (menuItem.siteLocation) so it's
+    // a genuine link to assistive tech, automation agents, and
+    // middle-click/right-click — but a plain navigation there would
+    // trigger a full page reload instead of the in-app scroll/router
+    // handling below, so intercept it here.
+    event?.preventDefault();
     if (menuItem?.scrollSection) {
       this.scroll(menuItem.scrollSection);
     } else if (menuItem?.siteLocation) {

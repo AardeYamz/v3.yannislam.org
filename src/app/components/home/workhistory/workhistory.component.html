@@ -60,11 +60,11 @@
                 <div [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
                   class="workhistory-links">
                   @if (exp['link']) {
-                    <a class="mx-3" style='color: inherit' [href]="exp['link']"
+                    <a class="mx-3" style='color: inherit' [href]="exp['link']" [attr.aria-label]="'View ' + exp.title + ' project'"
                       target="_blank" rel="noopener noreferrer"><i class="ml-3 fa-solid fa-up-right-from-square"></i></a>
                     }
                     @if (exp['demoLink']) {
-                      <a style='color: inherit' [href]="exp['demoLink']"
+                      <a style='color: inherit' [href]="exp['demoLink']" [attr.aria-label]="'View ' + exp.title + ' demo'"
                         target="_blank" rel="noopener noreferrer"><i class="ml-3 fas fa-external-link-alt"></i></a>
                       }
                     </div>
