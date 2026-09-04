@@ -14,14 +14,6 @@
     -webkit-backdrop-filter: blur(10px);
 }
 
-// Shared by the desktop nav pill and the mobile drawer's link, both of
-// which mark the section currently scrolled into view (activeSection in
-// header.component.ts) the same way: a filled tonal-container pill.
-%nav-active-pill {
-    background-color: $SecondaryContainer;
-    color: $OnSecondaryContainer;
-}
-
 .main-navbar {
     height: 70px;
     background: $Surface;
@@ -148,11 +140,22 @@
 
                         @include md-state-layer($OnSurface, $ShapeSmall);
 
+                        // Per request: the number/label colors invert
+                        // relative to their inactive roles (number normally
+                        // orange, label normally neutral) — the label goes
+                        // orange and the number goes to the muted gray the
+                        // label used to be — same treatment as the desktop
+                        // .nav-link below. A tonal-container background
+                        // still marks which item is actually selected:
+                        // without it, an active item and a merely-hovered
+                        // one both just read as "some orange text" with
+                        // nothing to tell them apart.
                         &.nav-link-active {
-                            @extend %nav-active-pill;
+                            background-color: $SecondaryContainer;
+                            color: $Primary;
 
                             span {
-                                color: $OnSecondaryContainer;
+                                color: $OnSurfaceVariant;
                             }
                         }
                     }
@@ -161,11 +164,14 @@
         }
     }
 
-    // M3 navigation pill: a rounded state layer for hover/focus/press, and
-    // a filled tonal-container background once the corresponding section
-    // is scrolled into view (see activeSection in header.component.ts) —
-    // replaces the old underlined-text treatment, which had no way to show
-    // an "active" state at all.
+    // M3 navigation pill: a rounded state layer for hover/focus/press, plus
+    // a tonal-container background on the active item (the section
+    // currently scrolled into view — see activeSection in
+    // header.component.ts) so it stays visually distinct from a merely
+    // -hovered link, which also turns orange via :hover below. The active
+    // item's number/label colors invert from their default roles — the
+    // label goes orange and the number goes to a muted gray — matching the
+    // mobile drawer's .nav-link-active treatment above.
     .nav-link {
         position: relative;
         display: inline-flex;
@@ -186,10 +192,11 @@
         }
 
         &.nav-link-active {
-            @extend %nav-active-pill;
+            background-color: $SecondaryContainer;
+            color: $Primary;
 
             .nav-number {
-                color: $OnSecondaryContainer;
+                color: $OnSurfaceVariant;
             }
         }
     }
