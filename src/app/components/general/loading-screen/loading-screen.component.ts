@@ -9,8 +9,10 @@ const FLY_DISTANCE = 260;
 
 // Floor so a fast load doesn't just flash the intro and immediately cut to
 // the outro before the assembly animation (and a beat of the breathe loop)
-// has had a chance to actually play.
-const MIN_DISPLAY_MS = 1400;
+// has had a chance to actually play. Kept short deliberately: this overlay
+// is the LCP element until it fades, so every millisecond here is a
+// millisecond added to LCP/FCP (see docs/todo/desktop-performance.md).
+const MIN_DISPLAY_MS = 400;
 
 @Component({
   selector: 'app-loading-screen',
