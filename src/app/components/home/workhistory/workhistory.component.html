@@ -16,7 +16,7 @@
                 <ng-template carouselSlide [id]="exp.title + i">
                   <div class='img-container'>
                     <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.image_alt || exp.title"
-                      [appLogoFallback]="exp.organization">
+                      loading="lazy" decoding="async" [appLogoFallback]="exp.organization">
                   </div>
                 </ng-template>
               }
@@ -28,7 +28,7 @@
               <div class="img-feature-workhistory-box">
                 <div class="img-container" style='width: auto;'>
                   <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.image_alt || exp.title"
-                    [appLogoFallback]="exp.organization">
+                    loading="lazy" decoding="async" [appLogoFallback]="exp.organization">
                 </div>
               </div>
             </div>
