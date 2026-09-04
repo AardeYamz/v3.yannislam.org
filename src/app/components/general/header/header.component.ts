@@ -168,7 +168,13 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  navigate(menuItem: any) {
+  navigate(menuItem: any, event?: Event) {
+    // The nav <a> now carries a real href (menuItem.siteLocation) so it's
+    // a genuine link to assistive tech, automation agents, and
+    // middle-click/right-click — but a plain navigation there would
+    // trigger a full page reload instead of the in-app scroll/router
+    // handling below, so intercept it here.
+    event?.preventDefault();
     if (menuItem?.scrollSection) {
       this.scroll(menuItem.scrollSection);
     } else if (menuItem?.siteLocation) {
