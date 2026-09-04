@@ -1,21 +1,19 @@
-<nav [@animateMenu] class="navbar main-navbar on-top" [class.nav-shadow]='this.pageYPosition>0'>
+<nav [@animateMenu] class="navbar main-navbar on-top" [class.nav-shadow]='this.pageYPosition>0' aria-label="Primary">
   <div class="container">
     <a class="navbar-brand text-light" [routerLink]="'/'" aria-label="Yannis Lam, home">
       <img [src]="'assets/images/logos/' + themeService.logoVariant() + '.svg'" width="55" alt="Yannis Lam logo"
         [style.transform]="'rotate(' + logoRotationDeg + 'deg)'" />
     </a>
     <div class="nav-right">
-      <ul ngbNav #nav="ngbNav" class="menu-ul">
+      <ul class="menu-ul nav">
         @for (menuItem of menu ; track menuItem; let i = $index) {
-          <li [ngbNavItem]="i" ngbNavItem
-            (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
-            <a ngbNavLink (click)='navigate(menuItem)'
+          <li class="nav-item" (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
+            <a class="nav-link" [attr.href]="menuItem?.siteLocation" (click)='navigate(menuItem, $event)'
               [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
               @if (menuItem?.navNumber) {
                 <span class='nav-number'>{{menuItem?.navNumber}}</span>
               }
               <span class="nav-text">{{menuItem?.navTitle}}</span></a>
-          <ng-template ngbNavContent>{{menuItem?.navContent}}</ng-template>
         </li>
       }
 
@@ -33,14 +31,16 @@
       [attr.aria-expanded]="responsiveMenuVisible" aria-controls="mobile-menu">
       <i class="fa-solid" [class.fa-bars]="!responsiveMenuVisible" [class.fa-xmark]="responsiveMenuVisible"></i>
     </button>
-    <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }">
-      <aside id="mobile-menu" [class.aside-show]='responsiveMenuVisible' [class.nav-shadow]='this.pageYPosition>0' class="on-top">
-        <nav>
+    <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }"
+      (click)="onBackdropClick($event)">
+      <aside id="mobile-menu" [class.aside-show]='responsiveMenuVisible' [class.nav-shadow]='this.pageYPosition>0' class="on-top"
+        [attr.inert]="responsiveMenuVisible ? null : ''">
+        <nav aria-label="Mobile">
           <ol>
             @for (menuItem of menu ; track menuItem; let i = $index) {
               <li
                 (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
-                <a (click)='navigate(menuItem)'
+                <a [attr.href]="menuItem?.siteLocation" (click)='navigate(menuItem, $event)'
                   [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
                   @if (menuItem?.navNumber) {
                     <span>{{menuItem?.navNumber}}</span>

@@ -1,224 +1,224 @@
 @use "./../../../../../variables.scss" as *;
 
-.namecard{
+// A horizontal accordion: every sub-box lives in the same flex row and
+// shares the row's width via flex-grow. The hovered/focused box claims
+// more of that width and its siblings give way to it — nothing overlaps
+// or gets absolutely positioned, so there's no per-breakpoint math for
+// which neighbor a card should grow over.
+.namecard {
+    .namecard-accordion {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        gap: 20px;
+        min-height: 460px;
+        width: 100%;
+    }
 
-    // height: 100vh;
-
-    .namecard-col{
-        padding: 10px;
-        height: auto;
+    .namecard-item {
         position: relative;
-        z-index: 1;
+        flex: 1 1 0;
+        // A real floor rather than 0: at flex-grow: 3 on the hovered card,
+        // the other two split what's left at flex-grow: 1 each — plenty of
+        // room most of the time, but with min-width: 0 there was nothing
+        // stopping them from being squeezed well past comfortable if the
+        // row itself is narrow, wrapping their text tightly against the
+        // padding. This caps how far a collapsed sibling can shrink so its
+        // text always keeps some breathing room.
+        min-width: 190px;
+        overflow: hidden;
+        cursor: pointer;
+        border-radius: $ShapeLarge;
+        background-color: $SurfaceContainer;
+        // M3 elevated card: level1 at rest, level3 while it's the
+        // hovered/expanded card in the row.
+        box-shadow: $Elevation1;
+        -webkit-transition: flex-grow 0.5s cubic-bezier(0.55,0.055,0.675,0.19), box-shadow 0.25s ease;
+        transition: flex-grow 0.5s cubic-bezier(0.55,0.055,0.675,0.19), box-shadow 0.25s ease;
 
-        &:hover {
-            z-index: 10;
+        @include md-state-layer($Primary, $ShapeLarge);
+
+        // Was flex-grow: 3 — with only two siblings splitting the leftover
+        // space, that grew the hovered card enough to crowd both of them
+        // against their new min-width floor above instead of just one.
+        &:hover, &:focus, &:focus-within {
+            flex-grow: 2;
+            box-shadow: $Elevation3;
         }
 
-        .namecard-box {
-            // M3 elevated card: level1 at rest, level3 while it's the
-            // hovered/expanded card in the row.
-            box-shadow: $Elevation1;
-            // The middle-of-3 card shifts sideways on hover (see the
-            // 1200px+ block below) to center its growth between both
-            // neighbors, via `transform` rather than `left`: `left`
-            // starts undefined while this box is still `position:
-            // relative` at rest, and animating a property through a
-            // concurrent position:relative -> absolute switch is
-            // ill-defined — in testing it left `left` stuck at its
-            // starting point for the whole hover, which in turn pinned
-            // `width` next to it (a running transition takes priority
-            // over any other value for a property, including !important
-            // rules, until it completes — and it never did). `transform`
-            // has a well-defined resting value (none) regardless of
-            // position mode, so it animates smoothly no matter what
-            // position is doing at the same time.
-            -webkit-transition: width 0.5s cubic-bezier(0.55,0.055,0.675,0.19), height 0.5s cubic-bezier(0.55,0.055,0.675,0.19), -webkit-transform 0.5s cubic-bezier(0.55,0.055,0.675,0.19), box-shadow 0.25s ease;
-            transition: width 0.5s cubic-bezier(0.55,0.055,0.675,0.19), height 0.5s cubic-bezier(0.55,0.055,0.675,0.19), transform 0.5s cubic-bezier(0.55,0.055,0.675,0.19), box-shadow 0.25s ease;
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: -ms-flexbox;
-            display: flex;
-            position: relative;
-            z-index: 1;
-            padding: 2rem 1.75rem;
-            width: 100%;
-            height: 100%;
-            border-radius: $ShapeLarge;
-            background-color: $SurfaceContainer;
-            box-sizing: border-box;
-
-            @include md-state-layer($Primary, $ShapeLarge);
-
-            &:hover, &:focus {
-                box-shadow: $Elevation3;
-            }
-
-            .namecard-content {
-                display: -webkit-box;
-                display: -webkit-flex;
-                display: -ms-flexbox;
-                display: flex;
-                -webkit-box-pack: start;
-                -webkit-justify-content: flex-start;
-                -ms-flex-pack: start;
-                justify-content: flex-start;
-                -webkit-flex-direction: column;
-                -ms-flex-direction: column;
-                flex-direction: column;
-                -webkit-align-items: flex-start;
-                -webkit-box-align: flex-start;
-                -ms-flex-align: flex-start;
-                align-items: flex-start;
-                width: 100%;
-                height: 100%;
-            }
-
-            svg{
-                width: 40px;
-                height: 40px;
-                color: $Primary;
-            }
-
-            .namecard-title{
-                margin: 0 0 10px;
-                font-size: 22px;
-                color: $White;
-                -webkit-transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
-                transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
-            }
-
-            .namecard-description{
-                font-size: 17px;
-                color: $Primary;
-                -webkit-transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
-                transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
-            }
-
-            &:hover .namecard-title {
-                font-size: 26px;
-            }
-
-            &:hover .namecard-description {
-                font-size: 20px;
-            }
-
-            .namecard-skills{
-                width: 100%;
-                padding: 0 0 0 1.1em;
-                margin: 20px 0 0 0;
-                list-style-type: disc;
-
-                li{
-                    font-size: 12px;
-                    color: $White;
-                    line-height: 1.75;
-                    margin-bottom: 8px;
-                    font-family: $CodeFont;
-                    -webkit-transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
-                    transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
-
-                    &::marker {
-                        color: $White;
-                    }
-                }
-            }
-
-            &:hover .namecard-skills li {
-                font-size: 14px;
-            }
+        &:focus-visible {
+            outline: 2px solid $Primary;
+            outline-offset: -2px;
         }
     }
 
+    .namecard-item-inner {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-align-items: flex-start;
+        -webkit-box-align: flex-start;
+        -ms-flex-align: flex-start;
+        align-items: flex-start;
+        -webkit-box-pack: start;
+        -webkit-justify-content: flex-start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        height: 100%;
+        min-width: 220px;
+        padding: 2rem 1.75rem;
+        box-sizing: border-box;
+    }
+
+    .namecard-header {
+        width: 100%;
+    }
+
+    .namecard-title {
+        margin: 0 0 10px;
+        font-size: 20px;
+        color: $White;
+        -webkit-transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
+        transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
+    }
+
+    .namecard-description {
+        font-size: 15px;
+        color: $Primary;
+        -webkit-transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
+        transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
+    }
+
+    .namecard-item:hover .namecard-title,
+    .namecard-item:focus .namecard-title,
+    .namecard-item:focus-within .namecard-title {
+        font-size: 26px;
+    }
+
+    .namecard-item:hover .namecard-description,
+    .namecard-item:focus .namecard-description,
+    .namecard-item:focus-within .namecard-description {
+        font-size: 20px;
+    }
+
+    .namecard-skills {
+        width: 100%;
+        padding: 0 0 0 1.1em;
+        margin: 20px 0 0 0;
+        list-style-type: disc;
+
+        li {
+            font-size: 12px;
+            color: $White;
+            line-height: 1.75;
+            margin-bottom: 8px;
+            font-family: $CodeFont;
+
+            &::marker {
+                color: $White;
+            }
+        }
+    }
 }
 
-
-@media(max-width: 1300px){
+// Below this width there isn't enough room for the horizontal row's
+// hover-grow to have any real breathing room — even with the min-width
+// floor and gentler growth above, 3 columns plus gaps barely fit at rest,
+// so hovering had nowhere to redistribute space from and the "collapsed"
+// siblings stayed pinned at their floor, cramped, no matter what. Matches
+// the header's own 1050px breakpoint (header.component.scss) rather than
+// the old 767px, so the accordion switches to a stacked layout at the same
+// width the header switches to its compact one, instead of sitting in a
+// no-man's-land where the header's already compact but the row still is.
+//
+// Unlike the desktop row, which grows the hovered box via flex-grow within
+// a shared height budget, each box here sizes to its own content instead
+// of splitting a fixed container height three ways — a fixed height
+// clipped the description list before this changed to height: auto below.
+@media(max-width: 1050px){
     .namecard{
-        .namecard-col{
+        .namecard-accordion {
+            flex-direction: column;
+            height: auto;
+            min-height: 0;
+        }
+
+        .namecard-item {
+            flex: none;
+            min-height: 0;
+            overflow: visible;
+
+            &:hover, &:focus, &:focus-within {
+                flex-grow: 0;
+            }
+        }
+
+        .namecard-item-inner {
+            min-width: unset;
+            width: 100%;
             height: auto;
         }
-    }
-}
 
-// Expanding on hover is an overlay (position: absolute) rather than a
-// flex/grid reflow: a reflow-based accordion (shrinking siblings to let
-// the hovered card grow) moves the hovered card's own edge under a
-// mouse that hasn't actually moved, which drops :hover mid-transition
-// and immediately re-triggers it — a flicker loop. An overlay never
-// resizes anything else, so nothing can shift the hovered card out from
-// under the pointer that's hovering it.
-//
-// The width below covers every column sharing a row at the current
-// breakpoint (2 columns from col-md-6/col-lg-6, widened to 3 for
-// col-xl-4 further down) — that's the fix for "kind of works, not
-// entirely": the previous fixed 215% only ever reached one neighbor, so
-// a 3-up row always left its 3rd column showing.
-@media(min-width: 768px){
-    .namecard{
-        .namecard-col{
-            .namecard-box:hover {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 200%;
-                height: auto;
-                min-height: 100%;
+        // Collapsed by default to only the first 2 points — showing every
+        // point for all 3 cards at once (mobile has no hover to reveal
+        // them on demand like desktop does) left little room for the tiles
+        // to visually expand into. Tapping/focusing the tile (it's already
+        // tabindex="0" and cursor: pointer for desktop's hover-expand)
+        // reveals the rest, growing the tile's own height since it's
+        // height: auto above rather than clipping.
+        //
+        // max-height (not display: none) so the reveal can transition
+        // smoothly instead of popping straight to full height — display
+        // can't be animated at all, and height: auto isn't a transitionable
+        // value either. 200px is a ceiling well above any real point's
+        // wrapped height at mobile widths, not a real cap; transitioning
+        // toward an oversized ceiling like this reaches the content's
+        // actual height quickly and then just stops early rather than
+        // visibly overshooting, since nothing constrains it from growing
+        // past its own content size.
+        //
+        // The max-height/overflow live on an inner <span> rather than the
+        // <li> itself: Chromium drops a list item's ::marker (the bullet)
+        // entirely once overflow: hidden lands directly on the <li>, so
+        // clipping there silently loses the bullet for every revealed
+        // point. margin-bottom stays on the <li> since it's what closes
+        // the vertical gap and isn't clipped either way.
+        //
+        // list-style: none while collapsed for the same reason in reverse —
+        // an outside marker isn't inside the span's own box, so it isn't
+        // touched by the span's overflow: hidden and stays painted even
+        // while the span it's labelling has no visible text, leaving a
+        // bullet with nothing next to it. Toggling list-style alongside
+        // the span keeps a collapsed point fully invisible, marker and all.
+        .namecard-skills li:nth-child(n+3) {
+            margin-bottom: 0;
+            list-style: none;
+            -webkit-transition: margin-bottom 0.4s ease;
+            transition: margin-bottom 0.4s ease;
+
+            > span {
+                display: block;
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                -webkit-transition: max-height 0.4s ease, opacity 0.3s ease;
+                transition: max-height 0.4s ease, opacity 0.3s ease;
             }
         }
-    }
-}
 
-// col-md-6 / col-lg-6: two cards per row, so the 2nd card is the
-// rightmost in its row and needs to grow leftward instead.
-@media(min-width: 768px) and (max-width: 1199px){
-    .namecard{
-        .namecard-col:nth-child(2) .namecard-box:hover {
-            left: auto;
-            right: 0;
-        }
-    }
-}
+        .namecard-item:hover .namecard-skills li:nth-child(n+3),
+        .namecard-item:focus .namecard-skills li:nth-child(n+3),
+        .namecard-item:focus-within .namecard-skills li:nth-child(n+3) {
+            margin-bottom: 8px;
+            list-style: disc;
 
-// col-xl-4: three cards per row, so covering the row now takes 300%
-// instead of 200%.
-@media(min-width: 1200px){
-    .namecard{
-        .namecard-col .namecard-box:hover {
-            width: 300%;
-        }
-
-        // The middle (2nd of 3) card has a neighbor on both sides, so
-        // growing only rightward (the default) would leave the 1st
-        // column uncovered — shift it left by one column (a third of
-        // its own new, already-300%-wide box) to center the growth.
-        .namecard-col:nth-child(2) .namecard-box:hover {
-            -webkit-transform: translateX(-33.3333%);
-            transform: translateX(-33.3333%);
-        }
-
-        // 3rd (last) card is the rightmost, so it grows leftward.
-        .namecard-col:last-child .namecard-box:hover {
-            left: auto;
-            right: 0;
-        }
-    }
-}
-
-@media(max-width: 767px){
-    .namecard{
-        .namecard-col{
-            .namecard-box:hover {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: auto;
-                min-height: 100%;
-                padding-bottom: calc(2rem + 90px);
-            }
-            &:last-child .namecard-box:hover {
-                top: auto;
-                bottom: 0;
+            > span {
+                max-height: 200px;
+                opacity: 1;
             }
         }
     }

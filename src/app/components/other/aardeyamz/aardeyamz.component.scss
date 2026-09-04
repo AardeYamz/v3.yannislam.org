@@ -1,0 +1,11 @@
+// The fixed nav bar (position: fixed, 100px tall at rest — see .on-top in
+// header.component.scss) doesn't push page content down on its own; every
+// other page's first section clears it with its own top offset (e.g.
+// .banner .content's margin-top: 98px on the home page). This page's only
+// content is the namecard section, which is otherwise the first thing
+// under the header, so it needs the same treatment — .section-box's 90px
+// is section-to-section spacing, not sized for this and a few px short.
+main {
+    display: block;
+    padding-top: 98px;
+}
