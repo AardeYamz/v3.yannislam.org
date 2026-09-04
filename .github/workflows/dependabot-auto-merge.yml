@@ -1,0 +1,55 @@
+name: Dependabot auto-merge
+
+# Auto-merges the Dependabot PRs that are safe by default:
+#   - any patch or minor version bump, of any dependency
+#   - a major bump of a dev-only dependency (it never ships in the built
+#     bundle - see the "testing" group comment in dependabot.yml)
+# A major bump of a production dependency is left for manual review.
+#
+# This uses GitHub's native `gh pr merge --auto`: it doesn't merge the PR
+# immediately, it flags the PR to merge itself once the branch is mergeable
+# and every *required* status check has succeeded. That only actually gates
+# on this repo's CI (Build & Test) and the Vercel preview if they're listed
+# as required status checks under Settings > Branches for `main` - add them
+# there once for this workflow to wait on them rather than merging on sight.
+#
+# `pull_request_target` (not `pull_request`) is required so the job gets a
+# write-scoped token even though Dependabot PRs come from a bot with
+# restricted permissions - GitHub gives `pull_request`-triggered Dependabot
+# runs a read-only token and no secrets access, regardless of the workflow's
+# own `permissions:` block. This is GitHub's own documented pattern for
+# Dependabot auto-merge (dependabot/fetch-metadata only supports
+# pull_request/pull_request_target - it can't be driven from a workflow_run,
+# the usual pull_request_target-avoiding alternative). It's safe here
+# because the job never checks out or executes anything from the PR head -
+# it only reads PR metadata via the API and calls `gh pr merge`, so there's
+# no untrusted code or templated PR content in play for zizmor's blanket
+# "almost always insecure" rule to actually apply to.
+on: # zizmor: ignore[dangerous-triggers]
+  pull_request_target:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Enable auto-merge for safe updates
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major' || steps.metadata.outputs.dependency-type == 'direct:development'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --auto --squash "$PR_URL"
