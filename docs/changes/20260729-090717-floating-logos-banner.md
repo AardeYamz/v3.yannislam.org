@@ -2,6 +2,12 @@ Date: 2026-07-29 09:07:17
 
 # Floating Logos Background (Banner)
 
+> **Follow-up:** the component now supports multiple background animations and
+> picks one per load — see
+> `docs/changes/20260811-013727-floating-logos-modes.md`. The falling
+> animation described here is currently commented out of the rotation for
+> testing, but its code and tests are untouched.
+
 A field of small, tangram-mark logos continuously falls behind the banner's
 "Hello! My name is" greeting — random colors, sizes, and fall speeds, never
 overlapping each other, dodging away from the cursor on hover, and
