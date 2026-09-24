@@ -1,14 +1,73 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, PLATFORM_ID, QueryList, ViewChildren, effect } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, OnDestroy, PLATFORM_ID, QueryList, ViewChild, ViewChildren, effect } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ThemeService } from 'src/app/services/theme/theme.service';
+import { YL_SHAPE_BOUNDS, packPointsInYlShape } from './yl-shape';
+
+// Each mode is a different way of arranging and moving the same field of
+// little YL logos behind the banner:
+//
+//   'falling' — the original: logos drift down forever in non-overlapping
+//               vertical lanes.
+//   'mosaic'  — logos are scattered inside the outline of the YL mark so the
+//               crowd reads as one big YL, then idle in place.
+export type BackgroundMode = 'falling' | 'mosaic';
+
+export interface ModeConfig {
+  /** Random logo count per load, inclusive range. */
+  readonly minCount: number;
+  readonly maxCount: number;
+  readonly minSize: number;
+  readonly maxSize: number;
+  readonly minOpacity: number;
+  readonly maxOpacity: number;
+  readonly maxRotationDeg: number;
+}
+
+export const MODE_CONFIG: Record<BackgroundMode, ModeConfig> = {
+  // This sits behind the banner's greeting only (see banner.component.html),
+  // not the whole page, so a much smaller count than a full-viewport effect.
+  falling: {
+    minCount: 20,
+    maxCount: 40,
+    minSize: 22,
+    maxSize: 48,
+    minOpacity: 0.16,
+    maxOpacity: 0.38,
+    maxRotationDeg: 25
+  },
+  // Smaller, far more numerous and more opaque than the falling field: the
+  // silhouette only reads as a YL if the pieces are small relative to the
+  // whole mark, and each logo inks maybe a fifth of its own box (it's a thin
+  // figure on transparent ground), so a count that looks generous on paper
+  // still comes out as a faint scatter. Also tilted more freely, since here
+  // the crowd *is* the picture and no two neighbors should look stamped.
+  mosaic: {
+    minCount: 180,
+    maxCount: 240,
+    minSize: 14,
+    maxSize: 30,
+    minOpacity: 0.3,
+    maxOpacity: 0.6,
+    maxRotationDeg: 40
+  }
+};
 
 interface FloatingLogo {
   id: number;
   variant: string;
   size: number;
   rotation: number;
-  opacity: number;
 
+  /** Opacity the logo settles at. */
+  opacity: number;
+  /**
+   * Opacity the element is rendered with before the animation loop takes
+   * over — the value the template binds. Mosaic logos start invisible and
+   * fade in (see `entranceProgress`); falling logos are up from first paint.
+   */
+  initialOpacity: number;
+
+  // --- 'falling' mode -----------------------------------------------------
   // Lane layout: every logo is confined to a fixed-width vertical lane and,
   // within that lane, to an evenly-spaced position on a looping fall track
   // shared with its lane-mates. Same lane speed + even phase spacing means
@@ -26,13 +85,42 @@ interface FloatingLogo {
   swayFreq: number;
   swayPhase: number;
 
-  // Temporary hover-dodge displacement, added on top of the lane position.
-  // dodgeX/Y is what's actually rendered; it eases toward dodgeTargetX/Y
-  // each frame, and the target itself relaxes back to zero over time — so
-  // a dodge is a smooth pursuit of a decaying target in both directions,
-  // never an instant jump. This is the one deliberate exception to the
-  // no-overlap guarantee above: a dodge can briefly push a logo past its
-  // lane's edge before it settles back.
+  // --- 'mosaic' mode ------------------------------------------------------
+  // Resting spot inside the big YL, in host pixels (top-left of the element,
+  // so the layout pass has already subtracted half a logo). Assigned by
+  // layoutMosaic() since it depends on the host's measured size.
+  anchorX: number;
+  anchorY: number;
+
+  // Slow elliptical idle orbit around the anchor, so a mosaic that has
+  // finished assembling still breathes instead of freezing.
+  driftX: number;
+  driftY: number;
+  driftFreq: number;
+  driftPhase: number;
+
+  /** Seconds into the animation before this logo starts fading in. */
+  appearAt: number;
+  /** Set once the fade-in has been written at full strength. */
+  entranceDone: boolean;
+
+  /**
+   * Last transform written to the DOM, so an unchanged one can be skipped.
+   * Worth it in mosaic mode, where the logo count is high and the idle orbit
+   * is slow enough that a good share of logos round to the same 0.1px
+   * position two frames running — measured at ~99 writes per frame instead of
+   * 202 on a settled desktop mosaic.
+   */
+  lastTransform: string;
+
+  // --- shared -------------------------------------------------------------
+  // Temporary hover-dodge displacement, added on top of the resting
+  // position. dodgeX/Y is what's actually rendered; it eases toward
+  // dodgeTargetX/Y each frame, and the target itself relaxes back to zero
+  // over time — so a dodge is a smooth pursuit of a decaying target in both
+  // directions, never an instant jump. In falling mode this is the one
+  // deliberate exception to the no-overlap guarantee above: a dodge can
+  // briefly push a logo past its lane's edge before it settles back.
   dodgeX: number;
   dodgeY: number;
   dodgeTargetX: number;
@@ -44,36 +132,99 @@ interface FloatingLogo {
 // they'd blend into a same-color background here.
 const VARIANTS = ['clearcolor', 'gray', 'yellow', 'gold', 'red', 'lime', 'green', 'orange', 'cream'];
 
-// This sits behind the banner's greeting only (see banner.component.html),
-// not the whole page, so a much smaller count than a full-viewport effect.
-const MIN_LOGO_COUNT = 20;
-const MAX_LOGO_COUNT = 40;
-const MIN_SIZE_PX = 22;
-const MAX_SIZE_PX = 48;
+const FALLING = MODE_CONFIG.falling;
 const LANE_GAP_PX = 14;
-const ROT_MAX_DEG = 25;
 
 // getBoundingClientRect() on a rotated element returns its axis-aligned
 // bounding box, which is wider/taller than the unrotated size — up to
 // size * (cos + sin) of the rotation angle. Lanes are sized for that
-// worst case (rotation clamped to +/-ROT_MAX_DEG) so two full-size,
+// worst case (rotation clamped to +/-maxRotationDeg) so two full-size,
 // max-rotated neighbors still can't touch.
-const ROT_INFLATE = Math.cos(ROT_MAX_DEG * Math.PI / 180) + Math.sin(ROT_MAX_DEG * Math.PI / 180);
-const EFFECTIVE_MAX_FOOTPRINT_PX = MAX_SIZE_PX * ROT_INFLATE;
+const ROT_INFLATE =
+  Math.cos(FALLING.maxRotationDeg * Math.PI / 180) + Math.sin(FALLING.maxRotationDeg * Math.PI / 180);
+const EFFECTIVE_MAX_FOOTPRINT_PX = FALLING.maxSize * ROT_INFLATE;
 const LANE_WIDTH_PX = EFFECTIVE_MAX_FOOTPRINT_PX + LANE_GAP_PX;
 const VERTICAL_SPACING_PX = EFFECTIVE_MAX_FOOTPRINT_PX + LANE_GAP_PX;
 const MIN_SPEED_PX_S = 18;
 const MAX_SPEED_PX_S = 55;
 
+// Used when the host hasn't been measured yet (or has no layout box at all,
+// e.g. under Karma), so a layout pass can never divide by a zero-sized box.
+export const FALLBACK_HOST_BOX = { width: 1200, height: 800 };
+
+// Mosaic layout. The mark is tall and narrow (~314x651 shape units), so it
+// is scaled to the host's height and, on wide screens, parked to the right of
+// the banner copy (which is left-aligned and capped at 500px) instead of
+// sitting on top of it. Below that width there's nowhere to hide, so it just
+// centers.
+const MOSAIC_FILL = 0.72;
+const MOSAIC_WIDE_HOST_PX = 992;
+const MOSAIC_WIDE_CENTER_RATIO = 0.72;
+
+// Same threshold, doing double duty: chooseMode() below uses it against
+// window.innerWidth to decide mosaic vs. falling for the whole page load,
+// since a viewport too narrow to park the mark beside the copy (the
+// `centered` case above) is exactly the case not worth attempting on mobile
+// at all — better to fall back to the lighter falling animation than show a
+// dimmed, centered mosaic sitting on top of the banner copy.
+const MOSAIC_MIN_VIEWPORT_PX = MOSAIC_WIDE_HOST_PX;
+
+// A centered mark lands squarely on the banner copy, so the whole layer is
+// dimmed as a group (this multiplies with each logo's own opacity) to keep the
+// text readable. Off to the side there's no such conflict and the logos are
+// shown at full strength.
+const MOSAIC_CENTERED_DIM = 0.4;
+
+/**
+ * Where the big YL sits in a host box of the given size: `scale` is host
+ * pixels per shape unit, and `originX/originY` are the top-left of the scaled
+ * mark. Shape-unit point (x, y) maps to
+ * `originX + (x - YL_SHAPE_BOUNDS.minX) * scale`, and likewise for y.
+ * `centered` is true when the host was too narrow to park the mark beside the
+ * copy.
+ */
+export function mosaicPlacement(width: number, height: number): { scale: number; originX: number; originY: number; centered: boolean } {
+  const scale = Math.min(
+    (width * MOSAIC_FILL) / YL_SHAPE_BOUNDS.width,
+    (height * MOSAIC_FILL) / YL_SHAPE_BOUNDS.height
+  );
+  const centered = width < MOSAIC_WIDE_HOST_PX;
+  const centerRatio = centered ? 0.5 : MOSAIC_WIDE_CENTER_RATIO;
+  return {
+    scale,
+    centered,
+    originX: width * centerRatio - (YL_SHAPE_BOUNDS.width * scale) / 2,
+    originY: (height - YL_SHAPE_BOUNDS.height * scale) / 2
+  };
+}
+
+// Logos are mostly transparent inside their square box, so packing on the
+// full half-size would leave the shape looking gappy; this shrinks the
+// keep-apart radius so neighbors interlock without visibly stacking.
+const MOSAIC_PACK = 0.55;
+const MOSAIC_DRIFT_MIN_PX = 2;
+const MOSAIC_DRIFT_MAX_PX = 7;
+const MOSAIC_DRIFT_MIN_HZ = 0.04;
+const MOSAIC_DRIFT_MAX_HZ = 0.14;
+
+// Staggered fade + scale-up as the shape assembles itself on load.
+const MOSAIC_ENTRANCE_STAGGER_S = 1.6;
+const MOSAIC_ENTRANCE_DURATION_S = 0.7;
+const MOSAIC_ENTRANCE_START_SCALE = 0.4;
+
 // Hover dodge: a small, smoothly-eased nudge away from the cursor, not a
 // snap. DODGE_APPROACH controls how quickly the rendered position chases
 // the (also-decaying) target each frame; DODGE_TARGET_DECAY controls how
-// long the "push" lingers before relaxing back to the resting track.
+// long the "push" lingers before relaxing back to the resting position.
 const DODGE_DISTANCE_MIN_PX = 30;
 const DODGE_DISTANCE_MAX_PX = 60;
 const DODGE_MAX_PX = 90;
 const DODGE_APPROACH = 0.12;
 const DODGE_TARGET_DECAY = 0.94;
+
+function randomBetween(min: number, max: number): number {
+  return min + Math.random() * (max - min);
+}
 
 @Component({
   selector: 'app-floating-logos',
@@ -84,8 +235,32 @@ const DODGE_TARGET_DECAY = 0.94;
 })
 export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   @ViewChildren('logoEl') private logoEls!: QueryList<ElementRef<HTMLElement>>;
+  @ViewChild('layer') private layer!: ElementRef<HTMLElement>;
 
-  readonly logos: FloatingLogo[] = this.generateLogos();
+  readonly mode: BackgroundMode;
+  readonly config: ModeConfig;
+  readonly logos: FloatingLogo[];
+
+  // Lets the stylesheet tell the modes apart (see the .scss). Two discrete
+  // per-class boolean bindings, not a single `@HostBinding('class')` string
+  // getter: SSR has no viewport, so chooseMode() always guesses 'falling'
+  // server-side (see its comment - the guess doesn't matter, since
+  // generateLogos() output is discarded and regenerated on hydration
+  // regardless). On a desktop load the client then decides 'mosaic', and a
+  // string-valued `class` binding's first write after hydration only *adds*
+  // "mode-mosaic" to the server-rendered "mode-falling" - it isn't diffed
+  // against that pre-existing static value, since Angular's binding
+  // bookkeeping has no "previous" value of its own to diff against yet - so
+  // both classes stuck around together, with both modes' styles active at
+  // once. `[class.foo]` bindings toggle one specific class by boolean value
+  // and don't have that gap.
+  @HostBinding('class.mode-falling') get isFallingMode(): boolean {
+    return this.mode === 'falling';
+  }
+
+  @HostBinding('class.mode-mosaic') get isMosaicMode(): boolean {
+    return this.mode === 'mosaic';
+  }
 
   // Domino (Angular's server-side DOM emulation used during prerendering)
   // defines a `window` global but doesn't implement layout/media APIs like
@@ -102,7 +277,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   private resizeTimeout?: ReturnType<typeof setTimeout>;
   private readonly onResize = () => {
     clearTimeout(this.resizeTimeout);
-    this.resizeTimeout = setTimeout(() => this.layoutLanes(), 200);
+    this.resizeTimeout = setTimeout(() => this.layout(), 200);
   };
 
   private isFirstThemeCheck = true;
@@ -115,6 +290,10 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
     this.prefersReducedMotion = this.isBrowser && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    this.mode = this.chooseMode();
+    this.config = MODE_CONFIG[this.mode];
+    this.logos = this.generateLogos();
 
     // Re-randomize colors whenever the user toggles the theme. Skipped on
     // the first run (effects fire once immediately on creation) since
@@ -136,6 +315,26 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
       this.reshuffleColors();
       this.cdr.markForCheck();
     });
+  }
+
+  // Desktop gets the mosaic (the whole point is reading as one big YL, which
+  // needs room to park beside the banner copy); mobile keeps the lighter
+  // falling animation, both because there's nowhere to put a mosaic that
+  // size without sitting on top of the copy and because mobile is already
+  // the more render-constrained device class (see docs/todo/desktop-performance.md).
+  //
+  // Decided once, here, rather than in layout(): window.innerWidth is a
+  // synchronous global that's accurate before any layout pass, unlike the
+  // host element's own getBoundingClientRect() (used for placement, not
+  // mode selection), which needs the element actually laid out — not
+  // guaranteed yet this early. SSR has no viewport at all, but it doesn't
+  // matter which mode the server guesses: generateLogos() is fully random
+  // per instance regardless of mode, so hydration's client-side
+  // reconstruction (see docs/changes/20260811-013727-floating-logos-modes.md's
+  // "Known wart") always discards and replaces the server's guess anyway.
+  private chooseMode(): BackgroundMode {
+    if (!this.isBrowser) return 'falling';
+    return window.innerWidth >= MOSAIC_MIN_VIEWPORT_PX ? 'mosaic' : 'falling';
   }
 
   // Pauses/resumes the rAF loop when the tab is hidden/shown, so a
@@ -161,18 +360,19 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     // server-side prerendering.
     if (!this.isBrowser) return;
 
-    this.layoutLanes();
+    this.layout();
 
-    // layoutLanes() only computes each logo's lane/track assignment - it
-    // doesn't itself move anything, since the actual DOM write happens in
-    // render(). Without this call, the very first paint (whether that's a
-    // cold client bootstrap or hydrating a prerendered page, where the
-    // static HTML has no transform on these elements at all) shows every
-    // logo stacked at the container's (0,0) corner until the rAF loop's
-    // first tick fires and calls render() a frame later - a visible pile
-    // that then jumps out to its scattered layout. Rendering once here,
-    // synchronously, means the correct layout is what actually gets
-    // painted first.
+    // layout() only computes where each logo belongs - it doesn't itself
+    // move anything, since the actual DOM write happens in render(). Without
+    // this call, the very first paint (whether that's a cold client bootstrap
+    // or hydrating a prerendered page, where the static HTML has no transform
+    // on these elements at all) shows every logo stacked at the container's
+    // (0,0) corner until the rAF loop's first tick fires and calls render() a
+    // frame later - a visible pile that then jumps out to its real layout.
+    // Rendering once here, synchronously, means the correct layout is what
+    // actually gets painted first. (Mosaic logos are also transparent until
+    // their entrance starts, so for them this is what puts them in the right
+    // place to fade in from, rather than fixing a visible pile.)
     this.render(0);
 
     window.addEventListener('resize', this.onResize);
@@ -188,7 +388,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopLoop();
     clearTimeout(this.resizeTimeout);
-    if (typeof window !== 'undefined') {
+    if (this.isBrowser) {
       window.removeEventListener('resize', this.onResize);
       document.removeEventListener('visibilitychange', this.onVisibilityChange);
     }
@@ -197,7 +397,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   // Anchors `start` so that `now - start` (in tick) continues from
   // `this.elapsedS` rather than restarting at zero — resuming after a
   // pause (e.g. tab was hidden) picks up right where it left off instead
-  // of jumping the logos back to their track's starting position.
+  // of jumping the logos back to their starting position.
   private startLoop(): void {
     const start = performance.now() - this.elapsedS * 1000;
     const tick = (now: number) => {
@@ -220,12 +420,12 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   onDodge(event: MouseEvent, logo: FloatingLogo): void {
     if (this.prefersReducedMotion) return;
 
-    const { x, y } = this.trackPosition(logo, this.elapsedS);
+    const { x, y } = this.restPosition(logo, this.elapsedS);
     const hostRect = this.host.nativeElement.getBoundingClientRect();
     const dx = (hostRect.left + x + logo.dodgeX + logo.size / 2) - event.clientX;
     const dy = (hostRect.top + y + logo.dodgeY + logo.size / 2) - event.clientY;
     const len = Math.hypot(dx, dy) || 1;
-    const distance = DODGE_DISTANCE_MIN_PX + Math.random() * (DODGE_DISTANCE_MAX_PX - DODGE_DISTANCE_MIN_PX);
+    const distance = randomBetween(DODGE_DISTANCE_MIN_PX, DODGE_DISTANCE_MAX_PX);
 
     const nextX = logo.dodgeTargetX + (dx / len) * distance;
     const nextY = logo.dodgeTargetY + (dy / len) * distance;
@@ -247,13 +447,45 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // The lane/sway position a logo would occupy at a given elapsed time,
-  // before any hover-dodge offset is added.
-  private trackPosition(logo: FloatingLogo, elapsedS: number): { x: number; y: number } {
-    const cyclePos = ((logo.phase + logo.speed * elapsedS) % logo.trackLength + logo.trackLength) % logo.trackLength;
-    const y = cyclePos - logo.size;
-    const sway = logo.swayAmplitude * Math.sin(elapsedS * logo.swayFreq + logo.swayPhase);
-    return { x: logo.laneX + sway, y };
+  private layout(): void {
+    switch (this.mode) {
+      case 'falling':
+        this.layoutLanes();
+        return;
+      case 'mosaic':
+        this.layoutMosaic();
+        return;
+    }
+  }
+
+  // The position a logo would occupy at a given elapsed time under its
+  // mode's own motion, before any hover-dodge offset is added.
+  private restPosition(logo: FloatingLogo, elapsedS: number): { x: number; y: number } {
+    switch (this.mode) {
+      case 'falling': {
+        const cyclePos =
+          ((logo.phase + logo.speed * elapsedS) % logo.trackLength + logo.trackLength) % logo.trackLength;
+        const sway = logo.swayAmplitude * Math.sin(elapsedS * logo.swayFreq + logo.swayPhase);
+        return { x: logo.laneX + sway, y: cyclePos - logo.size };
+      }
+      case 'mosaic': {
+        const angle = elapsedS * logo.driftFreq * Math.PI * 2 + logo.driftPhase;
+        return {
+          x: logo.anchorX + Math.cos(angle) * logo.driftX,
+          y: logo.anchorY + Math.sin(angle) * logo.driftY
+        };
+      }
+    }
+  }
+
+  // 0 -> not yet arrived, 1 -> fully assembled. Reduced motion skips
+  // straight to the finished shape.
+  private entranceProgress(logo: FloatingLogo, elapsedS: number): number {
+    if (this.prefersReducedMotion) return 1;
+    const t = (elapsedS - logo.appearAt) / MOSAIC_ENTRANCE_DURATION_S;
+    if (t <= 0) return 0;
+    if (t >= 1) return 1;
+    return 1 - Math.pow(1 - t, 3); // easeOutCubic
   }
 
   private render(elapsedMs: number): void {
@@ -264,22 +496,47 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
       const el = this.elements[i];
       if (!el) continue;
 
-      const { x, y } = this.trackPosition(logo, this.elapsedS);
+      const { x, y } = this.restPosition(logo, this.elapsedS);
 
       logo.dodgeTargetX *= DODGE_TARGET_DECAY;
       logo.dodgeTargetY *= DODGE_TARGET_DECAY;
       logo.dodgeX += (logo.dodgeTargetX - logo.dodgeX) * DODGE_APPROACH;
       logo.dodgeY += (logo.dodgeTargetY - logo.dodgeY) * DODGE_APPROACH;
 
-      el.style.transform =
+      let transform =
         `translate3d(${(x + logo.dodgeX).toFixed(1)}px, ${(y + logo.dodgeY).toFixed(1)}px, 0) rotate(${logo.rotation}deg)`;
+
+      // Opacity is only touched while a logo is still arriving; once it has
+      // been written at full strength the template's binding owns it again,
+      // so the steady state costs one style write per logo per frame, same
+      // as falling mode.
+      if (this.mode === 'mosaic' && !logo.entranceDone) {
+        const progress = this.entranceProgress(logo, this.elapsedS);
+        logo.entranceDone = progress === 1;
+        el.style.opacity = (logo.opacity * progress).toFixed(3);
+        if (!logo.entranceDone) {
+          const scale = MOSAIC_ENTRANCE_START_SCALE + (1 - MOSAIC_ENTRANCE_START_SCALE) * progress;
+          transform += ` scale(${scale.toFixed(3)})`;
+        }
+      }
+
+      if (transform !== logo.lastTransform) {
+        el.style.transform = transform;
+        logo.lastTransform = transform;
+      }
     }
   }
 
-  private layoutLanes(): void {
+  private hostBox(): { width: number; height: number } {
     const rect = this.host.nativeElement.getBoundingClientRect();
-    const width = rect.width || 1200;
-    const height = rect.height || 800;
+    return {
+      width: rect.width || FALLBACK_HOST_BOX.width,
+      height: rect.height || FALLBACK_HOST_BOX.height
+    };
+  }
+
+  private layoutLanes(): void {
+    const { width, height } = this.hostBox();
     const cols = Math.max(1, Math.floor(width / LANE_WIDTH_PX));
 
     const perColumn: FloatingLogo[][] = Array.from({ length: cols }, () => []);
@@ -288,9 +545,9 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     perColumn.forEach((column, colIndex) => {
       if (column.length === 0) return;
 
-      const laneX = colIndex * LANE_WIDTH_PX + (LANE_WIDTH_PX - MAX_SIZE_PX) / 2;
-      const trackLength = Math.max(height + MAX_SIZE_PX * 2, column.length * VERTICAL_SPACING_PX);
-      const speed = MIN_SPEED_PX_S + Math.random() * (MAX_SPEED_PX_S - MIN_SPEED_PX_S);
+      const laneX = colIndex * LANE_WIDTH_PX + (LANE_WIDTH_PX - FALLING.maxSize) / 2;
+      const trackLength = Math.max(height + FALLING.maxSize * 2, column.length * VERTICAL_SPACING_PX);
+      const speed = randomBetween(MIN_SPEED_PX_S, MAX_SPEED_PX_S);
       const step = trackLength / column.length;
       // Every column's k=0 item would otherwise sit at the exact same
       // phase (0) as every other column's k=0 item - each column's own
@@ -323,25 +580,66 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  // Scatters the logos across the YL mark's outline: yl-shape.ts packs one
+  // point per logo inside the shape (in its own 800x800 coordinate space),
+  // and this maps those points into the host box.
+  private layoutMosaic(): void {
+    const { width, height } = this.hostBox();
+    const { scale, originX, originY, centered } = mosaicPlacement(width, height);
+
+    // Group opacity on the layer, not per logo, so it also applies to logos
+    // that already finished fading in — and so a resize across the breakpoint
+    // takes effect without restarting the entrance.
+    this.layer.nativeElement.style.opacity = centered ? String(MOSAIC_CENTERED_DIM) : '';
+
+    // Keep-apart radii have to be expressed in shape units, since that's the
+    // space the packing runs in.
+    const radii = this.logos.map(logo => (logo.size / 2) * MOSAIC_PACK / scale);
+    const points = packPointsInYlShape(radii);
+
+    this.logos.forEach((logo, i) => {
+      const point = points[i];
+      // translate3d() moves the element's top-left corner, so bias by half a
+      // logo to land its center on the sampled point.
+      logo.anchorX = originX + (point.x - YL_SHAPE_BOUNDS.minX) * scale - logo.size / 2;
+      logo.anchorY = originY + (point.y - YL_SHAPE_BOUNDS.minY) * scale - logo.size / 2;
+    });
+  }
+
   private generateLogos(): FloatingLogo[] {
-    const count = Math.round(MIN_LOGO_COUNT + Math.random() * (MAX_LOGO_COUNT - MIN_LOGO_COUNT));
-    return Array.from({ length: count }, (_, i) => ({
-      id: i,
-      variant: VARIANTS[Math.floor(Math.random() * VARIANTS.length)],
-      size: Math.round(MIN_SIZE_PX + Math.random() * (MAX_SIZE_PX - MIN_SIZE_PX)),
-      rotation: (Math.random() * 2 - 1) * ROT_MAX_DEG,
-      opacity: 0.16 + Math.random() * 0.22,
-      laneX: 0,
-      trackLength: 1,
-      phase: 0,
-      speed: 0,
-      swayAmplitude: 0,
-      swayFreq: 0.6 + Math.random() * 0.8,
-      swayPhase: Math.random() * Math.PI * 2,
-      dodgeX: 0,
-      dodgeY: 0,
-      dodgeTargetX: 0,
-      dodgeTargetY: 0
-    }));
+    const { minCount, maxCount, minSize, maxSize, minOpacity, maxOpacity, maxRotationDeg } = this.config;
+    const count = Math.round(randomBetween(minCount, maxCount));
+
+    return Array.from({ length: count }, (_, i) => {
+      const opacity = randomBetween(minOpacity, maxOpacity);
+      return {
+        id: i,
+        variant: VARIANTS[Math.floor(Math.random() * VARIANTS.length)],
+        size: Math.round(randomBetween(minSize, maxSize)),
+        rotation: (Math.random() * 2 - 1) * maxRotationDeg,
+        opacity,
+        initialOpacity: this.mode === 'mosaic' ? 0 : opacity,
+        laneX: 0,
+        trackLength: 1,
+        phase: 0,
+        speed: 0,
+        swayAmplitude: 0,
+        swayFreq: randomBetween(0.6, 1.4),
+        swayPhase: Math.random() * Math.PI * 2,
+        anchorX: 0,
+        anchorY: 0,
+        driftX: randomBetween(MOSAIC_DRIFT_MIN_PX, MOSAIC_DRIFT_MAX_PX),
+        driftY: randomBetween(MOSAIC_DRIFT_MIN_PX, MOSAIC_DRIFT_MAX_PX),
+        driftFreq: randomBetween(MOSAIC_DRIFT_MIN_HZ, MOSAIC_DRIFT_MAX_HZ),
+        driftPhase: Math.random() * Math.PI * 2,
+        appearAt: Math.random() * MOSAIC_ENTRANCE_STAGGER_S,
+        entranceDone: false,
+        lastTransform: '',
+        dodgeX: 0,
+        dodgeY: 0,
+        dodgeTargetX: 0,
+        dodgeTargetY: 0
+      };
+    });
   }
 }

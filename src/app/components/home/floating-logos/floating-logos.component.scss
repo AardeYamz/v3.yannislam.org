@@ -21,3 +21,10 @@
     will-change: transform;
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
 }
+
+// Mosaic mode packs 3-4x as many logos into the box, and every one of them is
+// small — the per-logo drop shadow stops reading as depth and just costs a
+// filter pass per element per frame, so it's dropped here.
+:host(.mode-mosaic) .floating-logo {
+    filter: none;
+}
