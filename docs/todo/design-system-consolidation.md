@@ -367,6 +367,26 @@ For every phase:
   intended ones.
 - Lighthouse (already in CI) shows no regression in accessibility or CLS.
 
+## Related backlog
+
+`docs/todo/code-review-optimization.md` (merged in #107) covers runtime
+performance, bundle size and TypeScript refactoring. The two plans don't
+overlap in their changes, but three of its items touch the same code as 2.3
+(one source for the logo). Do each pair in one change rather than editing the
+same component twice:
+
+- **Its item 5, the scroll-driven logo rotation.** It proposes moving the nav
+  logo's spin from a scroll listener to `animation-timeline: scroll()`. Do this
+  in the same change as the recentred `<app-logo>`, so the new animation
+  doesn't carry the 44-unit orbit forward.
+- **Its item 17, the loading screen.** It asks for the outro timer to be
+  cleared on destroy and for `prefers-reduced-motion` to be respected. 2.3
+  rewrites the same component's template.
+- **Its item 17, the floating logos.** `generateLogos()` picks colours with
+  `Math.random()` during SSR, so the server and the client disagree. 2.3 makes
+  the field's colours depend on the mode. Settle both in one pass over how the
+  field chooses its logos.
+
 ## Decisions for the reviewer
 
 1. **1.1** — `$White` on the name card: switch to `$OnSurface`, or add a role?
