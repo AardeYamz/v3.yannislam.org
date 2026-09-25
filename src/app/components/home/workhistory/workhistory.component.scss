@@ -97,6 +97,9 @@
             }
             .workhistory-links {
                 margin-top: 10px;
+                .workhistory-link {
+                    color: inherit;
+                }
                 i {
                     font-size: 22px;
                 }
@@ -105,28 +108,33 @@
     }
 }
 
-.owl-carousel-o{
+// .owl-carousel-o (multiple images -- see #visual in the .html) and
+// .img-feature-workhistory-container (a single image) are now mutually
+// exclusive per entry instead of both always being in the DOM with CSS
+// picking which one to show at which breakpoint, so they share the same
+// responsive visibility: visible at any width >= 768px, hidden below that
+// (where .workhistory-info-right/-left's background-image takes over
+// instead -- see the max-width: 768px block below).
+.owl-carousel-o,
+.img-feature-workhistory-container {
     width: 600px;
 }
 .img-feature-workhistory-container {
-    display:  none;
+    display: table;
+    height: -webkit-fill-available;
+    .img-feature-workhistory-box {
+        display: table-cell;
+        vertical-align: middle;
+    }
+    .img-feature-workhistory {
+        width: 100%;
+    }
 }
 
 @media (min-width: 768px) and (max-width: 1300px) {
-    .owl-carousel-o{
-        display: none;
-    }
+    .owl-carousel-o,
     .img-feature-workhistory-container {
         width: 50%;
-        display: table !important;
-        height: -webkit-fill-available;
-        .img-feature-workhistory-box {
-            display: table-cell;
-            vertical-align: middle;
-        }
-        .img-feature-workhistory {
-            width: 100%;
-        }
     }
     .workhistory-info-right,
     .workhistory-info-left {
@@ -143,7 +151,8 @@
 }
 
 @media (max-width: 768px) {
-    .owl-carousel-o{
+    .owl-carousel-o,
+    .img-feature-workhistory-container {
         display: none;
     }
     .workhistory {
@@ -178,9 +187,6 @@
                 .workhistory-box {
                     display: block;
                 }
-            }
-            .img-feature-workhistory-container {
-                display: none;
             }
         }
         .workhistory-info-right,
@@ -220,6 +226,10 @@
     width: 400px;
     overflow: auto;
     border-radius: $ShapeMedium;
+}
+
+.img-container-auto {
+    width: auto;
 }
 
 
