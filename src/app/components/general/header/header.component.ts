@@ -149,12 +149,29 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   scroll(el: string) {
     if (!this.isBrowser) return;
 
-    if (document.getElementById(el)) {
-      document?.getElementById(el)?.scrollIntoView({ behavior: 'smooth' });
+    const target = document.getElementById(el);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
     } else {
-      this.router.navigate(['/home']).then(() => document?.getElementById(el)?.scrollIntoView({ behavior: 'smooth' }));
+      // There is no '/home' route (it only ever "worked" via the wildcard
+      // redirect to '/'), so navigate to the real route.
+      this.router.navigate(['/']).then(() => this.scrollToElementWhenReady(el));
     }
     this.responsiveMenuVisible = false;
+  }
+
+  // router.navigate()'s promise resolves once the route change is
+  // committed, not once HomeComponent has actually rendered its sections —
+  // so the target element may not exist in the DOM yet. Poll across a few
+  // animation frames instead of assuming render timing, bailing out
+  // silently if the element never shows up.
+  private scrollToElementWhenReady(el: string, attemptsLeft = 10) {
+    const target = document.getElementById(el);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    } else if (attemptsLeft > 0) {
+      requestAnimationFrame(() => this.scrollToElementWhenReady(el, attemptsLeft - 1));
+    }
   }
 
   // .menu-responsive is a full-viewport overlay with the drawer <aside>
