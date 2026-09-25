@@ -43,7 +43,7 @@ describe('LinkPreviewDelegateDirective', () => {
 
     expect(previewService.show).toHaveBeenCalledWith(
       link(),
-      { icon: 'fas fa-up-right-from-square', title: 'Voya Financial', url: 'https://www.voya.com/' }
+      { icon: 'fa-up-right-from-square', title: 'Voya Financial', url: 'https://www.voya.com/' }
     );
   });
 

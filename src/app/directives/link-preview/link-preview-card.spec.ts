@@ -30,12 +30,12 @@ describe('domainFromUrl', () => {
 
 describe('iconForUrl', () => {
   it('recognizes known social domains regardless of subdomain/www', () => {
-    expect(iconForUrl('https://linkedin.com/in/yannis-lam/')).toBe('fab fa-linkedin-in');
-    expect(iconForUrl('https://www.github.com/AardeYamz')).toBe('fab fa-github');
+    expect(iconForUrl('https://linkedin.com/in/yannis-lam/')).toBe('fa-linkedin-in');
+    expect(iconForUrl('https://www.github.com/AardeYamz')).toBe('fa-github');
   });
 
   it('falls back to a generic external-link icon for unrecognized domains', () => {
-    expect(iconForUrl('https://www.voya.com/')).toBe('fas fa-up-right-from-square');
-    expect(iconForUrl('https://www.umass.edu/')).toBe('fas fa-up-right-from-square');
+    expect(iconForUrl('https://www.voya.com/')).toBe('fa-up-right-from-square');
+    expect(iconForUrl('https://www.umass.edu/')).toBe('fa-up-right-from-square');
   });
 });

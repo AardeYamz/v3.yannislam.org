@@ -1,6 +1,7 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { domainFromUrl, isPreviewableUrl, LinkPreviewData } from './link-preview-card';
+import { svgMarkup } from 'src/app/icons/icon-registry';
 
 const VISIBLE_CLASS = 'link-preview-card--visible';
 const IFRAME_CLASS = 'link-preview-card--iframe';
@@ -67,7 +68,12 @@ export class LinkPreviewService {
 
     const card = this.ensureCard();
     this.lastHost = host;
-    this.iconEl.className = data.icon;
+    // data.icon is always one of this app's own icon-registry keys (see
+    // LinkPreviewData's doc comment), never external/user input, so this is
+    // the same trusted-constant-HTML case DomSanitizer.bypassSecurityTrustHtml
+    // exists for -- just done directly here since this element is built with
+    // plain DOM APIs rather than an Angular binding.
+    this.iconEl.innerHTML = svgMarkup(data.icon);
     this.titleEl.textContent = data.title;
     this.domainEl.textContent = domainFromUrl(data.url);
 
