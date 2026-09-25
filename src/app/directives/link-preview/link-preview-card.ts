@@ -1,5 +1,6 @@
-// Data needed to render a hover-preview card: a FontAwesome icon class string
-// (e.g. "fab fa-linkedin-in"), the label to show, and the page it links to.
+// Data needed to render a hover-preview card: an icon-registry key (e.g.
+// "fa-linkedin-in", see src/app/icons/icon-registry.ts), the label to show,
+// and the page it links to.
 export interface LinkPreviewData {
   icon: string;
   title: string;
@@ -27,14 +28,14 @@ export function domainFromUrl(url: string): string {
 // Everywhere else (e.g. the footer's social icons), the real per-platform
 // icon from config.json is used directly instead of this guesswork.
 const ICON_BY_DOMAIN: Record<string, string> = {
-  'linkedin.com': 'fab fa-linkedin-in',
-  'github.com': 'fab fa-github',
-  'tiktok.com': 'fab fa-tiktok',
-  'facebook.com': 'fab fa-facebook-f',
-  'fb.com': 'fab fa-facebook-f',
-  'instagram.com': 'fab fa-instagram',
+  'linkedin.com': 'fa-linkedin-in',
+  'github.com': 'fa-github',
+  'tiktok.com': 'fa-tiktok',
+  'facebook.com': 'fa-facebook-f',
+  'fb.com': 'fa-facebook-f',
+  'instagram.com': 'fa-instagram',
 };
-const DEFAULT_ICON = 'fas fa-up-right-from-square';
+const DEFAULT_ICON = 'fa-up-right-from-square';
 
 export function iconForUrl(url: string): string {
   const hostname = domainFromUrl(url);

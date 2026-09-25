@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { LoadingScreenComponent } from './components/general/loading-screen/loading-screen.component';
 import { HeaderComponent } from './components/general/header/header.component';
 import { FooterComponent } from './components/general/footer/footer.component';
+import { IconComponent } from './icons/icon.component';
 import { AnalyticsService } from './services/analytics/analytics.service';
 import { SiteConfigService } from './services/site-config/site-config.service';
 import { ThemeService } from './services/theme/theme.service';
@@ -24,7 +25,7 @@ describe('AppComponent', () => {
     const themeServiceSpy = jasmine.createSpyObj('ThemeService', [], { mode: jasmine.createSpy('mode').and.returnValue('default') });
 
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, IconComponent],
       declarations: [AppComponent, LoadingScreenComponent, HeaderComponent, FooterComponent],
       providers: [
         provideNoopAnimations(),
