@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { signal } from '@angular/core';
 
 import { FooterComponent } from './footer.component';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { LinkPreviewDirective } from 'src/app/directives/link-preview/link-preview.directive';
 
@@ -11,6 +13,8 @@ describe('FooterComponent', () => {
   let fixture: ComponentFixture<FooterComponent>;
   let analyticsService: jasmine.SpyObj<AnalyticsService>;
   let configService: jasmine.SpyObj<SiteConfigService>;
+  let scrollY: ReturnType<typeof signal<number>>;
+  let scrollMaxScroll: ReturnType<typeof signal<number>>;
 
   beforeEach(() => {
     const analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['sendAnalyticEvent']);
@@ -22,6 +26,9 @@ describe('FooterComponent', () => {
         designCredits: [{ name: 'Designer', url: 'https://example.com', separator: '' }]
       }
     });
+    scrollY = signal(0);
+    scrollMaxScroll = signal(0);
+    const scrollServiceStub = { y: scrollY, maxScroll: scrollMaxScroll };
 
     TestBed.configureTestingModule({
       declarations: [FooterComponent],
@@ -29,7 +36,8 @@ describe('FooterComponent', () => {
       providers: [
         provideNoopAnimations(),
         { provide: AnalyticsService, useValue: analyticsServiceSpy },
-        { provide: SiteConfigService, useValue: configServiceSpy }
+        { provide: SiteConfigService, useValue: configServiceSpy },
+        { provide: ScrollService, useValue: scrollServiceStub }
       ]
     });
 
@@ -64,58 +72,34 @@ describe('FooterComponent', () => {
     expect(component.currentDate.getFullYear()).toBe(new Date().getFullYear());
   });
 
-  describe('checkScrollPosition() / atBottom', () => {
-    // atBottom reads live window/document geometry, so pin those rather
-    // than relying on whatever size the Karma test page happens to be.
-    // Spies are created once per test and their return values updated on
-    // reuse, since Jasmine disallows spying on the same property twice.
-    let scrollYSpy: jasmine.Spy;
-    let innerHeightSpy: jasmine.Spy;
-    let scrollHeightSpy: jasmine.Spy;
-
-    beforeEach(() => {
-      scrollYSpy = spyOnProperty(window, 'scrollY', 'get').and.returnValue(0);
-      innerHeightSpy = spyOnProperty(window, 'innerHeight', 'get').and.returnValue(0);
-      scrollHeightSpy = spyOnProperty(document.documentElement, 'scrollHeight', 'get').and.returnValue(0);
-    });
-
-    function mockScrollPosition(scrollY: number, innerHeight: number, scrollHeight: number): void {
-      scrollYSpy.and.returnValue(scrollY);
-      innerHeightSpy.and.returnValue(innerHeight);
-      scrollHeightSpy.and.returnValue(scrollHeight);
-    }
-
+  describe('atBottom', () => {
     it('is false while there is more of the page left to scroll', () => {
-      mockScrollPosition(0, 800, 3000);
-
-      component.checkScrollPosition();
+      scrollY.set(0);
+      scrollMaxScroll.set(2200);
 
       expect(component.atBottom()).toBeFalse();
     });
 
-    it('becomes true once the viewport reaches the bottom of the page', () => {
-      mockScrollPosition(2200, 800, 3000);
-
-      component.checkScrollPosition();
+    it('becomes true once the scroll position reaches the bottom', () => {
+      scrollY.set(2200);
+      scrollMaxScroll.set(2200);
 
       expect(component.atBottom()).toBeTrue();
     });
 
     it('counts landing within the bottom threshold as being at the bottom', () => {
-      mockScrollPosition(2197, 800, 3000);
-
-      component.checkScrollPosition();
+      scrollY.set(2197);
+      scrollMaxScroll.set(2200);
 
       expect(component.atBottom()).toBeTrue();
     });
 
     it('flips back to false after scrolling back up from the bottom', () => {
-      mockScrollPosition(2200, 800, 3000);
-      component.checkScrollPosition();
+      scrollY.set(2200);
+      scrollMaxScroll.set(2200);
       expect(component.atBottom()).toBeTrue();
 
-      mockScrollPosition(1000, 800, 3000);
-      component.checkScrollPosition();
+      scrollY.set(1000);
 
       expect(component.atBottom()).toBeFalse();
     });
