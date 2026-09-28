@@ -1,7 +1,17 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestroy, Output, PLATFORM_ID, ViewChild } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import type { JSAnimation } from 'animejs';
+import type { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
 import { ThemeService } from 'src/app/services/theme/theme.service';
+
+// Just the handful of animejs functions this component actually calls,
+// destructured at the `await import('animejs')` call site (ngAfterViewInit)
+// rather than stored as a whole module namespace - see the comment there.
+interface AnimejsFns {
+  animate: typeof animate;
+  createTimeline: typeof createTimeline;
+  random: typeof random;
+  stagger: typeof stagger;
+}
 
 // How far (in the artwork's 0 0 800 800 viewBox units) each piece starts
 // offset up and to the left of its resting position.
@@ -39,7 +49,7 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   private finishTimer?: ReturnType<typeof setTimeout>;
   // Lazily loaded in ngAfterViewInit, see there for why - undefined whenever
   // no real (non-reduced-motion) animation ever ran, including on the server.
-  private animejs?: typeof import('animejs');
+  private animejsFns?: AnimejsFns;
 
   // `document` doesn't exist and animejs has nothing to animate during
   // server-side prerendering (Node has no DOM), so the intro/outro sequence
@@ -93,8 +103,13 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
 
     // Kept out of the initial bundle - only ever needed by this one
     // (unskippable, above-the-fold) intro animation, so it's fetched as its
-    // own lazy chunk instead of shipping in every page load.
-    this.animejs = await import('animejs');
+    // own lazy chunk instead of shipping in every page load. Destructured
+    // right at the import site (not stored as a whole module namespace and
+    // read from later) so the bundler can still tree-shake animejs's other,
+    // unused submodules (draggable, svg, text, scope, ...) out of this
+    // chunk the same way the old static named import let it.
+    const { animate, createTimeline, random, stagger } = await import('animejs');
+    this.animejsFns = { animate, createTimeline, random, stagger };
     this.playIntro();
 
     // The page behind this overlay has nothing left to actually wait for:
@@ -120,7 +135,7 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   }
 
   private playIntro(): void {
-    const { animate, random, stagger } = this.animejs!;
+    const { animate, random, stagger } = this.animejsFns!;
     const pieces = Array.from(this.logoGroupRef.nativeElement.querySelectorAll<SVGGraphicsElement>('.logo-piece'));
 
     // Sort top-left -> bottom-right so the default (first-to-last) stagger
@@ -141,7 +156,7 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   }
 
   private playBreathe(): void {
-    this.breathe = this.animejs!.animate(this.logoGroupRef.nativeElement, {
+    this.breathe = this.animejsFns!.animate(this.logoGroupRef.nativeElement, {
       scale: [1, 1.035],
       duration: 1000,
       ease: 'inOutSine',
@@ -166,14 +181,14 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
       this.finished.emit();
     };
 
-    if (!this.animejs) {
+    if (!this.animejsFns) {
       overlay.style.opacity = '0';
       finish();
       return;
     }
 
     const logoGroup = this.logoGroupRef.nativeElement;
-    this.animejs.createTimeline()
+    this.animejsFns.createTimeline()
       .add(logoGroup, { scale: 1.1, duration: 200, ease: 'outQuad' })
       .add(overlay, {
         opacity: [1, 0],
