@@ -3,13 +3,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { CarouselModule } from 'ngx-owl-carousel-o';
-import { NgxTypedJsModule } from 'ngx-typed-js';
 import { AosDirective } from '../../directives/aos/aos.directive';
 import { LogoFallbackDirective } from '../../directives/logo-fallback/logo-fallback.directive';
 import { LogoFallbackBackgroundDirective } from '../../directives/logo-fallback/logo-fallback-background.directive';
 import { LinkPreviewDelegateDirective } from '../../directives/link-preview/link-preview-delegate.directive';
 import { AboutComponent } from './about/about.component';
 import { BannerComponent } from './banner/banner.component';
+import { TypewriterComponent } from './banner/typewriter/typewriter.component';
 import { ContactComponent } from './contact/contact.component';
 import { EducationComponent } from './education/education.component';
 import { FloatingLogosComponent } from './floating-logos/floating-logos.component';
@@ -34,11 +34,11 @@ import { LinkifyPipe } from '../../pipes/linkify/linkify.pipe';
     RouterModule,
     NgbNavModule,
     CarouselModule,
-    NgxTypedJsModule,
     AosDirective,
     LogoFallbackDirective,
     LogoFallbackBackgroundDirective,
-    LinkPreviewDelegateDirective
+    LinkPreviewDelegateDirective,
+    TypewriterComponent
   ],
   // WorkHistoryComponent is exported (in addition to ContactComponent) so the
   // now-standalone, lazy-loaded ProjectsComponent/ProjectsHighschoolComponent
