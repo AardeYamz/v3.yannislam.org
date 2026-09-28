@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { Experiences } from 'src/app/services/site-config/site-config.model';
 
 @Component({
   selector: 'app-education',
@@ -12,7 +13,7 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
 export class EducationComponent {
 
   active = 0
-  experiences: any;
+  experiences: Experiences;
 
   constructor(
     public analyticsService: AnalyticsService,
