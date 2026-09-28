@@ -13,11 +13,10 @@ const FLY_DISTANCE = 260;
 const MIN_DISPLAY_MS = 1400;
 
 @Component({
-  selector: 'app-loading-screen',
-  templateUrl: './loading-screen.component.html',
-  styleUrls: ['./loading-screen.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-loading-screen',
+    templateUrl: './loading-screen.component.html',
+    styleUrls: ['./loading-screen.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   @ViewChild('overlay', { static: true }) overlayRef!: ElementRef<HTMLDivElement>;

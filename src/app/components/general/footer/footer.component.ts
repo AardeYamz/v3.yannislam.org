@@ -1,8 +1,10 @@
 import { Component, ChangeDetectionStrategy, HostListener, AfterViewInit, signal, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, DatePipe } from '@angular/common';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { LinkPreviewDirective } from '../../../directives/link-preview/link-preview.directive';
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
     selector: 'app-footer',
@@ -12,7 +14,7 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
         fadeStaggerAnimation('animateFooter', 'translateY(100%)')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [LinkPreviewDirective, HeaderComponent, DatePipe]
 })
 export class FooterComponent implements AfterViewInit {
     socials: any;

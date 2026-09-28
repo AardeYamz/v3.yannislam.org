@@ -12,10 +12,7 @@ function escapeHtml(value: string): string {
     .replace(/'/g, '&#39;');
 }
 
-@Pipe({
-  name: 'linkify',
-  standalone: false
-})
+@Pipe({ name: 'linkify' })
 export class LinkifyPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) { }
 

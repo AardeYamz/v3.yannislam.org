@@ -5,6 +5,9 @@ import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation'
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { FloatingLogosComponent } from '../floating-logos/floating-logos.component';
+import { NgxTypedJsModule } from 'ngx-typed-js';
+import { LinkPreviewDelegateDirective } from '../../../directives/link-preview/link-preview-delegate.directive';
 
 @Component({
     selector: 'app-banner',
@@ -14,7 +17,7 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
         fadeStaggerAnimation('bannerTrigger', 'translateX(-50px)')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [FloatingLogosComponent, NgxTypedJsModule, LinkPreviewDelegateDirective]
 })
 export class BannerComponent {
     // ngx-typed-js (and the typed.js library it wraps) calls getComputedStyle()

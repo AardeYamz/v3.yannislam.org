@@ -28,13 +28,12 @@ describe('AboutComponent', () => {
     });
 
     TestBed.configureTestingModule({
-      declarations: [AboutComponent],
-      imports: [CommonModule, AosDirective],
-      providers: [
+    imports: [CommonModule, AosDirective, AboutComponent],
+    providers: [
         { provide: AnalyticsService, useValue: analyticsServiceSpy },
         { provide: SiteConfigService, useValue: configServiceSpy }
-      ]
-    });
+    ]
+});
 
     analyticsService = TestBed.inject(AnalyticsService) as jasmine.SpyObj<AnalyticsService>;
     configService = TestBed.inject(SiteConfigService) as jasmine.SpyObj<SiteConfigService>;

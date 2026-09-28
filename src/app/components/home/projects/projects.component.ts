@@ -2,12 +2,13 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AosDirective } from 'src/app/directives/aos/aos.directive';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
-import { HomeModule } from '../home.module';
+
+import { WorkHistoryComponent } from '../workhistory/workhistory.component';
 
 @Component({
     selector: 'app-projects',
     standalone: true,
-    imports: [RouterModule, AosDirective, HomeModule],
+    imports: [RouterModule, AosDirective, WorkHistoryComponent],
     templateUrl: './projects.component.html',
     styleUrls: ['./projects.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

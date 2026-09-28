@@ -12,11 +12,11 @@ describe('LoadingScreenComponent', () => {
     const themeServiceSpy = jasmine.createSpyObj('ThemeService', [], { mode: jasmine.createSpy('mode').and.returnValue('default') });
 
     TestBed.configureTestingModule({
-      declarations: [LoadingScreenComponent],
-      providers: [
+    imports: [LoadingScreenComponent],
+    providers: [
         { provide: ThemeService, useValue: themeServiceSpy }
-      ]
-    });
+    ]
+});
 
     themeService = TestBed.inject(ThemeService) as jasmine.SpyObj<ThemeService>;
     fixture = TestBed.createComponent(LoadingScreenComponent);

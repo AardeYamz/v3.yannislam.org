@@ -1,13 +1,18 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { OwlOptions } from 'ngx-owl-carousel-o';
+import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { AosDirective } from '../../../directives/aos/aos.directive';
+import { LogoFallbackDirective } from '../../../directives/logo-fallback/logo-fallback.directive';
+import { NgClass } from '@angular/common';
+import { LogoFallbackBackgroundDirective } from '../../../directives/logo-fallback/logo-fallback-background.directive';
+import { LinkifyPipe } from '../../../pipes/linkify/linkify.pipe';
 
 @Component({
-  selector: 'app-workhistory',
-  templateUrl: './workhistory.component.html',
-  styleUrls: ['./workhistory.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-workhistory',
+    templateUrl: './workhistory.component.html',
+    styleUrls: ['./workhistory.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [AosDirective, CarouselModule, LogoFallbackDirective, NgClass, LogoFallbackBackgroundDirective, LinkifyPipe]
 })
 export class WorkHistoryComponent {
   @Input() experienceList: any[] = [];

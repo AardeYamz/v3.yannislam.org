@@ -76,11 +76,10 @@ const DODGE_APPROACH = 0.12;
 const DODGE_TARGET_DECAY = 0.94;
 
 @Component({
-  selector: 'app-floating-logos',
-  templateUrl: './floating-logos.component.html',
-  styleUrls: ['./floating-logos.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-floating-logos',
+    templateUrl: './floating-logos.component.html',
+    styleUrls: ['./floating-logos.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   @ViewChildren('logoEl') private logoEls!: QueryList<ElementRef<HTMLElement>>;

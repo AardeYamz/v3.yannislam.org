@@ -3,13 +3,17 @@ import { isPlatformBrowser } from '@angular/common';
 import { inject as injectVercelAnalytics } from '@vercel/analytics';
 import { injectSpeedInsights } from '@vercel/speed-insights';
 import { wasServerPrerendered } from 'src/app/utils/hydration';
+import { RouterOutlet } from '@angular/router';
+import { HeaderComponent } from 'src/app/components/general/header/header.component';
+import { FooterComponent } from 'src/app/components/general/footer/footer.component';
+import { LoadingScreenComponent } from 'src/app/components/general/loading-screen/loading-screen.component';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [RouterOutlet, HeaderComponent, FooterComponent, LoadingScreenComponent]
 })
 export class AppComponent implements OnInit {
 
