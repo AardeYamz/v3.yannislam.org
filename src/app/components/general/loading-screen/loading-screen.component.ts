@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestroy, Output, PLATFORM_ID, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, output } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
 import { ThemeService } from 'src/app/services/theme/theme.service';
@@ -19,10 +19,13 @@ const MIN_DISPLAY_MS = 1400;
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('overlay', { static: true }) overlayRef!: ElementRef<HTMLDivElement>;
-  @ViewChild('logoGroup', { static: true }) logoGroupRef!: ElementRef<SVGGElement>;
+  private themeService = inject(ThemeService);
+  private cdr = inject(ChangeDetectorRef);
 
-  @Output() finished = new EventEmitter<void>();
+  readonly overlayRef = viewChild.required<ElementRef<HTMLDivElement>>('overlay');
+  readonly logoGroupRef = viewChild.required<ElementRef<SVGGElement>>('logoGroup');
+
+  readonly finished = output<void>();
 
   // Deliberately the same default on the server and on every client boot
   // (cold or hydrating a prerendered page) - see ngAfterViewInit's server
@@ -47,11 +50,9 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   // HTML for SEO/crawlability, independent of this component entirely.
   private readonly isBrowser: boolean;
 
-  constructor(
-    private themeService: ThemeService,
-    private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) platformId: object,
-  ) {
+  constructor() {
+    const platformId = inject(PLATFORM_ID);
+
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
@@ -93,7 +94,7 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   }
 
   private playIntro(): void {
-    const pieces = Array.from(this.logoGroupRef.nativeElement.querySelectorAll<SVGGraphicsElement>('.logo-piece'));
+    const pieces = Array.from(this.logoGroupRef().nativeElement.querySelectorAll<SVGGraphicsElement>('.logo-piece'));
 
     // Sort top-left -> bottom-right so the default (first-to-last) stagger
     // sweeps the assembly diagonally across the mark in that direction.
@@ -113,7 +114,7 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   }
 
   private playBreathe(): void {
-    this.breathe = animate(this.logoGroupRef.nativeElement, {
+    this.breathe = animate(this.logoGroupRef().nativeElement, {
       scale: [1, 1.035],
       duration: 1000,
       ease: 'inOutSine',
@@ -125,8 +126,8 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   private playOutro(): void {
     this.breathe?.revert();
 
-    const overlay = this.overlayRef.nativeElement;
-    const logoGroup = this.logoGroupRef.nativeElement;
+    const overlay = this.overlayRef().nativeElement;
+    const logoGroup = this.logoGroupRef().nativeElement;
 
     createTimeline()
       .add(logoGroup, { scale: 1.1, duration: 200, ease: 'outQuad' })

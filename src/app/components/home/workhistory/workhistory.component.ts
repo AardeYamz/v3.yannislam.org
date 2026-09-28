@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, inject } from '@angular/core';
 import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { AosDirective } from '../../../directives/aos/aos.directive';
@@ -15,11 +15,13 @@ import { LinkifyPipe } from '../../../pipes/linkify/linkify.pipe';
     imports: [AosDirective, CarouselModule, LogoFallbackDirective, NgClass, LogoFallbackBackgroundDirective, LinkifyPipe]
 })
 export class WorkHistoryComponent {
-  @Input() experienceList: any[] = [];
-  @Input() sectionId = '';
-  @Input() navNumber = '';
-  @Input() headingText = '';
-  @Input() subsection = false;
+  analyticsService = inject(AnalyticsService);
+
+  experienceList = input<any[]>([]);
+  sectionId = input('');
+  navNumber = input('');
+  headingText = input('');
+  subsection = input(false);
 
   customOptions: OwlOptions = {
     loop: true,
@@ -31,8 +33,4 @@ export class WorkHistoryComponent {
     autoplay: true,
     autoplayTimeout: 3000
   }
-
-  constructor(
-    public analyticsService: AnalyticsService
-  ) { }
 }

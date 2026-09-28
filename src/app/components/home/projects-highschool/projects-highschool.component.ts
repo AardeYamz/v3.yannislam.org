@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AosDirective } from 'src/app/directives/aos/aos.directive';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
@@ -14,6 +14,7 @@ import { WorkHistoryComponent } from '../workhistory/workhistory.component';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectsHighschoolComponent {
-  constructor(private configService: SiteConfigService) { }
+  private configService = inject(SiteConfigService);
+
   highschool: any = this.configService.projects.highschool;
 }

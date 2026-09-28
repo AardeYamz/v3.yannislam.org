@@ -1,4 +1,4 @@
-import { Component, HostListener, ChangeDetectionStrategy, AfterViewInit, OnDestroy, signal, Inject, PLATFORM_ID, forwardRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, AfterViewInit, OnDestroy, signal, PLATFORM_ID, forwardRef, inject } from '@angular/core';
 import { isPlatformBrowser, NgStyle } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
@@ -30,10 +30,18 @@ import { ThemeService } from 'src/app/services/theme/theme.service';
         fadeStaggerAnimation('animateMenu', 'translateX(-20px)', '.container > *')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterLink, NgStyle, forwardRef(() => HeaderComponent)]
+    imports: [RouterLink, NgStyle, forwardRef(() => HeaderComponent)],
+    host: {
+        '(window:scroll)': 'getScrollPosition()',
+    },
 })
 
 export class HeaderComponent implements AfterViewInit, OnDestroy {
+  private router = inject(Router);
+  analyticsService = inject(AnalyticsService);
+  themeService = inject(ThemeService);
+  private resumeService = inject(ResumeService);
+
 
   responsiveMenuVisible: Boolean = false;
   pageYPosition!: number;
@@ -61,14 +69,10 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   // so scroll-driven behavior is gated on this flag and only runs client-side.
   private readonly isBrowser: boolean;
 
-  constructor(
-    private router: Router,
-    public analyticsService: AnalyticsService,
-    public themeService: ThemeService,
-    private resumeService: ResumeService,
-    configService: SiteConfigService,
-    @Inject(PLATFORM_ID) platformId: object,
-  ) {
+  constructor() {
+    const configService = inject(SiteConfigService);
+    const platformId = inject(PLATFORM_ID);
+
     this.menu = configService.menu;
     this.isBrowser = isPlatformBrowser(platformId);
   }
@@ -193,7 +197,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.resumeService.open();
   }
 
-  @HostListener('window:scroll')
   getScrollPosition() {
     if (!this.isBrowser) return;
     this.pageYPosition = window.scrollY;

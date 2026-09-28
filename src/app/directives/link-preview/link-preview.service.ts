@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { domainFromUrl, isPreviewableUrl, LinkPreviewData } from './link-preview-card';
 
@@ -56,7 +56,9 @@ export class LinkPreviewService {
   private lastHost: HTMLElement | null = null;
   private attemptToken = 0;
 
-  constructor(@Inject(PLATFORM_ID) platformId: object) {
+  constructor() {
+    const platformId = inject(PLATFORM_ID);
+
     this.isBrowser = isPlatformBrowser(platformId);
   }
 

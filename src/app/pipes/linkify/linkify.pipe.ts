@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, inject } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 const URL_PATTERN = /(https?:\/\/[^\s)]+)/g;
@@ -14,7 +14,8 @@ function escapeHtml(value: string): string {
 
 @Pipe({ name: 'linkify' })
 export class LinkifyPipe implements PipeTransform {
-  constructor(private sanitizer: DomSanitizer) { }
+  private sanitizer = inject(DomSanitizer);
+
 
   transform(text: string): SafeHtml {
     const parts = (text ?? '').split(URL_PATTERN);
