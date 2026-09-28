@@ -1,5 +1,11 @@
 <section class="section banner" id="banner">
-  <app-floating-logos></app-floating-logos>
+  <!-- generateLogos() calls Math.random() to pick each logo's count, variant,
+       size, and opacity - server and client independently produce different
+       output, which is a guaranteed hydration mismatch for this purely
+       decorative (aria-hidden), non-interactive-content element. Skipping
+       hydration for it lets the client do a normal, unreconciled re-render
+       instead of trying (and failing) to diff mismatched nodes. -->
+  <app-floating-logos ngSkipHydration></app-floating-logos>
   <div [@bannerTrigger] class="container">
     <div class="section-box-banner">
       <div class="content">

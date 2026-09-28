@@ -7,8 +7,8 @@
 // TS module at compile time — unlike scripts/inject-env.js, which only
 // patches the built index.html *after* `ng build`, this has to exist
 // *before* compilation starts so it also works under `ng serve`.
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const RESUME_DIR = path.join(__dirname, '..', 'src', 'assets', 'resume');
 const MANIFEST_PATH = path.join(__dirname, '..', 'src', 'assets', 'resume-manifest.json');
