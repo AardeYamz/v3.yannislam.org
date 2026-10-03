@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgxTypedJsModule } from 'ngx-typed-js';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { BannerComponent } from './banner.component';
+import { TypewriterComponent } from './typewriter/typewriter.component';
 import { FloatingLogosComponent } from '../floating-logos/floating-logos.component';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
@@ -34,7 +34,7 @@ describe('BannerComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [BannerComponent, FloatingLogosComponent],
-      imports: [NgxTypedJsModule],
+      imports: [TypewriterComponent],
       providers: [
         provideNoopAnimations(),
         { provide: AnalyticsService, useValue: analyticsServiceSpy },
