@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import { Directive, ElementRef, inject, input } from '@angular/core';
 import { LinkPreviewData } from './link-preview-card';
 import { LinkPreviewService } from './link-preview.service';
 
@@ -8,20 +8,23 @@ import { LinkPreviewService } from './link-preview.service';
 // counterpart used by the banner blurb.
 @Directive({
   selector: '[appLinkPreview]',
+  host: {
+    '(mouseenter)': 'onShow()',
+    '(focus)': 'onShow()',
+    '(mouseleave)': 'onHide()',
+    '(blur)': 'onHide()',
+  },
 })
 export class LinkPreviewDirective {
-  @Input('appLinkPreview') data: LinkPreviewData | null = null;
+  private el = inject<ElementRef<HTMLElement>>(ElementRef);
+  private previewService = inject(LinkPreviewService);
 
-  constructor(private el: ElementRef<HTMLElement>, private previewService: LinkPreviewService) { }
+  readonly data = input<LinkPreviewData | null>(null, { alias: "appLinkPreview" });
 
-  @HostListener('mouseenter')
-  @HostListener('focus')
   onShow(): void {
-    this.previewService.show(this.el.nativeElement, this.data);
+    this.previewService.show(this.el.nativeElement, this.data());
   }
 
-  @HostListener('mouseleave')
-  @HostListener('blur')
   onHide(): void {
     this.previewService.hide();
   }

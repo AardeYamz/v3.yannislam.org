@@ -1,8 +1,10 @@
-import { Component, ChangeDetectionStrategy, HostListener, AfterViewInit, signal, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, ChangeDetectionStrategy, AfterViewInit, signal, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser, DatePipe } from '@angular/common';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { LinkPreviewDirective } from '../../../directives/link-preview/link-preview.directive';
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
     selector: 'app-footer',
@@ -12,9 +14,16 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
         fadeStaggerAnimation('animateFooter', 'translateY(100%)')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [LinkPreviewDirective, HeaderComponent, DatePipe],
+    host: {
+        '(window:scroll)': 'checkScrollPosition()',
+        '(window:resize)': 'checkScrollPosition()',
+    },
 })
 export class FooterComponent implements AfterViewInit {
+    analyticsService = inject(AnalyticsService);
+    configService = inject(SiteConfigService);
+
     socials: any;
     mobileSocials: any;
     email: any;
@@ -35,11 +44,9 @@ export class FooterComponent implements AfterViewInit {
     // meaningfully implemented there, so this is gated to the browser only.
     private readonly isBrowser: boolean;
 
-    constructor(
-        public analyticsService: AnalyticsService,
-        public configService: SiteConfigService,
-        @Inject(PLATFORM_ID) platformId: object,
-    ) {
+    constructor() {
+        const platformId = inject(PLATFORM_ID);
+
         this.socials = this.configService.contacts;
         this.email = this.socials.find((item: { name: string; }) => item?.name === "Email");
         this.mobileSocials = this.socials.filter((item: { name: string; }) => item?.name !== "Email");
@@ -52,8 +59,6 @@ export class FooterComponent implements AfterViewInit {
         this.checkScrollPosition();
     }
 
-    @HostListener('window:scroll')
-    @HostListener('window:resize')
     checkScrollPosition() {
         if (!this.isBrowser) return;
 

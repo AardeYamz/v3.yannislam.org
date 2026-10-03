@@ -1,17 +1,23 @@
-import { Component, OnInit, ChangeDetectionStrategy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { inject as injectVercelAnalytics } from '@vercel/analytics';
 import { injectSpeedInsights } from '@vercel/speed-insights';
 import { wasServerPrerendered } from 'src/app/utils/hydration';
+import { RouterOutlet } from '@angular/router';
+import { HeaderComponent } from 'src/app/components/general/header/header.component';
+import { FooterComponent } from 'src/app/components/general/footer/footer.component';
+import { LoadingScreenComponent } from 'src/app/components/general/loading-screen/loading-screen.component';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [RouterOutlet, HeaderComponent, FooterComponent, LoadingScreenComponent]
 })
 export class AppComponent implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+
 
   // Header is kept out of the DOM (see app.component.html's `@if`) until the
   // loading screen finishes: it mounts underneath that opaque, full-screen
@@ -34,9 +40,7 @@ export class AppComponent implements OnInit {
   // what's under it is already "ready" before the animation reveals it.
   headerReady = false;
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-  ) {
+  constructor() {
     if (!isPlatformBrowser(this.platformId) || wasServerPrerendered()) {
       this.headerReady = true;
     }

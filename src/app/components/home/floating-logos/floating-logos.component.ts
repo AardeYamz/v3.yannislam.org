@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, PLATFORM_ID, QueryList, ViewChildren, effect } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, PLATFORM_ID, effect, inject, viewChildren } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
@@ -76,14 +76,17 @@ const DODGE_APPROACH = 0.12;
 const DODGE_TARGET_DECAY = 0.94;
 
 @Component({
-  selector: 'app-floating-logos',
-  templateUrl: './floating-logos.component.html',
-  styleUrls: ['./floating-logos.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-floating-logos',
+    templateUrl: './floating-logos.component.html',
+    styleUrls: ['./floating-logos.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
-  @ViewChildren('logoEl') private logoEls!: QueryList<ElementRef<HTMLElement>>;
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private themeService = inject(ThemeService);
+  private cdr = inject(ChangeDetectorRef);
+
+  private readonly logoEls = viewChildren<ElementRef<HTMLElement>>('logoEl');
 
   readonly logos: FloatingLogo[] = this.generateLogos();
 
@@ -107,12 +110,9 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
 
   private isFirstThemeCheck = true;
 
-  constructor(
-    private host: ElementRef<HTMLElement>,
-    private themeService: ThemeService,
-    private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) platformId: object,
-  ) {
+  constructor() {
+    const platformId = inject(PLATFORM_ID);
+
     this.isBrowser = isPlatformBrowser(platformId);
     this.prefersReducedMotion = this.isBrowser && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -154,7 +154,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   };
 
   ngAfterViewInit(): void {
-    this.elements = this.logoEls.map(ref => ref.nativeElement);
+    this.elements = this.logoEls().map(ref => ref.nativeElement);
 
     // getBoundingClientRect(), the resize listener, and the rAF animation
     // loop below all need real layout/browser APIs that don't exist during

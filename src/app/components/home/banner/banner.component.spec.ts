@@ -33,16 +33,15 @@ describe('BannerComponent', () => {
     const themeServiceSpy = jasmine.createSpyObj('ThemeService', [], { mode: jasmine.createSpy('mode').and.returnValue('default') });
 
     TestBed.configureTestingModule({
-      declarations: [BannerComponent, FloatingLogosComponent],
-      imports: [NgxTypedJsModule],
-      providers: [
+    imports: [NgxTypedJsModule, BannerComponent, FloatingLogosComponent],
+    providers: [
         provideNoopAnimations(),
         { provide: AnalyticsService, useValue: analyticsServiceSpy },
         { provide: ResumeService, useValue: resumeServiceSpy },
         { provide: SiteConfigService, useValue: configServiceSpy },
         { provide: ThemeService, useValue: themeServiceSpy }
-      ]
-    });
+    ]
+});
 
     analyticsService = TestBed.inject(AnalyticsService) as jasmine.SpyObj<AnalyticsService>;
     resumeService = TestBed.inject(ResumeService) as jasmine.SpyObj<ResumeService>;

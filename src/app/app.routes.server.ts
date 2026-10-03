@@ -3,7 +3,7 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 // This site is a fully static, config-driven SPA (see src/assets/config.json) with
 // no backend and no per-request data, so every known route is explicitly listed here
 // for build-time static prerendering rather than being served by a live SSR server.
-// Keep this list in sync with src/app/app-routing.module.ts.
+// Keep this list in sync with src/app/app.routes.ts.
 export const serverRoutes: ServerRoute[] = [
   { path: '', renderMode: RenderMode.Prerender },
   { path: 'projects', renderMode: RenderMode.Prerender },

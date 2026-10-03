@@ -1,4 +1,4 @@
-import { Directive, effect, ElementRef, HostListener, Input } from '@angular/core';
+import { Directive, effect, ElementRef, inject, input } from '@angular/core';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 import { buildFallbackLogoDataUri } from './logo-fallback';
 
@@ -10,27 +10,32 @@ import { buildFallbackLogoDataUri } from './logo-fallback';
 // whenever the theme's accent color changes instead.
 @Directive({
   selector: 'img[appLogoFallback]',
+  host: {
+    '(error)': 'onError()',
+  },
 })
 export class LogoFallbackDirective {
-  @Input('appLogoFallback') organization = '';
+  private el = inject<ElementRef<HTMLImageElement>>(ElementRef);
+  private themeService = inject(ThemeService);
+
+  readonly organization = input('', { alias: "appLogoFallback" });
 
   private fellBack = false;
 
-  constructor(private el: ElementRef<HTMLImageElement>, private themeService: ThemeService) {
+  constructor() {
     effect(() => {
       const color = this.themeService.accentColor();
       if (this.fellBack) {
-        this.el.nativeElement.src = buildFallbackLogoDataUri(this.organization, color);
+        this.el.nativeElement.src = buildFallbackLogoDataUri(this.organization(), color);
       }
     });
   }
 
-  @HostListener('error')
   onError(): void {
     if (this.fellBack) {
       return;
     }
     this.fellBack = true;
-    this.el.nativeElement.src = buildFallbackLogoDataUri(this.organization, this.themeService.accentColor());
+    this.el.nativeElement.src = buildFallbackLogoDataUri(this.organization(), this.themeService.accentColor());
   }
 }
