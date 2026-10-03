@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { OwlOptions } from 'ngx-owl-carousel-o';
-import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 
 @Component({
   selector: 'app-workhistory',
@@ -26,8 +25,4 @@ export class WorkHistoryComponent {
     autoplay: true,
     autoplayTimeout: 3000
   }
-
-  constructor(
-    public analyticsService: AnalyticsService
-  ) { }
 }
