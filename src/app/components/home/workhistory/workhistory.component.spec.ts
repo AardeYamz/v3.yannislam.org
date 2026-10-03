@@ -25,7 +25,7 @@ describe('WorkHistoryComponent', () => {
   });
 
   it('reflects whatever is bound to experienceList/sectionId/navNumber/headingText/subsection', () => {
-    const list = [{ title: 'Example Role' }];
+    const list = [{ title: 'Example Role', timeframe: '2024', description: ['Did things'] }];
 
     component.experienceList = list;
     component.sectionId = 'projects-college';
