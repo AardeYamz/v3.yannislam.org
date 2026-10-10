@@ -44,3 +44,15 @@ export function iconForUrl(url: string): string {
   );
   return domain ? ICON_BY_DOMAIN[domain] : DEFAULT_ICON;
 }
+
+// The handful of domains ICON_BY_DOMAIN knows about are also the ones known
+// to send X-Frame-Options/CSP frame-ancestors headers that block being
+// framed at all - attempting a live iframe preview for them is a guaranteed-
+// to-fail full page load on every hover, so LinkPreviewService skips it
+// outright instead of just letting it time out.
+export function blocksFraming(url: string): boolean {
+  const hostname = domainFromUrl(url);
+  return Object.keys(ICON_BY_DOMAIN).some(
+    candidate => hostname === candidate || hostname.endsWith(`.${candidate}`)
+  );
+}

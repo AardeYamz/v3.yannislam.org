@@ -7,7 +7,7 @@
     <div class="nav-right">
       <ul class="menu-ul nav">
         @for (menuItem of menu ; track menuItem; let i = $index) {
-          <li class="nav-item" (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
+          <li class="nav-item" (click)='analyticsService.sendAnalyticEvent("click_nav", "menu", menuItem?.navTitle)'>
             <a class="nav-link" [attr.href]="menuItem?.siteLocation" (click)='navigate(menuItem, $event)'
               [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
               @if (menuItem?.navNumber) {
@@ -36,7 +36,7 @@
           <ol>
             @for (menuItem of menu ; track menuItem; let i = $index) {
               <li
-                (click)='analyticsService.sendAnalyticEvent(menuItem?.navTitle, "menu", "click")'>
+                (click)='analyticsService.sendAnalyticEvent("click_nav", "menu", menuItem?.navTitle)'>
                 <a [attr.href]="menuItem?.siteLocation" (click)='navigate(menuItem, $event)'
                   [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
                   @if (menuItem?.navNumber) {
