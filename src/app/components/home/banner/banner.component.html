@@ -1,5 +1,11 @@
 <section class="section banner" id="banner">
-  <app-floating-logos></app-floating-logos>
+  <!-- generateLogos() calls Math.random() to pick each logo's count, variant,
+       size, and opacity - server and client independently produce different
+       output, which is a guaranteed hydration mismatch for this purely
+       decorative (aria-hidden), non-interactive-content element. Skipping
+       hydration for it lets the client do a normal, unreconciled re-render
+       instead of trying (and failing) to diff mismatched nodes. -->
+  <app-floating-logos ngSkipHydration></app-floating-logos>
   <div [@bannerTrigger] class="container">
     <div class="section-box-banner">
       <div class="content">
@@ -8,16 +14,7 @@
         </div>
         <div class='banner-title'>
           <h2 class="text-capitalize">{{ data.banner.name }}</h2>
-          @if (isBrowser) {
-            <ngx-typed-js [strings]=this.data.banner.typeSection [loop]="true" [shuffle]="true" [backSpeed]="60"
-              [typeSpeed]="60" [cursorChar]="'_'" [showCursor]="false">
-              <h3 class="typing"></h3>
-            </ngx-typed-js>
-          } @else {
-            <!-- typed.js needs a real browser (getComputedStyle, etc.), so during
-                 server-side prerendering just show the first line statically. -->
-            <h3 class="typing">{{ data.banner.typeSection[0] }}</h3>
-          }
+          <app-typewriter [strings]="data.banner.typeSection" />
         </div>
         <div class='banner-description' appLinkPreviewDelegate>
           @for (text of this.data.banner.blurb; track text) {
