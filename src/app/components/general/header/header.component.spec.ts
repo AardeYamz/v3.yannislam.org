@@ -53,7 +53,7 @@ describe('HeaderComponent', () => {
     it('logs an analytics event for the menu item regardless of its shape', () => {
       component.navigate({ navTitle: 'About', scrollSection: 'about' });
 
-      expect(analyticsService.sendAnalyticEvent).toHaveBeenCalledWith('About', 'menu', 'click');
+      expect(analyticsService.sendAnalyticEvent).toHaveBeenCalledWith('click_nav', 'menu', 'About');
     });
 
     it('scrolls to the section when the menu item has a scrollSection', () => {

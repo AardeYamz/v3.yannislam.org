@@ -216,7 +216,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     // in the template (duplicated between the desktop and mobile menus,
     // and firing for a background click on the <li> that never actually
     // hit the link too). Folding it in here means one handler, one place.
-    this.analyticsService.sendAnalyticEvent(menuItem?.navTitle, 'menu', 'click');
+    this.analyticsService.sendAnalyticEvent('click_nav', 'menu', menuItem?.navTitle);
     if (menuItem?.scrollSection) {
       this.scroll(menuItem.scrollSection);
     } else if (menuItem?.siteLocation) {
