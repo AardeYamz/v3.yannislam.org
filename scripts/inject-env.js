@@ -9,8 +9,8 @@
 // src/index.html template and carry the same %GOOGLE_ANALYTICS_ID%
 // placeholder, so a direct load of any non-root route needs this walk to
 // have GA actually wired up rather than shipping the literal placeholder.
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const DIST_DIR = path.join(__dirname, '..', 'dist', 'v3.yannislam.org', 'browser');
 

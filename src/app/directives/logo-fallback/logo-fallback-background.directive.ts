@@ -1,4 +1,4 @@
-import { Directive, effect, ElementRef, Inject, Input, OnChanges, PLATFORM_ID, SimpleChanges } from '@angular/core';
+import { Directive, effect, ElementRef, Inject, Input, OnChanges, PLATFORM_ID, signal, SimpleChanges } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 import { buildFallbackLogoDataUri } from './logo-fallback';
@@ -16,7 +16,7 @@ export class LogoFallbackBackgroundDirective implements OnChanges {
   @Input('appLogoFallbackBg') src = '';
   @Input() appLogoFallbackBgOrg = '';
 
-  private failed = false;
+  private readonly failed = signal(false);
   private readonly isBrowser: boolean;
 
   constructor(
@@ -27,7 +27,7 @@ export class LogoFallbackBackgroundDirective implements OnChanges {
     this.isBrowser = isPlatformBrowser(platformId);
     effect(() => {
       const color = this.themeService.accentColor();
-      if (this.failed) {
+      if (this.failed()) {
         this.setBackground(buildFallbackLogoDataUri(this.appLogoFallbackBgOrg, color));
       }
     });
@@ -35,7 +35,7 @@ export class LogoFallbackBackgroundDirective implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['src']) {
-      this.failed = false;
+      this.failed.set(false);
       // `Image` doesn't exist under Domino (server-side DOM emulation used
       // during prerendering) - there's no error event to probe there anyway,
       // so just set the background directly and let the real browser probe
@@ -51,12 +51,12 @@ export class LogoFallbackBackgroundDirective implements OnChanges {
   private probe(src: string): void {
     const image = new Image();
     image.onload = () => {
-      if (!this.failed) {
+      if (!this.failed()) {
         this.setBackground(src);
       }
     };
     image.onerror = () => {
-      this.failed = true;
+      this.failed.set(true);
       this.setBackground(buildFallbackLogoDataUri(this.appLogoFallbackBgOrg, this.themeService.accentColor()));
     };
     image.src = src;
