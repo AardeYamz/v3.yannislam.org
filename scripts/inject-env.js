@@ -1,8 +1,8 @@
 // Substitutes %VAR% placeholders in the built index.html with values from
 // process.env, so secrets/IDs configured in Vercel's dashboard never need to
 // be committed to src/index.html. Runs as a postbuild step (see package.json).
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const DIST_DIR = path.join(__dirname, '..', 'dist', 'v3.yannislam.org', 'browser');
 const INDEX_HTML_PATH = path.join(DIST_DIR, 'index.html');
