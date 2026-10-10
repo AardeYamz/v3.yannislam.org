@@ -25,10 +25,9 @@
         "/assets/fonts/**"
       ],
       "cacheConfig": {
-        "strategy": "freshness",
+        "strategy": "performance",
         "maxSize": 100,
-        "maxAge": "1h",
-        "timeout": "3s"
+        "maxAge": "30d"
       }
     }
   ]

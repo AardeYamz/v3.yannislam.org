@@ -1,4 +1,4 @@
-import { domainFromUrl, iconForUrl, isPreviewableUrl } from './link-preview-card';
+import { blocksFraming, domainFromUrl, iconForUrl, isPreviewableUrl } from './link-preview-card';
 
 describe('isPreviewableUrl', () => {
   it('accepts http(s) URLs', () => {
@@ -37,5 +37,18 @@ describe('iconForUrl', () => {
   it('falls back to a generic external-link icon for unrecognized domains', () => {
     expect(iconForUrl('https://www.voya.com/')).toBe('fas fa-up-right-from-square');
     expect(iconForUrl('https://www.umass.edu/')).toBe('fas fa-up-right-from-square');
+  });
+});
+
+describe('blocksFraming', () => {
+  it('recognizes the known social domains regardless of subdomain/www', () => {
+    expect(blocksFraming('https://linkedin.com/in/yannis-lam/')).toBeTrue();
+    expect(blocksFraming('https://www.github.com/AardeYamz')).toBeTrue();
+    expect(blocksFraming('https://m.facebook.com/AardeYamz')).toBeTrue();
+  });
+
+  it('returns false for domains with no known framing restriction', () => {
+    expect(blocksFraming('https://www.voya.com/')).toBeFalse();
+    expect(blocksFraming('https://www.umass.edu/')).toBeFalse();
   });
 });
