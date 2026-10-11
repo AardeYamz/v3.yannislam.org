@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgxTypedJsModule } from 'ngx-typed-js';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { BannerComponent } from './banner.component';
@@ -33,7 +32,7 @@ describe('BannerComponent', () => {
     const themeServiceSpy = jasmine.createSpyObj('ThemeService', [], { mode: jasmine.createSpy('mode').and.returnValue('default') });
 
     TestBed.configureTestingModule({
-    imports: [NgxTypedJsModule, BannerComponent, FloatingLogosComponent],
+    imports: [BannerComponent, FloatingLogosComponent],
     providers: [
         provideNoopAnimations(),
         { provide: AnalyticsService, useValue: analyticsServiceSpy },

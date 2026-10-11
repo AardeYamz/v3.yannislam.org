@@ -1,4 +1,4 @@
-import { Directive, effect, ElementRef, inject, input } from '@angular/core';
+import { Directive, effect, ElementRef, inject, input, signal } from '@angular/core';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 import { buildFallbackLogoDataUri } from './logo-fallback';
 
@@ -20,22 +20,22 @@ export class LogoFallbackDirective {
 
   readonly organization = input('', { alias: "appLogoFallback" });
 
-  private fellBack = false;
+  private readonly fellBack = signal(false);
 
   constructor() {
     effect(() => {
       const color = this.themeService.accentColor();
-      if (this.fellBack) {
+      if (this.fellBack()) {
         this.el.nativeElement.src = buildFallbackLogoDataUri(this.organization(), color);
       }
     });
   }
 
   onError(): void {
-    if (this.fellBack) {
+    if (this.fellBack()) {
       return;
     }
-    this.fellBack = true;
+    this.fellBack.set(true);
     this.el.nativeElement.src = buildFallbackLogoDataUri(this.organization(), this.themeService.accentColor());
   }
 }
