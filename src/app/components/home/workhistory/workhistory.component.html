@@ -7,105 +7,103 @@
         </h3>
       </div>
 
-      @for (exp of experienceList; track exp; let i = $index) {
-        <div class="d-flex workhistory-container"
-          data-aos="fade-up" data-aos-duration="1000">
-          @if (i % 2 == 0) {
-            <owl-carousel-o class='owl-carousel-o' [options]="customOptions">
-              @for (img of exp.imgs; track img) {
-                <ng-template carouselSlide [id]="exp.title + i">
-                  <div class='img-container'>
-                    <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.image_alt || exp.title"
-                      [appLogoFallback]="exp.organization">
-                  </div>
-                </ng-template>
-              }
-            </owl-carousel-o>
+      @for (exp of experienceList; track $index; let idx = $index) {
+        <div class="d-flex workhistory-container" data-aos="fade-up" data-aos-duration="1000">
+          @if (idx % 2 == 0) {
+            <ng-container *ngTemplateOutlet="visual; context: { exp: exp, idx: idx }"></ng-container>
+            <ng-container *ngTemplateOutlet="info; context: { exp: exp, idx: idx }"></ng-container>
+          } @else {
+            <ng-container *ngTemplateOutlet="info; context: { exp: exp, idx: idx }"></ng-container>
+            <ng-container *ngTemplateOutlet="visual; context: { exp: exp, idx: idx }"></ng-container>
           }
-          @if (i % 2 == 0) {
-            <div class="img-feature-workhistory-container" data-aos="fade-up" data-aos-duration="1000"
-              >
-              <div class="img-feature-workhistory-box">
-                <div class="img-container" style='width: auto;'>
-                  <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.image_alt || exp.title"
-                    [appLogoFallback]="exp.organization">
-                </div>
-              </div>
-            </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!--
+  Written once and placed on either side of the info block depending on
+  idx % 2 above, instead of the old copy-pasted "even" and "odd" blocks.
+
+  Most entries only ever have one image (imgs = [logo.src] from
+  logoKey), so an owl-carousel-o here bought nothing -- it still stood
+  up its full runtime and an autoplay timer for content that never
+  changed. Only entries with more than one image get a carousel; a
+  single image renders as a plain static box (also skipping the
+  carousel-vs-static split CSS used to do per breakpoint).
+-->
+<ng-template #visual let-exp="exp" let-idx="idx">
+  @if (exp.imgs.length > 1) {
+    <owl-carousel-o class='owl-carousel-o' [options]="customOptions">
+      @for (img of exp.imgs; track $index) {
+        <ng-template carouselSlide [id]="exp.title + idx">
+          <div class='img-container'>
+            <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.image_alt || exp.title"
+              [appLogoFallback]="exp.organization">
+          </div>
+        </ng-template>
+      }
+    </owl-carousel-o>
+  } @else {
+    <div class="img-feature-workhistory-container" data-aos="fade-up" data-aos-duration="1000">
+      <div class="img-feature-workhistory-box">
+        <div class="img-container img-container-auto">
+          <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.image_alt || exp.title"
+            [appLogoFallback]="exp.organization">
+        </div>
+      </div>
+    </div>
+  }
+</ng-template>
+
+<ng-template #info let-exp="exp" let-idx="idx">
+  <div [ngClass]="{'workhistory-info-right': idx % 2 == 0, 'workhistory-info-left': idx % 2 != 0}"
+    [appLogoFallbackBg]="exp.imgs[0]" [appLogoFallbackBgOrg]="exp.organization">
+    <div class="workhistory-box">
+      <h5 [ngClass]="{'text-right': idx % 2 == 0, 'text-left': idx % 2 != 0}" class="workhistory-title">
+      {{exp.title}} </h5>
+      @if (exp?.organization) {
+        <h4 [ngClass]="{'text-right': idx % 2 == 0, 'text-left': idx % 2 != 0}"
+          class="workhistory-subtitle">
+        &#64; {{exp.organization}}</h4>
+      }
+      <div class="workhistory-description-box">
+        @if (exp?.timeframe) {
+          <p class="text-right mb-2">
+            <i>{{exp?.timeframe}}</i>
+          </p>
+        }
+        @if (exp?.subTitle) {
+          <p class="text-right mb-2">
+            <u>{{exp?.subTitle}}</u>
+          </p>
+        }
+        @for (descParagraph of exp?.description; track $index) {
+          <p class="mb-1" [innerHTML]="descParagraph | linkify"></p>
+        }
+        <div [ngClass]="{'text-right': idx % 2 == 0, 'text-left': idx % 2 != 0}"
+          class="workhistory-links">
+          @if (exp['link']) {
+            <a class="mx-3 workhistory-link" [href]="exp['link']" [attr.aria-label]="'View ' + exp.title + ' project'"
+              target="_blank" rel="noopener noreferrer"><i class="ml-3 fa-solid fa-up-right-from-square"></i></a>
           }
-          <div [ngClass]="{'workhistory-info-right': i % 2 == 0, 'workhistory-info-left': i % 2 != 0}"
-            [appLogoFallbackBg]="exp.imgs[0]" [appLogoFallbackBgOrg]="exp.organization">
-            <div class="workhistory-box">
-              <h5 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}" class="workhistory-title">
-              {{exp.title}} </h5>
-              @if (exp?.organization) {
-                <h4 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
-                  class="workhistory-subtitle">
-                &#64; {{exp.organization}}</h4>
-              }
-              <div class="workhistory-description-box">
-                @if (exp?.timeframe) {
-                  <p class="text-right mb-2">
-                    <i>{{exp?.timeframe}}</i>
-                  </p>
-                }
-                @if (exp?.subTitle) {
-                  <p class="text-right mb-2">
-                    <u>{{exp?.subTitle}}</u>
-                  </p>
-                }
-                @for (descParagraph of exp?.description; track descParagraph; let i = $index) {
-                  <p class="mb-1" [innerHTML]="descParagraph | linkify"></p>
-                }
-                <div [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
-                  class="workhistory-links">
-                  @if (exp['link']) {
-                    <a class="mx-3" style='color: inherit' [href]="exp['link']" [attr.aria-label]="'View ' + exp.title + ' project'"
-                      target="_blank" rel="noopener noreferrer"><i class="ml-3 fa-solid fa-up-right-from-square"></i></a>
-                    }
-                    @if (exp['demoLink']) {
-                      <a style='color: inherit' [href]="exp['demoLink']" [attr.aria-label]="'View ' + exp.title + ' demo'"
-                        target="_blank" rel="noopener noreferrer"><i class="ml-3 fas fa-external-link-alt"></i></a>
-                      }
-                    </div>
-                  </div>
-                  @if (exp?.skills) {
-                    <ul [ngClass]="{'justify-content-end': i % 2 == 0, 'justify-content-start': i % 2 != 0}"
-                      class="workhistory-skills">
-                      @for (skill of exp.skills; track skill) {
-                        <li class="mx-2">
-                          <span class="underline skills">{{skill}}</span>
-                        </li>
-                      }
-                    </ul>
-                  }
-                </div>
-              </div>
-              @if (i % 2 != 0) {
-                <owl-carousel-o class='owl-carousel-o' [options]="customOptions">
-                  @for (img of exp.imgs; track img) {
-                    <ng-template carouselSlide [id]="exp.title + i">
-                      <div class='img-container'>
-                        <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.image_alt || exp.title"
-                          [appLogoFallback]="exp.organization">
-                      </div>
-                    </ng-template>
-                  }
-                </owl-carousel-o>
-              }
-              @if (i % 2 != 0) {
-                <div class="img-feature-workhistory-container" data-aos="fade-up" data-aos-duration="1000"
-                  >
-                  <div class="img-feature-workhistory-box">
-                    <div class="img-container" style='width: auto;'>
-                      <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.image_alt || exp.title"
-                        [appLogoFallback]="exp.organization">
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
+          @if (exp['demoLink']) {
+            <a class="workhistory-link" [href]="exp['demoLink']" [attr.aria-label]="'View ' + exp.title + ' demo'"
+              target="_blank" rel="noopener noreferrer"><i class="ml-3 fas fa-external-link-alt"></i></a>
           }
         </div>
       </div>
-    </section>
+      @if (exp?.skills) {
+        <ul [ngClass]="{'justify-content-end': idx % 2 == 0, 'justify-content-start': idx % 2 != 0}"
+          class="workhistory-skills">
+          @for (skill of exp.skills; track $index) {
+            <li class="mx-2">
+              <span class="underline skills">{{skill}}</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+</ng-template>
