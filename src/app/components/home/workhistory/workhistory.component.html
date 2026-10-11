@@ -1,13 +1,13 @@
-<section class="section workhistory" [id]="sectionId">
+<section class="section workhistory" [id]="sectionId()">
   <div class="container">
     <div class="section-box">
       <div data-aos="fade-up" data-aos-duration="1000">
-        <h3 class="section-title" [class.subsection-title]="subsection">
-          <span class='n-section-title'>{{navNumber}}</span>{{headingText}}
+        <h3 class="section-title" [class.subsection-title]="subsection()">
+          <span class='n-section-title'>{{navNumber()}}</span>{{headingText()}}
         </h3>
       </div>
 
-      @for (exp of experienceList; track exp; let i = $index) {
+      @for (exp of experienceList(); track exp; let i = $index) {
         <div class="d-flex workhistory-container"
           data-aos="fade-up" data-aos-duration="1000">
           @if (i % 2 == 0) {

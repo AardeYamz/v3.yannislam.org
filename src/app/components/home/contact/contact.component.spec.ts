@@ -14,12 +14,11 @@ describe('ContactComponent', () => {
     const analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['sendAnalyticEvent']);
 
     TestBed.configureTestingModule({
-      declarations: [ContactComponent],
-      imports: [CommonModule, AosDirective],
-      providers: [
+    imports: [CommonModule, AosDirective, ContactComponent],
+    providers: [
         { provide: AnalyticsService, useValue: analyticsServiceSpy }
-      ]
-    });
+    ]
+});
 
     analyticsService = TestBed.inject(AnalyticsService) as jasmine.SpyObj<AnalyticsService>;
     fixture = TestBed.createComponent(ContactComponent);

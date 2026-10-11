@@ -1,9 +1,12 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { FloatingLogosComponent } from '../floating-logos/floating-logos.component';
+import { TypewriterComponent } from './typewriter/typewriter.component';
+import { LinkPreviewDelegateDirective } from '../../../directives/link-preview/link-preview-delegate.directive';
 
 @Component({
     selector: 'app-banner',
@@ -13,14 +16,12 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
         fadeStaggerAnimation('bannerTrigger', 'translateX(-50px)')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [FloatingLogosComponent, TypewriterComponent, LinkPreviewDelegateDirective]
 })
 export class BannerComponent {
-    constructor(
-        public analyticsService: AnalyticsService,
-        public configService: SiteConfigService,
-        private resumeService: ResumeService,
-    ) { }
+    analyticsService = inject(AnalyticsService);
+    configService = inject(SiteConfigService);
+    private resumeService = inject(ResumeService);
 
     get data() { return this.configService.data; }
 

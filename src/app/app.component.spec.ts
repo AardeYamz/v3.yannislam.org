@@ -24,15 +24,14 @@ describe('AppComponent', () => {
     const themeServiceSpy = jasmine.createSpyObj('ThemeService', [], { mode: jasmine.createSpy('mode').and.returnValue('default') });
 
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [AppComponent, LoadingScreenComponent, HeaderComponent, FooterComponent],
-      providers: [
+    imports: [RouterTestingModule, LoadingScreenComponent, HeaderComponent, FooterComponent, AppComponent],
+    providers: [
         provideNoopAnimations(),
         { provide: AnalyticsService, useValue: analyticsServiceSpy },
         { provide: SiteConfigService, useValue: configServiceSpy },
         { provide: ThemeService, useValue: themeServiceSpy }
-      ]
-    });
+    ]
+});
 
     analyticsService = TestBed.inject(AnalyticsService) as jasmine.SpyObj<AnalyticsService>;
     configService = TestBed.inject(SiteConfigService) as jasmine.SpyObj<SiteConfigService>;

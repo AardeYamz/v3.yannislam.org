@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener } from '@angular/core';
+import { Directive, ElementRef, inject } from '@angular/core';
 import { iconForUrl } from './link-preview-card';
 import { LinkPreviewService } from './link-preview.service';
 
@@ -16,12 +16,17 @@ const TARGET_SELECTOR = 'a[href]';
 // from the link's own domain (see iconForUrl).
 @Directive({
   selector: '[appLinkPreviewDelegate]',
+  host: {
+    '(mouseover)': 'onShow($event)',
+    '(focusin)': 'onShow($event)',
+    '(mouseout)': 'onHide($event)',
+    '(focusout)': 'onHide($event)',
+  },
 })
 export class LinkPreviewDelegateDirective {
-  constructor(private el: ElementRef<HTMLElement>, private previewService: LinkPreviewService) { }
+  private el = inject<ElementRef<HTMLElement>>(ElementRef);
+  private previewService = inject(LinkPreviewService);
 
-  @HostListener('mouseover', ['$event'])
-  @HostListener('focusin', ['$event'])
   onShow(event: Event): void {
     const target = this.findTarget(event.target);
     if (!target) {
@@ -36,8 +41,6 @@ export class LinkPreviewDelegateDirective {
     });
   }
 
-  @HostListener('mouseout', ['$event'])
-  @HostListener('focusout', ['$event'])
   onHide(event: FocusEvent | MouseEvent): void {
     const leavingTarget = this.findTarget(event.target);
     if (!leavingTarget) {

@@ -11,7 +11,7 @@ describe('LinkifyPipe', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({});
     sanitizer = TestBed.inject(DomSanitizer);
-    pipe = new LinkifyPipe(sanitizer);
+    pipe = TestBed.runInInjectionContext(() => new LinkifyPipe());
   });
 
   function render(text: string): string {
