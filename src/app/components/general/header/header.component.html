@@ -20,16 +20,13 @@
       </ul>
       <button type="button" class="theme-toggle" (click)="toggleTheme()" title="Toggle color theme"
         [attr.aria-label]="'Toggle color theme (currently ' + themeService.mode() + ')'">
-        <i class="fa-solid"
-          [class.fa-circle-half-stroke]="themeService.mode() === 'default'"
-          [class.fa-sun]="themeService.mode() === 'light'"
-          [class.fa-moon]="themeService.mode() === 'dark'"></i>
+        <app-icon [name]="themeService.mode() === 'default' ? 'fa-circle-half-stroke' : (themeService.mode() === 'light' ? 'fa-sun' : 'fa-moon')"></app-icon>
       </button>
     </div>
     <button type="button" class="menu-toggle" (click)="responsiveMenuVisible = !responsiveMenuVisible"
       [attr.aria-label]="responsiveMenuVisible ? 'Close menu' : 'Open menu'"
       [attr.aria-expanded]="responsiveMenuVisible" aria-controls="mobile-menu">
-      <i class="fa-solid" [class.fa-bars]="!responsiveMenuVisible" [class.fa-xmark]="responsiveMenuVisible"></i>
+      <app-icon [name]="responsiveMenuVisible ? 'fa-xmark' : 'fa-bars'"></app-icon>
     </button>
     <div class="menu-responsive" [ngStyle]="{'pointer-events': !responsiveMenuVisible ? 'none' : '' }"
       (click)="onBackdropClick($event)">

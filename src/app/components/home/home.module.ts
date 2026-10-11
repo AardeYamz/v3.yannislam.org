@@ -7,6 +7,7 @@ import { AosDirective } from '../../directives/aos/aos.directive';
 import { LogoFallbackDirective } from '../../directives/logo-fallback/logo-fallback.directive';
 import { LogoFallbackBackgroundDirective } from '../../directives/logo-fallback/logo-fallback-background.directive';
 import { LinkPreviewDelegateDirective } from '../../directives/link-preview/link-preview-delegate.directive';
+import { IconComponent } from '../../icons/icon.component';
 import { AboutComponent } from './about/about.component';
 import { BannerComponent } from './banner/banner.component';
 import { TypewriterComponent } from './banner/typewriter/typewriter.component';
@@ -38,6 +39,7 @@ import { LinkifyPipe } from '../../pipes/linkify/linkify.pipe';
     LogoFallbackDirective,
     LogoFallbackBackgroundDirective,
     LinkPreviewDelegateDirective,
+    IconComponent,
     TypewriterComponent
   ],
   // WorkHistoryComponent is exported (in addition to ContactComponent) so the

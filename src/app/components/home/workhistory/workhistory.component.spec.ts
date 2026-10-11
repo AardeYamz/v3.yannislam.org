@@ -9,7 +9,7 @@ describe('WorkHistoryComponent', () => {
   let component: WorkHistoryComponent;
 
   beforeEach(() => {
-    component = new WorkHistoryComponent({} as any);
+    component = new WorkHistoryComponent();
   });
 
   it('should create', () => {
