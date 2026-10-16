@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { ProjectsHighschoolComponent } from './projects-highschool.component';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
@@ -14,7 +15,10 @@ describe('ProjectsHighschoolComponent', () => {
       }
     });
 
-    component = new ProjectsHighschoolComponent(configService);
+    TestBed.configureTestingModule({
+      providers: [{ provide: SiteConfigService, useValue: configService }]
+    });
+    component = TestBed.runInInjectionContext(() => new ProjectsHighschoolComponent());
   });
 
   it('should create', () => {

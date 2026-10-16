@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { blocksFraming, domainFromUrl, isPreviewableUrl, LinkPreviewData } from './link-preview-card';
 
@@ -63,7 +63,9 @@ export class LinkPreviewService {
   private hoverIntentTimer: ReturnType<typeof setTimeout> | undefined;
   private iframeTimeoutTimer: ReturnType<typeof setTimeout> | undefined;
 
-  constructor(@Inject(PLATFORM_ID) platformId: object) {
+  constructor() {
+    const platformId = inject(PLATFORM_ID);
+
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
