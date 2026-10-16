@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AosDirective } from 'src/app/directives/aos/aos.directive';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { ProjectsConfig } from 'src/app/services/site-config/site-config.model';
 import { HomeModule } from '../home.module';
 
 @Component({
@@ -14,6 +15,6 @@ import { HomeModule } from '../home.module';
 })
 export class ProjectsComponent {
   constructor(private configService: SiteConfigService) { }
-  projects: any = this.configService.projects;
+  projects: ProjectsConfig = this.configService.projects;
 }
 

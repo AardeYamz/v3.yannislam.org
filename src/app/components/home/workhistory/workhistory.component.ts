@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { WorkHistoryEntry } from 'src/app/services/site-config/site-config.model';
 
 @Component({
   selector: 'app-workhistory',
@@ -10,7 +11,10 @@ import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
   standalone: false
 })
 export class WorkHistoryComponent {
-  @Input() experienceList: any[] = [];
+  // Reused for both work/volunteering experience entries and college
+  // project cards (see home.component.html / projects.component.html) --
+  // genuinely either shape depending on which section renders it.
+  @Input() experienceList: WorkHistoryEntry[] = [];
   @Input() sectionId = '';
   @Input() navNumber = '';
   @Input() headingText = '';
