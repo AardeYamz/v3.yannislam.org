@@ -74,4 +74,38 @@ describe('FloatingLogosComponent', () => {
       fixture.detectChanges();
     }).not.toThrow();
   });
+
+  it('pauses the animation loop when the host scrolls out of view, and resumes when it scrolls back', () => {
+    let intersectionCallback!: IntersectionObserverCallback;
+    // A plain function, not an arrow function - `new` on the spy needs
+    // something constructible, and arrow functions can't be.
+    spyOn(window, 'IntersectionObserver').and.callFake(function (cb: IntersectionObserverCallback) {
+      intersectionCallback = cb;
+      return { observe: () => { }, disconnect: () => { } } as unknown as IntersectionObserver;
+    });
+    spyOn(window, 'requestAnimationFrame').and.returnValue(1);
+    const cancelSpy = spyOn(window, 'cancelAnimationFrame');
+
+    fixture.detectChanges();
+    (window.requestAnimationFrame as jasmine.Spy).calls.reset();
+
+    intersectionCallback([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver);
+    expect(cancelSpy).toHaveBeenCalled();
+
+    cancelSpy.calls.reset();
+    intersectionCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+    expect(window.requestAnimationFrame).toHaveBeenCalled();
+  });
+
+  it('disconnects the intersection observer on destroy', () => {
+    const disconnectSpy = jasmine.createSpy('disconnect');
+    spyOn(window, 'IntersectionObserver').and.callFake(function () {
+      return { observe: () => { }, disconnect: disconnectSpy } as unknown as IntersectionObserver;
+    });
+
+    fixture.detectChanges();
+    component.ngOnDestroy();
+
+    expect(disconnectSpy).toHaveBeenCalled();
+  });
 });
