@@ -4,7 +4,13 @@ const ROUTES = ['/', '/projects', '/projects/highschool', '/aardeyamz'];
 
 test.describe('smoke', () => {
   test('home page boots: loading overlay plays out, header mounts, scroll is restored', async ({ page }) => {
-    const response = await page.goto('/');
+    // waitUntil: 'domcontentloaded' rather than the default 'load' — 'load'
+    // waits on every subresource (fonts, images, third-party scripts), which
+    // can easily take longer than LoadingScreenComponent's full boot-to-hidden
+    // cycle (MIN_DISPLAY_MS + outro timeline, ~1.25s). Waiting for 'load'
+    // risked the overlay already being hidden by the time this resolved,
+    // making the very next assertion flaky.
+    const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
     expect(response?.status()).toBe(200);
 
     const overlay = page.locator('.loading-screen');
