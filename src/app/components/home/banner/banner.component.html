@@ -34,4 +34,9 @@
       </div>
     </div>
   </div>
+  @if (showScrollArrow()) {
+    <div class="scroll-indicator" (click)="scrollToAbout()">
+      <div class="arrow-down"></div>
+    </div>
+  }
 </section>
