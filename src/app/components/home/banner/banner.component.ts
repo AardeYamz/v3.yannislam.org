@@ -69,10 +69,7 @@ export function scrollEaseProgress(t: number, durationMs: number, easeMs = AUTO_
     standalone: false
 })
 export class BannerComponent implements OnDestroy {
-    // ngx-typed-js (and the typed.js library it wraps) calls getComputedStyle()
-    // and otherwise assumes a real browser, which throws under Domino during
-    // server-side prerendering - so it's only rendered client-side (see
-    // banner.component.html), with a static first line shown on the server.
+    // Guards window/document access during SSR prerendering.
     readonly isBrowser: boolean;
 
     showScrollArrow = signal(false);

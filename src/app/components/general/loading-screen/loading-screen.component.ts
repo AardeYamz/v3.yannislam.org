@@ -1,7 +1,17 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestroy, Output, PLATFORM_ID, ViewChild } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
+import type { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
 import { ThemeService } from 'src/app/services/theme/theme.service';
+
+// Just the handful of animejs functions this component actually calls,
+// destructured at the `await import('animejs')` call site (ngAfterViewInit)
+// rather than stored as a whole module namespace - see the comment there.
+interface AnimejsFns {
+  animate: typeof animate;
+  createTimeline: typeof createTimeline;
+  random: typeof random;
+  stagger: typeof stagger;
+}
 
 // How far (in the artwork's 0 0 800 800 viewBox units) each piece starts
 // offset up and to the left of its resting position.
@@ -11,6 +21,11 @@ const FLY_DISTANCE = 260;
 // the outro before the assembly animation (and a beat of the breathe loop)
 // has had a chance to actually play.
 const MIN_DISPLAY_MS = 1400;
+
+// With prefers-reduced-motion, the intro/breathe/scale-punch are skipped
+// entirely (see ngAfterViewInit/playOutro) - this just holds the overlay up
+// briefly so it doesn't look like a single flickered frame.
+const REDUCED_MOTION_DISPLAY_MS = 300;
 
 @Component({
   selector: 'app-loading-screen',
@@ -31,6 +46,10 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   hidden = false;
 
   private breathe?: JSAnimation;
+  private finishTimer?: ReturnType<typeof setTimeout>;
+  // Lazily loaded in ngAfterViewInit, see there for why - undefined whenever
+  // no real (non-reduced-motion) animation ever ran, including on the server.
+  private animejsFns?: AnimejsFns;
 
   // `document` doesn't exist and animejs has nothing to animate during
   // server-side prerendering (Node has no DOM), so the intro/outro sequence
@@ -66,7 +85,7 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit(): Promise<void> {
     if (!this.isBrowser) {
       // No DOM/animejs on the server, so there's nothing to animate - but
       // also nothing has actually finished yet, so `hidden` is deliberately
@@ -76,6 +95,21 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
     }
 
     document.body.style.overflow = 'hidden';
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this.finishTimer = setTimeout(() => this.playOutro(), REDUCED_MOTION_DISPLAY_MS);
+      return;
+    }
+
+    // Kept out of the initial bundle - only ever needed by this one
+    // (unskippable, above-the-fold) intro animation, so it's fetched as its
+    // own lazy chunk instead of shipping in every page load. Destructured
+    // right at the import site (not stored as a whole module namespace and
+    // read from later) so the bundler can still tree-shake animejs's other,
+    // unused submodules (draggable, svg, text, scope, ...) out of this
+    // chunk the same way the old static named import let it.
+    const { animate, createTimeline, random, stagger } = await import('animejs');
+    this.animejsFns = { animate, createTimeline, random, stagger };
     this.playIntro();
 
     // The page behind this overlay has nothing left to actually wait for:
@@ -86,14 +120,22 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
     // flaky connection, during which this overlay's logo was left floating
     // on top of an already-live, already-interactive page underneath. A
     // fixed minimum display is what the intro animation actually needs.
-    setTimeout(() => this.playOutro(), MIN_DISPLAY_MS);
+    this.finishTimer = setTimeout(() => this.playOutro(), MIN_DISPLAY_MS);
   }
 
   ngOnDestroy(): void {
+    clearTimeout(this.finishTimer);
     this.breathe?.revert();
+    if (this.isBrowser) {
+      // Undoes ngAfterViewInit's `overflow = 'hidden'` in case this
+      // component is destroyed before playOutro's onComplete ever runs to
+      // restore it itself - otherwise the whole page is left unscrollable.
+      document.body.style.overflow = '';
+    }
   }
 
   private playIntro(): void {
+    const { animate, random, stagger } = this.animejsFns!;
     const pieces = Array.from(this.logoGroupRef.nativeElement.querySelectorAll<SVGGraphicsElement>('.logo-piece'));
 
     // Sort top-left -> bottom-right so the default (first-to-last) stagger
@@ -114,7 +156,7 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   }
 
   private playBreathe(): void {
-    this.breathe = animate(this.logoGroupRef.nativeElement, {
+    this.breathe = this.animejsFns!.animate(this.logoGroupRef.nativeElement, {
       scale: [1, 1.035],
       duration: 1000,
       ease: 'inOutSine',
@@ -127,25 +169,32 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
     this.breathe?.revert();
 
     const overlay = this.overlayRef.nativeElement;
-    const logoGroup = this.logoGroupRef.nativeElement;
+    const finish = () => {
+      // This callback comes from animejs's own rAF-driven timeline (or, for
+      // reduced motion, runs synchronously outside any Angular-bound event)
+      // rather than a template binding, so under OnPush the view wouldn't
+      // otherwise be marked dirty here — without markForCheck() the overlay
+      // would never actually fade/hide.
+      this.hidden = true;
+      this.cdr.markForCheck();
+      document.body.style.overflow = '';
+      this.finished.emit();
+    };
 
-    createTimeline()
+    if (!this.animejsFns) {
+      overlay.style.opacity = '0';
+      finish();
+      return;
+    }
+
+    const logoGroup = this.logoGroupRef.nativeElement;
+    this.animejsFns.createTimeline()
       .add(logoGroup, { scale: 1.1, duration: 200, ease: 'outQuad' })
       .add(overlay, {
         opacity: [1, 0],
         duration: 500,
         ease: 'inOutQuad',
-        onComplete: () => {
-          // `hidden` gates the template's [class.loading-screen--hidden]
-          // binding, but this callback comes from animejs's own rAF-driven
-          // timeline, not an Angular-bound event, so under OnPush the view
-          // wouldn't otherwise be marked dirty here — without markForCheck()
-          // the overlay would never actually fade/hide.
-          this.hidden = true;
-          this.cdr.markForCheck();
-          document.body.style.overflow = '';
-          this.finished.emit();
-        }
+        onComplete: finish
       }, '+=150');
   }
 
