@@ -1,6 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { LinkPreviewService } from './link-preview.service';
 
+// A domain not covered by ICON_BY_DOMAIN/blocksFraming - the real iframe
+// attempt tests need a target the service doesn't skip outright.
+const UNBLOCKED_URL = 'https://www.voya.com/some/page';
+const HOVER_INTENT_MS = 300;
+
 describe('LinkPreviewService', () => {
   let service: LinkPreviewService;
   let host: HTMLElement;
@@ -19,6 +24,7 @@ describe('LinkPreviewService', () => {
   afterEach(() => {
     host.remove();
     document.querySelectorAll('.link-preview-card').forEach(el => el.remove());
+    jasmine.clock().uninstall();
   });
 
   function card(): HTMLElement | null {
@@ -61,15 +67,39 @@ describe('LinkPreviewService', () => {
     return card()!.querySelector('iframe') as HTMLIFrameElement;
   }
 
-  it('points the iframe at the target URL on show, alongside the fallback card', () => {
+  it('never starts an iframe attempt for a domain known to block framing, even after the hover-intent delay', () => {
+    jasmine.clock().install();
     service.show(host, { icon: 'fab fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
+    jasmine.clock().tick(HOVER_INTENT_MS);
 
-    expect(frame().src).toContain('github.com/AardeYamz');
+    expect(frame().src).toBe('about:blank');
+  });
+
+  it('does not point the iframe at the target until the hover-intent delay elapses', () => {
+    jasmine.clock().install();
+    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+
+    expect(frame().src).toBe('about:blank');
+
+    jasmine.clock().tick(HOVER_INTENT_MS);
+
+    expect(frame().src).toContain('voya.com');
+  });
+
+  it('cancels the hover-intent timer if hide() is called before it elapses', () => {
+    jasmine.clock().install();
+    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    service.hide();
+    jasmine.clock().tick(HOVER_INTENT_MS);
+
+    expect(frame().src).toBe('about:blank');
   });
 
   it('upgrades to the live preview once the iframe load takes longer than the "instantly blocked" threshold', () => {
+    jasmine.clock().install();
     spyOn(performance, 'now').and.returnValues(0, 900);
-    service.show(host, { icon: 'fab fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
+    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    jasmine.clock().tick(HOVER_INTENT_MS);
 
     frame().dispatchEvent(new Event('load'));
 
@@ -77,8 +107,10 @@ describe('LinkPreviewService', () => {
   });
 
   it('stays on the fallback card when the iframe "load" fires suspiciously fast (likely blocked framing)', () => {
+    jasmine.clock().install();
     spyOn(performance, 'now').and.returnValues(0, 50);
-    service.show(host, { icon: 'fab fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
+    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    jasmine.clock().tick(HOVER_INTENT_MS);
 
     frame().dispatchEvent(new Event('load'));
 
@@ -86,20 +118,24 @@ describe('LinkPreviewService', () => {
   });
 
   it('resets to the fallback card at the start of every show(), before the new attempt resolves', () => {
+    jasmine.clock().install();
     spyOn(performance, 'now').and.returnValues(0, 900);
-    service.show(host, { icon: 'fab fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
+    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    jasmine.clock().tick(HOVER_INTENT_MS);
     frame().dispatchEvent(new Event('load'));
     expect(card()?.classList.contains('link-preview-card--iframe')).toBeTrue();
 
     service.hide();
-    service.show(host, { icon: 'fab fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
+    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
 
     expect(card()?.classList.contains('link-preview-card--iframe')).toBeFalse();
   });
 
   it('ignores a late iframe load result that arrives after hide() already abandoned the attempt', () => {
+    jasmine.clock().install();
     spyOn(performance, 'now').and.returnValues(0, 900);
-    service.show(host, { icon: 'fab fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
+    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    jasmine.clock().tick(HOVER_INTENT_MS);
     const el = frame();
 
     service.hide();
@@ -109,7 +145,9 @@ describe('LinkPreviewService', () => {
   });
 
   it('resets the iframe to about:blank on hide, to stop it loading in the background', () => {
-    service.show(host, { icon: 'fab fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
+    jasmine.clock().install();
+    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    jasmine.clock().tick(HOVER_INTENT_MS);
     service.hide();
 
     expect(frame().src).toBe('about:blank');
