@@ -6,7 +6,7 @@ describe('ResumeService', () => {
   let service: ResumeService;
 
   beforeEach(() => {
-    service = new ResumeService();
+    service = new ResumeService('browser' as any);
   });
 
   describe('open()', () => {
@@ -19,6 +19,15 @@ describe('ResumeService', () => {
         `${window.location.origin}/assets/resume/${encodeURIComponent(resumeManifest.filename as string)}`,
         '_blank'
       );
+    });
+
+    it('does nothing during server-side rendering', () => {
+      spyOn(window, 'open');
+      const serverService = new ResumeService('server' as any);
+
+      serverService.open();
+
+      expect(window.open).not.toHaveBeenCalled();
     });
   });
 });

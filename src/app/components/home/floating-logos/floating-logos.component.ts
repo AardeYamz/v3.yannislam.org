@@ -280,6 +280,13 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     this.resizeTimeout = setTimeout(() => this.layout(), 200);
   };
 
+  // The rAF loop only actually runs while both of these are true - either
+  // one going false (tab backgrounded, or the banner scrolled out of view)
+  // pauses it; see syncLoop().
+  private tabVisible = true;
+  private inViewport = true;
+  private intersectionObserver?: IntersectionObserver;
+
   private isFirstThemeCheck = true;
 
   constructor(
@@ -345,12 +352,28 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   private readonly onVisibilityChange = () => {
     if (this.prefersReducedMotion) return;
 
-    if (document.hidden) {
-      this.stopLoop();
-    } else {
-      this.startLoop();
-    }
+    this.tabVisible = !document.hidden;
+    this.syncLoop();
   };
+
+  // Same idea as onVisibilityChange, but for the banner scrolling out of
+  // the viewport entirely (tab stays visible, but this element doesn't) -
+  // an IntersectionObserver on the host catches that case the
+  // visibilitychange listener can't.
+  private readonly onIntersect = (entries: IntersectionObserverEntry[]) => {
+    if (this.prefersReducedMotion) return;
+
+    this.inViewport = entries[0]?.isIntersecting ?? true;
+    this.syncLoop();
+  };
+
+  private syncLoop(): void {
+    if (this.tabVisible && this.inViewport) {
+      this.startLoop();
+    } else {
+      this.stopLoop();
+    }
+  }
 
   ngAfterViewInit(): void {
     this.elements = this.logoEls.map(ref => ref.nativeElement);
@@ -378,11 +401,14 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     window.addEventListener('resize', this.onResize);
     document.addEventListener('visibilitychange', this.onVisibilityChange);
 
+    this.intersectionObserver = new IntersectionObserver(this.onIntersect);
+    this.intersectionObserver.observe(this.host.nativeElement);
+
     if (this.prefersReducedMotion) {
       return;
     }
 
-    this.startLoop();
+    this.syncLoop();
   }
 
   ngOnDestroy(): void {
@@ -391,6 +417,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     if (this.isBrowser) {
       window.removeEventListener('resize', this.onResize);
       document.removeEventListener('visibilitychange', this.onVisibilityChange);
+      this.intersectionObserver?.disconnect();
     }
   }
 
