@@ -73,4 +73,29 @@ describe('LoadingScreenComponent', () => {
       component.ngOnDestroy();
     }).not.toThrow();
   });
+
+  it('locks page scroll while shown and restores it once destroyed, even before the outro finishes', () => {
+    fixture.detectChanges();
+
+    expect(document.body.style.overflow).toBe('hidden');
+
+    component.ngOnDestroy();
+
+    expect(document.body.style.overflow).toBe('');
+  });
+
+  it('skips the intro/outro animation and hides quickly when the user prefers reduced motion', async () => {
+    spyOn(window, 'matchMedia').and.returnValue({ matches: true } as MediaQueryList);
+    fixture.detectChanges();
+
+    expect(component.hidden).toBeFalse();
+
+    // REDUCED_MOTION_DISPLAY_MS is a real (unmocked) setTimeout - this repo
+    // doesn't use zone.js/fakeAsync (the app is zoneless), so a short real
+    // wait is how the rest of this suite handles timer-driven async code too.
+    await new Promise(resolve => setTimeout(resolve, 350));
+
+    expect(component.hidden).toBeTrue();
+    expect(document.body.style.overflow).toBe('');
+  });
 });

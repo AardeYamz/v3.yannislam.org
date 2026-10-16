@@ -1,6 +1,6 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { domainFromUrl, isPreviewableUrl, LinkPreviewData } from './link-preview-card';
+import { blocksFraming, domainFromUrl, isPreviewableUrl, LinkPreviewData } from './link-preview-card';
 
 const VISIBLE_CLASS = 'link-preview-card--visible';
 const IFRAME_CLASS = 'link-preview-card--iframe';
@@ -42,6 +42,11 @@ const MIN_REAL_LOAD_MS = 800;
 // gets a fair chance to clear that bar before this cuts it off.
 const IFRAME_TIMEOUT_MS = 2600;
 
+// A brief hover-intent delay before even starting the (expensive, full
+// page load) iframe attempt - a cursor merely passing over a trigger on its
+// way elsewhere shouldn't kick one off at all.
+const HOVER_INTENT_MS = 300;
+
 // Single shared floating card, reused across every hoverable element on the
 // page (social icons, banner blurb links) rather than one DOM node per
 // trigger - there's only ever one preview visible at a time anyway.
@@ -55,6 +60,8 @@ export class LinkPreviewService {
   private frameEl!: HTMLIFrameElement;
   private lastHost: HTMLElement | null = null;
   private attemptToken = 0;
+  private hoverIntentTimer: ReturnType<typeof setTimeout> | undefined;
+  private iframeTimeoutTimer: ReturnType<typeof setTimeout> | undefined;
 
   constructor(@Inject(PLATFORM_ID) platformId: object) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -78,11 +85,20 @@ export class LinkPreviewService {
     this.position(card, host);
     card.classList.add(VISIBLE_CLASS);
 
-    this.attemptIframe(data.url);
+    if (blocksFraming(data.url)) {
+      // Known to send X-Frame-Options/CSP headers that refuse to be framed -
+      // skip the guaranteed-to-fail iframe load entirely and just show the
+      // icon/title/domain fallback card already rendered above.
+      return;
+    }
+
+    this.hoverIntentTimer = setTimeout(() => this.attemptIframe(data.url), HOVER_INTENT_MS);
   }
 
   hide(): void {
     this.attemptToken++; // invalidate any in-flight iframe attempt
+    clearTimeout(this.hoverIntentTimer);
+    clearTimeout(this.iframeTimeoutTimer);
     this.card?.classList.remove(VISIBLE_CLASS);
     if (this.frameEl) {
       this.frameEl.src = 'about:blank';
@@ -124,7 +140,7 @@ export class LinkPreviewService {
     frame.onerror = fail;
 
     frame.src = url;
-    setTimeout(fail, IFRAME_TIMEOUT_MS);
+    this.iframeTimeoutTimer = setTimeout(fail, IFRAME_TIMEOUT_MS);
   }
 
   private ensureCard(): HTMLElement {
