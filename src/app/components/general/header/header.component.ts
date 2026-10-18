@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy, AfterViewInit, OnDestroy, Injector, afterNextRender, computed, signal, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { FormControl } from '@angular/forms';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
@@ -42,7 +41,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   // otherwise catch -- a signal write is what actually re-renders the menu
   // in that case.
   readonly responsiveMenuVisible = signal(false);
-  languageFormControl: FormControl = new FormControl();
   menu: any[];
 
   // hasScrolled/logoRotationDeg used to be a plain field + getter, updated

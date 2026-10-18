@@ -50,12 +50,4 @@ export class FooterComponent {
         this.mobileSocials = this.socials.filter((item: { name: string; }) => item?.name !== "Email");
         this.footer = this.configService.footer;
     }
-
-    // footer-left-bar renders the full `socials` list (Email included)
-    // as one uniform row of icons. Font Awesome's mail glyph lives in the
-    // "solid" style, not "brands" like the rest of that list, so it needs
-    // its own prefix instead of the flat 'fab ' the others use.
-    socialIconClass(social: { name: string; icon: string }): string {
-        return (social?.name === 'Email' ? 'fas ' : 'fab ') + social?.icon;
-    }
 }

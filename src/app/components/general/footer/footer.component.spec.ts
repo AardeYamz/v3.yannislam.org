@@ -7,6 +7,7 @@ import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { LinkPreviewDirective } from 'src/app/directives/link-preview/link-preview.directive';
+import { IconComponent } from 'src/app/icons/icon.component';
 
 describe('FooterComponent', () => {
   let component: FooterComponent;
@@ -32,7 +33,7 @@ describe('FooterComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [FooterComponent],
-      imports: [LinkPreviewDirective],
+      imports: [LinkPreviewDirective, IconComponent],
       providers: [
         provideNoopAnimations(),
         { provide: AnalyticsService, useValue: analyticsServiceSpy },
