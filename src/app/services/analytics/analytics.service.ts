@@ -15,9 +15,4 @@ export class AnalyticsService {
     if (typeof gtag !== 'function') return;
     gtag('event', action, { event_category: category, event_label: label });
   }
-
-  sendAnalyticPageView(path: string, title: string) {
-    if (typeof gtag !== 'function') return;
-    gtag('event', 'page_view', { page_path: path, page_title: title });
-  }
 }

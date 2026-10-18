@@ -57,7 +57,7 @@ footer {
             @include md-state-layer($Primary, $ShapeFull);
         }
 
-        i {
+        app-icon {
             font-size: 19px;
             color: $OnSurfaceVariant;
             &:hover,
@@ -139,7 +139,7 @@ footer {
                 list-style: none;
             }
 
-            i {
+            app-icon {
                 font-size: 19px;
                 color: $LightSlate;
 
@@ -191,7 +191,7 @@ footer {
                 list-style: none;
             }
 
-            i {
+            app-icon {
                 font-size: 19px;
                 color: $LightSlate;
 

@@ -7,7 +7,7 @@ import { LinkPreviewService } from './link-preview.service';
 @Component({
   standalone: true,
   imports: [LinkPreviewDirective],
-  template: `<a [appLinkPreview]="{ icon: 'fab fa-github', title: 'Github', url: 'https://github.com/AardeYamz' }">link</a>`,
+  template: `<a [appLinkPreview]="{ icon: 'fa-github', title: 'Github', url: 'https://github.com/AardeYamz' }">link</a>`,
 })
 class HostComponent { }
 
@@ -35,7 +35,7 @@ describe('LinkPreviewDirective', () => {
 
     expect(previewService.show).toHaveBeenCalledWith(
       element(),
-      { icon: 'fab fa-github', title: 'Github', url: 'https://github.com/AardeYamz' }
+      { icon: 'fa-github', title: 'Github', url: 'https://github.com/AardeYamz' }
     );
   });
 
