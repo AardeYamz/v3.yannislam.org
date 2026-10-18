@@ -70,12 +70,4 @@ export class FooterComponent implements AfterViewInit {
             >= document.documentElement.scrollHeight - bottomThresholdPx;
         this.atBottom.set(scrolledToBottom);
     }
-
-    // footer-left-bar renders the full `socials` list (Email included)
-    // as one uniform row of icons. Font Awesome's mail glyph lives in the
-    // "solid" style, not "brands" like the rest of that list, so it needs
-    // its own prefix instead of the flat 'fab ' the others use.
-    socialIconClass(social: Contact): string {
-        return (social.name === 'Email' ? 'fas ' : 'fab ') + social.icon;
-    }
 }
