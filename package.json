@@ -68,6 +68,9 @@
     "minimatch": "^3.1.5",
     "lighthouse": "^13.4.1",
     "puppeteer-core": "^25.7.0",
-    "@puppeteer/browsers": "^3.2.0"
+    "@puppeteer/browsers": "^3.2.0",
+    "@lhci/utils": {
+      "js-yaml": "^4.1.1"
+    }
   }
 }
