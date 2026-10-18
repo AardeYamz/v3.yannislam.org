@@ -1,6 +1,5 @@
 
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { AosDirective } from 'src/app/directives/aos/aos.directive';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
@@ -13,7 +12,6 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
   styleUrl: './namecard.component.scss'
 })
 export class NamecardComponent {
-  private router = inject(Router);
   analyticsService = inject(AnalyticsService);
   configService = inject(SiteConfigService);
 

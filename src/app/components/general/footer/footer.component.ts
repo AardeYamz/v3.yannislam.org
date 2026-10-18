@@ -5,6 +5,7 @@ import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { LinkPreviewDirective } from '../../../directives/link-preview/link-preview.directive';
 import { HeaderComponent } from '../header/header.component';
+import { IconComponent } from 'src/app/icons/icon.component';
 
 @Component({
     selector: 'app-footer',
@@ -14,7 +15,7 @@ import { HeaderComponent } from '../header/header.component';
         fadeStaggerAnimation('animateFooter', 'translateY(100%)')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [LinkPreviewDirective, HeaderComponent, DatePipe],
+    imports: [LinkPreviewDirective, HeaderComponent, DatePipe, IconComponent],
     host: {
         '(window:scroll)': 'checkScrollPosition()',
         '(window:resize)': 'checkScrollPosition()',
@@ -69,13 +70,5 @@ export class FooterComponent implements AfterViewInit {
         const scrolledToBottom = window.innerHeight + window.scrollY
             >= document.documentElement.scrollHeight - bottomThresholdPx;
         this.atBottom.set(scrolledToBottom);
-    }
-
-    // footer-left-bar renders the full `socials` list (Email included)
-    // as one uniform row of icons. Font Awesome's mail glyph lives in the
-    // "solid" style, not "brands" like the rest of that list, so it needs
-    // its own prefix instead of the flat 'fab ' the others use.
-    socialIconClass(social: { name: string; icon: string }): string {
-        return (social?.name === 'Email' ? 'fas ' : 'fab ') + social?.icon;
     }
 }

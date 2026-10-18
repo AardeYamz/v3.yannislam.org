@@ -1,19 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkHistoryComponent } from './workhistory.component';
-import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 
 describe('WorkHistoryComponent', () => {
   let component: WorkHistoryComponent;
   let fixture: ComponentFixture<WorkHistoryComponent>;
 
   beforeEach(() => {
-    const analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['sendAnalyticEvent']);
-
     TestBed.configureTestingModule({
-      imports: [WorkHistoryComponent],
-      providers: [
-        { provide: AnalyticsService, useValue: analyticsServiceSpy }
-      ]
+      imports: [WorkHistoryComponent]
     });
 
     fixture = TestBed.createComponent(WorkHistoryComponent);

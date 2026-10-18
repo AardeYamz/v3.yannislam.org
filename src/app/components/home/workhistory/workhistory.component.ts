@@ -1,6 +1,6 @@
-import { Component, ChangeDetectionStrategy, input, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o';
-import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { IconComponent } from 'src/app/icons/icon.component';
 import { AosDirective } from '../../../directives/aos/aos.directive';
 import { LogoFallbackDirective } from '../../../directives/logo-fallback/logo-fallback.directive';
 import { NgClass } from '@angular/common';
@@ -12,11 +12,9 @@ import { LinkifyPipe } from '../../../pipes/linkify/linkify.pipe';
     templateUrl: './workhistory.component.html',
     styleUrls: ['./workhistory.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [AosDirective, CarouselModule, LogoFallbackDirective, NgClass, LogoFallbackBackgroundDirective, LinkifyPipe]
+    imports: [AosDirective, CarouselModule, LogoFallbackDirective, NgClass, LogoFallbackBackgroundDirective, LinkifyPipe, IconComponent]
 })
 export class WorkHistoryComponent {
-  analyticsService = inject(AnalyticsService);
-
   experienceList = input<any[]>([]);
   sectionId = input('');
   navNumber = input('');

@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, AfterViewInit, OnDestroy, signal, PLATFORM_ID, forwardRef, inject } from '@angular/core';
 import { isPlatformBrowser, NgStyle } from '@angular/common';
-import { FormControl } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
+import { IconComponent } from 'src/app/icons/icon.component';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
@@ -30,7 +30,7 @@ import { ThemeService } from 'src/app/services/theme/theme.service';
         fadeStaggerAnimation('animateMenu', 'translateX(-20px)', '.container > *')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterLink, NgStyle, forwardRef(() => HeaderComponent)],
+    imports: [RouterLink, NgStyle, IconComponent, forwardRef(() => HeaderComponent)],
     host: {
         '(window:scroll)': 'getScrollPosition()',
     },
@@ -45,7 +45,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   responsiveMenuVisible: Boolean = false;
   pageYPosition!: number;
-  languageFormControl: FormControl = new FormControl();
   menu: any[];
 
   // Which section (menuItem.scrollSection) is currently scrolled into view,
