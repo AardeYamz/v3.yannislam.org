@@ -6,12 +6,11 @@ name: Dependabot auto-merge
 #     bundle - see the "testing" group comment in dependabot.yml)
 # A major bump of a production dependency is left for manual review.
 #
-# This uses GitHub's native `gh pr merge --auto`: it doesn't merge the PR
-# immediately, it flags the PR to merge itself once the branch is mergeable
-# and every *required* status check has succeeded. That only actually gates
-# on this repo's CI (Build & Test) and the Vercel preview if they're listed
-# as required status checks under Settings > Branches for `main` - add them
-# there once for this workflow to wait on them rather than merging on sight.
+# main has no branch protection / required status checks, so `gh pr merge
+# --auto` would merge on sight, even into a failing build. Instead the job
+# waits for the PR's own checks (Build & Test, Security, ...) to finish and
+# only merges if they all pass; a failing check fails this job and leaves
+# the PR open for a human.
 #
 # `pull_request_target` (not `pull_request`) is required so the job gets a
 # write-scoped token even though Dependabot PRs come from a bot with
@@ -38,7 +37,7 @@ jobs:
   auto-merge:
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 30
 
     steps:
       - name: Fetch Dependabot metadata
@@ -47,9 +46,18 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Enable auto-merge for safe updates
+      - name: Wait for CI, then merge safe updates
         if: steps.metadata.outputs.update-type != 'version-update:semver-major' || steps.metadata.outputs.dependency-type == 'direct:development'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-        run: gh pr merge --auto --squash "$PR_URL"
+        run: |
+          # The PR's checks start in parallel with this job, so give them
+          # a minute to be reported before watching.
+          for _ in $(seq 1 12); do
+            gh pr checks "$PR_URL" >/dev/null 2>&1 && break
+            [ $? -eq 8 ] && break # 8 = checks pending
+            sleep 10
+          done
+          gh pr checks "$PR_URL" --watch --fail-fast
+          gh pr merge --squash "$PR_URL"
