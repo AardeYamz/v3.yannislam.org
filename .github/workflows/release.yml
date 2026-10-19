@@ -1,0 +1,49 @@
+name: Release
+
+# Fires when Vercel reports a successful *Production* deployment (the GitHub
+# Deployments API entry Vercel creates for every push to main), so a tag and
+# release exist only for commits that actually shipped, not merely merged.
+on:
+  deployment_status:
+
+# Deployment events carry no concurrency of their own; serialise so two
+# near-simultaneous deploys cannot race on the tag check below.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  release:
+    if: >-
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment.environment == 'Production' &&
+      github.event.deployment.ref == 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: write
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      SHA: ${{ github.event.deployment.sha }}
+
+    steps:
+      # Vercel can report success more than once for a commit (redeploys,
+      # promotions); one release per commit.
+      - name: Skip if commit is already released
+        id: check
+        run: |
+          existing=$(gh api "repos/$REPO/git/matching-refs/tags/v" --jq "[.[] | select(.object.sha == \"$SHA\")] | length")
+          echo "skip=$([ "$existing" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      # Tag is vCCYYMMDDHHMMSS in UTC at release time. --target pins the tag
+      # to the deployed commit rather than whatever main has moved on to.
+      - name: Create tag and release
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          tag="v$(date -u +%Y%m%d%H%M%S)"
+          gh release create "$tag" --repo "$REPO" --target "$SHA" --title "$tag" --generate-notes
