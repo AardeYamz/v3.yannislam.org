@@ -32,18 +32,18 @@ describe('LinkPreviewService', () => {
   }
 
   it('creates and populates the card on show', () => {
-    service.show(host, { icon: 'fab fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
+    service.show(host, { icon: 'fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
 
     const el = card();
     expect(el).toBeTruthy();
     expect(el?.classList.contains('link-preview-card--visible')).toBeTrue();
     expect(el?.querySelector('.link-preview-card__title')?.textContent).toBe('Github');
     expect(el?.querySelector('.link-preview-card__domain')?.textContent).toBe('github.com');
-    expect(el?.querySelector('i')?.className).toBe('fab fa-github');
+    expect(el?.querySelector('i')?.querySelector('svg')).toBeTruthy();
   });
 
   it('removes the visible class on hide, without removing the card from the DOM', () => {
-    service.show(host, { icon: 'fab fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
+    service.show(host, { icon: 'fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
     service.hide();
 
     expect(card()?.classList.contains('link-preview-card--visible')).toBeFalse();
@@ -51,7 +51,7 @@ describe('LinkPreviewService', () => {
   });
 
   it('does nothing for a non-http(s) URL (e.g. mailto:)', () => {
-    service.show(host, { icon: 'fas fa-envelope', title: 'Email', url: 'mailto:test@example.com' });
+    service.show(host, { icon: 'fa-envelope', title: 'Email', url: 'mailto:test@example.com' });
 
     expect(card()).toBeFalsy();
   });
@@ -69,7 +69,7 @@ describe('LinkPreviewService', () => {
 
   it('never starts an iframe attempt for a domain known to block framing, even after the hover-intent delay', () => {
     jasmine.clock().install();
-    service.show(host, { icon: 'fab fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
+    service.show(host, { icon: 'fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
     jasmine.clock().tick(HOVER_INTENT_MS);
 
     expect(frame().src).toBe('about:blank');
@@ -77,7 +77,7 @@ describe('LinkPreviewService', () => {
 
   it('does not point the iframe at the target until the hover-intent delay elapses', () => {
     jasmine.clock().install();
-    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    service.show(host, { icon: 'fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
 
     expect(frame().src).toBe('about:blank');
 
@@ -88,7 +88,7 @@ describe('LinkPreviewService', () => {
 
   it('cancels the hover-intent timer if hide() is called before it elapses', () => {
     jasmine.clock().install();
-    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    service.show(host, { icon: 'fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
     service.hide();
     jasmine.clock().tick(HOVER_INTENT_MS);
 
@@ -98,7 +98,7 @@ describe('LinkPreviewService', () => {
   it('upgrades to the live preview once the iframe load takes longer than the "instantly blocked" threshold', () => {
     jasmine.clock().install();
     spyOn(performance, 'now').and.returnValues(0, 900);
-    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    service.show(host, { icon: 'fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
     jasmine.clock().tick(HOVER_INTENT_MS);
 
     frame().dispatchEvent(new Event('load'));
@@ -109,7 +109,7 @@ describe('LinkPreviewService', () => {
   it('stays on the fallback card when the iframe "load" fires suspiciously fast (likely blocked framing)', () => {
     jasmine.clock().install();
     spyOn(performance, 'now').and.returnValues(0, 50);
-    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    service.show(host, { icon: 'fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
     jasmine.clock().tick(HOVER_INTENT_MS);
 
     frame().dispatchEvent(new Event('load'));
@@ -120,13 +120,13 @@ describe('LinkPreviewService', () => {
   it('resets to the fallback card at the start of every show(), before the new attempt resolves', () => {
     jasmine.clock().install();
     spyOn(performance, 'now').and.returnValues(0, 900);
-    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    service.show(host, { icon: 'fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
     jasmine.clock().tick(HOVER_INTENT_MS);
     frame().dispatchEvent(new Event('load'));
     expect(card()?.classList.contains('link-preview-card--iframe')).toBeTrue();
 
     service.hide();
-    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    service.show(host, { icon: 'fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
 
     expect(card()?.classList.contains('link-preview-card--iframe')).toBeFalse();
   });
@@ -134,7 +134,7 @@ describe('LinkPreviewService', () => {
   it('ignores a late iframe load result that arrives after hide() already abandoned the attempt', () => {
     jasmine.clock().install();
     spyOn(performance, 'now').and.returnValues(0, 900);
-    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    service.show(host, { icon: 'fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
     jasmine.clock().tick(HOVER_INTENT_MS);
     const el = frame();
 
@@ -146,7 +146,7 @@ describe('LinkPreviewService', () => {
 
   it('resets the iframe to about:blank on hide, to stop it loading in the background', () => {
     jasmine.clock().install();
-    service.show(host, { icon: 'fas fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
+    service.show(host, { icon: 'fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
     jasmine.clock().tick(HOVER_INTENT_MS);
     service.hide();
 

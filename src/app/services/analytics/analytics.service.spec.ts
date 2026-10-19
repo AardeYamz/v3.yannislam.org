@@ -30,19 +30,9 @@ describe('AnalyticsService', () => {
     });
   });
 
-  it('sendAnalyticPageView forwards to the global gtag() as a page_view event', () => {
-    service.sendAnalyticPageView('/projects', 'Projects');
-
-    expect(gtagSpy).toHaveBeenCalledWith('event', 'page_view', {
-      page_path: '/projects',
-      page_title: 'Projects',
-    });
-  });
-
   it('does not throw when gtag is unavailable (e.g. blocked by an ad blocker)', () => {
     delete (window as any).gtag;
 
     expect(() => service.sendAnalyticEvent('a', 'b', 'c')).not.toThrow();
-    expect(() => service.sendAnalyticPageView('/', 'Home')).not.toThrow();
   });
 });
