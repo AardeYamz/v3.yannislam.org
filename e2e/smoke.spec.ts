@@ -4,13 +4,13 @@ const ROUTES = ['/', '/projects', '/projects/highschool', '/aardeyamz'];
 
 test.describe('smoke', () => {
   test('home page boots: loading overlay plays out, header mounts, scroll is restored', async ({ page }) => {
-    // waitUntil: 'domcontentloaded' rather than the default 'load' — 'load'
-    // waits on every subresource (fonts, images, third-party scripts), which
-    // can easily take longer than LoadingScreenComponent's full boot-to-hidden
-    // cycle (MIN_DISPLAY_MS + outro timeline, ~1.25s). Waiting for 'load'
-    // risked the overlay already being hidden by the time this resolved,
-    // making the very next assertion flaky.
-    const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
+    // waitUntil: 'commit' (not the default 'load'): the e2e config forces
+    // prefers-reduced-motion, where the overlay only stays up for
+    // REDUCED_MOTION_DISPLAY_MS (300ms) after hydration. By the time 'load'
+    // resolves on a slow runner that window can already be over, so asserting
+    // visibility afterwards races it. The prerendered HTML ships the overlay
+    // visible, so polling from the response's first byte is deterministic.
+    const response = await page.goto('/', { waitUntil: 'commit' });
     expect(response?.status()).toBe(200);
 
     const overlay = page.locator('.loading-screen');
