@@ -4,7 +4,13 @@ const ROUTES = ['/', '/projects', '/projects/highschool', '/aardeyamz'];
 
 test.describe('smoke', () => {
   test('home page boots: loading overlay plays out, header mounts, scroll is restored', async ({ page }) => {
-    const response = await page.goto('/');
+    // waitUntil: 'commit' (not the default 'load'): the e2e config forces
+    // prefers-reduced-motion, where the overlay only stays up for
+    // REDUCED_MOTION_DISPLAY_MS (300ms) after hydration. By the time 'load'
+    // resolves on a slow runner that window can already be over, so asserting
+    // visibility afterwards races it. The prerendered HTML ships the overlay
+    // visible, so polling from the response's first byte is deterministic.
+    const response = await page.goto('/', { waitUntil: 'commit' });
     expect(response?.status()).toBe(200);
 
     const overlay = page.locator('.loading-screen');
