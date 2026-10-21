@@ -28,9 +28,13 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          persist-credentials: false   # the token is passed per step below, so it is never written to .git/config
 
       - name: Merge main into each open PR
         run: |
+          # Authenticates fetch and push through the environment only (nothing is stored in .git/config).
+          export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0="http.https://github.com/.extraheader"
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           base_sha=$(git rev-parse --short origin/$BASE)
