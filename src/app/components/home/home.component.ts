@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { Experiences } from 'src/app/services/site-config/site-config.model';
 
 @Component({
     selector: 'app-home',
@@ -10,5 +11,5 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
 })
 export class HomeComponent {
   constructor(private configService: SiteConfigService) { }
-  experiences: any = this.configService.experiences;
+  experiences: Experiences = this.configService.experiences;
 }
