@@ -1,0 +1,61 @@
+name: Merge main into PRs
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# After every push to main, merges main into each open PR branch that is behind it. A PR whose merge conflicts is left untouched:
+# the run shows a warning and the PR gets a comment (once per main commit), so nobody finds out at review time. Fork PRs are skipped
+# (the token cannot push to them) and Dependabot PRs
+# (it rebases them itself and stops once someone else has pushed).
+concurrency:
+  group: sync-prs
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: write   # pushes the merge commit to the PR branch
+      pull-requests: write   # comments on a PR that conflicts
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      BASE: main
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Merge main into each open PR
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          base_sha=$(git rev-parse --short origin/$BASE)
+          updated=0
+          while read -r n branch; do
+            git fetch --quiet origin "$branch"
+            git checkout --quiet --detach FETCH_HEAD
+            if git merge-base --is-ancestor "origin/$BASE" HEAD; then
+              echo "#$n ($branch) is already up to date"
+              continue
+            fi
+            if git merge --no-edit -m "Merge $BASE into $branch" "origin/$BASE"; then
+              git push origin "HEAD:refs/heads/$branch"
+              echo "#$n ($branch) updated"
+              updated=$((updated + 1))
+            else
+              git merge --abort
+              echo "::warning title=Merge conflict::PR #$n ($branch) conflicts with $BASE; not updated. Resolve it by hand."
+              marker="<!-- sync-prs:$base_sha -->"
+              if ! gh pr view "$n" --json comments --jq '.comments[].body' | grep -qF "$marker"; then
+                gh pr comment "$n" --body "$marker
+          **Could not merge \`$BASE\` into this branch:** it conflicts with \`$BASE\` (\`$base_sha\`). Merge \`$BASE\` in locally and resolve the conflicts." </dev/null
+              fi
+            fi
+          done < <(gh pr list --state open --json number,headRefName,isCrossRepository,author \
+            --jq '.[] | select((.isCrossRepository | not) and .author.login != "app/dependabot") | "\(.number) \(.headRefName)"')
+          echo "UPDATED=$updated" >> "$GITHUB_ENV"
+
