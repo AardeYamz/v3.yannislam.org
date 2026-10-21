@@ -140,13 +140,13 @@ flowchart TB
     end
 
     subgraph GHA["GitHub Actions: Build & Test"]
-        subgraph UnitJob["unit-tests (matrix: Node 22.x, 24.x)"]
+        subgraph UnitJob["unit-tests (matrix: Node 24.x, 26.x)"]
             UTest["npm test --code-coverage<br/>(Karma + Jasmine, 117 specs)"]
             UCov["Upload to Codecov"]
             UTest --> UCov
         end
 
-        subgraph BuildJob["build (Node 22.x)"]
+        subgraph BuildJob["build (Node 24.x)"]
             BBuild["npm run build<br/>(prerenders every route)"]
             BUpload["Upload dist/ as artifact"]
             BBuild --> BUpload
@@ -232,12 +232,12 @@ Triggers: pull requests into `main`/`master`/`develop`, pushes to `main`,
 manual `workflow_dispatch`, and a Monday 07:00 UTC schedule. The workflow is
 three jobs, `build` and `e2e` chained so the app is only compiled once:
 
-**1. `unit-tests`** (matrix: Node 22.x, 24.x — both must pass)
+**1. `unit-tests`** (matrix: Node 24.x, 26.x — both must pass)
 - `npm ci`, then `npm test -- --watch=false --browsers=ChromeHeadless --code-coverage`
   (Karma + Jasmine, 117 specs against `TestBed` fixtures)
 - Uploads `coverage/v3.yannislam.org/lcov.info` to [Codecov](https://codecov.io)
 
-**2. `build`** (Node 22.x)
+**2. `build`** (Node 24.x)
 - `npm run build` — Angular AOT build, prerendering every known route
   (`/`, `/projects`, `/projects/highschool`, `/aardeyamz`, `**`) to static
   HTML (see `docs/changes/20260811-013939-ssr-prerendering.md`)
