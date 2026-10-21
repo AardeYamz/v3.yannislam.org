@@ -4,6 +4,7 @@ import { AosDirective } from 'src/app/directives/aos/aos.directive';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 import { WorkHistoryComponent } from '../workhistory/workhistory.component';
+import { ProjectsConfig } from 'src/app/services/site-config/site-config.model';
 
 @Component({
     selector: 'app-projects',
@@ -16,6 +17,6 @@ import { WorkHistoryComponent } from '../workhistory/workhistory.component';
 export class ProjectsComponent {
   private configService = inject(SiteConfigService);
 
-  projects: any = this.configService.projects;
+  projects: ProjectsConfig = this.configService.projects;
 }
 

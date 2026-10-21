@@ -4,6 +4,7 @@ import { AosDirective } from 'src/app/directives/aos/aos.directive';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 import { WorkHistoryComponent } from '../workhistory/workhistory.component';
+import { ProjectSection } from 'src/app/services/site-config/site-config.model';
 
 @Component({
     selector: 'app-projects-highschool',
@@ -16,5 +17,5 @@ import { WorkHistoryComponent } from '../workhistory/workhistory.component';
 export class ProjectsHighschoolComponent {
   private configService = inject(SiteConfigService);
 
-  highschool: any = this.configService.projects.highschool;
+  highschool: ProjectSection = this.configService.projects.highschool;
 }

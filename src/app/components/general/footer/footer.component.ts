@@ -6,6 +6,7 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
 import { LinkPreviewDirective } from '../../../directives/link-preview/link-preview.directive';
 import { HeaderComponent } from '../header/header.component';
 import { IconComponent } from 'src/app/icons/icon.component';
+import { Contact, FooterConfig } from 'src/app/services/site-config/site-config.model';
 
 @Component({
     selector: 'app-footer',
@@ -25,10 +26,10 @@ export class FooterComponent implements AfterViewInit {
     analyticsService = inject(AnalyticsService);
     configService = inject(SiteConfigService);
 
-    socials: any;
-    mobileSocials: any;
-    email: any;
-    footer: any;
+    socials: Contact[];
+    mobileSocials: Contact[];
+    email: Contact;
+    footer: FooterConfig;
     currentDate = new Date();
 
     // Whether the page is scrolled all the way to the bottom — on wide
@@ -49,8 +50,12 @@ export class FooterComponent implements AfterViewInit {
         const platformId = inject(PLATFORM_ID);
 
         this.socials = this.configService.contacts;
-        this.email = this.socials.find((item: { name: string; }) => item?.name === "Email");
-        this.mobileSocials = this.socials.filter((item: { name: string; }) => item?.name !== "Email");
+        // Email is always in config.json's contact list (see CLAUDE.md's
+        // "Add a New Social Link" section) -- non-null assertion rather
+        // than an optional type that every consumer would then need to
+        // guard against for a contact that's never actually missing.
+        this.email = this.socials.find((item) => item.name === "Email")!;
+        this.mobileSocials = this.socials.filter((item) => item.name !== "Email");
         this.footer = this.configService.footer;
         this.isBrowser = isPlatformBrowser(platformId);
     }

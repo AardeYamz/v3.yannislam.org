@@ -3,6 +3,7 @@ import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { AosDirective } from '../../../directives/aos/aos.directive';
 import { NgbNav, NgbNavItem, NgbNavItemRole, NgbNavLink, NgbNavLinkBase, NgbNavContent, NgbNavOutlet } from '@ng-bootstrap/ng-bootstrap';
+import { Experiences } from 'src/app/services/site-config/site-config.model';
 
 @Component({
     selector: 'app-education',
@@ -17,7 +18,7 @@ export class EducationComponent {
 
 
   active = 0
-  experiences: any;
+  experiences: Experiences;
 
   constructor() {
     this.experiences = this.configService.experiences;

@@ -4,6 +4,7 @@ import { BannerComponent } from './banner/banner.component';
 import { AboutComponent } from './about/about.component';
 import { EducationComponent } from './education/education.component';
 import { WorkHistoryComponent } from './workhistory/workhistory.component';
+import { Experiences } from 'src/app/services/site-config/site-config.model';
 
 @Component({
     selector: 'app-home',
@@ -15,5 +16,5 @@ import { WorkHistoryComponent } from './workhistory/workhistory.component';
 export class HomeComponent {
   private configService = inject(SiteConfigService);
 
-  experiences: any = this.configService.experiences;
+  experiences: Experiences = this.configService.experiences;
 }

@@ -7,6 +7,7 @@ import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation'
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { MenuItem } from 'src/app/services/site-config/site-config.model';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
 
@@ -45,7 +46,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   responsiveMenuVisible: Boolean = false;
   pageYPosition!: number;
-  menu: any[];
+  menu: MenuItem[];
 
   // Which section (menuItem.scrollSection) is currently scrolled into view,
   // used to highlight the matching nav item — see setupSectionObserver().
@@ -189,7 +190,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  navigate(menuItem: any, event?: Event) {
+  navigate(menuItem: Partial<MenuItem>, event?: Event) {
     // The nav <a> now carries a real href (menuItem.siteLocation) so it's
     // a genuine link to assistive tech, automation agents, and
     // middle-click/right-click — but a plain navigation there would
