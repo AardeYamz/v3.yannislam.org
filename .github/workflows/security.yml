@@ -44,7 +44,7 @@ jobs:
   # an empty credential rather than reporting no scan.
   credentials:
     name: Check Aikido credentials
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
     outputs:
       configured: ${{ steps.probe.outputs.configured }}
@@ -65,7 +65,7 @@ jobs:
     name: Aikido scan
     needs: credentials
     if: needs.credentials.outputs.configured == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
 
     steps:
@@ -99,7 +99,7 @@ jobs:
   # relying on the next manual audit.
   zizmor:
     name: Lint workflows (zizmor)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
 
     permissions:
