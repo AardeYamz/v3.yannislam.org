@@ -53,7 +53,10 @@ describe('SiteConfigService', () => {
 
     for (const entry of allEntries) {
       expect(Array.isArray(entry.imgs)).withContext(JSON.stringify(entry.title)).toBeTrue();
-      expect(entry.imgs.length).withContext(JSON.stringify(entry.title)).toBeGreaterThan(0);
+      // imgs is only optional pre-resolveLogoKeys() in the type -- this
+      // assertion is exactly what proves it's always populated by the time
+      // a component reads it, hence the non-null assertion.
+      expect(entry.imgs!.length).withContext(JSON.stringify(entry.title)).toBeGreaterThan(0);
     }
   });
 
@@ -70,6 +73,19 @@ describe('SiteConfigService', () => {
       expect(entry.imgs).toEqual([service.logos['voya'].src]);
       expect(entry.image_alt).toBe(service.logos['voya'].alt);
     }
+  });
+
+  it('never mutates the imported config.json module (resolveLogoKeys is pure)', async () => {
+    // A mutating implementation would have added imgs/image_alt directly
+    // onto the objects inside the imported JSON module (service.data is
+    // that same module, per the constructor). Importing it fresh here and
+    // checking a logoKey-bearing entry still has no imgs/image_alt proves
+    // resolveLogoKeys() returned new objects instead of writing onto it.
+    const rawConfig = (await import('../../../assets/config.json')).default as any;
+    const rawWorkEntry = rawConfig.about.experiences.work.list.find((e: any) => e.logoKey === 'voya');
+
+    expect(rawWorkEntry.imgs).toBeUndefined();
+    expect(rawWorkEntry.image_alt).toBeUndefined();
   });
 
   it('every entry referencing a logoKey resolves to a known logo', () => {

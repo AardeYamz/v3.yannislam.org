@@ -34,13 +34,13 @@
   carousel-vs-static split CSS used to do per breakpoint).
 -->
 <ng-template #visual let-exp="exp" let-idx="idx">
-  @if (exp.imgs.length > 1) {
+  @if ((exp.imgs?.length ?? 0) > 1) {
     <owl-carousel-o class='owl-carousel-o' [options]="customOptions">
       @for (img of exp.imgs; track $index) {
         <ng-template carouselSlide [id]="exp.title + idx">
           <div class='img-container'>
             <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.image_alt || exp.title"
-              [appLogoFallback]="exp.organization">
+              [appLogoFallback]="exp.organization || ''">
           </div>
         </ng-template>
       }
@@ -49,8 +49,8 @@
     <div class="img-feature-workhistory-container" data-aos="fade-up" data-aos-duration="1000">
       <div class="img-feature-workhistory-box">
         <div class="img-container img-container-auto">
-          <img class='img-feature-workhistory rounded' [src]="exp.imgs[0]" [alt]="exp.image_alt || exp.title"
-            [appLogoFallback]="exp.organization">
+          <img class='img-feature-workhistory rounded' [src]="exp.imgs?.[0] || ''" [alt]="exp.image_alt || exp.title"
+            [appLogoFallback]="exp.organization || ''">
         </div>
       </div>
     </div>
@@ -59,7 +59,7 @@
 
 <ng-template #info let-exp="exp" let-idx="idx">
   <div [ngClass]="{'workhistory-info-right': idx % 2 == 0, 'workhistory-info-left': idx % 2 != 0}"
-    [appLogoFallbackBg]="exp.imgs[0]" [appLogoFallbackBgOrg]="exp.organization">
+    [appLogoFallbackBg]="exp.imgs?.[0] || ''" [appLogoFallbackBgOrg]="exp.organization || ''">
     <div class="workhistory-box">
       <h5 [ngClass]="{'text-right': idx % 2 == 0, 'text-left': idx % 2 != 0}" class="workhistory-title">
       {{exp.title}} </h5>
