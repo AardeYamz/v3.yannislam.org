@@ -8,12 +8,12 @@
       <ul class="menu-ul nav">
         @for (menuItem of menu ; track menuItem; let i = $index) {
           <li class="nav-item">
-            <a class="nav-link" [attr.href]="menuItem?.siteLocation" (click)='navigate(menuItem, $event)'
-              [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
-              @if (menuItem?.navNumber) {
-                <span class='nav-number'>{{menuItem?.navNumber}}</span>
+            <a class="nav-link" [attr.href]="menuItem.siteLocation" (click)='navigate(menuItem, $event)'
+              [class.nav-link-active]="!!menuItem.scrollSection && activeSection() === menuItem.scrollSection">
+              @if (menuItem.navNumber) {
+                <span class='nav-number'>{{menuItem.navNumber}}</span>
               }
-              <span class="nav-text">{{menuItem?.navTitle}}</span></a>
+              <span class="nav-text">{{menuItem.navTitle}}</span></a>
         </li>
       }
 
@@ -36,12 +36,12 @@
           <ol>
             @for (menuItem of menu ; track menuItem; let i = $index) {
               <li>
-                <a [attr.href]="menuItem?.siteLocation" (click)='navigate(menuItem, $event)'
-                  [class.nav-link-active]="!!menuItem?.scrollSection && activeSection() === menuItem.scrollSection">
-                  @if (menuItem?.navNumber) {
-                    <span>{{menuItem?.navNumber}}</span>
+                <a [attr.href]="menuItem.siteLocation" (click)='navigate(menuItem, $event)'
+                  [class.nav-link-active]="!!menuItem.scrollSection && activeSection() === menuItem.scrollSection">
+                  @if (menuItem.navNumber) {
+                    <span>{{menuItem.navNumber}}</span>
                   }
-                  {{menuItem?.navTitle}}
+                  {{menuItem.navTitle}}
                 </a>
               </li>
             }

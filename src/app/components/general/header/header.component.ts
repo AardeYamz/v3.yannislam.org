@@ -7,6 +7,7 @@ import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { MenuItem } from 'src/app/services/site-config/site-config.model';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
 @Component({
@@ -41,7 +42,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   // otherwise catch -- a signal write is what actually re-renders the menu
   // in that case.
   readonly responsiveMenuVisible = signal(false);
-  menu: any[];
+  menu: MenuItem[];
 
   // hasScrolled/logoRotationDeg used to be a plain field + getter, updated
   // from this component's own `window:scroll` HostListener. Now derived
@@ -220,7 +221,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  navigate(menuItem: any, event?: Event) {
+  navigate(menuItem: Partial<MenuItem>, event?: Event) {
     // The nav <a> now carries a real href (menuItem.siteLocation) so it's
     // a genuine link to assistive tech, automation agents, and
     // middle-click/right-click — but a plain navigation there would

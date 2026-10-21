@@ -3,6 +3,7 @@ import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation'
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { Contact, FooterConfig } from 'src/app/services/site-config/site-config.model';
 
 @Component({
     selector: 'app-footer',
@@ -15,10 +16,10 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
     standalone: false
 })
 export class FooterComponent {
-    socials: any;
-    mobileSocials: any;
-    email: any;
-    footer: any;
+    socials: Contact[];
+    mobileSocials: Contact[];
+    email: Contact;
+    footer: FooterConfig;
     currentDate = new Date();
 
     // Small threshold so momentum/overscroll right at the end of the page
@@ -46,8 +47,12 @@ export class FooterComponent {
         private scrollService: ScrollService,
     ) {
         this.socials = this.configService.contacts;
-        this.email = this.socials.find((item: { name: string; }) => item?.name === "Email");
-        this.mobileSocials = this.socials.filter((item: { name: string; }) => item?.name !== "Email");
+        // Email is always in config.json's contact list (see CLAUDE.md's
+        // "Add a New Social Link" section) -- non-null assertion rather
+        // than an optional type that every consumer would then need to
+        // guard against for a contact that's never actually missing.
+        this.email = this.socials.find((item) => item.name === "Email")!;
+        this.mobileSocials = this.socials.filter((item) => item.name !== "Email");
         this.footer = this.configService.footer;
     }
 }
