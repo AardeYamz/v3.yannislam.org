@@ -271,7 +271,7 @@ jobs:
   # Diffs the lockfile on every PR and fails on a newly-introduced
   # known-vulnerable or disallowed-license package, before it merges.
   # Complements Dependabot (reactive: opens a PR after an advisory exists)
-  # and Aikido (security.yml, reachability triage) rather than duplicating
+  # and Aikido (dashboard PR gating, reachability triage) rather than duplicating
   # either.
   dependency-review:
     if: github.event_name == 'pull_request'
