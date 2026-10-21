@@ -5,7 +5,7 @@
 # group below only controls how they are batched. Everything else in this
 # file drives scheduled *version* updates.
 #
-# Aikido (see .github/workflows/security.yml) is what triages whether an
+# Aikido (GitHub App, dashboard-side PR gating) is what triages whether an
 # advisory actually reaches our code; Dependabot is what opens the bump.
 
 version: 2
