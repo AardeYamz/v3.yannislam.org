@@ -222,7 +222,7 @@ All times UTC. The two Monday crons are staggered so each sees what the one befo
 | When | What | Source | Purpose |
 |---|---|---|---|
 | Mondays 06:00 | Dependabot version updates (`npm` + `github-actions`) | [`dependabot.yml`](.github/dependabot.yml) | Opens the weekly bump PRs, batched by group |
-| Mondays 06:30 | `Security` workflow | [`security.yml`](.github/workflows/security.yml) | Aikido scan and zizmor lint, 30 minutes behind Dependabot so it sees what was just opened |
+| Mondays 06:30 | `Security` workflow | [`security.yml`](.github/workflows/security.yml) | zizmor lint of the workflow files, 30 minutes behind Dependabot |
 | Mondays 07:00 | `Build & Test` workflow | [`build-test.yml`](.github/workflows/build-test.yml) | Full 4-browser Playwright matrix plus the external-link checks in `footer-and-links.spec.ts` that PR runs exclude |
 
 #### Workflows and automations
@@ -230,7 +230,7 @@ All times UTC. The two Monday crons are staggered so each sees what the one befo
 | Name | Trigger | What it does | Source |
 |---|---|---|---|
 | Build & Test | PR to `main`/`master`/`develop`; push to `main`; Monday 07:00; manual | Unit tests, build, Lighthouse, E2E, dependency review (see [jobs](#build--test-jobs-build-testyml)) | [`build-test.yml`](.github/workflows/build-test.yml) |
-| Security | PR to `main`/`master`/`develop`; push to `main`; Monday 06:30; manual | `Check Aikido credentials` → `Aikido scan` (skips green until `AIKIDO_SECRET_KEY` is set); `Lint workflows (zizmor)` | [`security.yml`](.github/workflows/security.yml) |
+| Security | PR to `main`/`master`/`develop`; push to `main`; Monday 06:30; manual | `Lint workflows (zizmor)` | [`security.yml`](.github/workflows/security.yml) |
 | Release | Vercel `deployment_status` | On a successful Production deploy of `main`, creates a `vYYYYMMDDHHMMSS` tag and release pinned to the deployed commit; one release per commit | [`release.yml`](.github/workflows/release.yml) |
 | Merge main into PRs | Push to `main`; manual | Merges `main` into each open PR branch that is behind; conflicting PRs get a comment once per `main` commit; fork and Dependabot PRs are skipped | [`sync-prs.yml`](.github/workflows/sync-prs.yml) |
 | Dependabot auto-merge | `pull_request_target` to `main` | For Dependabot PRs only: waits for all checks, then merges patch/minor bumps and dev-only majors; production majors are left for review | [`dependabot-auto-merge.yml`](.github/workflows/dependabot-auto-merge.yml) |
@@ -481,15 +481,9 @@ can be reverted alone — and Angular majors are ignored outright, since they're
 upgraded by hand through `ng update` and its migration schematics (see
 `docs/changes/20260727-205542-UPGRADE-NOTES.md`).
 
-The Aikido scan (`.github/workflows/security.yml`) runs on PRs, on pushes to
-`main`, and weekly at 06:30 UTC — half an hour behind Dependabot, so it sees
-whatever was just opened. It **skips itself, green, until it's activated**:
-install the [Aikido GitHub App](https://github.com/marketplace/aikido-security),
-then add the CI secret key as `AIKIDO_SECRET_KEY` under both
-*Settings → Secrets and variables → Actions* **and** *→ Dependabot*. That
-second copy is not optional — Dependabot PRs read from a separate secret
-store, so without it the scan skips on exactly the PRs it was added for.
-
-See `docs/changes/20260811-124323-dependabot-aikido-integration.md` for the
-full write-up, including the failure modes this configuration is shaped
-around.
+Aikido runs as a GitHub App with PR gating configured in the Aikido
+dashboard, so there is no Aikido job or CI secret in this repo. (The old
+`AikidoSec/github-actions-workflow` job was removed because Aikido no longer
+recommends it; see `docs/changes/20261021-000000-remove-aikido-workflow.md`.)
+Background on the original Dependabot + Aikido setup is in
+`docs/changes/20260811-124323-dependabot-aikido-integration.md`.
