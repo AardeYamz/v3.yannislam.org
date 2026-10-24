@@ -1,10 +1,11 @@
-import { Component, HostListener, ChangeDetectionStrategy, AfterViewInit, OnDestroy, signal, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ChangeDetectionStrategy, AfterViewInit, OnDestroy, Injector, afterNextRender, computed, signal, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
+import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { MenuItem } from 'src/app/services/site-config/site-config.model';
 import { ThemeService } from 'src/app/services/theme/theme.service';
@@ -34,9 +35,40 @@ import { ThemeService } from 'src/app/services/theme/theme.service';
 
 export class HeaderComponent implements AfterViewInit, OnDestroy {
 
-  responsiveMenuVisible: Boolean = false;
-  pageYPosition!: number;
+  // A signal rather than a plain property: scroll() flips this back to
+  // false inside an async router.navigate().then() callback (when
+  // navigating home from another route before scrolling), which happens
+  // outside any template event OnPush's zone-based change detection would
+  // otherwise catch -- a signal write is what actually re-renders the menu
+  // in that case.
+  readonly responsiveMenuVisible = signal(false);
   menu: MenuItem[];
+
+  // hasScrolled/logoRotationDeg used to be a plain field + getter, updated
+  // from this component's own `window:scroll` HostListener. Now derived
+  // from the shared ScrollService (one passive listener for the whole
+  // page instead of one per scroll-driven component) as computed signals,
+  // so OnPush change detection re-runs exactly when the underlying value
+  // actually changes.
+  readonly hasScrolled = computed(() => this.scrollService.y() > 0);
+
+  // Scroll distance (px) over which the logo completes exactly one turn, then holds at 360deg.
+  private static readonly LOGO_ROTATION_SCROLL_PX = 900;
+
+  readonly logoRotationDeg = computed(() => {
+    if (!this.isBrowser) return 0;
+
+    // On a page shorter than LOGO_ROTATION_SCROLL_PX, scrollY can never
+    // reach it, so the spin used to stall partway through and just sit
+    // there. Scale the distance-per-turn down to whatever's actually
+    // scrollable so short pages still land on a full turn by the bottom.
+    const maxScroll = this.scrollService.maxScroll();
+    const rotationDistance = maxScroll > 0
+      ? Math.min(HeaderComponent.LOGO_ROTATION_SCROLL_PX, maxScroll)
+      : HeaderComponent.LOGO_ROTATION_SCROLL_PX;
+    const progress = Math.min(this.scrollService.y() / rotationDistance, 1);
+    return progress * 360;
+  });
 
   // Which section (menuItem.scrollSection) is currently scrolled into view,
   // used to highlight the matching nav item — see setupSectionObserver().
@@ -64,6 +96,8 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     public analyticsService: AnalyticsService,
     public themeService: ThemeService,
     private resumeService: ResumeService,
+    private scrollService: ScrollService,
+    private injector: Injector,
     configService: SiteConfigService,
     @Inject(PLATFORM_ID) platformId: object,
   ) {
@@ -82,9 +116,12 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     // section ids in the DOM at all, and navigating back to "/" mounts a
     // fresh HomeComponent — re-run the observer setup after every
     // navigation so it always matches what's actually on the page.
+    // afterNextRender (rather than a bare setTimeout) ties this to the
+    // new route's view actually having rendered instead of an arbitrary
+    // macrotask delay that happened to work out in testing.
     this.routerSubscription = this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => setTimeout(() => this.setupSectionObserver()));
+      .subscribe(() => afterNextRender(() => this.setupSectionObserver(), { injector: this.injector }));
   }
 
   ngOnDestroy() {
@@ -156,7 +193,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       // redirect to '/'), so navigate to the real route.
       this.router.navigate(['/']).then(() => this.scrollToElementWhenReady(el));
     }
-    this.responsiveMenuVisible = false;
+    this.responsiveMenuVisible.set(false);
   }
 
   // router.navigate()'s promise resolves once the route change is
@@ -180,7 +217,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   // from a click that bubbled up from a link/button within it.
   onBackdropClick(event: MouseEvent) {
     if (event.target === event.currentTarget) {
-      this.responsiveMenuVisible = false;
+      this.responsiveMenuVisible.set(false);
     }
   }
 
@@ -191,11 +228,16 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     // trigger a full page reload instead of the in-app scroll/router
     // handling below, so intercept it here.
     event?.preventDefault();
+    // Analytics used to be a second (click) handler on the enclosing <li>
+    // in the template (duplicated between the desktop and mobile menus,
+    // and firing for a background click on the <li> that never actually
+    // hit the link too). Folding it in here means one handler, one place.
+    this.analyticsService.sendAnalyticEvent('click_nav', 'menu', menuItem?.navTitle ?? '');
     if (menuItem?.scrollSection) {
       this.scroll(menuItem.scrollSection);
     } else if (menuItem?.siteLocation) {
       this.router.navigateByUrl(menuItem.siteLocation);
-      this.responsiveMenuVisible = false;
+      this.responsiveMenuVisible.set(false);
     }
   }
 
@@ -206,30 +248,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   downloadResume() {
     this.resumeService.open();
-  }
-
-  @HostListener('window:scroll')
-  getScrollPosition() {
-    if (!this.isBrowser) return;
-    this.pageYPosition = window.scrollY;
-  }
-
-  // Scroll distance (px) over which the logo completes exactly one turn, then holds at 360deg.
-  private static readonly LOGO_ROTATION_SCROLL_PX = 900;
-
-  get logoRotationDeg(): number {
-    if (!this.isBrowser) return 0;
-
-    // On a page shorter than LOGO_ROTATION_SCROLL_PX, scrollY can never
-    // reach it, so the spin used to stall partway through and just sit
-    // there. Scale the distance-per-turn down to whatever's actually
-    // scrollable so short pages still land on a full turn by the bottom.
-    const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 0);
-    const rotationDistance = maxScroll > 0
-      ? Math.min(HeaderComponent.LOGO_ROTATION_SCROLL_PX, maxScroll)
-      : HeaderComponent.LOGO_ROTATION_SCROLL_PX;
-    const progress = Math.min((this.pageYPosition || 0) / rotationDistance, 1);
-    return progress * 360;
   }
 
 }
