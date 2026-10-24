@@ -19,6 +19,7 @@ jobs:
     permissions:
       contents: write   # pushes the merge commit to the PR branch
       pull-requests: write   # comments on a PR that conflicts
+      actions: write   # dispatches CI on a branch it just updated
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
@@ -49,6 +50,14 @@ jobs:
             if git merge --no-edit -m "Merge $BASE into $branch" "origin/$BASE"; then
               git push origin "HEAD:refs/heads/$branch"
               echo "#$n ($branch) updated"
+              # A push made with GITHUB_TOKEN does not trigger pull_request
+              # workflows, so the new head would sit with no checks. The
+              # exception is workflow_dispatch, which is allowed with this
+              # token and reports its checks on the branch head (and so on
+              # the PR). The dispatched run skips dependency-review, which
+              # is pull_request-only; the merge only adds what main has.
+              gh workflow run build-test.yml --ref "$branch"
+              gh workflow run security.yml --ref "$branch"
               updated=$((updated + 1))
             else
               git merge --abort
