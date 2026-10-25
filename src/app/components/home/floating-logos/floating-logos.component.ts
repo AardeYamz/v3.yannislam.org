@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, OnDestroy, PLATFORM_ID, QueryList, ViewChild, ViewChildren, effect } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, PLATFORM_ID, effect, inject, viewChild, viewChildren } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 import { YL_SHAPE_BOUNDS, packPointsInYlShape } from './yl-shape';
@@ -231,34 +231,40 @@ function randomBetween(min: number, max: number): number {
   templateUrl: './floating-logos.component.html',
   styleUrls: ['./floating-logos.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  host: {
+    '[class.mode-falling]': 'isFallingMode',
+    '[class.mode-mosaic]': 'isMosaicMode'
+  }
 })
 export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
-  @ViewChildren('logoEl') private logoEls!: QueryList<ElementRef<HTMLElement>>;
-  @ViewChild('layer') private layer!: ElementRef<HTMLElement>;
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private themeService = inject(ThemeService);
+  private cdr = inject(ChangeDetectorRef);
+
+  private readonly logoEls = viewChildren<ElementRef<HTMLElement>>('logoEl');
+  private readonly layer = viewChild.required<ElementRef<HTMLElement>>('layer');
 
   readonly mode: BackgroundMode;
   readonly config: ModeConfig;
   readonly logos: FloatingLogo[];
 
   // Lets the stylesheet tell the modes apart (see the .scss). Two discrete
-  // per-class boolean bindings, not a single `@HostBinding('class')` string
-  // getter: SSR has no viewport, so chooseMode() always guesses 'falling'
-  // server-side (see its comment - the guess doesn't matter, since
-  // generateLogos() output is discarded and regenerated on hydration
-  // regardless). On a desktop load the client then decides 'mosaic', and a
-  // string-valued `class` binding's first write after hydration only *adds*
-  // "mode-mosaic" to the server-rendered "mode-falling" - it isn't diffed
-  // against that pre-existing static value, since Angular's binding
-  // bookkeeping has no "previous" value of its own to diff against yet - so
-  // both classes stuck around together, with both modes' styles active at
-  // once. `[class.foo]` bindings toggle one specific class by boolean value
-  // and don't have that gap.
-  @HostBinding('class.mode-falling') get isFallingMode(): boolean {
+  // per-class host bindings, not a single `class` string binding: SSR has no
+  // viewport, so chooseMode() always guesses 'falling' server-side (see its
+  // comment - the guess doesn't matter, since generateLogos() output is
+  // discarded and regenerated on hydration regardless). On a desktop load the
+  // client then decides 'mosaic', and a string-valued `class` binding's first
+  // write after hydration only *adds* "mode-mosaic" to the server-rendered
+  // "mode-falling" - it isn't diffed against that pre-existing static value,
+  // since Angular's binding bookkeeping has no "previous" value of its own to
+  // diff against yet - so both classes stuck around together, with both
+  // modes' styles active at once. The `[class.foo]` host bindings above
+  // toggle one specific class by boolean value and don't have that gap.
+  private get isFallingMode(): boolean {
     return this.mode === 'falling';
   }
 
-  @HostBinding('class.mode-mosaic') get isMosaicMode(): boolean {
+  private get isMosaicMode(): boolean {
     return this.mode === 'mosaic';
   }
 
@@ -289,12 +295,9 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
 
   private isFirstThemeCheck = true;
 
-  constructor(
-    private host: ElementRef<HTMLElement>,
-    private themeService: ThemeService,
-    private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) platformId: object,
-  ) {
+  constructor() {
+    const platformId = inject(PLATFORM_ID);
+
     this.isBrowser = isPlatformBrowser(platformId);
     this.prefersReducedMotion = this.isBrowser && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -376,7 +379,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.elements = this.logoEls.map(ref => ref.nativeElement);
+    this.elements = this.logoEls().map(ref => ref.nativeElement);
 
     // getBoundingClientRect(), the resize listener, and the rAF animation
     // loop below all need real layout/browser APIs that don't exist during
@@ -617,7 +620,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     // Group opacity on the layer, not per logo, so it also applies to logos
     // that already finished fading in — and so a resize across the breakpoint
     // takes effect without restarting the entrance.
-    this.layer.nativeElement.style.opacity = centered ? String(MOSAIC_CENTERED_DIM) : '';
+    this.layer().nativeElement.style.opacity = centered ? String(MOSAIC_CENTERED_DIM) : '';
 
     // Keep-apart radii have to be expressed in shape units, since that's the
     // space the packing runs in.
