@@ -21,6 +21,12 @@
     "test:perf:desktop": "LH_PRESET=desktop lhci autorun --config=./lighthouserc.js"
   },
   "private": true,
+  "allowScripts": {
+    "@parcel/watcher": true,
+    "esbuild": true,
+    "lmdb": true,
+    "msgpackr-extract": true
+  },
   "dependencies": {
     "@angular/animations": "^22.1.1",
     "@angular/common": "^22.2.2",
