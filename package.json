@@ -71,6 +71,7 @@
     "@puppeteer/browsers": "^3.2.0",
     "@lhci/utils": {
       "js-yaml": "^4.1.1"
-    }
+    },
+    "vite": "^8.3.5"
   }
 }
