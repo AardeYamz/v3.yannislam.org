@@ -1,5 +1,5 @@
 
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { AosDirective } from 'src/app/directives/aos/aos.directive';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
@@ -12,10 +12,9 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
   styleUrl: './namecard.component.scss'
 })
 export class NamecardComponent {
-  constructor(
-    public analyticsService: AnalyticsService,
-    public configService: SiteConfigService
-  ) { }
+  analyticsService = inject(AnalyticsService);
+  configService = inject(SiteConfigService);
+
 
   get data() { return this.configService.data; }
 }

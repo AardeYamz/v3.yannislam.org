@@ -1,8 +1,11 @@
-import { Component, ChangeDetectionStrategy, HostListener, AfterViewInit, signal, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, ChangeDetectionStrategy, AfterViewInit, signal, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser, DatePipe } from '@angular/common';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { LinkPreviewDirective } from '../../../directives/link-preview/link-preview.directive';
+import { HeaderComponent } from '../header/header.component';
+import { IconComponent } from 'src/app/icons/icon.component';
 import { Contact, FooterConfig } from 'src/app/services/site-config/site-config.model';
 
 @Component({
@@ -13,9 +16,16 @@ import { Contact, FooterConfig } from 'src/app/services/site-config/site-config.
         fadeStaggerAnimation('animateFooter', 'translateY(100%)')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [LinkPreviewDirective, HeaderComponent, DatePipe, IconComponent],
+    host: {
+        '(window:scroll)': 'checkScrollPosition()',
+        '(window:resize)': 'checkScrollPosition()',
+    },
 })
 export class FooterComponent implements AfterViewInit {
+    analyticsService = inject(AnalyticsService);
+    configService = inject(SiteConfigService);
+
     socials: Contact[];
     mobileSocials: Contact[];
     email: Contact;
@@ -36,11 +46,9 @@ export class FooterComponent implements AfterViewInit {
     // meaningfully implemented there, so this is gated to the browser only.
     private readonly isBrowser: boolean;
 
-    constructor(
-        public analyticsService: AnalyticsService,
-        public configService: SiteConfigService,
-        @Inject(PLATFORM_ID) platformId: object,
-    ) {
+    constructor() {
+        const platformId = inject(PLATFORM_ID);
+
         this.socials = this.configService.contacts;
         // Email is always in config.json's contact list (see CLAUDE.md's
         // "Add a New Social Link" section) -- non-null assertion rather
@@ -57,8 +65,6 @@ export class FooterComponent implements AfterViewInit {
         this.checkScrollPosition();
     }
 
-    @HostListener('window:scroll')
-    @HostListener('window:resize')
     checkScrollPosition() {
         if (!this.isBrowser) return;
 

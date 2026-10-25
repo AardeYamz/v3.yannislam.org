@@ -33,14 +33,13 @@ describe('EducationComponent', () => {
     });
 
     TestBed.configureTestingModule({
-      declarations: [EducationComponent],
-      imports: [CommonModule, NgbNavModule, AosDirective, LogoFallbackDirective],
-      providers: [
+    imports: [CommonModule, NgbNavModule, AosDirective, LogoFallbackDirective, EducationComponent],
+    providers: [
         provideNoopAnimations(),
         { provide: AnalyticsService, useValue: analyticsServiceSpy },
         { provide: SiteConfigService, useValue: configServiceSpy }
-      ]
-    });
+    ]
+});
 
     analyticsService = TestBed.inject(AnalyticsService) as jasmine.SpyObj<AnalyticsService>;
     configService = TestBed.inject(SiteConfigService) as jasmine.SpyObj<SiteConfigService>;

@@ -1,4 +1,4 @@
-import { Directive, effect, ElementRef, Inject, Input, OnChanges, PLATFORM_ID, signal, SimpleChanges } from '@angular/core';
+import { Directive, effect, ElementRef, OnChanges, PLATFORM_ID, SimpleChanges, inject, input, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 import { buildFallbackLogoDataUri } from './logo-fallback';
@@ -13,22 +13,23 @@ import { buildFallbackLogoDataUri } from './logo-fallback';
   selector: '[appLogoFallbackBg]',
 })
 export class LogoFallbackBackgroundDirective implements OnChanges {
-  @Input('appLogoFallbackBg') src = '';
-  @Input() appLogoFallbackBgOrg = '';
+  private el = inject<ElementRef<HTMLElement>>(ElementRef);
+  private themeService = inject(ThemeService);
+
+  readonly src = input('', { alias: "appLogoFallbackBg" });
+  readonly appLogoFallbackBgOrg = input('');
 
   private readonly failed = signal(false);
   private readonly isBrowser: boolean;
 
-  constructor(
-    private el: ElementRef<HTMLElement>,
-    private themeService: ThemeService,
-    @Inject(PLATFORM_ID) platformId: object,
-  ) {
+  constructor() {
+    const platformId = inject(PLATFORM_ID);
+
     this.isBrowser = isPlatformBrowser(platformId);
     effect(() => {
       const color = this.themeService.accentColor();
       if (this.failed()) {
-        this.setBackground(buildFallbackLogoDataUri(this.appLogoFallbackBgOrg, color));
+        this.setBackground(buildFallbackLogoDataUri(this.appLogoFallbackBgOrg(), color));
       }
     });
   }
@@ -41,9 +42,9 @@ export class LogoFallbackBackgroundDirective implements OnChanges {
       // so just set the background directly and let the real browser probe
       // it (and correct to the fallback if needed) once it hydrates.
       if (this.isBrowser) {
-        this.probe(this.src);
+        this.probe(this.src());
       } else {
-        this.setBackground(this.src);
+        this.setBackground(this.src());
       }
     }
   }
@@ -57,7 +58,7 @@ export class LogoFallbackBackgroundDirective implements OnChanges {
     };
     image.onerror = () => {
       this.failed.set(true);
-      this.setBackground(buildFallbackLogoDataUri(this.appLogoFallbackBgOrg, this.themeService.accentColor()));
+      this.setBackground(buildFallbackLogoDataUri(this.appLogoFallbackBgOrg(), this.themeService.accentColor()));
     };
     image.src = src;
   }
