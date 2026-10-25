@@ -81,197 +81,174 @@ The application will automatically reload if you change any of the source files.
 
 ```mermaid
 flowchart TB
-    subgraph Bootstrap
-        Main["main.ts"] --> AppModule
-        AppModule --> AppComponent
+    Main["main.ts"] --> AppModule --> App["AppComponent"]
+
+    subgraph Shell["App shell"]
+        Loading["LoadingScreen"]
+        Header
+        Outlet{{"router-outlet"}}
+        Footer
+    end
+    App --> Loading & Header & Outlet & Footer
+
+    Outlet -->|"''"| Home
+    Outlet -->|"'aardeyamz' (lazy)"| AardeYamz
+
+    subgraph HomeModule["HomeModule (eager)"]
+        Home --> Banner & About & Education & Work["WorkHistory x2"] & Contact
+        Banner --> Floating["FloatingLogos"]
     end
 
-    subgraph "AppComponent shell"
-        AppComponent --> LoadingScreen["LoadingScreenComponent<br/>(anime.js logo intro)"]
-        AppComponent --> Header["HeaderComponent<br/>(nav + theme toggle)"]
-        AppComponent --> Outlet{{"router-outlet"}}
-        AppComponent --> Footer["FooterComponent"]
-    end
+    Config[("config.json")] --> SiteConfig["SiteConfigService"]
+    SiteConfig --> Header & Footer & Banner & Home & Education & AardeYamz
 
-    Outlet -->|"path: ''"| Home["HomeComponent"]
-    Outlet -->|"path: 'aardeyamz'<br/>loadComponent (lazy chunk)"| AardeYamz["AardeYamzComponent<br/>+ NamecardComponent"]
+    Theme["ThemeService"] --> Header & Loading & Floating & Work
 
-    subgraph "HomeModule (eager)"
-        Home --> Banner["BannerComponent"]
-        Banner --> FloatingLogos["FloatingLogosComponent<br/>(falling logo field)"]
-        Home --> About["AboutComponent"]
-        Home --> Education["EducationComponent"]
-        Home --> WorkHistory["WorkHistoryComponent x2<br/>(work / volunteering)<br/>logoFallback directive"]
-        Home --> Contact["ContactComponent"]
-    end
-
-    Config[("src/assets/config.json")] --> SiteConfigService
-    SiteConfigService --> Header
-    SiteConfigService --> Footer
-    SiteConfigService --> Banner
-    SiteConfigService --> Home
-    SiteConfigService --> Education
-    SiteConfigService --> AardeYamz
-
-    ThemeService["ThemeService<br/>(signals, localStorage)"] --> Header
-    ThemeService --> LoadingScreen
-    ThemeService -->|"recolor on toggle"| FloatingLogos
-    ThemeService -->|"accent color"| WorkHistory
-
-    AnalyticsService --> Header
-    AnalyticsService --> Banner
-    AnalyticsService --> About
-    AnalyticsService --> Footer
-    AnalyticsService --> Contact
-    AnalyticsService -->|"gtag events/pageviews"| GA[("Google Analytics")]
+    Analytics["AnalyticsService"] --> Header & Banner & About & Footer & Contact
+    Analytics -->|"gtag"| GA[("Google Analytics")]
 ```
+
+| Piece | Kind | What it does |
+|---|---|---|
+| `main.ts` → `AppModule` → `AppComponent` | Bootstrap | `NgModule`-based root; `AppComponent` hosts the shell below |
+| `LoadingScreenComponent` | Shell | Boot-time anime.js logo-assembly intro |
+| `HeaderComponent` | Shell | Nav bar and theme toggle |
+| `FooterComponent` | Shell | Repo link, "built with" credit, design credits |
+| `router-outlet` | Shell | Swaps the routed page in; see [routes](#routes) |
+| `HomeComponent` | Page (eager `HomeModule`) | Composes the sections below on `/` |
+| `BannerComponent` | Home section | Hero greeting and typewriter effect |
+| `FloatingLogosComponent` | Home section | Field of falling logo marks behind the banner greeting; recolors on theme toggle |
+| `AboutComponent`, `EducationComponent`, `ContactComponent` | Home sections | Read their copy from `SiteConfigService` |
+| `WorkHistoryComponent` (x2) | Home section | One instance for work, one for volunteering; uses the `logoFallback` directive and takes the theme accent color |
+| `AardeYamzComponent` + `NamecardComponent` | Page (lazy chunk) | Standalone `/aardeyamz` route |
+| `SiteConfigService` | Service | Only reader of `src/assets/config.json`; feeds Header, Footer, Banner, Home, Education and AardeYamz |
+| `ThemeService` | Service | Light/dark/default theme via signals + `localStorage`; feeds Header, LoadingScreen, FloatingLogos and WorkHistory |
+| `AnalyticsService` | Service | Calls the global `gtag()` for events and pageviews; used by Header, Banner, About, Footer and Contact |
+
+#### Routes
+
+| Path | Loaded | Component |
+|---|---|---|
+| `''` | Eager (`HomeModule`) | `HomeComponent` |
+| `aardeyamz` | Lazy (`loadComponent`) | `AardeYamzComponent` |
 
 ### Deployment & DNS
 
-#### GitHub Actions CI/CD Pipeline
+#### CI/CD pipeline
 
 ```mermaid
 flowchart TB
-    subgraph Trigger["Triggers"]
-        PRPush["PR to main/master/develop"]
-        MainPush["push to main"]
-        Manual["workflow_dispatch"]
-        Nightly["schedule: Mon 07:00 UTC"]
+    PR["Pull request"] --> CI
+    Push["Push to main"] --> CI
+    Cron["Monday cron"] --> CI
+    Manual["workflow_dispatch"] --> CI
+
+    subgraph CI["Build & Test"]
+        Unit["unit-tests"]
+        Build["build"]
+        Lighthouse["lighthouse"]
+        E2E["e2e"]
+        DepReview["dependency-review"]
+        Build --> Lighthouse & E2E
     end
 
-    subgraph GHA["GitHub Actions: Build & Test"]
-        subgraph UnitJob["unit-tests (matrix: Node 24.x, 26.x)"]
-            UTest["npm test --code-coverage<br/>(Karma + Jasmine, 117 specs)"]
-            UCov["Upload to Codecov"]
-            UTest --> UCov
-        end
+    PR --> Sec["Security"]
+    Push --> Sec
+    Cron --> Sec
 
-        subgraph BuildJob["build (Node 24.x)"]
-            BBuild["npm run build<br/>(prerenders every route)"]
-            BUpload["Upload dist/ as artifact"]
-            BBuild --> BUpload
-        end
+    CI & Sec --> Gate{"All green?"}
+    Gate -->|"no"| Fix["Fix and re-push"]
+    Fix -.-> PR
+    Gate -->|"yes"| Merge["Merge to main"]
 
-        subgraph E2EJob["e2e — needs: build (2 shards)"]
-            EBrowsers["Install Playwright browsers<br/>(cached on package-lock.json)"]
-            EDownload["Download dist/ artifact<br/>(no rebuild)"]
-            ERun["playwright test<br/>chromium+mobile on PRs,<br/>+firefox+webkit on push/schedule"]
-            EReport["Upload HTML report<br/>(always, pass or fail)"]
-            EBrowsers --> EDownload --> ERun --> EReport
-        end
-
-        BuildJob -->|"dist/ artifact"| E2EJob
-    end
-
-    subgraph GateAndDeploy["Merge Gating & Deployment"]
-        Mergeable["✅ unit-tests + build + e2e pass:<br/>PR mergeable"]
-        Blocked["❌ any job fails:<br/>PR blocked"]
-        Merged["Merge to main"]
-    end
-
-    subgraph VercelBuild["Vercel Build & Deploy"]
-        VercelCheck["Webhook triggered"]
-        VercelBuild2["ng build +<br/>postbuild inject-env.js"]
-        VercelServe["Vercel Edge"]
-    end
-
-    Trigger --> GHA
-    UnitJob & E2EJob --> Mergeable
-    UnitJob & E2EJob --> Blocked
-    Blocked -.->|"Fix & re-push"| Trigger
-    Mergeable --> Merged
-    Merged --> VercelCheck
-    VercelCheck --> VercelBuild2 --> VercelServe
+    Merge --> Vercel["Vercel build + deploy"]
+    Vercel --> Edge["Vercel Edge"]
+    Vercel -->|"deployment_status"| Release["Release: tag + notes"]
+    Merge --> Sync["Merge main into PRs"]
 ```
 
 A push that supersedes an in-flight run (e.g. two commits pushed to the same
 PR seconds apart) cancels the older run via `concurrency: cancel-in-progress`
 — `e2e` is the most expensive job here, so stacked runs on a rapid push
-sequence would otherwise waste CI minutes.
+sequence would otherwise waste CI minutes. Pushes to `main` are never
+cancelled, so `main` always keeps a green run of its own.
 
-#### DNS & Content Delivery
+#### Build & Test jobs (`build-test.yml`)
+
+| Job | Runs on | Needs | What it does |
+|---|---|---|---|
+| `unit-tests` | Matrix: Node 24.x, 26.x (both must pass) | — | `npm ci`, then `npm test -- --watch=false --browsers=ChromeHeadless --code-coverage` (Karma + Jasmine, 117 specs against `TestBed` fixtures); uploads `coverage/v3.yannislam.org/lcov.info` to [Codecov](https://codecov.io) |
+| `build` | Node 24.x | — | `npm run build`: Angular AOT build that prerenders every known route (`/`, `/projects`, `/projects/highschool`, `/aardeyamz`, `**`) to static HTML (see `docs/changes/20260811-013939-ssr-prerendering.md`); verifies `dist/` exists and uploads it as an artifact (`retention-days: 1`) |
+| `lighthouse` | Matrix: `mobile`, `desktop` | `build` | Lighthouse against the `build` artifact. Mobile applies slow-4G + 4x-CPU throttling and is the only preset that reproduces the real layout shift; desktop matches the field metric in `docs/todo/desktop-performance.md` |
+| `e2e` | 2 shards, `fail-fast: false` | `build` | Installs Playwright browsers (cached on `package-lock.json`), downloads the `build` artifact (no rebuild) and runs `playwright test` against it through a static server. Chromium + mobile on PRs; adds Firefox + WebKit on push to `main` and on the schedule (see [E2E Testing](#e2e-testing-playwright)). Always uploads the HTML report, traces and videos, pass or fail |
+| `dependency-review` | PRs only | — | `actions/dependency-review-action`; fails on severity `high` or above |
+
+#### Merge gating and deployment
+
+| Stage | What happens |
+|---|---|
+| Merge gate | Every job above (both `unit-tests` legs, `build`, both `lighthouse` presets, both `e2e` shards) must pass for the PR to become mergeable. Any failure blocks the merge; fix and push to re-run |
+| Merge | A passing PR merged into `main` triggers Vercel's Git integration |
+| Vercel build | `ng build`, then the `postbuild` step `scripts/inject-env.js` substitutes `%GOOGLE_ANALYTICS_ID%` from Vercel's environment |
+| Serve | Vercel Edge serves the static bundle; Cloudflare DNS routes `yannislam.org` to it |
+| Release | `release.yml` fires on Vercel's successful *Production* `deployment_status` for `main` and creates a `vYYYYMMDDHHMMSS` tag and GitHub release |
+| PR sync | `sync-prs.yml` merges the new `main` into every open PR branch that is behind |
+
+#### DNS & content delivery
 
 ```mermaid
 flowchart LR
-    subgraph UserBrowser["User"]
-        Visitor["Visitor's browser<br/>yannislam.org"]
-    end
-    
-    subgraph DNSResolution["DNS Resolution"]
-        CloudflareDNS["Cloudflare<br/>DNS zone:<br/>yannislam.org"]
-    end
-    
-    subgraph EdgeServing["Edge Network & Hosting"]
-        VercelEdge["Vercel Edge<br/>(static bundle)"]
-    end
-    
-    subgraph EmailInfra["Email Infrastructure"]
-        CloudflareEmail["Cloudflare Email<br/>Routing<br/>MX/SPF/DKIM/DMARC"]
-        Inbox["@yannislam.org<br/>inbox"]
-    end
-    
-    subgraph LegacyVersions["Legacy Versions"]
-        LegacyCNAME["Legacy CNAMEs<br/>(alpha., v1., v2.)"]
-        Netlify["Netlify<br/>(older site)"]
-    end
-    
-    Visitor -->|"DNS lookup"| CloudflareDNS
-    CloudflareDNS -->|"proxied A/CNAME"| VercelEdge
-    VercelEdge -->|"serves site"| Visitor
-    
-    CloudflareDNS --> CloudflareEmail
-    CloudflareEmail --> Inbox
-    
-    CloudflareDNS -.->|"legacy"| LegacyCNAME
-    LegacyCNAME -.-> Netlify
+    Visitor["Visitor"] -->|"DNS lookup"| CF["Cloudflare DNS"]
+    CF -->|"proxied A/CNAME"| Vercel["Vercel Edge"]
+    Vercel -->|"serves site"| Visitor
+
+    CF --> Mail["Cloudflare Email Routing"] --> Inbox["@yannislam.org inbox"]
+    CF -.->|"legacy CNAMEs"| Netlify["Netlify (older sites)"]
 ```
 
-#### GitHub Actions Workflow: `build-test.yml`
+| Concern | Provider | Details |
+|---|---|---|
+| DNS zone | Cloudflare | Manages the `yannislam.org` zone |
+| Site hosting | Vercel | Proxied `A`/`CNAME` records point at Vercel Edge, which serves the static bundle |
+| Email | Cloudflare Email Routing | MX/SPF/DKIM/DMARC for `@yannislam.org`, delivered to the inbox |
+| Legacy sites | Netlify | `alpha.`, `v1.` and `v2.` subdomains still resolve to Netlify via Cloudflare CNAMEs from earlier iterations of this site |
 
-Triggers: pull requests into `main`/`master`/`develop`, pushes to `main`,
-manual `workflow_dispatch`, and a Monday 07:00 UTC schedule. The workflow is
-three jobs, `build` and `e2e` chained so the app is only compiled once:
+### Automation
 
-**1. `unit-tests`** (matrix: Node 24.x, 26.x — both must pass)
-- `npm ci`, then `npm test -- --watch=false --browsers=ChromeHeadless --code-coverage`
-  (Karma + Jasmine, 117 specs against `TestBed` fixtures)
-- Uploads `coverage/v3.yannislam.org/lcov.info` to [Codecov](https://codecov.io)
+#### Scheduled jobs
 
-**2. `build`** (Node 24.x)
-- `npm run build` — Angular AOT build, prerendering every known route
-  (`/`, `/projects`, `/projects/highschool`, `/aardeyamz`, `**`) to static
-  HTML (see `docs/changes/20260811-013939-ssr-prerendering.md`)
-- Verifies `dist/` exists, then uploads it as a build artifact
-  (`retention-days: 1`) for the `e2e` job to reuse
+All times UTC. The two Monday crons are staggered so each sees what the one before it produced.
 
-**3. `e2e`** (`needs: build`, sharded 2-way, `fail-fast: false`)
-- Installs Playwright's browsers (cached on `package-lock.json`) and
-  downloads the `build` job's `dist/` artifact — no second build
-- Runs `playwright test` against that artifact via a static server
-  (Chromium + mobile on PRs; adds Firefox + WebKit on push-to-`main` and the
-  nightly schedule — see [E2E Testing](#e2e-testing-playwright) below)
-- Always uploads the HTML report/traces/videos, pass or fail, per shard —
-  that's the whole debugging story for a flaky E2E failure
+| When | What | Source | Purpose |
+|---|---|---|---|
+| Mondays 06:00 | Dependabot version updates (`npm` + `github-actions`) | [`dependabot.yml`](.github/dependabot.yml) | Opens the weekly bump PRs, batched by group |
+| Mondays 06:30 | `Security` workflow | [`security.yml`](.github/workflows/security.yml) | zizmor lint of the workflow files, 30 minutes behind Dependabot |
+| Mondays 07:00 | `Build & Test` workflow | [`build-test.yml`](.github/workflows/build-test.yml) | Full 4-browser Playwright matrix plus the external-link checks in `footer-and-links.spec.ts` that PR runs exclude |
 
-**Merge Gating**
-- All three jobs (both `unit-tests` matrix legs, `build`, both `e2e` shards)
-  must pass for the PR to become mergeable
-- Any failure blocks the merge; fix the issue and push to re-run the workflow
-- Passing PR can be merged to the base branch, triggering Vercel's production build and deployment
+#### Workflows and automations
 
-**After Merge: Production Deployment**
-- Merge to base branch → Vercel webhook triggers → Vercel builds production bundle
-- `scripts/inject-env.js` substitutes Google Analytics ID from Vercel environment
-- Cloudflare DNS routes `yannislam.org` to Vercel's edge network
-- Cloudflare also handles email routing (MX/SPF/DKIM/DMARC) for `@yannislam.org`
-- Legacy subdomains (`alpha.`, `v1.`, `v2.`) still resolve to Netlify via Cloudflare CNAMEs from earlier site iterations
+| Name | Trigger | What it does | Source |
+|---|---|---|---|
+| Build & Test | PR to `main`/`master`/`develop`; push to `main`; Monday 07:00; manual | Unit tests, build, Lighthouse, E2E, dependency review (see [jobs](#build--test-jobs-build-testyml)) | [`build-test.yml`](.github/workflows/build-test.yml) |
+| Security | PR to `main`/`master`/`develop`; push to `main`; Monday 06:30; manual | `Lint workflows (zizmor)` | [`security.yml`](.github/workflows/security.yml) |
+| Release | Vercel `deployment_status` | On a successful Production deploy of `main`, creates a `vYYYYMMDDHHMMSS` tag and release pinned to the deployed commit; one release per commit | [`release.yml`](.github/workflows/release.yml) |
+| Merge main into PRs | Push to `main`; manual | Merges `main` into each open PR branch that is behind; conflicting PRs get a comment once per `main` commit; fork and Dependabot PRs are skipped | [`sync-prs.yml`](.github/workflows/sync-prs.yml) |
+| Dependabot auto-merge | `pull_request_target` to `main` | For Dependabot PRs only: waits for all checks, then merges patch/minor bumps and dev-only majors; production majors are left for review | [`dependabot-auto-merge.yml`](.github/workflows/dependabot-auto-merge.yml) |
+| Dependabot updates | Monday 06:00 | Weekly version updates for `npm` and `github-actions`; security updates are batched into one PR by the `security-updates` group | [`dependabot.yml`](.github/dependabot.yml) |
+| CodeQL | Push, PR (GitHub default setup, no workflow file) | Code scanning, configured in the repository's security settings | — |
+| Vercel | Push to any branch, via the Vercel Git integration | Production deploy for `main`, preview deploy for everything else | [`vercel.json`](vercel.json) |
 
 ## Code Structure
 
 ```
 .github/
-├── workflows/
-│   └── build-test.yml        # CI/CD: unit-tests -> build -> e2e, see "GitHub Actions Workflow" above
+├── workflows/                # CI/CD and automation, see "Automation" above
+│   ├── build-test.yml
+│   ├── security.yml
+│   ├── release.yml
+│   ├── sync-prs.yml
+│   └── dependabot-auto-merge.yml
+├── dependabot.yml
 e2e/                          # Playwright E2E specs — see "E2E Testing" below
 ├── fixtures.ts               # gotoAndSettle() boot-wait helper, analytics blocking, SW isolation
 ├── smoke.spec.ts
@@ -504,15 +481,9 @@ can be reverted alone — and Angular majors are ignored outright, since they're
 upgraded by hand through `ng update` and its migration schematics (see
 `docs/changes/20260727-205542-UPGRADE-NOTES.md`).
 
-The Aikido scan (`.github/workflows/security.yml`) runs on PRs, on pushes to
-`main`, and weekly at 06:30 UTC — half an hour behind Dependabot, so it sees
-whatever was just opened. It **skips itself, green, until it's activated**:
-install the [Aikido GitHub App](https://github.com/marketplace/aikido-security),
-then add the CI secret key as `AIKIDO_SECRET_KEY` under both
-*Settings → Secrets and variables → Actions* **and** *→ Dependabot*. That
-second copy is not optional — Dependabot PRs read from a separate secret
-store, so without it the scan skips on exactly the PRs it was added for.
-
-See `docs/changes/20260811-124323-dependabot-aikido-integration.md` for the
-full write-up, including the failure modes this configuration is shaped
-around.
+Aikido runs as a GitHub App with PR gating configured in the Aikido
+dashboard, so there is no Aikido job or CI secret in this repo. (The old
+`AikidoSec/github-actions-workflow` job was removed because Aikido no longer
+recommends it; see `docs/changes/20261021-000000-remove-aikido-workflow.md`.)
+Background on the original Dependabot + Aikido setup is in
+`docs/changes/20260811-124323-dependabot-aikido-integration.md`.
