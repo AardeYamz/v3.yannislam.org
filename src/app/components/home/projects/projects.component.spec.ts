@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { ProjectsComponent } from './projects.component';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
@@ -28,7 +29,10 @@ describe('ProjectsComponent', () => {
       }
     });
 
-    component = new ProjectsComponent(configService);
+    TestBed.configureTestingModule({
+      providers: [{ provide: SiteConfigService, useValue: configService }]
+    });
+    component = TestBed.runInInjectionContext(() => new ProjectsComponent());
   });
 
   it('should create', () => {

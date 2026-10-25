@@ -32,15 +32,14 @@ describe('FooterComponent', () => {
     const scrollServiceStub = { y: scrollY, maxScroll: scrollMaxScroll };
 
     TestBed.configureTestingModule({
-      declarations: [FooterComponent],
-      imports: [LinkPreviewDirective, IconComponent],
-      providers: [
+    imports: [LinkPreviewDirective, FooterComponent],
+    providers: [
         provideNoopAnimations(),
         { provide: AnalyticsService, useValue: analyticsServiceSpy },
         { provide: SiteConfigService, useValue: configServiceSpy },
         { provide: ScrollService, useValue: scrollServiceStub }
-      ]
-    });
+    ]
+});
 
     analyticsService = TestBed.inject(AnalyticsService) as jasmine.SpyObj<AnalyticsService>;
     configService = TestBed.inject(SiteConfigService) as jasmine.SpyObj<SiteConfigService>;

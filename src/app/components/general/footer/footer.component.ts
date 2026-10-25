@@ -1,8 +1,12 @@
-import { Component, ChangeDetectionStrategy, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { LinkPreviewDirective } from '../../../directives/link-preview/link-preview.directive';
+import { HeaderComponent } from '../header/header.component';
+import { IconComponent } from 'src/app/icons/icon.component';
 import { Contact, FooterConfig } from 'src/app/services/site-config/site-config.model';
 
 @Component({
@@ -13,9 +17,13 @@ import { Contact, FooterConfig } from 'src/app/services/site-config/site-config.
         fadeStaggerAnimation('animateFooter', 'translateY(100%)')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [LinkPreviewDirective, HeaderComponent, DatePipe, IconComponent],
 })
 export class FooterComponent {
+    analyticsService = inject(AnalyticsService);
+    configService = inject(SiteConfigService);
+    private scrollService = inject(ScrollService);
+
     socials: Contact[];
     mobileSocials: Contact[];
     email: Contact;
@@ -41,11 +49,7 @@ export class FooterComponent {
         this.scrollService.y() >= this.scrollService.maxScroll() - FooterComponent.BOTTOM_THRESHOLD_PX
     );
 
-    constructor(
-        public analyticsService: AnalyticsService,
-        public configService: SiteConfigService,
-        private scrollService: ScrollService,
-    ) {
+    constructor() {
         this.socials = this.configService.contacts;
         // Email is always in config.json's contact list (see CLAUDE.md's
         // "Add a New Social Link" section) -- non-null assertion rather
