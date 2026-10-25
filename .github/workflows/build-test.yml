@@ -123,7 +123,9 @@ jobs:
         if: always() && github.event_name == 'pull_request'
         shell: bash
         run: |
-          sed 's/\[[0-9;]*m//g' build.log             | grep -E 'WARNING|ERROR|npm warn'             | head -c 60000 > build-warnings.txt || true
+          sed 's/\x1b\[[0-9;]*m//g' build.log \
+            | grep -E 'WARNING|ERROR|npm warn' \
+            | head -c 60000 > build-warnings.txt || true
 
       - name: Upload build warnings
         if: always() && github.event_name == 'pull_request'
@@ -182,27 +184,26 @@ jobs:
           BUILD_RESULT: ${{ needs.build.result }}
         run: |
           marker='<!-- build-warnings-comment -->'
-          if [ -s build-warnings.txt ]; then
-            body="$marker"$'
-'"### Build warnings"$'
-
-'"Build \`$BUILD_RESULT\` at \`${SHA:0:7}\`. Lines from \`npm run build\` matching \`WARNING\`, \`ERROR\` or \`npm warn\`:"$'
-
-```
-'"$(cat build-warnings.txt)"$'
-```
-'
-          else
-            body="$marker"$'
-'"### Build warnings"$'
-
-'"Build \`$BUILD_RESULT\` at \`${SHA:0:7}\`: no warnings or errors."
-          fi
-          id=$(gh api --paginate "repos/$REPO/issues/$PR/comments"             --jq "[.[] | select(.body | contains(\"$marker\"))][0].id // empty" | head -n1)
+          {
+            echo "$marker"
+            echo '### Build warnings'
+            echo
+            if [ -s build-warnings.txt ]; then
+              echo "Build \`$BUILD_RESULT\` at \`${SHA:0:7}\`. Lines from \`npm run build\` matching \`WARNING\`, \`ERROR\` or \`npm warn\`:"
+              echo
+              echo '```'
+              cat build-warnings.txt
+              echo '```'
+            else
+              echo "Build \`$BUILD_RESULT\` at \`${SHA:0:7}\`: no warnings or errors."
+            fi
+          } > body.md
+          id=$(gh api --paginate "repos/$REPO/issues/$PR/comments" \
+            --jq "[.[] | select(.body | contains(\"$marker\"))][0].id // empty" | head -n1)
           if [ -n "$id" ]; then
-            gh api -X PATCH "repos/$REPO/issues/comments/$id" -f body="$body" > /dev/null
+            gh api -X PATCH "repos/$REPO/issues/comments/$id" -F body=@body.md > /dev/null
           else
-            gh api -X POST "repos/$REPO/issues/$PR/comments" -f body="$body" > /dev/null
+            gh api -X POST "repos/$REPO/issues/$PR/comments" -F body=@body.md > /dev/null
           fi
 
   # Runs in parallel with e2e off the same dist artifact, so it adds nothing
