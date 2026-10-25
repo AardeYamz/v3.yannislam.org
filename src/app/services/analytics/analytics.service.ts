@@ -13,6 +13,9 @@ export class AnalyticsService {
 
   sendAnalyticEvent(action: string, category: string, label: string) {
     if (typeof gtag !== 'function') return;
-    gtag('event', action, { event_category: category, event_label: label });
+    // GA4 has no built-in event_category/event_label (those were Universal
+    // Analytics); plain `category`/`label` params are the GA4 convention and
+    // can be registered as custom dimensions.
+    gtag('event', action, { category, label });
   }
 }

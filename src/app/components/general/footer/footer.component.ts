@@ -1,8 +1,11 @@
-import { Component, ChangeDetectionStrategy, HostListener, AfterViewInit, signal, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, ChangeDetectionStrategy, AfterViewInit, signal, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser, DatePipe } from '@angular/common';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { LinkPreviewDirective } from '../../../directives/link-preview/link-preview.directive';
+import { IconComponent } from 'src/app/icons/icon.component';
+import { Contact, FooterConfig } from 'src/app/services/site-config/site-config.model';
 
 @Component({
     selector: 'app-footer',
@@ -12,13 +15,20 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
         fadeStaggerAnimation('animateFooter', 'translateY(100%)')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [LinkPreviewDirective, DatePipe, IconComponent],
+    host: {
+        '(window:scroll)': 'checkScrollPosition()',
+        '(window:resize)': 'checkScrollPosition()',
+    },
 })
 export class FooterComponent implements AfterViewInit {
-    socials: any;
-    mobileSocials: any;
-    email: any;
-    footer: any;
+    analyticsService = inject(AnalyticsService);
+    configService = inject(SiteConfigService);
+
+    socials: Contact[];
+    mobileSocials: Contact[];
+    email: Contact;
+    footer: FooterConfig;
     currentDate = new Date();
 
     // Whether the page is scrolled all the way to the bottom — on wide
@@ -35,14 +45,16 @@ export class FooterComponent implements AfterViewInit {
     // meaningfully implemented there, so this is gated to the browser only.
     private readonly isBrowser: boolean;
 
-    constructor(
-        public analyticsService: AnalyticsService,
-        public configService: SiteConfigService,
-        @Inject(PLATFORM_ID) platformId: object,
-    ) {
+    constructor() {
+        const platformId = inject(PLATFORM_ID);
+
         this.socials = this.configService.contacts;
-        this.email = this.socials.find((item: { name: string; }) => item?.name === "Email");
-        this.mobileSocials = this.socials.filter((item: { name: string; }) => item?.name !== "Email");
+        // Email is always in config.json's contact list (see CLAUDE.md's
+        // "Add a New Social Link" section) -- non-null assertion rather
+        // than an optional type that every consumer would then need to
+        // guard against for a contact that's never actually missing.
+        this.email = this.socials.find((item) => item.name === "Email")!;
+        this.mobileSocials = this.socials.filter((item) => item.name !== "Email");
         this.footer = this.configService.footer;
         this.isBrowser = isPlatformBrowser(platformId);
     }
@@ -52,8 +64,6 @@ export class FooterComponent implements AfterViewInit {
         this.checkScrollPosition();
     }
 
-    @HostListener('window:scroll')
-    @HostListener('window:resize')
     checkScrollPosition() {
         if (!this.isBrowser) return;
 

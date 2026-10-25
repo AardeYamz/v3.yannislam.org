@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { ProjectsComponent } from './projects.component';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
@@ -8,13 +9,30 @@ describe('ProjectsComponent', () => {
   beforeEach(() => {
     configService = jasmine.createSpyObj('SiteConfigService', [], {
       projects: {
-        college: [
-          { title: 'College Project 1', description: ['A great project'], imgs: [], timeframe: '2023' }
-        ]
+        sectionId: 'projects',
+        navNumber: '05.',
+        headingText: 'What have I built?',
+        college: {
+          sectionId: 'projects-college',
+          navNumber: '5.1.',
+          headingText: 'College Projects',
+          list: [
+            { title: 'College Project 1', description: ['A great project'], imgs: [], timeframe: '2023' }
+          ]
+        },
+        highschool: {
+          sectionId: 'projects-highschool',
+          navNumber: '5.2.',
+          headingText: 'High School Projects',
+          list: []
+        }
       }
     });
 
-    component = new ProjectsComponent(configService);
+    TestBed.configureTestingModule({
+      providers: [{ provide: SiteConfigService, useValue: configService }]
+    });
+    component = TestBed.runInInjectionContext(() => new ProjectsComponent());
   });
 
   it('should create', () => {
@@ -29,13 +47,13 @@ describe('ProjectsComponent', () => {
     expect(component.projects).toBeDefined();
   });
 
-  it('should have college projects', () => {
+  it('should have a college projects list', () => {
     expect(component.projects.college).toBeDefined();
-    expect(Array.isArray(component.projects.college)).toBe(true);
+    expect(Array.isArray(component.projects.college.list)).toBe(true);
   });
 
-  it('should handle projects array with items', () => {
-    expect(component.projects.college.length).toBeGreaterThan(0);
-    expect(component.projects.college[0].title).toBe('College Project 1');
+  it('should handle projects list with items', () => {
+    expect(component.projects.college.list.length).toBeGreaterThan(0);
+    expect(component.projects.college.list[0].title).toBe('College Project 1');
   });
 });

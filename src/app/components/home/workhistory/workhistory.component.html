@@ -1,13 +1,13 @@
-<section class="section workhistory" [id]="sectionId">
+<section class="section workhistory" [id]="sectionId()">
   <div class="container">
     <div class="section-box">
       <div data-aos="fade-up" data-aos-duration="1000">
-        <h3 class="section-title" [class.subsection-title]="subsection">
-          <span class='n-section-title'>{{navNumber}}</span>{{headingText}}
+        <h3 class="section-title" [class.subsection-title]="subsection()">
+          <span class='n-section-title'>{{navNumber()}}</span>{{headingText()}}
         </h3>
       </div>
 
-      @for (exp of experienceList; track exp; let i = $index) {
+      @for (exp of experienceList(); track exp; let i = $index) {
         <div class="d-flex workhistory-container"
           data-aos="fade-up" data-aos-duration="1000">
           @if (i % 2 == 0) {
@@ -17,7 +17,7 @@
                   <div class='img-container'>
                     <img class='img-feature-workhistory rounded' [class.img-feature-workhistory--logo]="!!exp.logoKey"
                       [src]="img" [alt]="exp.image_alt || exp.title"
-                      width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization">
+                      width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization || ''">
                   </div>
                 </ng-template>
               }
@@ -29,14 +29,14 @@
               <div class="img-feature-workhistory-box">
                 <div class="img-container" style='width: auto;'>
                   <img class='img-feature-workhistory rounded' [class.img-feature-workhistory--logo]="!!exp.logoKey"
-                    [src]="exp.imgs[0]" [alt]="exp.image_alt || exp.title"
-                    width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization">
+                    [src]="exp.imgs?.[0] || ''" [alt]="exp.image_alt || exp.title"
+                    width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization || ''">
                 </div>
               </div>
             </div>
           }
           <div [ngClass]="{'workhistory-info-right': i % 2 == 0, 'workhistory-info-left': i % 2 != 0}"
-            [appLogoFallbackBg]="exp.imgs[0]" [appLogoFallbackBgOrg]="exp.organization">
+            [appLogoFallbackBg]="exp.imgs?.[0] || ''" [appLogoFallbackBgOrg]="exp.organization || ''">
             <div class="workhistory-box">
               <h5 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}" class="workhistory-title">
               {{exp.title}} </h5>
@@ -90,7 +90,7 @@
                       <div class='img-container'>
                         <img class='img-feature-workhistory rounded' [class.img-feature-workhistory--logo]="!!exp.logoKey"
                           [src]="img" [alt]="exp.image_alt || exp.title"
-                          width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization">
+                          width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization || ''">
                       </div>
                     </ng-template>
                   }
@@ -102,8 +102,8 @@
                   <div class="img-feature-workhistory-box">
                     <div class="img-container" style='width: auto;'>
                       <img class='img-feature-workhistory rounded' [class.img-feature-workhistory--logo]="!!exp.logoKey"
-                        [src]="exp.imgs[0]" [alt]="exp.image_alt || exp.title"
-                        width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization">
+                        [src]="exp.imgs?.[0] || ''" [alt]="exp.image_alt || exp.title"
+                        width="600" height="400" loading="lazy" [appLogoFallback]="exp.organization || ''">
                     </div>
                   </div>
                 </div>

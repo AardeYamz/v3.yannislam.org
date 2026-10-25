@@ -28,6 +28,15 @@ concurrency:
 permissions:
   contents: read
 
+# Six jobs each run `npm ci`. The audit and fund requests are a network round
+# trip per install that CI never reads (dependency-review and Dependabot cover
+# advisories), and --prefer-offline lets the setup-node npm cache serve
+# packages without revalidating each one against the registry.
+env:
+  NPM_CONFIG_AUDIT: 'false'
+  NPM_CONFIG_FUND: 'false'
+  NPM_CONFIG_PREFER_OFFLINE: 'true'
+
 jobs:
   unit-tests:
     runs-on: ubuntu-26.04
@@ -271,7 +280,7 @@ jobs:
   # Diffs the lockfile on every PR and fails on a newly-introduced
   # known-vulnerable or disallowed-license package, before it merges.
   # Complements Dependabot (reactive: opens a PR after an advisory exists)
-  # and Aikido (security.yml, reachability triage) rather than duplicating
+  # and Aikido (dashboard PR gating, reachability triage) rather than duplicating
   # either.
   dependency-review:
     if: github.event_name == 'pull_request'

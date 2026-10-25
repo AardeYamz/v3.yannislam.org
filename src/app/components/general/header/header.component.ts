@@ -1,41 +1,52 @@
-import { Component, HostListener, ChangeDetectionStrategy, AfterViewInit, OnDestroy, signal, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { NavigationEnd, Router } from '@angular/router';
+import { Component, ChangeDetectionStrategy, AfterViewInit, OnDestroy, signal, PLATFORM_ID, forwardRef, inject } from '@angular/core';
+import { isPlatformBrowser, NgStyle } from '@angular/common';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
+import { IconComponent } from 'src/app/icons/icon.component';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { MenuItem } from 'src/app/services/site-config/site-config.model';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
+
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
-  animations: [
-    // `*` (every descendant) is the wrong query here: the header's markup
-    // duplicates every nav item inside the mobile drawer (.menu-responsive)
-    // and also always includes the desktop-only nav list, both hidden via
-    // CSS depending on viewport width but still present in the DOM — so
-    // querySelectorAll matches them regardless, and their ~40 combined
-    // descendant elements each claim a 50ms stagger slot ahead of the
-    // theme toggle and menu-toggle button in DOM order. On mobile that left
-    // the menu toggle sitting at opacity 0 (invisible, unusable) for over a
-    // second after the header itself became visible. Staggering just the
-    // 4 top-level chrome groups (logo, nav-right, menu toggle, mobile
-    // drawer) as blocks instead of every nested span/li fixes that and
-    // still reads as a staggered entrance.
-    fadeStaggerAnimation('animateMenu', 'translateX(-20px)', '.container > *')
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    animations: [
+        // `*` (every descendant) is the wrong query here: the header's markup
+        // duplicates every nav item inside the mobile drawer (.menu-responsive)
+        // and also always includes the desktop-only nav list, both hidden via
+        // CSS depending on viewport width but still present in the DOM — so
+        // querySelectorAll matches them regardless, and their ~40 combined
+        // descendant elements each claim a 50ms stagger slot ahead of the
+        // theme toggle and menu-toggle button in DOM order. On mobile that left
+        // the menu toggle sitting at opacity 0 (invisible, unusable) for over a
+        // second after the header itself became visible. Staggering just the
+        // 4 top-level chrome groups (logo, nav-right, menu toggle, mobile
+        // drawer) as blocks instead of every nested span/li fixes that and
+        // still reads as a staggered entrance.
+        fadeStaggerAnimation('animateMenu', 'translateX(-20px)', '.container > *')
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [RouterLink, NgStyle, IconComponent, forwardRef(() => HeaderComponent)],
+    host: {
+        '(window:scroll)': 'getScrollPosition()',
+    },
 })
 
 export class HeaderComponent implements AfterViewInit, OnDestroy {
+  private router = inject(Router);
+  analyticsService = inject(AnalyticsService);
+  themeService = inject(ThemeService);
+  private resumeService = inject(ResumeService);
+
 
   responsiveMenuVisible: Boolean = false;
   pageYPosition!: number;
-  menu: any[];
+  menu: MenuItem[];
 
   // Which section (menuItem.scrollSection) is currently scrolled into view,
   // used to highlight the matching nav item — see setupSectionObserver().
@@ -58,14 +69,10 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   // so scroll-driven behavior is gated on this flag and only runs client-side.
   private readonly isBrowser: boolean;
 
-  constructor(
-    private router: Router,
-    public analyticsService: AnalyticsService,
-    public themeService: ThemeService,
-    private resumeService: ResumeService,
-    configService: SiteConfigService,
-    @Inject(PLATFORM_ID) platformId: object,
-  ) {
+  constructor() {
+    const configService = inject(SiteConfigService);
+    const platformId = inject(PLATFORM_ID);
+
     this.menu = configService.menu;
     this.isBrowser = isPlatformBrowser(platformId);
   }
@@ -183,7 +190,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  navigate(menuItem: any, event?: Event) {
+  navigate(menuItem: Partial<MenuItem>, event?: Event) {
     // The nav <a> now carries a real href (menuItem.siteLocation) so it's
     // a genuine link to assistive tech, automation agents, and
     // middle-click/right-click — but a plain navigation there would
@@ -207,7 +214,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.resumeService.open();
   }
 
-  @HostListener('window:scroll')
   getScrollPosition() {
     if (!this.isBrowser) return;
     this.pageYPosition = window.scrollY;

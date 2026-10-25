@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { ProjectsHighschoolComponent } from './projects-highschool.component';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
@@ -8,13 +9,21 @@ describe('ProjectsHighschoolComponent', () => {
   beforeEach(() => {
     configService = jasmine.createSpyObj('SiteConfigService', [], {
       projects: {
-        highschool: [
-          { title: 'High School Project 1', description: ['A learning project'], imgs: [], timeframe: '2019' }
-        ]
+        highschool: {
+          sectionId: 'projects-highschool',
+          navNumber: '5.2.',
+          headingText: 'High School Projects',
+          list: [
+            { title: 'High School Project 1', description: ['A learning project'], imgs: [], timeframe: '2019' }
+          ]
+        }
       }
     });
 
-    component = new ProjectsHighschoolComponent(configService);
+    TestBed.configureTestingModule({
+      providers: [{ provide: SiteConfigService, useValue: configService }]
+    });
+    component = TestBed.runInInjectionContext(() => new ProjectsHighschoolComponent());
   });
 
   it('should create', () => {
@@ -29,12 +38,12 @@ describe('ProjectsHighschoolComponent', () => {
     expect(component.highschool).toBeDefined();
   });
 
-  it('should have highschool projects array', () => {
-    expect(Array.isArray(component.highschool)).toBe(true);
+  it('should have a highschool projects list array', () => {
+    expect(Array.isArray(component.highschool.list)).toBe(true);
   });
 
-  it('should handle highschool array with items', () => {
-    expect(component.highschool.length).toBeGreaterThan(0);
-    expect(component.highschool[0].title).toBe('High School Project 1');
+  it('should handle highschool list with items', () => {
+    expect(component.highschool.list.length).toBeGreaterThan(0);
+    expect(component.highschool.list[0].title).toBe('High School Project 1');
   });
 });
