@@ -25,8 +25,8 @@ describe('AnalyticsService', () => {
     service.sendAnalyticEvent('click_send_mail', 'contact', 'email');
 
     expect(gtagSpy).toHaveBeenCalledWith('event', 'click_send_mail', {
-      event_category: 'contact',
-      event_label: 'email',
+      category: 'contact',
+      label: 'email',
     });
   });
 
