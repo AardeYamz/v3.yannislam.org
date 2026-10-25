@@ -1,4 +1,11 @@
+import { TestBed } from '@angular/core/testing';
+import { PLATFORM_ID } from '@angular/core';
+import { Router } from '@angular/router';
 import { HeaderComponent } from './header.component';
+import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { ThemeService } from 'src/app/services/theme/theme.service';
+import { ResumeService } from 'src/app/services/resume/resume.service';
+import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 // These tests instantiate HeaderComponent directly (not through TestBed +
 // its real template), which needs NgbModule/RouterModule/FormsModule from
@@ -26,14 +33,17 @@ describe('HeaderComponent', () => {
     resumeService = { open: jasmine.createSpy('open') };
     configService = { menu: [{ navTitle: 'About', scrollSection: 'about' }] };
 
-    component = new HeaderComponent(
-      router as any,
-      analyticsService as any,
-      themeService as any,
-      resumeService as any,
-      configService as any,
-      'browser' as any
-    );
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Router, useValue: router },
+        { provide: AnalyticsService, useValue: analyticsService },
+        { provide: ThemeService, useValue: themeService },
+        { provide: ResumeService, useValue: resumeService },
+        { provide: SiteConfigService, useValue: configService },
+        { provide: PLATFORM_ID, useValue: 'browser' },
+      ]
+    });
+    component = TestBed.runInInjectionContext(() => new HeaderComponent());
   });
 
   it('should create', () => {
