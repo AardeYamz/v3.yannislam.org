@@ -1,15 +1,14 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { AosDirective } from '../../../directives/aos/aos.directive';
 
 @Component({
     selector: 'app-contact',
     templateUrl: './contact.component.html',
     styleUrls: ['./contact.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [AosDirective]
 })
 export class ContactComponent {
-  constructor(
-    public analyticsService: AnalyticsService
-  ) { }
+  analyticsService = inject(AnalyticsService);
 }
