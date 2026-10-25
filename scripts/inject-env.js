@@ -19,6 +19,17 @@ const REPLACEMENTS = [
   { name: 'GOOGLE_ANALYTICS_ID', env: 'GOOGLE_ANALYTICS_ID', fallback: 'G-E3T7KDSRKW' },
 ];
 
+// Dashboard-pasted values often carry stray whitespace or quotes, which would
+// silently break the gtag.js URL; trim them and reject anything that isn't a
+// GA4 measurement ID.
+const GA_ID_PATTERN = /^G-[A-Z0-9]+$/;
+
+function resolveValue({ env, fallback }) {
+  const raw = (process.env[env] || '').trim().replace(/^["']|["']$/g, '');
+  if (env === 'GOOGLE_ANALYTICS_ID' && !GA_ID_PATTERN.test(raw)) return fallback;
+  return raw || fallback;
+}
+
 function findHtmlFiles(dir) {
   const results = [];
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -45,16 +56,16 @@ function main() {
   }
 
   for (const { name, env, fallback } of REPLACEMENTS) {
-    const value = process.env[env];
-    if (!value) {
-      console.warn(`[inject-env] ${env} is not set, falling back to "${fallback}" for %${name}%`);
+    const value = resolveValue({ env, fallback });
+    if (value === fallback) {
+      console.warn(`[inject-env] ${env} is not set or invalid, falling back to "${fallback}" for %${name}%`);
     }
   }
 
   for (const filePath of htmlFiles) {
     let html = fs.readFileSync(filePath, 'utf8');
     for (const { name, env, fallback } of REPLACEMENTS) {
-      const value = process.env[env] || fallback;
+      const value = resolveValue({ env, fallback });
       html = html.split(`%${name}%`).join(value);
     }
     fs.writeFileSync(filePath, html);
