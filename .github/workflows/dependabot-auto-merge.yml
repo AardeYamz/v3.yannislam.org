@@ -9,8 +9,9 @@ name: Dependabot auto-merge
 # main has no branch protection / required status checks, so `gh pr merge
 # --auto` would merge on sight, even into a failing build. Instead the job
 # waits for the PR's own checks (Build & Test, Security, ...) to finish and
-# only merges if they all pass; a failing check fails this job and leaves
-# the PR open for a human.
+# only merges if they all pass (its own check is excluded, or it would wait
+# on itself); a failing check fails this job and leaves the PR open for a
+# human.
 #
 # `pull_request_target` (not `pull_request`) is required so the job gets a
 # write-scoped token even though Dependabot PRs come from a bot with
@@ -37,7 +38,7 @@ jobs:
   auto-merge:
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-26.04
-    timeout-minutes: 30
+    timeout-minutes: 35
 
     steps:
       - name: Fetch Dependabot metadata
@@ -52,12 +53,25 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
         run: |
-          # The PR's checks start in parallel with this job, so give them
-          # a minute to be reported before watching.
-          for _ in $(seq 1 12); do
-            gh pr checks "$PR_URL" >/dev/null 2>&1 && break
-            [ $? -eq 8 ] && break # 8 = checks pending
-            sleep 10
+          # `gh pr checks --watch` cannot be used here: this job is itself a
+          # check on the PR (pull_request_target), so the watch would wait on
+          # the job running it until the timeout and never reach the merge.
+          # Poll instead, ignoring this workflow's own check, and require the
+          # Build & Test checks to be reported so an early all-green
+          # snapshot (before they are created) is not mistaken for success.
+          for _ in $(seq 1 120); do
+            checks=$(gh pr checks "$PR_URL" --json name,bucket,workflow 2>/dev/null || echo '[]')
+            others=$(jq -c --arg self "$GITHUB_WORKFLOW" '[.[] | select(.workflow != $self)]' <<<"$checks")
+            if jq -e 'any(.[]; .bucket == "fail" or .bucket == "cancel")' <<<"$others" >/dev/null; then
+              echo "::error::A check failed; leaving the PR open for review."
+              jq -r '.[] | select(.bucket == "fail" or .bucket == "cancel") | "  \(.workflow) / \(.name)"' <<<"$others"
+              exit 1
+            fi
+            if jq -e 'any(.[]; .workflow == "Build & Test") and all(.[]; .bucket == "pass" or .bucket == "skipping")' <<<"$others" >/dev/null; then
+              gh pr merge --squash "$PR_URL"
+              exit 0
+            fi
+            sleep 15
           done
-          gh pr checks "$PR_URL" --watch --fail-fast
-          gh pr merge --squash "$PR_URL"
+          echo "::error::Checks did not finish in time."
+          exit 1
