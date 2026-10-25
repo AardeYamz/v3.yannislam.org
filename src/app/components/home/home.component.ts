@@ -1,5 +1,9 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { BannerComponent } from './banner/banner.component';
+import { AboutComponent } from './about/about.component';
+import { EducationComponent } from './education/education.component';
+import { WorkHistoryComponent } from './workhistory/workhistory.component';
 import { Experiences } from 'src/app/services/site-config/site-config.model';
 
 @Component({
@@ -7,9 +11,10 @@ import { Experiences } from 'src/app/services/site-config/site-config.model';
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [BannerComponent, AboutComponent, EducationComponent, WorkHistoryComponent]
 })
 export class HomeComponent {
-  constructor(private configService: SiteConfigService) { }
+  private configService = inject(SiteConfigService);
+
   experiences: Experiences = this.configService.experiences;
 }
