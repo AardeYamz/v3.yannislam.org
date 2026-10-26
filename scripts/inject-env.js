@@ -24,8 +24,13 @@ const REPLACEMENTS = [
 // GA4 measurement ID.
 const GA_ID_PATTERN = /^G-[A-Z0-9]+$/;
 
+// The Vercel project's variable is named GOOGLE_ANALYTICS (no _ID suffix), so
+// accept it as an alias for GOOGLE_ANALYTICS_ID.
+const ENV_ALIASES = { GOOGLE_ANALYTICS_ID: ['GOOGLE_ANALYTICS'] };
+
 function resolveValue({ env, fallback }) {
-  const raw = (process.env[env] || '').trim().replace(/^["']|["']$/g, '');
+  const source = [env, ...(ENV_ALIASES[env] || [])].find((name) => process.env[name]);
+  const raw = (process.env[source] || '').trim().replace(/^["']|["']$/g, '');
   if (env === 'GOOGLE_ANALYTICS_ID' && !GA_ID_PATTERN.test(raw)) return fallback;
   return raw || fallback;
 }
