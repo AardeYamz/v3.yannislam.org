@@ -1,0 +1,102 @@
+name: Vercel build warnings
+
+# Vercel's own build runs on its npm/Node, so some warnings (e.g. npm 12's
+# install-scripts and Unknown env config notices) never appear in the GitHub
+# Actions build. When a preview deploy finishes, fetch its build log from the
+# Vercel API and keep the warning/error lines in a second sticky PR comment
+# (the Actions build has its own, in build-test.yml).
+#
+# Needs a repository secret VERCEL_TOKEN (a Vercel access token for the team
+# below); without it the job exits with a notice. deployment_status workflows
+# only run from the default branch's copy of this file.
+on:
+  deployment_status:
+
+permissions: {}
+
+concurrency:
+  group: vercel-build-warnings-${{ github.event.deployment.sha }}
+  cancel-in-progress: true
+
+jobs:
+  comment:
+    if: >-
+      (github.event.deployment_status.state == 'success'
+      || github.event.deployment_status.state == 'failure'
+      || github.event.deployment_status.state == 'error')
+      && github.event.deployment.environment != 'Production'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TEAM_SLUG: aardeyamzs-projects
+      REPO: ${{ github.repository }}
+      SHA: ${{ github.event.deployment.sha }}
+      DEPLOY_STATE: ${{ github.event.deployment_status.state }}
+      DEPLOY_URL: ${{ github.event.deployment_status.environment_url || github.event.deployment_status.target_url }}
+
+    steps:
+      - name: Fetch Vercel build log and comment on the PR
+        shell: bash
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::notice::VERCEL_TOKEN secret is not set; skipping Vercel build warnings."
+            exit 0
+          fi
+
+          host="${DEPLOY_URL#https://}"
+          host="${host%%/*}"
+          if ! [[ "$host" =~ ^[a-z0-9-]+\.vercel\.app$ ]]; then
+            echo "::notice::Unexpected deployment URL '$DEPLOY_URL'; skipping."
+            exit 0
+          fi
+
+          pr=$(gh api "repos/$REPO/commits/$SHA/pulls" --jq '.[0].number // empty')
+          if [ -z "$pr" ]; then
+            echo "::notice::No pull request for $SHA; skipping."
+            exit 0
+          fi
+
+          curl --fail --silent --show-error --location \
+            --header "Authorization: Bearer $VERCEL_TOKEN" \
+            "https://api.vercel.com/v3/deployments/$host/events?builds=1&limit=-1&slug=$VERCEL_TEAM_SLUG" \
+            > events.json
+
+          # Keep lines Vercel flagged as warning/error, plus anything that
+          # looks like one; cap the size (a PR comment tops out at 65,536).
+          jq -r '(if type == "array" then . else .events end)[]
+                 | select((.level == "warning" or .level == "error")
+                          or (.text | test("WARNING|ERROR|npm warn")))
+                 | .text' events.json \
+            | sed 's/\x1b\[[0-9;]*m//g' \
+            | head -c 60000 > vercel-warnings.txt || true
+
+          marker='<!-- vercel-build-warnings-comment -->'
+          {
+            echo "$marker"
+            echo '### Vercel build warnings'
+            echo
+            if [ -s vercel-warnings.txt ]; then
+              echo "Vercel deploy \`$DEPLOY_STATE\` at \`${SHA:0:7}\`. Warning/error lines from Vercel's build log:"
+              echo
+              echo '```'
+              cat vercel-warnings.txt
+              echo '```'
+            else
+              echo "Vercel deploy \`$DEPLOY_STATE\` at \`${SHA:0:7}\`: no warnings or errors in the build log."
+            fi
+          } > body.md
+
+          id=$(gh api --paginate "repos/$REPO/issues/$pr/comments" \
+            --jq "[.[] | select(.body | contains(\"$marker\"))][0].id // empty" | head -n1)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$id" -F body=@body.md > /dev/null
+          else
+            gh api -X POST "repos/$REPO/issues/$pr/comments" -F body=@body.md > /dev/null
+          fi

@@ -66,6 +66,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-angular-
 
+      # Vercel builds with npm 12, which warns about install scripts that
+      # aren't covered by allowScripts; match it so those warnings (and any
+      # npm-12-only failures) show up here too.
+      - name: Install npm 12
+        run: npm install --global npm@12
+
       - name: Install dependencies
         run: npm ci
 
@@ -107,6 +113,12 @@ jobs:
           key: ${{ runner.os }}-angular-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-angular-
+
+      # Vercel builds with npm 12, which warns about install scripts that
+      # aren't covered by allowScripts; match it so those warnings (and any
+      # npm-12-only failures) show up here too.
+      - name: Install npm 12
+        run: npm install --global npm@12
 
       - name: Install dependencies
         run: npm ci
@@ -245,6 +257,12 @@ jobs:
           node-version: 24.x
           cache: 'npm'
 
+      # Vercel builds with npm 12, which warns about install scripts that
+      # aren't covered by allowScripts; match it so those warnings (and any
+      # npm-12-only failures) show up here too.
+      - name: Install npm 12
+        run: npm install --global npm@12
+
       - name: Install dependencies
         run: npm ci
 
@@ -297,6 +315,12 @@ jobs:
         with:
           node-version: 24.x
           cache: 'npm'
+
+      # Vercel builds with npm 12, which warns about install scripts that
+      # aren't covered by allowScripts; match it so those warnings (and any
+      # npm-12-only failures) show up here too.
+      - name: Install npm 12
+        run: npm install --global npm@12
 
       - name: Install dependencies
         run: npm ci
