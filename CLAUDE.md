@@ -96,6 +96,11 @@ To update content, edit `config.json` and save; dev server picks up changes auto
 `scripts/inject-env.js` (runs after build):
 - Replaces `%GOOGLE_ANALYTICS_ID%` in `dist/index.html` with the Vercel env var
 - Ensures GA ID is injected at build time, not hardcoded in source
+- Fails the build (`exit 1`, `dist/` untouched) when `VERCEL=1` and the ID is
+  missing or malformed, because both preview and production builds are publicly
+  served. Non-deploy builds (local, CI compile checks) instead emit an inert
+  `G-XXXXXXXXXX` placeholder and warn. `ALLOW_MISSING_ANALYTICS=1` opts a fork
+  out of that failure. Never reintroduce a real measurement ID as a fallback
 
 ### Production Deployment
 1. Push to GitHub
