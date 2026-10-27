@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from '@angular/common';
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
@@ -8,7 +9,7 @@ import { AosDirective } from '../../../directives/aos/aos.directive';
     templateUrl: './about.component.html',
     styleUrls: ['./about.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [AosDirective]
+    imports: [AosDirective, NgOptimizedImage]
 })
 export class AboutComponent {
   analyticsService = inject(AnalyticsService);

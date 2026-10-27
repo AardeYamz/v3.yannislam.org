@@ -78,6 +78,7 @@ export interface WorkHistoryEntry {
   title: string;
   timeframe: string;
   description: string[];
+  logoKey?: string;
   imgs?: string[];
   image_alt?: string;
   organization?: string;
