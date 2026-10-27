@@ -43,7 +43,17 @@
                 line-height: 1.1;
                 margin: 0;
                 font-family: $MainFont;
-            } 
+
+                // ngx-typed-js renders this empty and fills it in after
+                // boot; an empty block box has zero height otherwise, so
+                // the h3 (and everything below it in the vertically
+                // centred banner) jumps the moment the first character
+                // types. em is relative to this element's own font-size,
+                // so it tracks every breakpoint override automatically.
+                &.typing {
+                    min-height: 1.1em;
+                }
+            }
 
             h2 {
                 color: $OnSurface;
