@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, AfterViewInit, OnDestroy, Injector, afterNextRender, computed, signal, PLATFORM_ID, forwardRef, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, AfterViewInit, OnDestroy, Injector, afterNextRender, computed, signal, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
@@ -32,7 +32,7 @@ import { ThemeService } from 'src/app/services/theme/theme.service';
         fadeStaggerAnimation('animateMenu', 'translateX(-20px)', '.container > *')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterLink, IconComponent, forwardRef(() => HeaderComponent)],
+    imports: [RouterLink, IconComponent],
 })
 
 export class HeaderComponent implements AfterViewInit, OnDestroy {
