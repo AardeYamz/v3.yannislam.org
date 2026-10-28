@@ -42,7 +42,11 @@
     font-family: 'Calibre';
     font-weight: 600;
     font-style: normal;
-    font-display: swap;
+    // Above-the-fold face (banner h2 name). Paired with the preload in
+    // index.html: `optional` either uses the webfont immediately (fast
+    // enough here, given the preload) or falls back permanently for this
+    // page load — never swaps mid-visit and reflows the 80px heading.
+    font-display: optional;
     unicode-range: U+000-5FF;
     src: local('Calibre'),
         url('assets/fonts/Calibre/Calibre-Semibold.woff2') format('woff2');
@@ -82,7 +86,10 @@
     font-family: 'SF Mono';
     font-weight: normal;
     font-style: normal;
-    font-display: swap;
+    // Above-the-fold face (banner h1 greeting, header nav numbers). See
+    // the Calibre Semibold face above for why `optional` + preload
+    // replaces `swap` here.
+    font-display: optional;
     unicode-range: U+000-5FF;
     src: local('SF Mono'),
         url('assets/fonts/SFMono/SFMono-Regular.woff2') format('woff2');
