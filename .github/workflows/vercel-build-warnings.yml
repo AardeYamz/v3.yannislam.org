@@ -75,6 +75,7 @@ jobs:
                           or (.text | test("WARNING|ERROR|npm warn")))
                  | .text' events.json \
             | sed 's/\x1b\[[0-9;]*m//g' \
+            | sed -E 's/((token|secret|key|password)[a-z_-]*[=:])[^[:space:]]+/\1[redacted]/Ig' \
             | head -c 60000 > vercel-warnings.txt || true
 
           marker='<!-- vercel-build-warnings-comment -->'
