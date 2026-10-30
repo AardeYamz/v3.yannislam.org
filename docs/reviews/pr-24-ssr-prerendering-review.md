@@ -3,7 +3,7 @@
 [PR #24 — "Add SSR scaffolding + static prerendering for all known
 routes"](https://github.com/AardeYamz/v3.yannislam.org/pull/24), reviewed
 against the desktop performance problems in
-[`desktop-performance.md`](./desktop-performance.md).
+[`desktop-performance.md`](../todo/desktop-performance.md).
 
 **Verdict: it fixes FCP and LCP emphatically, does nothing for CLS, and
 ships four regressions.** Do not merge as-is — the five fixes at the bottom
