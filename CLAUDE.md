@@ -1,197 +1,124 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code (claude.ai/code) and anyone else changing this repo.
+[`README.md`](README.md) covers the stack, architecture, `config.json` keys,
+tests and CI in full; this file keeps the rules and the things that are easy
+to get wrong.
 
-## Quick Start
+## Commands
 
 ```bash
 npm install
-npm start          # Dev server at http://localhost:4200
-npm run build      # Production build (Angular + postbuild env substitution)
-npm test           # Run Karma/Jasmine tests
-ng test            # Same as npm test
-ng test --watch    # Watch mode for tests
-ng test --code-coverage  # Generate coverage report
+npm start                    # dev server at http://localhost:4200
+npm run build                # prerender every route + postbuild env substitution
+npm test                     # Karma + Jasmine, watch mode
+npm test -- --watch=false --browsers=ChromeHeadless   # single run, as CI does
+ng test --include='**/component-name.component.spec.ts'
+npm run test:e2e             # Playwright
+npm run test:perf            # Lighthouse CI
 ```
 
-## Project Overview
+Verify a change with `npm test`, `npm run build` and `npm run test:e2e`.
 
-**v3.yannislam.org** is an Angular 22 portfolio website. Nearly all page content (nav, hero banner, work/education/volunteering history, projects, footer links, contact info) is data-driven from a single `config.json` file via `SiteConfigService`, making the site highly customizable without touching components.
+## The app in brief
 
-**Tech Stack:**
-- **Framework**: Angular 22, TypeScript 6 (strict mode + strictTemplates)
-- **UI**: Bootstrap 5, ng-bootstrap 21, Font Awesome 7
-- **Animations**: anime.js (logo intro), custom RAF loop (floating logos), Angular triggers (fade/stagger)
-- **Analytics**: Google Analytics 4 (global `gtag.js`, injected at build time)
-- **Hosting**: Vercel (builds, serves); Cloudflare (DNS, email routing, CDN proxy)
+An Angular 22 portfolio site: standalone components, signals, zoneless change
+detection, prerendered to static HTML (`@angular/ssr`) and served by Vercel,
+with Cloudflare in front for DNS and email.
 
-## Architecture
+- **Bootstrap:** `src/main.ts` → `bootstrapApplication(AppComponent, appConfig)`;
+  providers in `src/app/app.config.ts` (server: `app.config.server.ts`).
+- **Routes:** `src/app/app.routes.ts` (`''` eager; `projects`,
+  `projects/highschool`, `aardeyamz` lazy via `loadComponent`; `**` redirects
+  to `/`). `src/app/app.routes.server.ts` lists the same paths for
+  prerendering; keep the two in step.
+- **Content:** all page copy is in `src/assets/config.json`, read only through
+  `SiteConfigService` and typed by `site-config.model.ts`.
+- **Services:** `SiteConfigService`, `ThemeService` (`default`/`light`/`dark`
+  as signals, `localStorage`, `[data-theme]` on `<html>`), `AnalyticsService`
+  (custom `gtag()` events only; GA4 enhanced measurement tracks page views),
+  `ResumeService`.
+- **Directives:** `AosDirective` (scroll reveal), `LogoFallbackDirective`
+  (placeholder logo from the organization's name), `link-preview` (hover
+  previews).
+- **Icons:** inline SVGs in `src/app/icons/icon-registry.ts`, keyed by Font
+  Awesome names (`fa-linkedin`) and rendered by `<app-icon>`. Font Awesome
+  itself is not a dependency; add a glyph to the registry to use a new icon.
 
-### App Shell
-`AppComponent` wraps the entire site:
-- **LoadingScreenComponent** — boot-time anime.js logo assembly animation
-- **HeaderComponent** — nav bar + light/dark theme toggle (recolors entire UI via CSS variables)
-- **router-outlet** — routes content
-- **FooterComponent** — credits, socials, repo link
+## Rules
 
-### Routes
-- **`/`** (HomeComponent, eager)
-  - BannerComponent (hero + typewriter effect)
-  - FloatingLogosComponent (animated background field of tech logos)
-  - AboutComponent (name meaning cards via AardeYamz)
-  - EducationComponent
-  - WorkHistoryComponent (reused for both work & volunteering sections)
-  - ContactComponent
-- **`/aardeyamz`** (AardeYamzComponent + NamecardComponent, lazy-loaded)
+### Content and components
 
-### Core Services
-- **SiteConfigService** (`src/app/services/site-config/`)
-  - Reads `config.json` once at boot
-  - All components consume this service instead of importing config directly
-  - Ensures config changes (via fetch) can propagate across the app without component rewiring
-- **ThemeService** (`src/app/services/theme/`)
-  - Manages light/dark/system theme state (Angular signals + localStorage)
-  - Toggles CSS variables for theme colors (primary, accent, etc.)
-  - FloatingLogosComponent recolors on theme change
-- **AnalyticsService** (`src/app/services/analytics/`)
-  - Calls global `gtag()` directly (no npm package)
-  - Fires custom events on user actions only — page views are handled by
-    GA4's own enhanced-measurement history-change tracking (set at
-    `gtag('config', ...)` in `index.html`), not by this service
-- **ResumeService** (`src/app/services/resume/`)
-  - Reads `resume-manifest.json` (generated by build hook) to get newest dated resume
-  - Provides download link without hardcoding filename
+- Never import `config.json` in a component; inject `SiteConfigService`.
+- `config.json` has no runtime validation. Keep new entries in the same shape
+  as their neighbours and update `site-config.model.ts` with any new field.
+- Components follow the Angular trio (`.ts` / `.html` / `.scss`, plus
+  `.spec.ts`) under `src/app/components/{general,home,other}/`.
+- To add a home section: create the component under `components/home/`, add
+  its data to `config.json`, read it through `SiteConfigService`, add it to
+  `HomeComponent`'s template, optionally reveal it with `appAos`.
+- A new route goes in both `app.routes.ts` and `app.routes.server.ts`.
 
-### Custom Directives
-- **AosDirective** (`src/app/directives/aos/`)
-  - AOS-style scroll reveal trigger (animates elements into view)
-- **LogoFallbackDirective** (`src/app/directives/logo-fallback/`)
-  - If an org's logo image is missing, generates a data-URI SVG placeholder
-  - Text: org name as wrapped, accent-colored text
+### SSR, zoneless and hydration
 
-### Content Management
-
-All page copy is in **`src/assets/config.json`**. Key sections:
-- **`siteMenu`** — nav items (navTitle, siteLocation, optional navNumber/navContent)
-- **`logos`** — keyed map of `{ src, alt }`, reused by `logoKey` in work/education/volunteering
-- **`about`** — first/last name, email, contact list (socials), aardeyamz name-meaning cards
-- **`about.experiences`** — `work` & `volunteering` lists (organization, title, timeframe, description[], skills[]), plus top-level `education` array
-- **`banner`** — greeting, name, blurb, typewriter typeSection array
-- **`footer`** — repo link, built-with credit, designCredits
-- **`projects.college` / `projects.highschool`** — project card lists (imgs[], title, timeframe, description[], optional link)
-- **`siteTitle`, `heading`, `subHeading`, `manifest*`** — `<title>`, PWA metadata
-
-To update content, edit `config.json` and save; dev server picks up changes automatically.
-
-## Build Workflow
-
-### Pre-build Hooks (via npm scripts)
-`scripts/generate-resume-manifest.js` (runs before start/build/watch/test):
-- Scans `src/assets/resume/` for files named `<name> YYYYMMDD.pdf`
-- Picks the newest by date
-- Writes filename to `src/assets/resume-manifest.json` (gitignored)
-- ResumeService imports this as a TS module, so dropping in a new dated PDF updates the download link automatically
-
-### Post-build Hook
-`scripts/inject-env.js` (runs after build):
-- Replaces `%GOOGLE_ANALYTICS_ID%` in `dist/index.html` with the Vercel env var
-- Ensures GA ID is injected at build time, not hardcoded in source
-- Fails the build (`exit 1`, `dist/` untouched) when `VERCEL=1` and the ID is
-  missing or malformed, because both preview and production builds are publicly
-  served. Non-deploy builds (local, CI compile checks) instead emit an inert
-  `G-XXXXXXXXXX` placeholder and warn. `ALLOW_MISSING_ANALYTICS=1` opts a fork
-  out of that failure. Never reintroduce a real measurement ID as a fallback
-
-### Production Deployment
-1. Push to GitHub
-2. Vercel build hook triggers (`ng build` + postbuild)
-3. Angular ahead-of-time compiled bundle deployed to Vercel's edge network
-4. Cloudflare DNS routes `yannislam.org` to Vercel's IP via proxied A/CNAME records
-5. Cloudflare also handles email routing (MX/SPF/DKIM/DMARC) for `@yannislam.org`
-
-## Development Patterns
-
-### Component Structure
-Every component under `src/app/components/` follows the Angular trio:
-```
-component-name/
-├── component-name.component.ts
-├── component-name.component.html
-├── component-name.component.scss
-└── component-name.component.spec.ts (when present)
-```
-
-### Reading Config
-Inject `SiteConfigService` and use its properties:
-```typescript
-constructor(public config: SiteConfigService) {}
-// In template: {{ config.about.first }}
-```
-Do not import `config.json` directly in components; always go through the service.
+- Every route is prerendered. Keep browser APIs (`window`, `document`,
+  `IntersectionObserver`, `Image`, `matchMedia`) behind `isPlatformBrowser`.
+- With zoneless change detection, state written outside a template event
+  (scroll listeners, observers, rAF, third-party callbacks) must be a signal
+  or be followed by `markForCheck()`.
+- Read the comments in `app.component.ts`, `loading-screen.component.ts` and
+  `utils/hydration.ts` before touching the loading screen or `headerReady`.
+  They record bugs that were fixed once already.
+- The long comments in the code explain why it works the way it does. Keep
+  them, and update them when you change the behavior they describe.
 
 ### Styling
-- **Global theme colors** defined via CSS variables in `src/theme.scss` (e.g., `--primary-color`, `--accent-color`)
-- `src/styles.scss` — global resets, typography, layout utilities
-- `src/bootstrap-custom.scss` — Bootstrap overrides (e.g., color remaps)
-- `src/fonts.scss` — font-face declarations (Calibre, SF Mono)
-- Individual component SCSS files scope styles to that component
 
-ThemeService toggles `--primary-color`, `--accent-color`, `--background-color`, etc. when theme changes; components automatically recolor via CSS variables.
+- Color tokens live in `src/theme.scss`: the site's `--color-*` palette and
+  Material Design 3 `--md-sys-color-*` tokens, set per mode under
+  `:root[data-theme="light"]` and `:root[data-theme="dark"]` (the default mode
+  is the base `:root`). Reference them with `var(...)` so every theme works.
+- `src/styles.scss` holds global styles, `src/bootstrap-custom.scss` the
+  Bootstrap overrides, `src/fonts.scss` the `@font-face` rules. Component
+  styles stay in the component's SCSS.
 
-### Animations
-- **Lazy entrance animations** via Angular trigger `@fadeStagger` (defined in `src/app/animations/`)
-- **Scroll reveals** via `AosDirective` (intersection observer + CSS classes)
-- **Floating logos background** — custom RAF loop in FloatingLogosComponent (not CSS animation; allows dynamic recoloring on theme change)
-- **Logo intro at boot** — anime.js in LoadingScreenComponent (timeline of SVG path animations)
+### Build hooks
 
-## Common Tasks
+- `scripts/generate-resume-manifest.js` runs before `start`, `build`, `watch`
+  and `test`. It writes the newest `src/assets/resume/<name> YYYYMMDD.pdf` to
+  `src/assets/resume-manifest.json`. The manifest is tracked in git: commit it
+  together with a new resume PDF.
+- `scripts/inject-env.js` runs after `build` and replaces
+  `%GOOGLE_ANALYTICS_ID%` in every built HTML file. On Vercel (`VERCEL=1`) a
+  missing or malformed ID fails the build, because previews and production
+  are both public. Elsewhere it writes the inert `G-XXXXXXXXXX` and warns.
+  `ALLOW_MISSING_ANALYTICS=1` lets a fork opt out. **Never reintroduce a real
+  measurement ID as a fallback.**
 
-### Add a New Page Section
-1. Create a new component under `src/app/components/home/`
-2. Add data to `config.json` under the relevant section
-3. Inject `SiteConfigService` in the component to read config
-4. Add the component to HomeComponent's template
-5. Optionally add scroll reveal via `appAos` directive
+### Security headers
 
-### Update Resume Download Link
-Drop a new PDF into `src/assets/resume/` named `<name> YYYYMMDD.pdf` (e.g., `Resume 20260801.pdf`). The pre-build hook will pick it up automatically; no code changes needed.
-
-### Add a New Social Link
-Edit `config.json` → `about.contact` array. Add an entry with `icon` (Font Awesome class, e.g., `fa-linkedin`) and `link`. The template iterates over this array.
-
-### Change Theme Colors
-1. Update CSS variables in `src/theme.scss` for the default/light theme
-2. Update `:root[data-theme="dark"]` overrides in the same file for dark theme
-3. The ThemeService will toggle these on user theme selection
-
-### Test a Single Component
-```bash
-ng test --include='**/component-name.component.spec.ts'
-```
-
-### Debug in Browser DevTools
-`ng serve` outputs source maps by default. Open Chrome DevTools → Sources tab to step through TypeScript code.
-
-## Important Notes
-
-- **config.json has no schema validation** — keep new entries consistent with existing ones in the same array
-- **Resume manifest is gitignored** — always commit a new resume PDF; the build hook generates the manifest
-- **Google Analytics ID is Vercel env-only** — it's injected at build time via `scripts/inject-env.js`, not stored in source
-- **Lazy-loaded components** (AardeYamzComponent) are code-split into separate bundles; use `loadComponent` in the route definition
-- **Standalone components** (AardeYamzComponent, NamecardComponent) coexist with the NgModule-based app; they're opted in at the route level
-- **CSS variables for theming** — all color properties should reference `var(--primary-color)`, etc., to automatically support theme switching
+`vercel.json` sets the response headers, including a
+`Content-Security-Policy-Report-Only`. A new third-party script, frame, image
+host or connection must be added to that policy.
 
 ## Documentation
 
-Additional context lives under `docs/`, split three ways:
+Docs live under `docs/`; [`docs/README.md`](docs/README.md) indexes them.
 
-- **`docs/changes/`** — write-ups of work already done (how the logo intro animation works, scroll reveals, projects section structure, Google Analytics wiring, header scroll effects, Angular upgrade notes). Skim relevant files when touching their area.
-- **`docs/todo/`** — plans for work not yet built (or only partly built).
-- **`docs/pr-review/`** — reviews of specific pull requests, named `pr-<number>-<slug>.md`.
+- **`docs/changes/`**: write-ups of work already done. Skim the ones for an
+  area before changing it, and add one for any substantial change.
+- **`docs/todo/`**: plans for work not yet built. [`docs/todo/README.md`](docs/todo/README.md)
+  orders them; update it when a plan's status changes.
+- **`docs/reviews/`**: point-in-time reviews of PRs (`pr-<number>-<slug>.md`)
+  and audits (`<topic>-YYYY-MM-DD.md`).
 
-### Naming convention
+When a change affects commands, architecture or conventions, update
+`README.md` and this file in the same PR.
 
-Every file in `docs/changes/` is named `YYYYMMDD-HHMMSS-kebab-case-title.md` and starts with a `Date:` header matching that timestamp:
+### Naming rule for `docs/changes/`
+
+Each file is named `YYYYMMDD-HHMMSS-kebab-case-title.md` and starts with a
+matching `Date:` header:
 
 ```
 Date: 2026-08-11 01:39:39
@@ -200,7 +127,12 @@ Date: 2026-08-11 01:39:39
 ...
 ```
 
-- The timestamp is when the file is finalized/committed (UTC), not when work on the underlying feature started — get it with `date -u "+%Y-%m-%d %H:%M:%S"` (header) and `date -u "+%Y%m%d-%H%M%S"` (filename), run once and reused for both so they match exactly.
-- If another file already has that exact `YYYYMMDD-HHMMSS`, append `-1`, `-2`, etc. to the *new* file's slug (the first file at a given timestamp keeps no suffix; only later collisions at the same second get numbered, in order).
-- Filenames stay stable once committed — a later update to the same doc (e.g. a follow-up fix) is a new section appended to the existing file (see `20260811-013939-ssr-prerendering.md`'s "Fixed: ..." sections for the pattern), not a rename to a new timestamp. Only rename when a file is genuinely being created for the first time.
-- This applies to `docs/changes/` specifically — `docs/todo/`, `docs/pr-review/`, `README.md`, and root-level docs like `CLAUDE.md` itself are not part of this convention.
+- The timestamp is when the file is finalized (UTC), not when the work
+  started. Run `date -u "+%Y-%m-%d %H:%M:%S"` and `date -u "+%Y%m%d-%H%M%S"`
+  once and use them for the header and the filename so they match.
+- If another file already has that `YYYYMMDD-HHMMSS`, append `-1`, `-2`, …
+  to the new file's slug, in order.
+- Filenames are stable once committed. A follow-up to the same work is a new
+  section appended to the existing file (see the "Fixed: …" sections of
+  `20260811-013939-ssr-prerendering.md`), not a rename.
+- The rule applies only to `docs/changes/`.
