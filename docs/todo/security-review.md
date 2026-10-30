@@ -23,7 +23,7 @@ Reviewed 2026-10-28 from a static read of `.github/workflows/`, `vercel.json`, `
 7. `Strict-Transport-Security` has `preload`; confirm the domain (and every subdomain, including mail and DNS-only hosts) really is HTTPS-only and submit it to the preload list, or drop `preload`.
 8. `frame-src https:` in the report-only CSP is wide open; list the embeds the site actually uses.
 9. `inject-env.js` fails the Vercel build when the GA ID is missing or malformed. Good; add a unit test for the pattern (`^G-[A-Z0-9]+$`) and for the placeholder path so a refactor cannot reintroduce a real fallback ID (CLAUDE.md forbids it).
-10. `docs/pr-review/` and `docs/changes/` are fine to publish; check none quote real analytics IDs or tokens before the repo's visibility could change.
+10. `docs/reviews/` and `docs/changes/` are fine to publish; check none quote real analytics IDs or tokens before the repo's visibility could change.
 
 ## Checked, no finding
 
