@@ -26,16 +26,16 @@ Nothing found is remotely exploitable today. Two items are worth fixing this wee
 
 ### 1. No Content-Security-Policy — Medium
 
-[vercel.json](../vercel.json#L6-L18) sets `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy` and a 2-year HSTS with `preload`. That is a good baseline (and better than most personal sites), but there is **no `Content-Security-Policy`** and no `Cross-Origin-Opener-Policy`.
+[vercel.json](../../vercel.json#L6-L18) sets `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy` and a 2-year HSTS with `preload`. That is a good baseline (and better than most personal sites), but there is **no `Content-Security-Policy`** and no `Cross-Origin-Opener-Policy`.
 
 Why it matters: the page's security currently rests entirely on *"no injection will ever happen"*. Two things make that assumption load-bearing rather than trivial:
 
 - A third-party script (`googletagmanager.com/gtag/js`) runs with full page privileges. If that origin is compromised or a malicious version is served, nothing constrains what it can do — it can read the DOM, exfiltrate to any host, or inject further script.
-- `LinkPreviewService` frames arbitrary third-party documents ([link-preview.service.ts:150](../src/app/directives/link-preview/link-preview.service.ts#L150)) — sandboxed, but a CSP `frame-src` would bound the set of hosts a config edit can point at.
+- `LinkPreviewService` frames arbitrary third-party documents ([link-preview.service.ts:150](../../src/app/directives/link-preview/link-preview.service.ts#L150)) — sandboxed, but a CSP `frame-src` would bound the set of hosts a config edit can point at.
 
 A CSP would not have prevented any bug found in this review; its value is limiting the blast radius of the *next* one (a future `innerHTML` mistake, a hijacked dependency, a compromised npm package).
 
-Suggested header, added to the `/(.*)` block in [vercel.json](../vercel.json#L5):
+Suggested header, added to the `/(.*)` block in [vercel.json](../../vercel.json#L5):
 
 ```
 default-src 'self';
@@ -54,11 +54,11 @@ upgrade-insecure-requests
 
 Practical notes for this codebase:
 
-- `style-src 'unsafe-inline'` is required (Angular injects component styles as inline `<style>`; [icon.component.ts](../src/app/icons/icon.component.ts#L16-L33) also uses `::ng-deep`-scoped component CSS). Tightening that means `ngCspNonce` + `CSP_NONCE`, which is a bigger change than it's worth here.
-- `script-src` must allow the inline gtag bootstrap at [index.html](../src/index.html#L14-L20). Either hash it (it is stable text, but `%GOOGLE_ANALYTICS_ID%` is substituted *after* the build, so the hash has to be computed post-substitution in [scripts/inject-env.js](../scripts/inject-env.js) or the inline block moved to a static same-origin `.js` file — the simpler option) or, temporarily, `'unsafe-inline'` for scripts, which costs most of the XSS benefit.
+- `style-src 'unsafe-inline'` is required (Angular injects component styles as inline `<style>`; [icon.component.ts](../../src/app/icons/icon.component.ts#L16-L33) also uses `::ng-deep`-scoped component CSS). Tightening that means `ngCspNonce` + `CSP_NONCE`, which is a bigger change than it's worth here.
+- `script-src` must allow the inline gtag bootstrap at [index.html](../../src/index.html#L14-L20). Either hash it (it is stable text, but `%GOOGLE_ANALYTICS_ID%` is substituted *after* the build, so the hash has to be computed post-substitution in [scripts/inject-env.js](../../scripts/inject-env.js) or the inline block moved to a static same-origin `.js` file — the simpler option) or, temporarily, `'unsafe-inline'` for scripts, which costs most of the XSS benefit.
 - `frame-src https:` keeps the link-preview feature working; it is deliberate, not an oversight.
 - Roll it out with `Content-Security-Policy-Report-Only` first and watch for violations from the carousel/animation code before enforcing.
-- Adding `Cross-Origin-Opener-Policy: same-origin` is safe here (no cross-origin popups are opened; [resume.service.ts:35](../src/app/services/resume/resume.service.ts#L35) opens a same-origin PDF) and costs nothing.
+- Adding `Cross-Origin-Opener-Policy: same-origin` is safe here (no cross-origin popups are opened; [resume.service.ts:35](../../src/app/services/resume/resume.service.ts#L35) opens a same-origin PDF) and costs nothing.
 
 ### 2. `.gitignore` does not ignore `.env*` or `.vercel/` — Medium (latent)
 
@@ -71,11 +71,11 @@ $ git ls-files | grep -iE '\.env|^\.vercel'
 (no results)
 ```
 
-Nothing credential-bearing is committed today (a pattern scan across all tracked files for `api_key|secret|token|password = "..."` returned nothing). But the protection comes from **`.git/info/exclude`, which is per-clone and not versioned** — the repository's own [.gitignore](../.gitignore) has no `.env*` and no `.vercel/` rule.
+Nothing credential-bearing is committed today (a pattern scan across all tracked files for `api_key|secret|token|password = "..."` returned nothing). But the protection comes from **`.git/info/exclude`, which is per-clone and not versioned** — the repository's own [.gitignore](../../.gitignore) has no `.env*` and no `.vercel/` rule.
 
 Why it matters: the documented workflow uses the Vercel CLI, which writes `.env.local` containing a `VERCEL_OIDC_TOKEN` (present in this working tree right now) and `.vercel/project.json` holding the org/project IDs. OIDC tokens are short-lived, but any contributor who also keeps a plain `.env` with a real API key in the project root is one `git add -A` away from committing it, and CI checkouts / fresh clones get no protection at all.
 
-Fix — append to [.gitignore](../.gitignore):
+Fix — append to [.gitignore](../../.gitignore):
 
 ```gitignore
 # Local environment / Vercel CLI state
@@ -89,7 +89,7 @@ Then `git rm --cached` anything that becomes tracked (nothing is, currently) and
 
 ### 3. Nine high-severity advisories in the dev toolchain — Low
 
-`npm audit --package-lock-only` against the committed [package-lock.json](../package-lock.json):
+`npm audit --package-lock-only` against the committed [package-lock.json](../../package-lock.json):
 
 ```
 basic-ftp  <=6.2.0   (GHSA-c475-qrg2-pj4r — quadratic-time CPU DoS in Client.list())
@@ -105,19 +105,19 @@ Assessment: **not shipped to users.** This chain sits under `@lhci/cli`, a devDe
 
 Suggested handling (pick one):
 - Re-check after the next `@lhci/cli` / `lighthouse` release; the advisory is in a transitive dependency of `proxy-agent`, so upstream is likely to move first.
-- Add an `overrides` entry pinning `basic-ftp` to `>6.2.0` (this repo already uses `overrides` in [package.json](../package.json#L61-L76) for exactly this kind of pin — consistent with existing convention).
+- Add an `overrides` entry pinning `basic-ftp` to `>6.2.0` (this repo already uses `overrides` in [package.json](../../package.json#L61-L76) for exactly this kind of pin — consistent with existing convention).
 - If neither lands soon, note it in the Dependabot/Aikido triage rather than carrying it as an unresolved "high" in every future scan.
 
 ### 4. Hover previews load third-party pages in a sandboxed iframe — Low
 
-[link-preview.service.ts:150](../src/app/directives/link-preview/link-preview.service.ts#L150) sets `frame.src` to a URL taken from `config.json`, after a `frame.onload` timing heuristic decides whether to reveal it.
+[link-preview.service.ts:150](../../src/app/directives/link-preview/link-preview.service.ts#L150) sets `frame.src` to a URL taken from `config.json`, after a `frame.onload` timing heuristic decides whether to reveal it.
 
 What's already right (reviewed in detail, no change needed):
 
-- URL gate is `^https?://` ([link-preview-card.ts:12](../src/app/directives/link-preview/link-preview-card.ts#L12)), which excludes `javascript:`, `data:` and `blob:`.
-- `sandbox="allow-scripts"` **without** `allow-same-origin` ([link-preview.service.ts:200](../src/app/directives/link-preview/link-preview.service.ts#L200)) — the framed page gets an opaque origin, so it can't read cookies, `localStorage`, or the parent DOM.
+- URL gate is `^https?://` ([link-preview-card.ts:12](../../src/app/directives/link-preview/link-preview-card.ts#L12)), which excludes `javascript:`, `data:` and `blob:`.
+- `sandbox="allow-scripts"` **without** `allow-same-origin` ([link-preview.service.ts:200](../../src/app/directives/link-preview/link-preview.service.ts#L200)) — the framed page gets an opaque origin, so it can't read cookies, `localStorage`, or the parent DOM.
 - No `allow-top-navigation*`/`allow-popups` tokens, so a framed page cannot navigate the tab away.
-- `referrerpolicy="no-referrer"` ([link-preview.service.ts:191](../src/app/directives/link-preview/link-preview.service.ts#L191)) — the visited site doesn't learn where the visitor came from.
+- `referrerpolicy="no-referrer"` ([link-preview.service.ts:191](../../src/app/directives/link-preview/link-preview.service.ts#L191)) — the visited site doesn't learn where the visitor came from.
 
 Residual concerns, both accepted risks rather than bugs:
 
@@ -132,10 +132,10 @@ Four places treat `config.json` content as trusted markup. All are **safe as the
 
 | Location | Mechanism | Verdict |
 |---|---|---|
-| [linkify.pipe.ts:27](../src/app/pipes/linkify/linkify.pipe.ts#L27) | `bypassSecurityTrustHtml` over escape-then-linkified text | **Sound.** `escapeHtml` covers `& < > " '` and every generated anchor uses quoted attributes, so a URL containing `"` cannot break out of `href`; `URL_PATTERN` only matches `https?://`, so `javascript:` can never become an anchor target. |
-| [icon.component.ts:48](../src/app/icons/icon.component.ts#L48) | `bypassSecurityTrustHtml(svgMarkup(name))` | **Sound.** `svgMarkup` builds markup from a fixed registry and returns `''` for unknown keys; the input is only used as a lookup key, never interpolated. |
-| [link-preview.service.ts:85](../src/app/directives/link-preview/link-preview.service.ts#L85) | `iconEl.innerHTML = svgMarkup(data.icon)` | **Sound**, same reason. |
-| [banner.component.html:21](../src/app/components/home/banner/banner.component.html#L21) | `[innerHTML]="text"` (blurb paragraphs) | **Sanitized, not bypassed** — Angular's `DomHtmlSanitizer` strips `<script>` and event handlers. But it *permits* `<a href>`, `<img src>`, `<iframe>` remnants, so a hostile config would still get markup injection and outbound tracking pixels. |
+| [linkify.pipe.ts:27](../../src/app/pipes/linkify/linkify.pipe.ts#L27) | `bypassSecurityTrustHtml` over escape-then-linkified text | **Sound.** `escapeHtml` covers `& < > " '` and every generated anchor uses quoted attributes, so a URL containing `"` cannot break out of `href`; `URL_PATTERN` only matches `https?://`, so `javascript:` can never become an anchor target. |
+| [icon.component.ts:48](../../src/app/icons/icon.component.ts#L48) | `bypassSecurityTrustHtml(svgMarkup(name))` | **Sound.** `svgMarkup` builds markup from a fixed registry and returns `''` for unknown keys; the input is only used as a lookup key, never interpolated. |
+| [link-preview.service.ts:85](../../src/app/directives/link-preview/link-preview.service.ts#L85) | `iconEl.innerHTML = svgMarkup(data.icon)` | **Sound**, same reason. |
+| [banner.component.html:21](../../src/app/components/home/banner/banner.component.html#L21) | `[innerHTML]="text"` (blurb paragraphs) | **Sanitized, not bypassed** — Angular's `DomHtmlSanitizer` strips `<script>` and event handlers. But it *permits* `<a href>`, `<img src>`, `<iframe>` remnants, so a hostile config would still get markup injection and outbound tracking pixels. |
 
 Two concrete follow-ups, both cheap:
 
@@ -144,7 +144,7 @@ Two concrete follow-ups, both cheap:
 
 ### 6. Logo-fallback SVG is under-escaped — Low
 
-[logo-fallback.ts:10-12](../src/app/directives/logo-fallback/logo-fallback.ts#L10-L12) escapes only `&`, `<`, `>`; the SVG then uses single-quoted attributes and is emitted as `data:image/svg+xml;utf8,${svg}` with no percent-encoding ([logo-fallback.ts:52](../src/app/directives/logo-fallback/logo-fallback.ts#L52)).
+[logo-fallback.ts:10-12](../../src/app/directives/logo-fallback/logo-fallback.ts#L10-L12) escapes only `&`, `<`, `>`; the SVG then uses single-quoted attributes and is emitted as `data:image/svg+xml;utf8,${svg}` with no percent-encoding ([logo-fallback.ts:52](../../src/app/directives/logo-fallback/logo-fallback.ts#L52)).
 
 Two failure modes, both cosmetic rather than exploitable:
 
@@ -167,9 +167,9 @@ Note the inconsistency: `fill` is already `encodeURIComponent(color)`-encoded wh
 
 ### 7. Analytics loads unconditionally, with a live fallback ID — Low (compliance)
 
-[index.html:15](../src/index.html#L15) loads `gtag.js` and fires `gtag('config', ...)` on first paint, before any consent decision, for every visitor including EU/UK ones. For a site with EU traffic this is a GDPR/ePrivacy exposure (analytics cookies set without a lawful basis), not a technical vulnerability.
+[index.html:15](../../src/index.html#L15) loads `gtag.js` and fires `gtag('config', ...)` on first paint, before any consent decision, for every visitor including EU/UK ones. For a site with EU traffic this is a GDPR/ePrivacy exposure (analytics cookies set without a lawful basis), not a technical vulnerability.
 
-Related, and arguably the sharper issue: [inject-env.js](../scripts/inject-env.js#L19) **falls back to a hardcoded, live measurement ID** (`G-E3T7KDSRKW`) when `GOOGLE_ANALYTICS_ID` is unset or malformed:
+Related, and arguably the sharper issue: [inject-env.js](../../scripts/inject-env.js#L19) **falls back to a hardcoded, live measurement ID** (`G-E3T7KDSRKW`) when `GOOGLE_ANALYTICS_ID` is unset or malformed:
 
 ```js
 { name: 'GOOGLE_ANALYTICS_ID', env: 'GOOGLE_ANALYTICS_ID', fallback: 'G-E3T7KDSRKW' }
@@ -181,25 +181,25 @@ Also worth noting: `gtag.js` carries no `integrity` attribute. SRI isn't practic
 
 ### 8. Dependabot auto-merges production dependency bumps — Low (supply chain)
 
-[dependabot-auto-merge.yml](../.github/workflows/dependabot-auto-merge.yml) squash-merges any **patch or minor** bump of **any** dependency — including runtime dependencies — once Build & Test and Security pass. Major bumps of dev-only dependencies are also auto-merged.
+[dependabot-auto-merge.yml](../../.github/workflows/dependabot-auto-merge.yml) squash-merges any **patch or minor** bump of **any** dependency — including runtime dependencies — once Build & Test and Security pass. Major bumps of dev-only dependencies are also auto-merged.
 
-The compensating controls are real and unusually good for a personal project: every action is SHA-pinned, `permissions: contents: read` by default, `persist-credentials: false`, and [package.json](../package.json#L40-L45) has an `allowScripts` allowlist so a newly compromised package cannot run an install script unnoticed. But tests passing is not a security review, and a hijacked minor release of a runtime package (`@angular/*`, `express`, `bootstrap`) would reach production without a human looking at it.
+The compensating controls are real and unusually good for a personal project: every action is SHA-pinned, `permissions: contents: read` by default, `persist-credentials: false`, and [package.json](../../package.json#L40-L45) has an `allowScripts` allowlist so a newly compromised package cannot run an install script unnoticed. But tests passing is not a security review, and a hijacked minor release of a runtime package (`@angular/*`, `express`, `bootstrap`) would reach production without a human looking at it.
 
 Cheap hardening: restrict auto-merge to `direct:development` dependencies (keep manual review for runtime ones), and/or add Dependabot `cooldown:` so a version must be published for a few days before it is proposed — the standard defence against the "compromised release, yanked 6 hours later" pattern.
 
 ## Controls verified (no action needed)
 
-- **No user input anywhere.** No forms, no query-parameter parsing, no `postMessage` handlers, no cookies. `localStorage` holds only `yl-theme-mode`, validated against a fixed allowlist before use ([theme.service.ts:74-78](../src/app/services/theme/theme.service.ts#L74-L78)).
+- **No user input anywhere.** No forms, no query-parameter parsing, no `postMessage` handlers, no cookies. `localStorage` holds only `yl-theme-mode`, validated against a fixed allowlist before use ([theme.service.ts:74-78](../../src/app/services/theme/theme.service.ts#L74-L78)).
 - **No dangerous sinks in application code.** No `eval`, `new Function`, `document.write`, `setTimeout(string)`, or dynamic `<script>` injection. All four `bypassSecurityTrustHtml`/`innerHTML` sites are enumerated and assessed in finding 5.
-- **No server-side attack surface in production.** [app.routes.server.ts](../src/app/app.routes.server.ts) prerenders every route at build time; `vercel.json` serves `dist/v3.yannislam.org/browser` as static files. The Express entry ([server.ts](../src/server.ts)) is not part of the deployed artifact — if it were ever run, it exposes only `express.static` plus Angular's router, with no custom API routes.
+- **No server-side attack surface in production.** [app.routes.server.ts](../../src/app/app.routes.server.ts) prerenders every route at build time; `vercel.json` serves `dist/v3.yannislam.org/browser` as static files. The Express entry ([server.ts](../../src/server.ts)) is not part of the deployed artifact — if it were ever run, it exposes only `express.static` plus Angular's router, with no custom API routes.
 - **No secrets in tracked files.** `git grep` for key/token/password assignments across all tracked files: no hits. GA is injected at build time, and the injection is regex-validated with quote/whitespace normalization — a hostile `GOOGLE_ANALYTICS_ID` cannot break out of the `gtag()` call.
-- **`target="_blank"` links are consistently `rel="noopener noreferrer"`** across header, footer, work history, education and projects. The sole exception is the `mailto:` "Say Hello" link in [contact.component.html:17](../src/app/components/home/contact/contact.component.html#L17), which uses `target="_blank"` without `rel` — harmless (a `mailto:` handoff cannot obtain a window handle), but inconsistent with the rest of the templates.
+- **`target="_blank"` links are consistently `rel="noopener noreferrer"`** across header, footer, work history, education and projects. The sole exception is the `mailto:` "Say Hello" link in [contact.component.html:17](../../src/app/components/home/contact/contact.component.html#L17), which uses `target="_blank"` without `rel` — harmless (a `mailto:` handoff cannot obtain a window handle), but inconsistent with the rest of the templates.
 - **Security headers present:** `X-Frame-Options: DENY` (clickjacking), `nosniff`, HSTS 2y + `includeSubDomains` + `preload`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` denying camera/mic/geolocation.
-- **GitHub Actions hardening is already done** (and documented in [docs/todo/github-actions-speed-and-hardening.md](todo/github-actions-speed-and-hardening.md)): all `uses:` SHA-pinned with version comments, least-privilege `permissions:` per job, `persist-credentials: false`, `npm ci` against the committed lockfile, `npm audit` disabled only to avoid network chatter, and zizmor linting workflows on every PR. I checked all five workflow files for script injection: every attacker-influenceable value (`github.event.*`) is passed through `env:` or `--jq`, never interpolated into `run:` text. The `pull_request_target` job in the auto-merge workflow never checks out PR code.
+- **GitHub Actions hardening is already done** (and documented in [docs/todo/github-actions-speed-and-hardening.md](../todo/github-actions-speed-and-hardening.md)): all `uses:` SHA-pinned with version comments, least-privilege `permissions:` per job, `persist-credentials: false`, `npm ci` against the committed lockfile, `npm audit` disabled only to avoid network chatter, and zizmor linting workflows on every PR. I checked all five workflow files for script injection: every attacker-influenceable value (`github.event.*`) is passed through `env:` or `--jq`, never interpolated into `run:` text. The `pull_request_target` job in the auto-merge workflow never checks out PR code.
 - **Dev-server host-header protection.** `angular.json` sets `build.security.allowedHosts: []`, so serving on all interfaces cannot be reached through a rebinding DNS name.
 - **No source maps in production.** Only the `development` configuration enables `sourceMap`; the `production` configuration (the one Vercel builds with) leaves it off, and `optimization` at its default.
-- **Service worker scope is tight.** [ngsw-config.json](../ngsw-config.json) precaches only same-origin app-shell files and caches `/assets/images|fonts/**`; no cross-origin or API responses are cached, so no cached-token or cache-partitioning concern.
-- **`Cache-Control: immutable` is correctly excluded** from `/assets/config.json` and `/assets/resume-manifest.json` (per [docs/changes/20260925-073726-p0-fixes-from-code-review-backlog.md](changes/20260925-073726-p0-fixes-from-code-review-backlog.md)) — no stale-config or stale-download trap.
+- **Service worker scope is tight.** [ngsw-config.json](../../ngsw-config.json) precaches only same-origin app-shell files and caches `/assets/images|fonts/**`; no cross-origin or API responses are cached, so no cached-token or cache-partitioning concern.
+- **`Cache-Control: immutable` is correctly excluded** from `/assets/config.json` and `/assets/resume-manifest.json` (per [docs/changes/20260925-073726-p0-fixes-from-code-review-backlog.md](../changes/20260925-073726-p0-fixes-from-code-review-backlog.md)) — no stale-config or stale-download trap.
 
 ## Not covered by this review
 
