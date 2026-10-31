@@ -69,7 +69,8 @@ to an inert placeholder and warns.
 - [Bootstrap](https://getbootstrap.com/) 5 and
   [ng-bootstrap](https://ng-bootstrap.github.io/) 21 for layout, nav and dropdowns
 - Material Design 3 color tokens (`--md-sys-color-*`) alongside the site's own
-  `--color-*` palette, in `src/theme.scss`
+  `--color-*` palette, in the shared `yl-tokens.css` (fetched from
+  yl-theme per `theme.json` into `src/generated/`)
 - Inline SVG icons (`src/app/icons/`): the dozen Font Awesome glyphs the site
   uses, inlined instead of loading the Font Awesome CSS and webfonts
 - [ngx-owl-carousel-o](https://www.npmjs.com/package/ngx-owl-carousel-o) for
@@ -189,7 +190,7 @@ src/
 │   ├── config.json           # All page content
 │   ├── resume-manifest.json  # Written by the pre-hook
 │   ├── fonts/  images/  resume/
-├── theme.scss                # Color tokens per [data-theme]
+├── generated/yl-tokens.css   # Color tokens per [data-theme], fetched from yl-theme (git-ignored; see theme.json)
 ├── styles.scss               # Global styles
 ├── bootstrap-custom.scss     # Bootstrap overrides
 ├── fonts.scss                # @font-face (Calibre, SF Mono)

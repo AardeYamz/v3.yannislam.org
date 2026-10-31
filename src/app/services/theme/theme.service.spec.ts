@@ -108,4 +108,20 @@ describe('ThemeService', () => {
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
     expect(themeColorMeta.getAttribute('content')).toBe('#05070c');
   });
+
+  // The service mirrors --color-navy / --color-orange as literals (the browser chrome colour and the logo fallback can't read
+  // CSS custom properties). The tokens are fetched from the yl-theme project (theme.json), so this fails if a theme bump
+  // moves a colour and these literals were not updated.
+  (['default', 'light', 'dark'] as const).forEach((mode) => {
+    it(`mirrors the fetched --color-navy and --color-orange tokens in "${mode}" mode`, () => {
+      localStorage.setItem(STORAGE_KEY, mode);
+      stubMatchMedia(false);
+      const service = TestBed.inject(ThemeService);
+      TestBed.inject(ApplicationRef).tick();
+
+      const tokens = getComputedStyle(document.documentElement);
+      expect(themeColorMeta.getAttribute('content')).toBe(tokens.getPropertyValue('--color-navy').trim().toLowerCase());
+      expect(service.accentColor()).toBe(tokens.getPropertyValue('--color-orange').trim().toLowerCase());
+    });
+  });
 });
