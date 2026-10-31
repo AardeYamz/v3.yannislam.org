@@ -1,0 +1,8 @@
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        # First-party shared actions follow a moving major tag, like `deploy@v1` in the other repos.
+        AardeYamz/*: ref-pin
+        actions/*: ref-pin
+        "*": hash-pin

@@ -66,6 +66,3 @@ Thumbs.db
 
 # Fetched by scripts/fetch-theme.js from the yl-theme project (see theme.json)
 /src/generated/
-
-# mermaid linter dependencies
-tools/mermaid-lint/node_modules/

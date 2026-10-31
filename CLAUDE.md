@@ -148,10 +148,11 @@ Date: 2026-08-11 01:39:39
 
 ## Mermaid diagrams are linted
 
-Every ```mermaid block in a tracked `*.md` file must parse. `tools/mermaid-lint/` holds the linter (mermaid + jsdom) and `.github/workflows/mermaid-lint.yml` runs it in CI on any Markdown change. After editing a diagram, run it before committing:
+Every ```mermaid block in a tracked `*.md` file must parse. The linter lives in the `cloudflare-workers-devops` repo (`mermaid-lint/`) and `.github/workflows/mermaid-lint.yml` calls it as `AardeYamz/cloudflare-workers-devops/mermaid-lint@v1` on any Markdown change. After editing a diagram, run it from this repo before committing (it expects `cloudflare-workers-devops` cloned next to this repo; run `npm ci` there once):
 
 ```
-npm ci --prefix tools/mermaid-lint && node tools/mermaid-lint/lint.mjs
+npm ci --prefix ../cloudflare-workers-devops/mermaid-lint
+node ../cloudflare-workers-devops/mermaid-lint/lint.mjs
 ```
 
-It prints `file:line` and the parser's message for each broken block. To bump the parser, run `npm update --prefix tools/mermaid-lint` and commit the lock file.
+It prints `file:line` and the parser's message for each broken block. Changes to the linter go in `cloudflare-workers-devops`, not here.
