@@ -5,14 +5,16 @@ and `README.md` first, open one PR per item, and add a `docs/changes/` entry
 for each (naming rule in `CLAUDE.md`). When a plan is finished, say so in its
 own status line and drop it from this list.
 
-Status as of 2026-10-30.
+Status as of 2026-10-31.
 
 ## Queue
 
 1. **[`security-review.md`](security-review.md)** (2026-10-28, second pass
-   2026-10-29). None of it is implemented yet. Start with the High item:
-   branch protection on `main`, then `gh pr merge --auto` in
-   `dependabot-auto-merge.yml` instead of the polling loop.
+   2026-10-29). Several findings have shipped (#155, #157). Still open as of
+   2026-10-31: the High item, branch protection on `main` (the API reports the
+   branch as unprotected), then `gh pr merge --auto` in
+   `dependabot-auto-merge.yml` instead of the polling loop (it still sleeps
+   and polls).
 2. **[`code-review-optimization.md`](code-review-optimization.md)**. Done:
    #1–#4, #7–#11, #13, #14, #17 (see the `20260925-*` and `20260928-*`
    entries in `docs/changes/`). Open: #5 and #16 (header scroll performance
@@ -33,16 +35,14 @@ Status as of 2026-10-30.
    settings change).
 5. **[`design-system-consolidation.md`](https://github.com/AardeYamz/yl-theme/blob/main/docs/design-system-consolidation.md)**
    (moved to the yl-theme repo). A proposal, nothing built. Phases 1–2 must change no pixels; Phase 3 needs
-   the reviewer's decisions first. Phase 3 of the yl-theme plan has v3 take
-   its tokens from `yl-theme`.
+   the reviewer's decisions first. Phase 3 of the yl-theme plan is done: v3
+   takes its tokens from `yl-theme` (#162).
 6. **[`playwright-e2e-testing-plan.md`](playwright-e2e-testing-plan.md)**.
    Phases 1–3 have shipped. Open: Phase 4 (`accessibility.spec.ts` with axe;
    visual regression, deferred).
 
 ## Not tied to a plan
 
-- Phase 2 of `yl-theme/docs/plan-serve-from-yannislam-org.md`: add the
-  `/theme/:path*` rewrite to `vercel.json`.
 - Decide whether `v3.yannislam.org.code-workspace` should be committed or
   git-ignored (it is neither today; `.gitignore` covers only
   `*.sublime-workspace`).
