@@ -31,8 +31,8 @@ Status as of 2026-10-30.
    still saves 30 s or more), §3.8 Scorecard and harden-runner, the Lighthouse
    follow-ups in §6, and the repo-wide `contents: read` default (a manual
    settings change).
-5. **[`design-system-consolidation.md`](design-system-consolidation.md)**. A
-   proposal, nothing built. Phases 1–2 must change no pixels; Phase 3 needs
+5. **[`design-system-consolidation.md`](https://github.com/AardeYamz/yl-theme/blob/main/docs/design-system-consolidation.md)**
+   (moved to the yl-theme repo). A proposal, nothing built. Phases 1–2 must change no pixels; Phase 3 needs
    the reviewer's decisions first. Phase 3 of the yl-theme plan has v3 take
    its tokens from `yl-theme`.
 6. **[`playwright-e2e-testing-plan.md`](playwright-e2e-testing-plan.md)**.
