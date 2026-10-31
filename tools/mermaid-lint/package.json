@@ -1,0 +1,13 @@
+{
+  "name": "mermaid-lint",
+  "private": true,
+  "type": "module",
+  "description": "Parses every mermaid code block in the repo's Markdown files. Run: npm ci && node lint.mjs",
+  "scripts": {
+    "lint": "node lint.mjs"
+  },
+  "dependencies": {
+    "jsdom": "^30.1.3",
+    "mermaid": "^12.2.0"
+  }
+}

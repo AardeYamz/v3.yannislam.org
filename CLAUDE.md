@@ -145,3 +145,13 @@ Date: 2026-08-11 01:39:39
   section appended to the existing file (see the "Fixed: …" sections of
   `20260811-013939-ssr-prerendering.md`), not a rename.
 - The rule applies only to `docs/changes/`.
+
+## Mermaid diagrams are linted
+
+Every ```mermaid block in a tracked `*.md` file must parse. `tools/mermaid-lint/` holds the linter (mermaid + jsdom) and `.github/workflows/mermaid-lint.yml` runs it in CI on any Markdown change. After editing a diagram, run it before committing:
+
+```
+npm ci --prefix tools/mermaid-lint && node tools/mermaid-lint/lint.mjs
+```
+
+It prints `file:line` and the parser's message for each broken block. To bump the parser, run `npm update --prefix tools/mermaid-lint` and commit the lock file.
