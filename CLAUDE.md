@@ -148,7 +148,7 @@ Date: 2026-08-11 01:39:39
 
 ## Mermaid diagrams are linted
 
-Every ```mermaid block in a tracked `*.md` file must parse. The linter lives in the `cloudflare-workers-devops` repo (`mermaid-lint/`) and `.github/workflows/mermaid-lint.yml` calls it as `AardeYamz/cloudflare-workers-devops/mermaid-lint@v1` on any Markdown change. After editing a diagram, run it from this repo before committing (it expects `cloudflare-workers-devops` cloned next to this repo; run `npm ci` there once):
+Every ```mermaid block in a tracked `*.md` file must parse. The linter lives in the `cloudflare-workers-devops` repo (`mermaid-lint/`) and `.github/workflows/mermaid-lint.yml` calls it as `AardeYamz/cloudflare-workers-devops/mermaid-lint`, pinned by SHA like every action in this repo (bump the SHA to pick up linter changes) on any Markdown change. After editing a diagram, run it from this repo before committing (it expects `cloudflare-workers-devops` cloned next to this repo; run `npm ci` there once):
 
 ```
 npm ci --prefix ../cloudflare-workers-devops/mermaid-lint
