@@ -123,6 +123,16 @@ flowchart TB
 
     Theme["ThemeService"] --> App & Header & Loading & Floating
 
+    subgraph ThemeRepo["yl-theme (separate repo)"]
+        Tokens[("yl-tokens.css<br/>timestamped release")] --> ThemeHost["theme.yannislam.org<br/>(Vercel project)"]
+    end
+    Pin[("theme.json<br/>version + SHA-256")] --> Fetch["scripts/fetch-theme.js<br/>(pre* hooks)"]
+    ThemeHost -->|"download"| Fetch
+    Fetch -->|"verify, then write"| Generated[("src/generated/yl-tokens.css<br/>git-ignored")]
+    Generated -->|"angular.json styles"| CSS["--color-* and --md-sys-color-*<br/>per [data-theme]"]
+    Theme -->|"sets data-theme"| CSS
+    CSS -.->|"var(...)"| Shell
+
     Analytics["AnalyticsService"] --> Header & Footer & Banner & About & Education & Contact
     Analytics -->|"gtag"| GA[("Google Analytics")]
 ```
@@ -140,7 +150,8 @@ flowchart TB
 | `ProjectsComponent`, `ProjectsHighschoolComponent` | Pages (lazy) | `/projects` and `/projects/highschool` |
 | `AardeYamzComponent` + `NamecardComponent` | Page (lazy) | `/aardeyamz` |
 | `SiteConfigService` | Service | The only reader of `config.json`, typed by `site-config.model.ts` |
-| `ThemeService` | Service | `default` / `light` / `dark` modes, as signals, saved in `localStorage` and applied as `[data-theme]` on `<html>` |
+| `ThemeService` | Service | `default` / `light` / `dark` modes, as signals, saved in `localStorage` and applied as `[data-theme]` on `<html>`. The colors themselves are not here: they come from `yl-tokens.css` (below) |
+| `yl-tokens.css` | Dependency | Color tokens from the separate [yl-theme](https://github.com/AardeYamz/yl-theme) project. `theme.json` pins a version and SHA-256; `scripts/fetch-theme.js` downloads it from `theme.yannislam.org` into git-ignored `src/generated/` before every start, build, test and e2e run, and `angular.json` loads it as a global stylesheet |
 | `AnalyticsService` | Service | Calls the global `gtag()` for custom events |
 | `ResumeService` | Service | Builds the resume download link from `resume-manifest.json` |
 
@@ -316,6 +327,9 @@ flowchart TB
     Fix -.-> PR
     Gate -->|"yes"| Merge["Merge to main"]
 
+    ThemeHost["theme.yannislam.org<br/>(yl-theme, pinned in theme.json)"] -.->|"fetch-theme.js in the<br/>pre* hooks of every build"| Build
+    ThemeHost -.-> Vercel
+
     Merge --> Vercel["Vercel build + deploy"]
     Vercel --> Edge["Vercel Edge"]
     Vercel -->|"deployment_status"| Release["Release: tag + notes"]
@@ -362,6 +376,9 @@ flowchart LR
 
     CF --> Mail["Cloudflare Email Routing"] --> Inbox["@yannislam.org inbox"]
     CF -.->|"legacy CNAMEs"| Netlify["Netlify (older sites)"]
+
+    Build["Build (CI and Vercel)"] -->|"fetch yl-tokens.css<br/>at the pinned version"| ThemeCF["theme.yannislam.org<br/>(DNS-only CNAME)"]
+    ThemeCF --> ThemeVercel["Vercel: yl-theme project"]
 ```
 
 | Concern | Provider | Details |
@@ -370,6 +387,7 @@ flowchart LR
 | Site | Vercel | Proxied `A`/`CNAME` records point at Vercel Edge, which serves `dist/v3.yannislam.org/browser` |
 | Email | Cloudflare Email Routing | MX/SPF/DKIM/DMARC for `@yannislam.org` |
 | Legacy sites | Netlify | `alpha.`, `v1.` and `v2.` still point at earlier versions of the site |
+| Theme tokens | Vercel (`yl-theme` project) | `theme.yannislam.org` is a DNS-only CNAME to Vercel. The build downloads the pinned `yl-tokens.css` from it, so a build needs that host to be reachable |
 
 ## Dependency security
 
