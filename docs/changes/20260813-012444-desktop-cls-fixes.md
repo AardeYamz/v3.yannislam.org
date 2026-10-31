@@ -108,3 +108,53 @@ instead with:
 A real CI run (which uses a compliant Node version) is the first place this
 will get exercised through `ng build`/`ng test`/Lighthouse — worth watching
 that run rather than assuming green.
+
+## Fixed: lazy-loaded work-history thumbnail failed its e2e visibility check
+
+CI's `e2e` job failed on `e2e/home-sections.spec.ts:45`: the seventh
+work-history entry's static thumbnail
+(`.img-feature-workhistory-container img.img-feature-workhistory`) stayed
+`hidden` for the full 10s timeout instead of becoming visible.
+
+**Root cause.** That `<img>` has no `width`/`height` attributes and no
+`aspect-ratio` — its layout box is sized entirely from the decoded image
+once loaded. Adding `loading="lazy"` to it meant the browser deferred the
+fetch until the element neared the viewport; at 1280×720 (Playwright's
+default "Desktop Chrome" viewport, which is also the only width where this
+container isn't `display: none` — see `workhistory.component.scss`), the
+seventh entry sits far enough down the page that it never enters the
+lazy-load threshold without an actual scroll, so the image never loads and
+the box never gets a size.
+
+The carousel copy of the same image (`owl-carousel-o` inside the same
+entry) is unaffected: it's genuinely decorative/duplicate content that the
+e2e suite never asserts on, and is invisible outright at this viewport
+width regardless of load state.
+
+**Fix.** Dropped `loading="lazy" decoding="async"` from the static
+thumbnail's `<img>` (`workhistory.component.html`), keeping it only on the
+carousel slide's copy. This is the same per-image-aspect-ratio gap the P0
+section above already flagged as unshipped — the real fix (reserving space
+via `width`/`height`/`aspect-ratio` so lazy-loading is safe everywhere)
+still needs real per-organization image dimensions and is left for that
+follow-up.
+
+## Fixed: boot smoke test raced the shortened loading screen
+
+Running the full e2e suite against current `main` (this branch's changes
+plus everything merged since PR #68 was opened) turned up a second, unrelated
+flake: `e2e/smoke.spec.ts`'s "home page boots" test asserts `.loading-screen`
+is visible immediately after `page.goto('/')` resolves. That `goto()` used
+the default `waitUntil: 'load'`, which blocks on every subresource (fonts,
+images, third-party scripts) — a wait with no fixed ceiling that, on a
+slower load, can now easily exceed `LoadingScreenComponent`'s entire
+boot-to-hidden cycle (`MIN_DISPLAY_MS` + the outro timeline, ~1.25s total
+post-`MIN_DISPLAY_MS`-cut, versus ~2.25s before). The test occasionally
+resolved `goto()` only after the overlay had already faded, failing the very
+next assertion.
+
+**Fix.** Changed that one `goto('/')` to `waitUntil: 'domcontentloaded'`,
+which resolves as soon as the initial document is parsed — well before the
+overlay's ~1.25s cycle can complete — instead of waiting on unrelated
+subresource loads. Confirmed with several repeated local runs of the test
+that this removes the race entirely.

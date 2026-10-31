@@ -2,86 +2,106 @@
 
 [![Angular](https://img.shields.io/badge/Angular-22-DD0031?logo=angular&logoColor=white)](https://angular.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Node](https://img.shields.io/badge/Node-22%20%7C%2024-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Node](https://img.shields.io/badge/Node-24%20%7C%2026-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Build & Test](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/build-test.yml/badge.svg)](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/build-test.yml)
 [![Security](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/security.yml/badge.svg)](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/security.yml)
 [![Dependabot](https://img.shields.io/badge/dependencies-Dependabot-025E8C?logo=dependabot&logoColor=white)](.github/dependabot.yml)
-[![Playwright](https://img.shields.io/badge/E2E-Playwright%201.62-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev)
+[![Playwright](https://img.shields.io/badge/E2E-Playwright%201.64-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
 [![DNS & Email by Cloudflare](https://img.shields.io/badge/DNS%20%26%20Email-Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://www.cloudflare.com/)
 [![Google Analytics](https://img.shields.io/badge/Analytics-Google%20Analytics-E37400?logo=googleanalytics&logoColor=white)](https://analytics.google.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19, and later updated to version 22.
+The source of [yannislam.org](https://yannislam.org): an Angular 22 portfolio
+site, prerendered to static HTML and served from Vercel. Nearly all of the
+page copy lives in one file, `src/assets/config.json`.
+
+Generated with Angular CLI 19 and since upgraded to 22. Lineage:
+
 - Forked from [Lê Thanh Tuấn's Portfolio](https://github.com/lethanhtuan939/Portfolio)
-- Which was based on [José Hernández's Portfolio](https://github.com/andresjosehr/andresjosehr-portfolio)
-- And adapted from [Brittany Chiang's Portfolio](https://github.com/bchiang7/v4)
+- which was based on [José Hernández's Portfolio](https://github.com/andresjosehr/andresjosehr-portfolio)
+- which was adapted from [Brittany Chiang's Portfolio](https://github.com/bchiang7/v4)
 
-## Getting Started
+## Contents
 
-### Prerequisites
-You need to have npm and Angular CLI installed in your pc. Npm is available with NodeJS in [here](https://nodejs.org/). After you install npm, install Angular CLI with the following command in your terminal
+- [Getting started](#getting-started)
+- [Stack](#stack)
+- [Architecture](#architecture)
+- [Code structure](#code-structure)
+- [Editing content (`config.json`)](#editing-content-configjson)
+- [Testing](#testing)
+- [CI/CD and deployment](#cicd-and-deployment)
+- [Dependency security](#dependency-security)
+- [Further documentation](#further-documentation)
 
-``` bash
-npm install -g @angular/cli
-```
+## Getting started
 
-### Installing
+You need [Node.js](https://nodejs.org/) 24 or 26 (CI runs both). The Angular
+CLI is a dev dependency, so `npx ng …` works without a global install.
 
-Just clone  the repo and excecute the following command inside the folder project
-
-``` bash
+```bash
 npm install
+npm start            # dev server at http://localhost:4200, reloads on save
+npm run build        # production build: prerender every route + postbuild env substitution
+npm test             # Karma + Jasmine unit tests (watch mode)
+npm run test:e2e     # Playwright end-to-end tests
+npm run test:perf    # Lighthouse CI (mobile preset; test:perf:desktop for desktop)
 ```
 
-### All done!
-
-Now just run
-```
-npm start
-```
-or
-```
-ng serve
-```
-
-Wait to compile and go to [http://localhost:4200](http://localhost:4200) after compile finish
-
-### Development server
-
-The application will automatically reload if you change any of the source files.
+`npm run build` fills in the Google Analytics ID from the `GOOGLE_ANALYTICS_ID`
+environment variable (see [Build hooks](#build-hooks)). Locally it falls back
+to an inert placeholder and warns.
 
 ## Stack
 
-**Framework & language**
-- [Angular](https://angular.dev) 22 (`@angular/cli`, `@angular/core`, `@angular/router`, `@angular/animations`, `@angular/forms`) — `NgModule`-based app shell, with a few standalone components (`AardeYamzComponent`, `NamecardComponent`) lazy-loaded off the router
-- TypeScript 6, strict mode + `strictTemplates`
+**Framework and language**
 
-**UI & content**
-- [@ng-bootstrap/ng-bootstrap](https://ng-bootstrap.github.io/) 21 + [Bootstrap](https://getbootstrap.com/) 5 — layout, nav (`ngbNav`), dropdowns
-- [@fortawesome/fontawesome-free](https://fontawesome.com/) 7 — iconography
-- [ngx-typed-js](https://www.npmjs.com/package/ngx-typed-js) — the banner's typewriter effect
-- [ngx-owl-carousel-o](https://www.npmjs.com/package/ngx-owl-carousel-o) — work history carousel
-- [animejs](https://animejs.com) 4 — the boot-time loading screen's logo assembly animation (see `docs/changes/20260728-132036-animejs-loading-screen.md`)
-- AOS-style scroll reveal via a custom `AosDirective` (`src/app/directives/aos/`)
-- A hand-rolled `requestAnimationFrame` loop powers `FloatingLogosComponent`, a field of falling logo marks behind the banner greeting (see `docs/changes/20260729-090717-floating-logos-banner.md`)
-- `LogoFallbackDirective` (`src/app/directives/logo-fallback/`) generates a data-URI SVG placeholder — the organization's name as themed accent-colored text — for work/education entries with no logo image
-- All page copy (nav, banner, about, education, work history, contact, footer socials) is data-driven from `src/assets/config.json`, read through a single `SiteConfigService` (see `docs/changes/20260728-160203-config-dedup-refactor.md`)
+- [Angular](https://angular.dev) 22: standalone components, signals,
+  zoneless change detection (`provideZonelessChangeDetection`), client
+  hydration and a service worker (`@angular/service-worker`)
+- `@angular/ssr`: every route is prerendered to static HTML at build time
+  (`src/app/app.routes.server.ts`)
+- TypeScript 6, strict mode plus `strictTemplates`
+
+**UI**
+
+- [Bootstrap](https://getbootstrap.com/) 5 and
+  [ng-bootstrap](https://ng-bootstrap.github.io/) 21 for layout, nav and dropdowns
+- Material Design 3 color tokens (`--md-sys-color-*`) alongside the site's own
+  `--color-*` palette, in the shared `yl-tokens.css` (fetched from
+  yl-theme per `theme.json` into `src/generated/`)
+- Inline SVG icons (`src/app/icons/`): the dozen Font Awesome glyphs the site
+  uses, inlined instead of loading the Font Awesome CSS and webfonts
+- [ngx-owl-carousel-o](https://www.npmjs.com/package/ngx-owl-carousel-o) for
+  the work history carousel
+- [anime.js](https://animejs.com) 4 for the boot-time logo animation
+- Hand-written pieces: a signal-driven typewriter in the banner (replaced
+  `ngx-typed-js`), a `requestAnimationFrame` loop of falling logo marks behind
+  the banner, a scroll-reveal directive (`AosDirective`), hover link previews
+  (`link-preview`), and a `LogoFallbackDirective` that draws a placeholder logo
+  from an organization's name
 
 **Analytics**
-- Google Analytics 4 via the global `gtag.js` site tag, loaded inline in `src/index.html`; `AnalyticsService` calls the global `gtag()` directly — no analytics npm package is used (an earlier `ngx-google-analytics` integration was removed since it was never wired up) — see `docs/changes/20260727-205542-google-analytics-1.md`
 
-**Infrastructure & deployment**
-- **Hosting/build**: [Vercel](https://vercel.com) builds and serves the production app (`vercel.json`); a `postbuild` step (`scripts/inject-env.js`) substitutes `%GOOGLE_ANALYTICS_ID%` in `index.html` from Vercel's environment at build time so the ID isn't hardcoded in source
-- **DNS, CDN proxy & email**: [Cloudflare](https://www.cloudflare.com/) manages the `yannislam.org` zone — proxied `A`/`CNAME` records in front of Vercel, plus Cloudflare Email Routing (MX/SPF/DKIM/DMARC) for `@yannislam.org` mail
-- Legacy/preview subdomains (`alpha.`, `v1.`, `v2.`) still resolve to Netlify via Cloudflare CNAMEs from earlier iterations of this site
+- Google Analytics 4 through the global `gtag.js` tag in `src/index.html`.
+  `AnalyticsService` sends custom events only; GA4's enhanced measurement
+  tracks page views. No analytics npm package is used.
+- Vercel Web Analytics and Speed Insights (`@vercel/analytics`,
+  `@vercel/speed-insights`), injected in `AppComponent`
+
+**Hosting**
+
+- [Vercel](https://vercel.com) builds and serves the site (`vercel.json`,
+  which also sets the security headers, including a report-only CSP)
+- [Cloudflare](https://www.cloudflare.com/) holds the `yannislam.org` DNS zone,
+  proxies to Vercel, and handles email routing for `@yannislam.org`
 
 ## Architecture
 
 ```mermaid
 flowchart TB
-    Main["main.ts"] --> AppModule --> App["AppComponent"]
+    Main["main.ts + app.config.ts"] --> App["AppComponent"]
 
     subgraph Shell["App shell"]
         Loading["LoadingScreen"]
@@ -91,50 +111,185 @@ flowchart TB
     end
     App --> Loading & Header & Outlet & Footer
 
-    Outlet -->|"''"| Home
+    Outlet -->|"'' (eager)"| Home
+    Outlet -->|"'projects', 'projects/highschool' (lazy)"| Projects
     Outlet -->|"'aardeyamz' (lazy)"| AardeYamz
 
-    subgraph HomeModule["HomeModule (eager)"]
-        Home --> Banner & About & Education & Work["WorkHistory x2"] & Contact
-        Banner --> Floating["FloatingLogos"]
-    end
+    Home --> Banner & About & Education & Work["WorkHistory x2"] & Contact
+    Banner --> Floating["FloatingLogos"] & Typewriter
 
     Config[("config.json")] --> SiteConfig["SiteConfigService"]
-    SiteConfig --> Header & Footer & Banner & Home & Education & AardeYamz
+    SiteConfig --> Header & Footer & Home & Banner & About & Education & Projects & AardeYamz
 
-    Theme["ThemeService"] --> Header & Loading & Floating & Work
+    Theme["ThemeService"] --> App & Header & Loading & Floating
 
-    Analytics["AnalyticsService"] --> Header & Banner & About & Footer & Contact
+    Analytics["AnalyticsService"] --> Header & Footer & Banner & About & Education & Contact
     Analytics -->|"gtag"| GA[("Google Analytics")]
 ```
 
 | Piece | Kind | What it does |
 |---|---|---|
-| `main.ts` → `AppModule` → `AppComponent` | Bootstrap | `NgModule`-based root; `AppComponent` hosts the shell below |
-| `LoadingScreenComponent` | Shell | Boot-time anime.js logo-assembly intro |
-| `HeaderComponent` | Shell | Nav bar and theme toggle |
+| `main.ts` + `app.config.ts` | Bootstrap | `bootstrapApplication(AppComponent)` with zoneless change detection, router, hydration and the service worker |
+| `LoadingScreenComponent` | Shell | Boot-time anime.js logo assembly |
+| `HeaderComponent` | Shell | Nav bar, scroll effects and the theme toggle |
 | `FooterComponent` | Shell | Repo link, "built with" credit, design credits |
-| `router-outlet` | Shell | Swaps the routed page in; see [routes](#routes) |
-| `HomeComponent` | Page (eager `HomeModule`) | Composes the sections below on `/` |
-| `BannerComponent` | Home section | Hero greeting and typewriter effect |
-| `FloatingLogosComponent` | Home section | Field of falling logo marks behind the banner greeting; recolors on theme toggle |
+| `HomeComponent` | Page (eager) | Composes the home sections on `/` |
+| `BannerComponent` | Home section | Hero greeting, typewriter, falling logos |
 | `AboutComponent`, `EducationComponent`, `ContactComponent` | Home sections | Read their copy from `SiteConfigService` |
-| `WorkHistoryComponent` (x2) | Home section | One instance for work, one for volunteering; uses the `logoFallback` directive and takes the theme accent color |
-| `AardeYamzComponent` + `NamecardComponent` | Page (lazy chunk) | Standalone `/aardeyamz` route |
-| `SiteConfigService` | Service | Only reader of `src/assets/config.json`; feeds Header, Footer, Banner, Home, Education and AardeYamz |
-| `ThemeService` | Service | Light/dark/default theme via signals + `localStorage`; feeds Header, LoadingScreen, FloatingLogos and WorkHistory |
-| `AnalyticsService` | Service | Calls the global `gtag()` for events and pageviews; used by Header, Banner, About, Footer and Contact |
+| `WorkHistoryComponent` (x2) | Home section | One instance for work, one for volunteering |
+| `ProjectsComponent`, `ProjectsHighschoolComponent` | Pages (lazy) | `/projects` and `/projects/highschool` |
+| `AardeYamzComponent` + `NamecardComponent` | Page (lazy) | `/aardeyamz` |
+| `SiteConfigService` | Service | The only reader of `config.json`, typed by `site-config.model.ts` |
+| `ThemeService` | Service | `default` / `light` / `dark` modes, as signals, saved in `localStorage` and applied as `[data-theme]` on `<html>` |
+| `AnalyticsService` | Service | Calls the global `gtag()` for custom events |
+| `ResumeService` | Service | Builds the resume download link from `resume-manifest.json` |
 
-#### Routes
+### Routes
+
+Defined in `src/app/app.routes.ts`; `src/app/app.routes.server.ts` lists the
+same paths for prerendering and must be kept in step.
 
 | Path | Loaded | Component |
 |---|---|---|
-| `''` | Eager (`HomeModule`) | `HomeComponent` |
-| `aardeyamz` | Lazy (`loadComponent`) | `AardeYamzComponent` |
+| `''` | Eager | `HomeComponent` |
+| `projects` | Lazy (`loadComponent`) | `ProjectsComponent` |
+| `projects/highschool` | Lazy | `ProjectsHighschoolComponent` |
+| `aardeyamz` | Lazy | `AardeYamzComponent` |
+| `**` | | Redirects to `/` |
 
-### Deployment & DNS
+## Code structure
 
-#### CI/CD pipeline
+```
+.github/
+├── workflows/                # see "CI/CD and deployment"
+├── dependabot.yml
+└── pull_request_template.md
+docs/                         # see docs/README.md
+e2e/                          # Playwright specs + fixtures.ts
+scripts/
+├── generate-resume-manifest.js   # pre-hook: newest dated resume PDF -> resume-manifest.json
+└── inject-env.js                 # postbuild: GA measurement ID into index.html
+src/
+├── app/
+│   ├── animations/           # Shared Angular animation triggers (fade-stagger)
+│   ├── components/
+│   │   ├── general/          # header, footer, loading-screen
+│   │   ├── home/             # banner (+ typewriter), floating-logos, about, education,
+│   │   │                     # workhistory, contact, projects, projects-highschool
+│   │   └── other/aardeyamz/  # /aardeyamz page (+ namecard)
+│   ├── directives/           # aos, link-preview, logo-fallback
+│   ├── icons/                # Inline SVG icon registry + <app-icon>
+│   ├── pipes/linkify/        # Turns plain-text URLs into links
+│   ├── services/             # site-config, theme, analytics, resume
+│   ├── utils/hydration.ts    # SSR/hydration helpers
+│   ├── app.config.ts         # Browser providers
+│   ├── app.config.server.ts  # Server (prerender) providers
+│   ├── app.routes.ts         # Routes
+│   └── app.routes.server.ts  # Prerender list
+├── assets/
+│   ├── config.json           # All page content
+│   ├── resume-manifest.json  # Written by the pre-hook
+│   ├── fonts/  images/  resume/
+├── generated/yl-tokens.css   # Color tokens per [data-theme], fetched from yl-theme (git-ignored; see theme.json)
+├── styles.scss               # Global styles
+├── bootstrap-custom.scss     # Bootstrap overrides
+├── fonts.scss                # @font-face (Calibre, SF Mono)
+├── index.html                # gtag bootstrap, %GOOGLE_ANALYTICS_ID% placeholder
+├── main.ts / main.server.ts
+└── server.ts                 # Express entry for `outputMode: server` (not used by Vercel)
+```
+
+Every component follows the Angular trio (`.ts` / `.html` / `.scss`, plus a
+`.spec.ts`). Components read content through `SiteConfigService`, never by
+importing `config.json`.
+
+### Build hooks
+
+- **`scripts/generate-resume-manifest.js`** runs before `start`, `build`,
+  `watch` and `test`. It finds the newest `src/assets/resume/<name> YYYYMMDD.pdf`
+  and writes its filename to `src/assets/resume-manifest.json`, so dropping in a
+  new dated PDF updates the download link with no code change. The manifest is
+  tracked in git; commit it with the new PDF.
+- **`scripts/inject-env.js`** runs after `build` and replaces
+  `%GOOGLE_ANALYTICS_ID%` in the built `index.html`. On Vercel (`VERCEL=1`) a
+  missing or malformed ID fails the build; elsewhere it writes the inert
+  placeholder `G-XXXXXXXXXX` and warns. `ALLOW_MISSING_ANALYTICS=1` lets a fork
+  build on Vercel without an ID.
+
+## Editing content (`config.json`)
+
+Nearly everything on the page comes from
+[`src/assets/config.json`](src/assets/config.json). To reuse this site you
+mostly only edit that file. Its shape is typed in
+`src/app/services/site-config/site-config.model.ts`, but nothing validates the
+JSON at build time, so keep new entries in the same shape as their neighbours.
+
+| Key | What it holds |
+|---|---|
+| `siteMenu` | Nav items: `navTitle`, `siteLocation` (route or `/#anchor`), optional `navNumber` / `navContent` / `scrollSection` |
+| `logos` | Map of `{ src, alt }`, referenced by `logoKey` from work, education and volunteering entries. With no `logoKey` or an empty `src`, a placeholder logo is drawn from the organization's name |
+| `about` | `first` / `last` name, `email`, the `contact` list (each with an `icon` key such as `fa-linkedin` from the icon registry, and a `link`), and the `aardeyamz` name-meaning cards |
+| `about.experiences` | `work` and `volunteering`, each a `list` of `organization`, `title`, `timeframe`, `description[]`, `skills[]` (optional `logoKey`, `link`, `about`, `tab`); a top-level `education` array of the same shape; a flat `skills` summary |
+| `banner` | `greeting`, `name`, `blurb`, and the `typeSection` strings the typewriter cycles through |
+| `footer` | Repo link, "built with" credit, `designCredits` |
+| `projects.college`, `projects.highschool` | Each a `list` of `{ imgs[], title, timeframe, description[], link? }` |
+| `siteTitle`, `heading`, `subHeading`, `manifest*` | `<title>` and PWA manifest fields |
+
+Image `src` values can be a URL or a path under `src/assets/`. A new social
+icon must exist in `src/app/icons/icon-registry.ts`. The dev server picks up
+edits on save.
+
+## Testing
+
+### Unit tests (Karma + Jasmine)
+
+```bash
+npm test                                             # watch mode
+npm test -- --watch=false --browsers=ChromeHeadless  # single run, as CI does
+npm test -- --watch=false --code-coverage            # with coverage
+ng test --include='**/header.component.spec.ts'      # one spec
+```
+
+Karma needs Chrome or Chromium. If it isn't found, point `CHROME_BIN` at a
+binary, e.g. `CHROME_BIN=/opt/pw-browsers/chromium`. CI uploads coverage from
+the Node 24 leg to [Codecov](https://codecov.io).
+
+### End-to-end tests (Playwright)
+
+Unit tests stub child components, so page composition, the boot sequence,
+navigation and theme switching are covered by Playwright specs in `e2e/`
+against the real app.
+
+```bash
+npx playwright install --with-deps chromium firefox webkit   # once per machine
+npm run test:e2e            # headless
+npm run test:e2e:ui         # interactive UI mode, best for writing specs
+npm run test:e2e:report     # last run's HTML report (traces, screenshots, video)
+```
+
+Locally, Playwright starts (or reuses) `ng serve`. In CI it serves the `build`
+job's `dist/v3.yannislam.org/browser` output through a static server with SPA
+fallback, which is what Vercel deploys.
+
+| Spec | Covers |
+|---|---|
+| `smoke` | Boot sequence (loading overlay, header mounts, scroll restored), `<title>`, no console errors or failed same-origin requests on any route |
+| `home-sections` | Each home section renders the content from `config.json` |
+| `navigation` | Nav scroll-to-section and route clicks, hard loads of every route, the `**` redirect, back/forward |
+| `theme` | The `default → light → dark` cycle recolors the DOM, persists across reload, follows `prefers-color-scheme` |
+| `projects`, `resume`, `footer-and-links`, `responsive`, `assets` | Project pages, resume download, footer and external links (tagged `@external`, run only on the weekly schedule), mobile layout, asset loading |
+
+When adding a spec, never `waitForTimeout()` past the loading screen: use
+`gotoAndSettle()` from `e2e/fixtures.ts`, which waits for the header nav. The
+same fixture blocks analytics requests and isolates the service worker.
+
+### Performance (Lighthouse CI)
+
+`npm run test:perf` (mobile, slow 4G and 4× CPU) and `npm run test:perf:desktop`
+run Lighthouse against a production build with the budgets in
+`lighthouserc.js`. CI runs both presets on every PR.
+
+## CI/CD and deployment
 
 ```mermaid
 flowchart TB
@@ -167,34 +322,37 @@ flowchart TB
     Merge --> Sync["Merge main into PRs"]
 ```
 
-A push that supersedes an in-flight run (e.g. two commits pushed to the same
-PR seconds apart) cancels the older run via `concurrency: cancel-in-progress`
-— `e2e` is the most expensive job here, so stacked runs on a rapid push
-sequence would otherwise waste CI minutes. Pushes to `main` are never
-cancelled, so `main` always keeps a green run of its own.
-
-#### Build & Test jobs (`build-test.yml`)
+### Build & Test jobs (`build-test.yml`)
 
 | Job | Runs on | Needs | What it does |
 |---|---|---|---|
-| `unit-tests` | Matrix: Node 24.x, 26.x (both must pass) | — | `npm ci`, then `npm test -- --watch=false --browsers=ChromeHeadless --code-coverage` (Karma + Jasmine, 117 specs against `TestBed` fixtures); uploads `coverage/v3.yannislam.org/lcov.info` to [Codecov](https://codecov.io) |
-| `build` | Node 24.x | — | `npm run build`: Angular AOT build that prerenders every known route (`/`, `/projects`, `/projects/highschool`, `/aardeyamz`, `**`) to static HTML (see `docs/changes/20260811-013939-ssr-prerendering.md`); verifies `dist/` exists and uploads it as an artifact (`retention-days: 1`) |
-| `lighthouse` | Matrix: `mobile`, `desktop` | `build` | Lighthouse against the `build` artifact. Mobile applies slow-4G + 4x-CPU throttling and is the only preset that reproduces the real layout shift; desktop matches the field metric in `docs/todo/desktop-performance.md` |
-| `e2e` | 2 shards, `fail-fast: false` | `build` | Installs Playwright browsers (cached on `package-lock.json`), downloads the `build` artifact (no rebuild) and runs `playwright test` against it through a static server. Chromium + mobile on PRs; adds Firefox + WebKit on push to `main` and on the schedule (see [E2E Testing](#e2e-testing-playwright)). Always uploads the HTML report, traces and videos, pass or fail |
-| `dependency-review` | PRs only | — | `actions/dependency-review-action`; fails on severity `high` or above |
+| `unit-tests` | Node 24.x and 26.x | | `npm ci`, then Karma in `ChromeHeadless` with coverage; uploads to Codecov from the 24.x leg |
+| `build` | Node 24.x | | `npm run build`, prerendering every route; uploads the output as an artifact |
+| `lighthouse` | `mobile`, `desktop` | `build` | Lighthouse CI against the build artifact |
+| `e2e` | 2 shards, `fail-fast: false` | `build` | Playwright against the build artifact (browsers cached on `package-lock.json`). PRs run Chromium and a mobile (Pixel 7) context and skip `@external`; pushes to `main` and the Monday run add Firefox and WebKit |
+| `dependency-review` | PRs only | | `actions/dependency-review-action`, fails on `high` or above |
 
-#### Merge gating and deployment
+A newer push to the same PR cancels the older run
+(`concurrency: cancel-in-progress`). Pushes to `main` are never cancelled.
 
-| Stage | What happens |
-|---|---|
-| Merge gate | Every job above (both `unit-tests` legs, `build`, both `lighthouse` presets, both `e2e` shards) must pass for the PR to become mergeable. Any failure blocks the merge; fix and push to re-run |
-| Merge | A passing PR merged into `main` triggers Vercel's Git integration |
-| Vercel build | `ng build`, then the `postbuild` step `scripts/inject-env.js` substitutes `%GOOGLE_ANALYTICS_ID%` from Vercel's environment |
-| Serve | Vercel Edge serves the static bundle; Cloudflare DNS routes `yannislam.org` to it |
-| Release | `release.yml` fires on Vercel's successful *Production* `deployment_status` for `main` and creates a `vYYYYMMDDHHMMSS` tag and GitHub release |
-| PR sync | `sync-prs.yml` merges the new `main` into every open PR branch that is behind |
+### Workflows
 
-#### DNS & content delivery
+| Workflow | Trigger | What it does |
+|---|---|---|
+| [Build & Test](.github/workflows/build-test.yml) | PR to `main`/`master`/`develop`; push to `main`; Mondays 07:00 UTC; manual | The jobs above |
+| [Security](.github/workflows/security.yml) | Same, Mondays 06:30 UTC | Lints the workflow files with zizmor |
+| [Release](.github/workflows/release.yml) | Vercel `deployment_status` | On a successful Production deploy of `main`, tags `vYYYYMMDDHHMMSS` and creates a release for that commit |
+| [Merge main into PRs](.github/workflows/sync-prs.yml) | Push to `main`; manual | Merges `main` into each open PR that is behind; comments once on conflicts; skips fork and Dependabot PRs |
+| [Dependabot auto-merge](.github/workflows/dependabot-auto-merge.yml) | `pull_request_target` | Waits for checks, then merges Dependabot patch/minor bumps and dev-only majors; production majors wait for review |
+| [Vercel build warnings](.github/workflows/vercel-build-warnings.yml) | Vercel `deployment_status` | Fetches a preview deploy's Vercel build log and keeps its warning/error lines in a sticky PR comment (needs `VERCEL_TOKEN`) |
+| [Dependabot](.github/dependabot.yml) | Mondays 06:00 UTC | Weekly `npm` and `github-actions` updates |
+| CodeQL | Push, PR | GitHub default setup (no workflow file) |
+| Vercel Git integration | Push to any branch | Production deploy for `main`, preview deploy for other branches |
+
+The Monday jobs are staggered (Dependabot 06:00, Security 06:30, Build & Test
+07:00) so each sees what the one before it produced.
+
+### DNS and delivery
 
 ```mermaid
 flowchart LR
@@ -208,282 +366,30 @@ flowchart LR
 
 | Concern | Provider | Details |
 |---|---|---|
-| DNS zone | Cloudflare | Manages the `yannislam.org` zone |
-| Site hosting | Vercel | Proxied `A`/`CNAME` records point at Vercel Edge, which serves the static bundle |
-| Email | Cloudflare Email Routing | MX/SPF/DKIM/DMARC for `@yannislam.org`, delivered to the inbox |
-| Legacy sites | Netlify | `alpha.`, `v1.` and `v2.` subdomains still resolve to Netlify via Cloudflare CNAMEs from earlier iterations of this site |
+| DNS zone | Cloudflare | `yannislam.org` |
+| Site | Vercel | Proxied `A`/`CNAME` records point at Vercel Edge, which serves `dist/v3.yannislam.org/browser` |
+| Email | Cloudflare Email Routing | MX/SPF/DKIM/DMARC for `@yannislam.org` |
+| Legacy sites | Netlify | `alpha.`, `v1.` and `v2.` still point at earlier versions of the site |
 
-### Automation
-
-#### Scheduled jobs
-
-All times UTC. The two Monday crons are staggered so each sees what the one before it produced.
-
-| When | What | Source | Purpose |
-|---|---|---|---|
-| Mondays 06:00 | Dependabot version updates (`npm` + `github-actions`) | [`dependabot.yml`](.github/dependabot.yml) | Opens the weekly bump PRs, batched by group |
-| Mondays 06:30 | `Security` workflow | [`security.yml`](.github/workflows/security.yml) | zizmor lint of the workflow files, 30 minutes behind Dependabot |
-| Mondays 07:00 | `Build & Test` workflow | [`build-test.yml`](.github/workflows/build-test.yml) | Full 4-browser Playwright matrix plus the external-link checks in `footer-and-links.spec.ts` that PR runs exclude |
-
-#### Workflows and automations
-
-| Name | Trigger | What it does | Source |
-|---|---|---|---|
-| Build & Test | PR to `main`/`master`/`develop`; push to `main`; Monday 07:00; manual | Unit tests, build, Lighthouse, E2E, dependency review (see [jobs](#build--test-jobs-build-testyml)) | [`build-test.yml`](.github/workflows/build-test.yml) |
-| Security | PR to `main`/`master`/`develop`; push to `main`; Monday 06:30; manual | `Lint workflows (zizmor)` | [`security.yml`](.github/workflows/security.yml) |
-| Release | Vercel `deployment_status` | On a successful Production deploy of `main`, creates a `vYYYYMMDDHHMMSS` tag and release pinned to the deployed commit; one release per commit | [`release.yml`](.github/workflows/release.yml) |
-| Merge main into PRs | Push to `main`; manual | Merges `main` into each open PR branch that is behind; conflicting PRs get a comment once per `main` commit; fork and Dependabot PRs are skipped | [`sync-prs.yml`](.github/workflows/sync-prs.yml) |
-| Dependabot auto-merge | `pull_request_target` to `main` | For Dependabot PRs only: waits for all checks, then merges patch/minor bumps and dev-only majors; production majors are left for review | [`dependabot-auto-merge.yml`](.github/workflows/dependabot-auto-merge.yml) |
-| Dependabot updates | Monday 06:00 | Weekly version updates for `npm` and `github-actions`; security updates are batched into one PR by the `security-updates` group | [`dependabot.yml`](.github/dependabot.yml) |
-| CodeQL | Push, PR (GitHub default setup, no workflow file) | Code scanning, configured in the repository's security settings | — |
-| Vercel | Push to any branch, via the Vercel Git integration | Production deploy for `main`, preview deploy for everything else | [`vercel.json`](vercel.json) |
-
-## Code Structure
-
-```
-.github/
-├── workflows/                # CI/CD and automation, see "Automation" above
-│   ├── build-test.yml
-│   ├── security.yml
-│   ├── release.yml
-│   ├── sync-prs.yml
-│   └── dependabot-auto-merge.yml
-├── dependabot.yml
-e2e/                          # Playwright E2E specs — see "E2E Testing" below
-├── fixtures.ts               # gotoAndSettle() boot-wait helper, analytics blocking, SW isolation
-├── smoke.spec.ts
-├── home-sections.spec.ts
-├── navigation.spec.ts
-└── theme.spec.ts
-playwright.config.ts
-src/
-├── app/
-│   ├── animations/           # Shared Angular animation triggers (e.g. fade-stagger)
-│   ├── components/
-│   │   ├── general/          # Chrome shared across every route
-│   │   │   ├── header/       # Nav bar + theme toggle
-│   │   │   ├── footer/       # Footer (repo link, built-with, design credits)
-│   │   │   └── loading-screen/  # Boot-time anime.js logo intro
-│   │   ├── home/             # Sections that make up the "/" route (HomeModule, eager)
-│   │   │   ├── banner/       # Hero banner + typewriter effect
-│   │   │   ├── floating-logos/  # Falling logo-mark field behind the banner greeting
-│   │   │   ├── about/        # About + AardeYamz name-meaning cards
-│   │   │   ├── education/    # Education list
-│   │   │   ├── workhistory/  # Work/volunteering timeline (reused for both)
-│   │   │   ├── contact/      # Contact section
-│   │   │   ├── projects/     # College projects
-│   │   │   └── projects-highschool/  # High school projects
-│   │   └── other/
-│   │       └── aardeyamz/    # Standalone "/aardeyamz" route, lazy-loaded (+ NamecardComponent)
-│   ├── directives/
-│   │   ├── aos/               # Custom scroll-reveal directive (AOS-style)
-│   │   └── logo-fallback/     # Generates a themed placeholder logo SVG when no image is set
-│   ├── pipes/linkify/        # Turns plain-text URLs into links
-│   ├── services/
-│   │   ├── site-config/      # SiteConfigService — the only reader of assets/config.json
-│   │   ├── theme/            # ThemeService — light/dark theme, signals + localStorage
-│   │   ├── analytics/        # AnalyticsService — calls the global gtag() directly
-│   │   └── resume/           # Resume link/download handling, reads assets/resume-manifest.json
-│   ├── app.module.ts         # Root NgModule (eager HomeModule, lazy AardeYamz route)
-│   └── app-routing.module.ts # Top-level routes
-├── assets/
-│   ├── config.json           # All page copy/content — see "Updating the config file" below
-│   ├── resume-manifest.json  # Generated at build/serve time — see note below (gitignored)
-│   ├── fonts/                # Calibre, SF Mono
-│   ├── images/                # Logos, profile photos, project screenshots
-│   └── resume/                # Downloadable resume file(s)
-└── enviroment/                # Angular environment files
-```
-
-`scripts/generate-resume-manifest.js` runs as a `pre*` hook before `start`,
-`build`, `watch`, and `test` (see `package.json`). It scans
-`src/assets/resume/` for files named `<anything> YYYYMMDD.pdf`, picks the
-newest by date, and writes its filename to `src/assets/resume-manifest.json`,
-which `ResumeService` imports as a TS module — so dropping in a new dated
-resume PDF is all that's needed to update the site's download link, no code
-change required.
-
-Every component under `components/` follows the standard Angular trio
-(`*.component.ts` / `.html` / `.scss`, plus a `.spec.ts` where present).
-Components read content through `SiteConfigService` rather than importing
-`config.json` directly — see `docs/changes/20260728-160203-config-dedup-refactor.md` for why.
-Other write-ups worth skimming when touching a specific area live in
-`docs/changes/` (loading screen animation, Google Analytics wiring, the
-projects and volunteering sections, the falling-logos banner background,
-SVG logo conversion + the 3-state light/dark theme system, the header's
-scroll-translucency and left-to-right entrance animation, and Angular
-version upgrade notes).
-
-## Updating the Config File
-
-Nearly all page content — nav labels, bio text, work/education/volunteering
-history, project write-ups, footer links, and site metadata — is data-driven
-from [`src/assets/config.json`](src/assets/config.json). To personalize this
-site for your own use, you generally only need to edit that file; component
-templates shouldn't need to change.
-
-Key sections:
-
-- **`siteMenu`** — top nav items. Each entry needs `navTitle`, `siteLocation`
-  (route or `/#anchor`), and optionally `navNumber`/`navContent`/`scrollSection`
-  for in-page sections.
-- **`logos`** — a keyed map of `{ src, alt }` image references, reused by
-  `logoKey` across `experiences.work.list`, `experiences.education`, and
-  `experiences.volunteering.list` so a logo is only defined once. If an
-  entry's `logoKey` is omitted or its `src` is empty, the `logoFallback`
-  directive auto-generates a themed placeholder (the organization's name as
-  wrapped, accent-colored text) instead — no image asset required.
-- **`about`** — `first`/`last` name, `email`, the `contact` list (social
-  links, each with an `icon` matching a Font Awesome class), and the
-  `aardeyamz` array powering the name-meaning cards.
-- **`about.experiences`** — `work` and `volunteering` each have a `list` of
-  entries (`organization`, `title`, `timeframe`, `description[]`, `skills[]`,
-  optional `logoKey`/`link`/`about`/`tab`), plus a top-level `education`
-  array in the same shape. `skills` at the bottom of `experiences` is the
-  flat skills summary shown separately from any one job.
-- **`banner`** — hero `greeting`/`name`/`blurb` and the `typeSection` array
-  cycled by the typewriter effect.
-- **`footer`** — repo link, "built with" credit, and `designCredits`.
-- **`projects.college` / `projects.highschool`** — each a `list` of
-  `{ imgs[], title, timeframe, description[], link? }` project cards.
-- **`siteTitle`, `heading`, `subHeading`, `manifest*`** — page `<title>` and
-  PWA manifest fields (name, short name, start URL, theme/background colors,
-  icon).
-
-Image `src` values can be either a hosted URL or a path under `src/assets/`.
-There's no JSON schema enforced at build time, so keep new entries consistent
-with the shape of existing ones in the same array. After editing, `npm start`
-/ `ng serve` picks up changes on save like any other source file.
-
-## Testing
-
-The project uses **Karma** and **Jasmine** for unit testing with a headless Chrome browser:
-
-### Running Tests
-
-```bash
-# Run tests in headless mode (CI-friendly)
-npm test -- --watch=false
-
-# Run tests with auto-reload on file changes (development)
-npm test
-
-# Run tests with code coverage
-npm test -- --watch=false --code-coverage
-```
-
-### Environment Setup
-
-Tests require Chromium to be available. In this project:
-- **Chromium Path**: `/opt/pw-browsers/chromium`
-- **Karma Config**: `karma.conf.js`
-- **Test Configuration**: `tsconfig.spec.json`
-
-The `CHROME_BIN` environment variable is set automatically by the test runner when using the pre-installed Chromium binary:
-
-```bash
-CHROME_BIN=/opt/pw-browsers/chromium npm test -- --watch=false
-```
-
-### Test Coverage
-
-Run tests with coverage reporting:
-
-```bash
-npm test -- --watch=false --code-coverage
-```
-
-## E2E Testing (Playwright)
-
-Unit tests above run every spec against a `TestBed` fixture with children
-stubbed — real page composition, boot-time animation, nav clicks, and theme
-switching aren't exercised at all there. [Playwright](https://playwright.dev)
-end-to-end tests in `e2e/` close that gap by driving a real browser against
-the actual built app. See
-`docs/changes/20260811-030901-playwright-e2e-testing.md` for the full
-write-up (what's covered, why, and non-obvious fixture decisions);
-`docs/todo/playwright-e2e-testing-plan.md` for the original plan this implements
-(P0 coverage so far — P1/P2 phases like `projects`/`resume`/`accessibility`
-specs and visual regression are still just that document, not yet built).
-
-### Running Tests
-
-```bash
-# Headless — against the production build in CI (CI=1), against `ng serve` locally
-npm run test:e2e
-
-# Playwright's interactive UI mode (recommended for writing/debugging specs)
-npm run test:e2e:ui
-
-# Open the last run's HTML report (traces, screenshots, videos on failure)
-npm run test:e2e:report
-```
-
-Locally, `npm run test:e2e` starts its own `ng serve` dev server via
-Playwright's `webServer` config (`reuseExistingServer` if one's already
-running) — no separate build step needed. In CI, it instead serves the
-`build` job's `dist/v3.yannislam.org/browser` output through a static
-server with SPA-fallback routing, matching what Vercel actually deploys.
-
-### Browser Setup
-
-```bash
-npx playwright install --with-deps chromium firefox webkit
-```
-
-Only needed once per machine — CI installs fresh on every run, cached on
-`package-lock.json` so a cache hit is a fast no-op verification rather than
-a full re-download.
-
-### What's covered
-
-- **`smoke.spec.ts`** — the boot sequence (loading overlay → header mounts →
-  `document.body` scroll restored), the page `<title>`, and zero console
-  errors / failed same-origin requests on every route
-- **`home-sections.spec.ts`** — every home-page section (banner, about,
-  education, work, volunteering) renders real content sourced from
-  `config.json`, not hardcoded copy
-- **`navigation.spec.ts`** — desktop nav scroll-to-section and route clicks,
-  hard navigation to every lazy-loaded route, the wildcard-to-`/` redirect,
-  and browser back/forward
-- **`theme.spec.ts`** — the `default → light → dark → default` cycle
-  actually recolors the live DOM (not just the service's internal signal),
-  persists across reload via `localStorage`, and resolves correctly from the
-  OS `prefers-color-scheme` when nothing's stored
-
-Determinism controls worth knowing about if you're adding a spec: never
-`waitForTimeout()` past the loading screen — use `gotoAndSettle()` from
-`e2e/fixtures.ts`, which waits for the header nav to actually be visible.
-Third-party analytics requests (`gtag.js`, Vercel Analytics/Speed Insights)
-are blocked automatically for every test via the same fixture.
-
-Coverage reports are uploaded to [Codecov](https://codecov.io) automatically by the GitHub Actions CI/CD pipeline on every PR. View coverage metrics and trends at the project's [Codecov dashboard](https://codecov.io).
-
-## Dependency Security
-
-Two tools split the job, because neither does the whole of it well:
+## Dependency security
 
 - **[Dependabot](https://docs.github.com/en/code-security/dependabot)** opens
-  the bump PRs. `.github/dependabot.yml` configures the weekly *version*
-  updates (Monday 06:00 UTC) for both `npm` and `github-actions`; the
-  alerts-driven *security* updates come from the repository's security
-  settings and are batched into a single PR by the `security-updates` group.
-- **[Aikido](https://www.aikido.dev)** triages. Dependabot will happily open a
-  PR for a critical advisory in a transitive dev dependency that no shipped
-  code path can reach; Aikido scans the repo and tells you whether the
-  finding is actually reachable, so the PR queue stays signal.
+  the bump PRs: weekly version updates from `.github/dependabot.yml` (with a
+  cooldown), and security updates from the repository settings, batched by the
+  `security-updates` group.
+- **[Aikido](https://www.aikido.dev)** triages them: it checks whether an
+  advisory is reachable from shipped code, so a critical advisory in an
+  unreachable dev dependency doesn't drown out real ones. It runs as a GitHub
+  App with PR gating set in the Aikido dashboard; there is no Aikido job or
+  secret in this repo.
 
-Bumps are grouped rather than one-per-package: `angular` (the `@angular/*`
-packages plus the libraries pinned to an Angular major, which have to move in
-lockstep or the workspace won't build), `testing`, and a `minor-and-patch`
-catch-all. Majors are deliberately left ungrouped so each arrives alone and
-can be reverted alone — and Angular majors are ignored outright, since they're
-upgraded by hand through `ng update` and its migration schematics (see
-`docs/changes/20260727-205542-UPGRADE-NOTES.md`).
+Bumps are grouped: `angular` (the `@angular/*` packages and libraries tied to
+an Angular major, which must move together), `testing`, and a
+`minor-and-patch` catch-all. Other majors arrive one per PR so each can be
+reverted alone. Angular majors are ignored by Dependabot and upgraded by hand
+with `ng update` (see `docs/changes/20260727-205542-UPGRADE-NOTES.md`).
 
-Aikido runs as a GitHub App with PR gating configured in the Aikido
-dashboard, so there is no Aikido job or CI secret in this repo. (The old
-`AikidoSec/github-actions-workflow` job was removed because Aikido no longer
-recommends it; see `docs/changes/20261021-000000-remove-aikido-workflow.md`.)
-Background on the original Dependabot + Aikido setup is in
-`docs/changes/20260811-124323-dependabot-aikido-integration.md`.
+## Further documentation
+
+- [`CLAUDE.md`](CLAUDE.md): conventions for agents (and people) changing the code
+- [`docs/README.md`](docs/README.md): index of change write-ups, open plans and reviews

@@ -201,7 +201,7 @@ out separately:
 
 ## Fixed: `.main-btn` border contrast and the style budget (2026-08-11)
 
-A later measured review (`docs/pr-review/pr-16-material-design-3-review.md`)
+A later measured review (`docs/reviews/pr-16-material-design-3-review.md`)
 caught two regressions from the work above:
 
 - **`.main-btn`'s border was `$Outline`**, which aliases a near-background

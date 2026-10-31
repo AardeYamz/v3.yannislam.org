@@ -8,14 +8,14 @@ const CYCLE_ORDER: ThemeMode[] = ['default', 'light', 'dark'];
 // 'default' is already a dark theme, so it's the system-dark counterpart —
 // there's no separate OS signal for the deepest 'dark' mode.
 const PREFERS_LIGHT_QUERY = '(prefers-color-scheme: light)';
-// Mirrors --color-navy per mode from theme.scss — used to keep the browser
+// Mirrors --color-navy per mode from the shared yl-tokens.css (theme.json) — used to keep the browser
 // chrome (address bar on mobile) in sync with the actual page background.
 const NAVY_BY_MODE: Record<ThemeMode, string> = {
   default: '#131f31',
   light: '#f4f1ea',
   dark: '#05070c'
 };
-// Mirrors --color-orange per mode from theme.scss — used by things like the
+// Mirrors --color-orange per mode from the shared yl-tokens.css (theme.json) — used by things like the
 // generated logo-fallback placeholder that can't read CSS custom properties
 // because they're rendered into a static SVG data URI, not the live DOM.
 const ORANGE_BY_MODE: Record<ThemeMode, string> = {

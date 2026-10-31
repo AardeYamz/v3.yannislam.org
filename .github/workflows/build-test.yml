@@ -78,6 +78,9 @@ jobs:
       - name: Run tests with coverage
         run: npm test -- --watch=false --browsers=ChromeHeadless --code-coverage
 
+      - name: Run build script tests
+        run: npm run test:scripts
+
       # Both matrix legs produce identical coverage; uploading from both
       # doubles the Codecov report for no benefit, so only the primary
       # version reports.
