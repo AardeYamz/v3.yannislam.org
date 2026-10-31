@@ -12,6 +12,7 @@
     "watch": "ng build --watch --configuration development",
     "pretest": "node scripts/generate-resume-manifest.js",
     "test": "ng test",
+    "test:scripts": "node --test scripts/*.test.js",
     "serve:ssr:v3.yannislam.org": "node dist/v3.yannislam.org/server/server.mjs",
     "pretest:e2e": "node scripts/generate-resume-manifest.js",
     "test:e2e": "playwright test",
