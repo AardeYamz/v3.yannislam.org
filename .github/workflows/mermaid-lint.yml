@@ -1,6 +1,6 @@
 name: Mermaid lint
 
-# Parses every mermaid code block in the repo's Markdown files, using the shared linter in cloudflare-workers-devops. Run locally: see CLAUDE.md.
+# Parses every mermaid code block in the repo's Markdown files, using the shared linter in personal-domain-devops. Run locally: see CLAUDE.md.
 on:
   push:
     branches: [main]
@@ -19,4 +19,4 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: AardeYamz/cloudflare-workers-devops/mermaid-lint@4da582b0c5ee293121988e19d6c67c74c628e46f # cloudflare-workers-devops main, 2026-10-31
+      - uses: AardeYamz/personal-domain-devops/mermaid-lint@4da582b0c5ee293121988e19d6c67c74c628e46f # personal-domain-devops main, 2026-10-31

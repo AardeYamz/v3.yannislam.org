@@ -148,11 +148,11 @@ Date: 2026-08-11 01:39:39
 
 ## Mermaid diagrams are linted
 
-Every ```mermaid block in a tracked `*.md` file must parse. The linter lives in the `cloudflare-workers-devops` repo (`mermaid-lint/`) and `.github/workflows/mermaid-lint.yml` calls it as `AardeYamz/cloudflare-workers-devops/mermaid-lint`, pinned by SHA like every action in this repo (bump the SHA to pick up linter changes) on any Markdown change. After editing a diagram, run it from this repo before committing (it expects `cloudflare-workers-devops` cloned next to this repo; run `npm ci` there once):
+Every ```mermaid block in a tracked `*.md` file must parse. The linter lives in the `personal-domain-devops` repo (`mermaid-lint/`) and `.github/workflows/mermaid-lint.yml` calls it as `AardeYamz/personal-domain-devops/mermaid-lint`, pinned by SHA like every action in this repo (bump the SHA to pick up linter changes) on any Markdown change. After editing a diagram, run it from this repo before committing (it expects `personal-domain-devops` cloned next to this repo; run `npm ci` there once):
 
 ```
-npm ci --prefix ../cloudflare-workers-devops/mermaid-lint
-node ../cloudflare-workers-devops/mermaid-lint/lint.mjs
+npm ci --prefix ../personal-domain-devops/mermaid-lint
+node ../personal-domain-devops/mermaid-lint/lint.mjs
 ```
 
-It prints `file:line` and the parser's message for each broken block. Changes to the linter go in `cloudflare-workers-devops`, not here.
+It prints `file:line` and the parser's message for each broken block. Changes to the linter go in `personal-domain-devops`, not here.
