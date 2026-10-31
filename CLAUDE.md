@@ -74,10 +74,19 @@ with Cloudflare in front for DNS and email.
 
 ### Styling
 
-- Color tokens live in `src/theme.scss`: the site's `--color-*` palette and
-  Material Design 3 `--md-sys-color-*` tokens, set per mode under
-  `:root[data-theme="light"]` and `:root[data-theme="dark"]` (the default mode
-  is the base `:root`). Reference them with `var(...)` so every theme works.
+- Color tokens are not in this repo: they come from the shared theme project
+  (https://github.com/AardeYamz/yl-theme). `scripts/fetch-theme.js` (run by the
+  pre* hooks) downloads `yl-tokens.css` from https://theme.yannislam.org at the
+  version pinned in `theme.json`, checks its SHA-256, and writes
+  `src/generated/yl-tokens.css` (git-ignored), which `angular.json` loads. It
+  holds the site's `--color-*` palette and Material Design 3 `--md-sys-color-*`
+  tokens, set per mode under `:root[data-theme="light"]` and
+  `:root[data-theme="dark"]` (the default mode is the base `:root`). Reference
+  them with `var(...)` so every theme works. To change a token, change it in
+  yl-theme (CI there cuts a new timestamped version), then here run
+  `node scripts/fetch-theme.js --bump`, rebuild, and commit `theme.json`.
+  `ThemeService`'s `NAVY_BY_MODE` / `ORANGE_BY_MODE` mirror two tokens as
+  literals; a unit test fails if a bump moves them.
 - `src/styles.scss` holds global styles, `src/bootstrap-custom.scss` the
   Bootstrap overrides, `src/fonts.scss` the `@font-face` rules. Component
   styles stay in the component's SCSS.
