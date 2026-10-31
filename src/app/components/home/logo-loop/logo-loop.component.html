@@ -1,10 +1,11 @@
 <!-- Decorative, desktop only (hidden below 992px in the SCSS, where the
      falling logos stay). Every piece draws its outline, fills, holds and
-     fades in a CSS loop, staggered along the top-left -> bottom-right sweep. -->
+     fades in a CSS loop, staggered along the top-left -> bottom-right sweep.
+     Hovering a piece keeps it solid and grows it; scrolling to About dissolves
+     the whole mark into small logos. -->
 <svg class="logo-loop" viewBox="274 68 340 676" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   @for (piece of pieces; track piece.index) {
-    <g class="logo-loop__piece" [class.logo-loop__piece--burst]="bursts()[piece.index]"
-       (pointerenter)="onHover(piece)">
+    <g class="logo-loop__piece" [class.logo-loop__piece--burst]="dissolved()">
       <polygon class="logo-loop__shape"
                [attr.points]="piece.points"
                [attr.fill]="pieceFill(piece)"

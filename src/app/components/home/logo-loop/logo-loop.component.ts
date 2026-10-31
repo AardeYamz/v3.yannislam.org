@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, PLATFORM_ID, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
@@ -61,7 +61,7 @@ const MAX_MINI_SIZE = 62;
 const SCATTER_MIN = 40;
 const SCATTER_MAX = 110;
 // The `logo-loop-mini` animation (2.3s) plus its longest stagger delay
-// (250ms), after which the piece fades back in.
+// (250ms), after which the small logos are gone.
 const BURST_MS = 2600;
 
 @Component({
@@ -70,16 +70,19 @@ const BURST_MS = 2600;
   styleUrls: ['./logo-loop.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LogoLoopComponent implements OnDestroy {
+export class LogoLoopComponent implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly pieces = PIECE_LIST;
 
-  // piece index -> its live burst. Only ever written from hover, in the
+  // True while the mark is dissolved (About section in view).
+  readonly dissolved = signal(false);
+  // piece index -> its small logos. Only ever written on scroll, in the
   // browser, so the random positions never reach the prerendered HTML.
   readonly bursts = signal<Record<number, Mini[] | undefined>>({});
-  private timers = new Map<number, ReturnType<typeof setTimeout>>();
+  private clearTimer?: ReturnType<typeof setTimeout>;
+  private observer?: IntersectionObserver;
 
   // Matches clearcolor/black/white.svg: full colour for the default theme,
   // one flat colour for light/dark (same rule as the loading screen).
@@ -99,33 +102,54 @@ export class LogoLoopComponent implements OnDestroy {
     }
   }
 
-  onHover(piece: Piece): void {
-    if (!this.isBrowser || this.bursts()[piece.index]) return;
+  ngOnInit(): void {
+    if (!this.isBrowser || !window.IntersectionObserver) return;
+    const about = document.getElementById('about');
+    if (!about) return;
+    this.observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) this.dissolve();
+      else this.restore();
+    }, { threshold: 0.15 });
+    this.observer.observe(about);
+  }
+
+  // Dissolve every piece into small logos. Runs when the About section
+  // scrolls into view; restore() undoes it on the way back up.
+  private dissolve(): void {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const minis: Mini[] = Array.from({ length: MINIS_PER_PIECE }, (_, i) => {
-      const angle = (i / MINIS_PER_PIECE) * Math.PI * 2 + Math.random() * 0.8;
-      const distance = SCATTER_MIN + Math.random() * (SCATTER_MAX - SCATTER_MIN);
-      const size = MIN_MINI_SIZE + Math.random() * (MAX_MINI_SIZE - MIN_MINI_SIZE);
-      return {
-        x: piece.cx - size / 2,
-        y: piece.cy - size / 2,
-        size,
-        dx: Math.cos(angle) * distance,
-        dy: Math.sin(angle) * distance,
-        rotation: (Math.random() * 2 - 1) * 50,
-        delayMs: Math.round(Math.random() * 250)
-      };
-    });
-    this.bursts.update(b => ({ ...b, [piece.index]: minis }));
+    const bursts: Record<number, Mini[]> = {};
+    for (const piece of this.pieces) {
+      bursts[piece.index] = Array.from({ length: MINIS_PER_PIECE }, (_, i) => {
+        const angle = (i / MINIS_PER_PIECE) * Math.PI * 2 + Math.random() * 0.8;
+        const distance = SCATTER_MIN + Math.random() * (SCATTER_MAX - SCATTER_MIN);
+        const size = MIN_MINI_SIZE + Math.random() * (MAX_MINI_SIZE - MIN_MINI_SIZE);
+        return {
+          x: piece.cx - size / 2,
+          y: piece.cy - size / 2,
+          size,
+          dx: Math.cos(angle) * distance,
+          dy: Math.sin(angle) * distance,
+          rotation: (Math.random() * 2 - 1) * 50,
+          delayMs: Math.round(Math.random() * 250)
+        };
+      });
+    }
+    this.dissolved.set(true);
+    this.bursts.set(bursts);
+    clearTimeout(this.clearTimer);
+    // The small logos have faded by then; the mark itself stays gone.
+    this.clearTimer = setTimeout(() => this.bursts.set({}), BURST_MS);
+  }
 
-    this.timers.set(piece.index, setTimeout(() => {
-      this.bursts.update(b => ({ ...b, [piece.index]: undefined }));
-      this.timers.delete(piece.index);
-    }, BURST_MS));
+  private restore(): void {
+    clearTimeout(this.clearTimer);
+    this.bursts.set({});
+    this.dissolved.set(false);
   }
 
   ngOnDestroy(): void {
-    this.timers.forEach(clearTimeout);
+    clearTimeout(this.clearTimer);
+    this.observer?.disconnect();
   }
 }

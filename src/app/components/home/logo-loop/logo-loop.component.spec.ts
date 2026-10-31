@@ -40,22 +40,42 @@ describe('LogoLoopComponent', () => {
     expect(component.pieceFill(piece)).toBe('#ffffff');
   });
 
-  it('fades a hovered piece into small logos, then brings it back', () => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
-    jasmine.clock().install();
-    const piece = el().querySelectorAll('.logo-loop__piece')[3] as SVGGElement;
-    piece.dispatchEvent(new Event('pointerenter'));
-    fixture.detectChanges();
+  describe('dissolving on scroll to About', () => {
+    let callback: IntersectionObserverCallback;
 
-    expect(piece.classList).toContain('logo-loop__piece--burst');
-    expect(el().querySelectorAll('.logo-loop__mini').length).toBeGreaterThan(0);
-    // other pieces are untouched
-    expect(el().querySelectorAll('.logo-loop__piece--burst').length).toBe(1);
+    beforeEach(() => {
+      const about = document.createElement('section');
+      about.id = 'about';
+      document.body.appendChild(about);
+      spyOn(window, 'IntersectionObserver').and.callFake(function (cb: IntersectionObserverCallback) {
+        callback = cb;
+        return { observe() { /* noop */ }, disconnect() { /* noop */ } } as unknown as IntersectionObserver;
+      } as never);
+      component.ngOnInit();
+    });
 
-    jasmine.clock().tick(3000);
-    fixture.detectChanges();
-    expect(piece.classList).not.toContain('logo-loop__piece--burst');
-    expect(el().querySelectorAll('.logo-loop__mini').length).toBe(0);
-    jasmine.clock().uninstall();
+    afterEach(() => document.getElementById('about')?.remove());
+
+    const setAboutVisible = (isIntersecting: boolean) => {
+      callback([{ isIntersecting } as IntersectionObserverEntry], {} as IntersectionObserver);
+      fixture.detectChanges();
+    };
+
+    it('dissolves every piece into small logos, and restores when scrolling back', () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+      setAboutVisible(true);
+      expect(el().querySelectorAll('.logo-loop__piece--burst').length).toBe(11);
+      expect(el().querySelectorAll('.logo-loop__mini').length).toBe(11 * 7);
+
+      setAboutVisible(false);
+      expect(el().querySelectorAll('.logo-loop__piece--burst').length).toBe(0);
+      expect(el().querySelectorAll('.logo-loop__mini').length).toBe(0);
+    });
+
+    it('does not dissolve on hover', () => {
+      el().querySelector('.logo-loop__piece')!.dispatchEvent(new Event('pointerenter'));
+      fixture.detectChanges();
+      expect(el().querySelectorAll('.logo-loop__piece--burst').length).toBe(0);
+    });
   });
 });

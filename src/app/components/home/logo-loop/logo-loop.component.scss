@@ -29,11 +29,26 @@
 .logo-loop__piece {
     pointer-events: auto;
     opacity: 1;
-    // Back in slowly once the small logos have gone.
-    transition: opacity 0.8s ease-in 0.2s;
+    transform-box: fill-box;
+    transform-origin: center;
+    // Back in slowly when scrolling up out of About.
+    transition: transform 0.3s ease-out, opacity 0.8s ease-in 0.2s;
+
+    // Stay solid (out of the loop) and grow.
+    &:hover {
+        transform: scale(1.12);
+
+        .logo-loop__shape {
+            animation: none;
+            stroke-dashoffset: 0;
+            fill-opacity: 1;
+            opacity: 1;
+        }
+    }
 
     &--burst {
         opacity: 0;
+        pointer-events: none;
         transition: opacity 0.35s ease-out;
     }
 }
