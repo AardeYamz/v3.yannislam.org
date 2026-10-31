@@ -37,7 +37,10 @@ jobs:
       - name: Skip if commit is already released
         id: check
         run: |
-          existing=$(gh api "repos/$REPO/git/matching-refs/tags/v" --jq "[.[] | select(.object.sha == \"$SHA\")] | length")
+          # Releases are created with --target "$SHA", so target_commitish
+          # holds the commit; unlike comparing tag ref objects, this also
+          # works for annotated tags.
+          existing=$(gh api --paginate "repos/$REPO/releases" --jq "[.[] | select(.target_commitish == \"$SHA\")] | length" | awk '{n+=$1} END {print n+0}')
           echo "skip=$([ "$existing" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
       # Tag is vCCYYMMDDHHMMSS in UTC at release time. --target pins the tag
