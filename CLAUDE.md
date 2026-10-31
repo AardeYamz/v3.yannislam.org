@@ -101,6 +101,13 @@ with Cloudflare in front for DNS and email.
 `Content-Security-Policy-Report-Only`. A new third-party script, frame, image
 host or connection must be added to that policy.
 
+### Shared theme files
+
+`vercel.json` rewrites `/theme/:path*` to the `yl-theme` Vercel project
+(`https://yl-theme.vercel.app`), so `https://yannislam.org/theme/v1/yl-tokens.css`
+and the other published theme files are served from there. They are immutable per
+version; the theme repo owns them, not this one. Fonts are not published.
+
 ## Documentation
 
 Docs live under `docs/`; [`docs/README.md`](docs/README.md) indexes them.
