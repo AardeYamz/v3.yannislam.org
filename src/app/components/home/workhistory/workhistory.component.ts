@@ -4,7 +4,7 @@ import { IconComponent } from 'src/app/icons/icon.component';
 import { WorkHistoryEntry } from 'src/app/services/site-config/site-config.model';
 import { AosDirective } from '../../../directives/aos/aos.directive';
 import { LogoFallbackDirective } from '../../../directives/logo-fallback/logo-fallback.directive';
-import { NgClass } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { LogoFallbackBackgroundDirective } from '../../../directives/logo-fallback/logo-fallback-background.directive';
 import { LinkifyPipe } from '../../../pipes/linkify/linkify.pipe';
 
@@ -13,7 +13,7 @@ import { LinkifyPipe } from '../../../pipes/linkify/linkify.pipe';
     templateUrl: './workhistory.component.html',
     styleUrls: ['./workhistory.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [AosDirective, CarouselModule, LogoFallbackDirective, NgClass, LogoFallbackBackgroundDirective, LinkifyPipe, IconComponent]
+    imports: [AosDirective, CarouselModule, LogoFallbackDirective, NgClass, NgTemplateOutlet, LogoFallbackBackgroundDirective, LinkifyPipe, IconComponent]
 })
 export class WorkHistoryComponent {
   // Reused for both work/volunteering experience entries and college
