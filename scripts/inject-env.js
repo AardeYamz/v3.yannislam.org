@@ -150,4 +150,8 @@ function main() {
   console.log(`[inject-env] Injected environment values into ${htmlFiles.length} HTML file(s)`);
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = { resolveValue, REPLACEMENTS, GA_PLACEHOLDER };
