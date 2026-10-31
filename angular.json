@@ -34,7 +34,7 @@
             "styles": [
               "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
               "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
-              "src/theme.scss",
+              "src/generated/yl-tokens.css",
               "src/styles.scss",
               "src/aos.scss",
               "src/link-preview.scss",
@@ -114,7 +114,7 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/theme.scss", "src/styles.scss"],
+            "styles": ["src/generated/yl-tokens.css", "src/styles.scss"],
             "scripts": [],
             "karmaConfig": "karma.conf.js"
           }

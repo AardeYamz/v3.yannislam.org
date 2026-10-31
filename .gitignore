@@ -63,3 +63,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Fetched by scripts/fetch-theme.js from the yl-theme project (see theme.json)
+/src/generated/
