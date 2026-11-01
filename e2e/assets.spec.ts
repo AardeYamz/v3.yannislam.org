@@ -32,6 +32,8 @@ const staticFiles = [
   '/sitemap.xml',
   '/manifest.webmanifest',
   '/favicon.ico',
+  '/favicon.svg',
+  '/apple-touch-icon.png',
 ];
 
 test.describe('assets', () => {

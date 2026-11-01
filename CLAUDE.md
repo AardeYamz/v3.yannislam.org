@@ -74,11 +74,20 @@ with Cloudflare in front for DNS and email.
 
 ### Styling
 
-- Color tokens are not in this repo: they come from the shared theme project
-  (https://github.com/AardeYamz/yl-theme). `scripts/fetch-theme.js` (run by the
-  pre* hooks) downloads `yl-tokens.css` from https://theme.yannislam.org at the
-  version pinned in `theme.json`, checks its SHA-256, and writes
-  `src/generated/yl-tokens.css` (git-ignored), which `angular.json` loads. It
+- Color tokens and the logos are not in this repo: they come from the shared
+  theme project (https://github.com/AardeYamz/yl-theme). `scripts/fetch-theme.js`
+  (run by the pre* hooks) downloads `yl-tokens.css` and the eleven
+  `logo-<variant>.svg` from https://theme.yannislam.org at the version pinned in
+  `theme.json`, checks each SHA-256, and writes `src/generated/yl-tokens.css` and
+  `src/generated/logos/<variant>.svg` (git-ignored). `angular.json` loads the
+  tokens as a stylesheet and serves the logos at `assets/images/logos/`, so the
+  components keep using those paths. The logos are generated in yl-theme from
+  one template and a palette (`logos/logo.svg.tmpl`, `logos/variants.json`):
+  to change a logo or add a color, change it there, never here. The same download includes `logo-geometry.json` (the mark's polygons, as drawn and
+  inset for strokes, plus the stroke width), which `src/generated/` also holds and the loading screen and the
+  banner mark (`logo-loop`) import and draw from: never copy polygon coordinates into a component. It also includes `favicon.svg`, `favicon.ico` and
+  `apple-touch-icon.png`, written to `src/generated/favicons/` and served from the site root (`index.html` links
+  them): there is no `src/favicon.ico` any more, so never add one. The tokens file
   holds the site's `--color-*` palette and Material Design 3 `--md-sys-color-*`
   tokens, set per mode under `:root[data-theme="light"]` and
   `:root[data-theme="dark"]` (the default mode is the base `:root`). Reference
