@@ -39,12 +39,18 @@
     animation-delay: calc(var(--i) * 0.12s);
 }
 
-// Hovering any piece holds the whole mark solid (out of the loop).
+// Hovering any piece drops out of the loop: the outlines stay drawn and just
+// fill in.
 :host:has(.logo-loop__shape:hover) .logo-loop__shape {
-    animation: none;
+    animation: logo-loop-fill 0.5s ease-out forwards;
+    animation-delay: calc(var(--i) * 0.04s);
     stroke-dashoffset: 0;
-    fill-opacity: 1;
     opacity: 1;
+}
+
+@keyframes logo-loop-fill {
+    from { fill-opacity: 0; }
+    to   { fill-opacity: 1; }
 }
 
 @keyframes logo-loop {

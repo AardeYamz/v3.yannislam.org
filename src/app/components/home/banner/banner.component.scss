@@ -80,10 +80,10 @@
     }
 }
 
-// On desktop the looping YL mark (app-logo-loop) joins the falling logos,
-// and the falling field spans the whole viewport instead of just the banner,
-// so logos keep falling behind every section (About onwards) as you scroll.
-// Mobile keeps the banner-only field.
+// On desktop the looping YL mark (app-logo-loop) is the banner's artwork and
+// the falling logos (app-floating-logos) belong to the About section: they
+// are fixed to the viewport, and the component shows and runs them only
+// while About is in view. Mobile keeps the banner-only field.
 @media (min-width: 992px) {
     .banner app-floating-logos {
         position: fixed;
