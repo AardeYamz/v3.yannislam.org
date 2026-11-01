@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoadingScreenComponent } from './loading-screen.component';
 import { ThemeService } from 'src/app/services/theme/theme.service';
+import logoGeometry from 'src/generated/logo-geometry.json';
 
 describe('LoadingScreenComponent', () => {
   let component: LoadingScreenComponent;
@@ -25,6 +26,16 @@ describe('LoadingScreenComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it("draws one polygon per piece of the theme's logo geometry, as drawn", () => {
+    fixture.detectChanges();
+    const shapes = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.logo-piece'));
+    expect(shapes.length).toBe(logoGeometry.pieces.length);
+    shapes.forEach((shape, i) => {
+      expect(shape.getAttribute('points')).toBe(logoGeometry.pieces[i].points);
+      expect(shape.getAttribute('fill')).toBe(logoGeometry.pieces[i].fill);
+    });
   });
 
   it('should have hidden set to false initially', () => {
