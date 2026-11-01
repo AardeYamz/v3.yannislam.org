@@ -80,6 +80,16 @@
     }
 }
 
+// On desktop the looping YL mark (app-logo-loop) is the banner's artwork and
+// the falling logos (app-floating-logos) belong to the About section: they
+// are fixed to the viewport, and the component shows and runs them only
+// while About is in view. Mobile keeps the banner-only field.
+@media (min-width: 992px) {
+    .banner app-floating-logos {
+        position: fixed;
+    }
+}
+
 // h2/h3's own font-size bump for these breakpoints lives in styles.scss
 // (see the comment there for why) — this only covers what's local to this
 // component: the eyebrow line, and a wider paragraph cap so the larger

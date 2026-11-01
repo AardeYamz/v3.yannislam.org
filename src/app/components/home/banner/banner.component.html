@@ -6,6 +6,9 @@
        hydration for it lets the client do a normal, unreconciled re-render
        instead of trying (and failing) to diff mismatched nodes. -->
   <app-floating-logos ngSkipHydration></app-floating-logos>
+  <!-- Desktop (>=992px) swaps the falling logos for the looping mark; both
+       are in the markup and CSS shows one, so SSR and hydration agree. -->
+  <app-logo-loop></app-logo-loop>
   <div [@bannerTrigger] class="container">
     <div class="section-box-banner">
       <div class="content">
