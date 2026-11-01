@@ -154,3 +154,14 @@ Date: 2026-08-11 01:39:39
   section appended to the existing file (see the "Fixed: …" sections of
   `20260811-013939-ssr-prerendering.md`), not a rename.
 - The rule applies only to `docs/changes/`.
+
+## Mermaid diagrams are linted
+
+Every ```mermaid block in a tracked `*.md` file must parse. The linter lives in the `personal-domain-devops` repo (`mermaid-lint/`) and `.github/workflows/mermaid-lint.yml` calls it as `AardeYamz/personal-domain-devops/mermaid-lint`, pinned by SHA like every action in this repo (bump the SHA to pick up linter changes) on any Markdown change. After editing a diagram, run it from this repo before committing (it expects `personal-domain-devops` cloned next to this repo; run `npm ci` there once):
+
+```
+npm ci --prefix ../personal-domain-devops/mermaid-lint
+node ../personal-domain-devops/mermaid-lint/lint.mjs
+```
+
+It prints `file:line` and the parser's message for each broken block. Changes to the linter go in `personal-domain-devops`, not here.
