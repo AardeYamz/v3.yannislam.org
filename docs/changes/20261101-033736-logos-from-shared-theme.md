@@ -24,12 +24,14 @@ that also lives in the loaders and in other sites. They are now generated in the
   original PNGs (the SVGs had drifted by up to 6 px, the bottoms were not level
   and the gaps between pieces were unequal): now every gap is one width, set by
   one number in yl-theme, and the crop is refit, so the logos change slightly.
-- The loading screen's polygons and the banner mark use the same geometry.
+- **The loading screen and the banner mark no longer carry their own polygons.** The theme also publishes
+  `logo-geometry.json` (each piece as drawn and inset for a stroke, its default fill, the stroke width, the bounds and
+  the crop). `fetch-theme.js` pins and fetches it into `src/generated/logo-geometry.json` like the logos, and both
+  components import it: the loading screen draws `points`, the banner mark strokes `line` at the geometry's `stroke`
+  width (no longer set in its SCSS). Change the logo in yl-theme and both follow after a bump.
 - `config.json`'s unused `manifestIcon` now names the served path.
 
 ## Notes
 
 - A build now needs `theme.yannislam.org` for the logos too, the first time
   (they are cached in `src/generated/`).
-- The loading screen's polygons and the banner mark keep their inline geometry
-  (it is code, not an asset); both match the theme's logo.

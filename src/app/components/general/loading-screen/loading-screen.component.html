@@ -2,17 +2,9 @@
     <div class="loading-screen__inner">
         <svg #logoSvg class="loading-screen__logo" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
             <g #logoGroup class="loading-screen__logo-group">
-                <polygon class="logo-piece" [attr.fill]="pieceFill('#fff200')" points="287,194.5 287,79 344.75,194.5" />
-                <polygon class="logo-piece" [attr.fill]="pieceFill('#fff200')" points="494,79 494,194.5 436.25,194.5" />
-                <polygon class="logo-piece" [attr.fill]="pieceFill('#7f7f7f')" points="390.5,264.82 360.34,204.5 420.66,204.5" />
-                <polygon class="logo-piece" [attr.fill]="pieceFill('#ffc90e')" points="353.83,332.47 289.85,204.5 349.16,204.5 383.49,273.16" />
-                <polygon class="logo-piece" [attr.fill]="pieceFill('#ffc90e')" points="397.51,273.16 431.84,204.5 491.15,204.5 427.17,332.47" />
-                <polygon class="logo-piece" [attr.fill]="pieceFill('#ed1c24')" points="390.5,405.8 359.43,343.65 390.5,281.5 421.57,343.65" />
-                <polygon class="logo-piece" [attr.fill]="pieceFill('#b5e61d')" points="385.5,414.46 385.5,670 322,670 322,541.46" />
-                <polygon class="logo-piece" [attr.fill]="pieceFill('#ffc90e')" points="459,541.46 459,670 395.5,670 395.5,414.46" />
-                <polygon class="logo-piece" [attr.fill]="pieceFill('#22b14c')" points="353,733 293,733 319.5,680 379.5,680" />
-                <polygon class="logo-piece" [attr.fill]="pieceFill('#ff7f27')" points="488,733 428,733 401.5,680 461.5,680" />
-                <polygon class="logo-piece" [attr.fill]="pieceFill('#efe4b0')" points="603,733 499.18,733 472.68,680 576.5,680" />
+                @for (piece of pieces; track piece.name) {
+                    <polygon class="logo-piece" [attr.fill]="pieceFill(piece.fill)" [attr.points]="piece.points" />
+                }
             </g>
         </svg>
     </div>

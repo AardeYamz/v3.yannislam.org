@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { ensureTheme, target, sha256, TOKENS } = require('./fetch-theme.js');
+const { ensureTheme, target, sha256, TOKENS, GEOMETRY } = require('./fetch-theme.js');
 
 const TOKENS_BODY = Buffer.from(':root { --color-navy: #131f31; }\n');
 const LOGO_BODY = Buffer.from('<svg viewBox="0 0 800 800"></svg>\n');
@@ -67,4 +67,12 @@ test('reports an HTTP error', async () => {
 
 test('rejects a pinned file this repo does not use', () => {
   assert.throws(() => target('yl-theme.js', tmpDir()), /does not use/);
+});
+
+test('writes the logo geometry next to the tokens', async () => {
+  const body = Buffer.from('{"pieces":[]}');
+  const outDir = tmpDir();
+  const bodies = { [GEOMETRY]: body };
+  assert.deepEqual(await ensureTheme({ pin: pin(bodies), outDir, fetchImpl: okFetch(bodies) }), [GEOMETRY]);
+  assert.deepEqual(fs.readFileSync(path.join(outDir, GEOMETRY)), body);
 });

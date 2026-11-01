@@ -30,7 +30,6 @@
 // measure), fill it in, hold, then fade, and go round again.
 .logo-loop__shape {
     pointer-events: auto;
-    stroke-width: 4;
     // Sharp corners: the tips are acute (about 26 degrees), so lift the miter cap.
     stroke-linejoin: miter;
     stroke-miterlimit: 10;

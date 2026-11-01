@@ -83,7 +83,9 @@ with Cloudflare in front for DNS and email.
   tokens as a stylesheet and serves the logos at `assets/images/logos/`, so the
   components keep using those paths. The logos are generated in yl-theme from
   one template and a palette (`logos/logo.svg.tmpl`, `logos/variants.json`):
-  to change a logo or add a color, change it there, never here. The tokens file
+  to change a logo or add a color, change it there, never here. The same download includes `logo-geometry.json` (the mark's polygons, as drawn and
+  inset for strokes, plus the stroke width), which `src/generated/` also holds and the loading screen and the
+  banner mark (`logo-loop`) import and draw from: never copy polygon coordinates into a component. The tokens file
   holds the site's `--color-*` palette and Material Design 3 `--md-sys-color-*`
   tokens, set per mode under `:root[data-theme="light"]` and
   `:root[data-theme="dark"]` (the default mode is the base `:root`). Reference
