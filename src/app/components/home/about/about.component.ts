@@ -23,6 +23,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   get data() { return this.configService.data; }
 
   ngOnInit() {
+    if (!this.isBrowser) return;
     this.scrollListener = this.onScroll.bind(this);
     window.addEventListener('scroll', this.scrollListener);
   }
