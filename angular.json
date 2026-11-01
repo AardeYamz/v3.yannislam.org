@@ -25,8 +25,8 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
               "src/assets",
+              { "glob": "*", "input": "src/generated/favicons", "output": "/" },
               { "glob": "*.svg", "input": "src/generated/logos", "output": "assets/images/logos" },
               "src/manifest.webmanifest",
               "src/robots.txt",
@@ -115,8 +115,8 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
               "src/assets",
+              { "glob": "*", "input": "src/generated/favicons", "output": "/" },
               { "glob": "*.svg", "input": "src/generated/logos", "output": "assets/images/logos" }
             ],
             "styles": ["src/generated/yl-tokens.css", "src/styles.scss"],

@@ -85,7 +85,9 @@ with Cloudflare in front for DNS and email.
   one template and a palette (`logos/logo.svg.tmpl`, `logos/variants.json`):
   to change a logo or add a color, change it there, never here. The same download includes `logo-geometry.json` (the mark's polygons, as drawn and
   inset for strokes, plus the stroke width), which `src/generated/` also holds and the loading screen and the
-  banner mark (`logo-loop`) import and draw from: never copy polygon coordinates into a component. The tokens file
+  banner mark (`logo-loop`) import and draw from: never copy polygon coordinates into a component. It also includes `favicon.svg`, `favicon.ico` and
+  `apple-touch-icon.png`, written to `src/generated/favicons/` and served from the site root (`index.html` links
+  them): there is no `src/favicon.ico` any more, so never add one. The tokens file
   holds the site's `--color-*` palette and Material Design 3 `--md-sys-color-*`
   tokens, set per mode under `:root[data-theme="light"]` and
   `:root[data-theme="dark"]` (the default mode is the base `:root`). Reference

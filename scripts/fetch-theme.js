@@ -1,9 +1,10 @@
-// Fetches the shared design tokens (yl-tokens.css), the logos (logo-<variant>.svg) and the logo geometry from the yl-theme project at the
+// Fetches the shared design tokens (yl-tokens.css), the logos (logo-<variant>.svg), the logo geometry and the favicons from the yl-theme project at the
 // version pinned in theme.json, checks each file's SHA-256, and writes them under src/generated/ (git-ignored):
 //
 //   yl-tokens.css       -> src/generated/yl-tokens.css       loaded by angular.json in place of the old src/theme.scss
 //   logo-<variant>.svg  -> src/generated/logos/<variant>.svg  served at assets/images/logos/<variant>.svg (angular.json)
 //   logo-geometry.json  -> src/generated/logo-geometry.json   the mark's polygons, which the loading screens draw from
+//   favicon.svg, favicon.ico, apple-touch-icon.png -> src/generated/favicons/   served from the site root (angular.json)
 //
 // A changed or corrupted file fails the build instead of shipping.
 //
@@ -23,6 +24,7 @@ const PIN = path.join(ROOT, 'theme.json');
 const OUT_DIR = path.join(ROOT, 'src', 'generated');
 const TOKENS = 'yl-tokens.css';
 const GEOMETRY = 'logo-geometry.json';
+const FAVICONS = ['favicon.svg', 'favicon.ico', 'apple-touch-icon.png'];
 const LOGO = /^logo-([\w-]+)\.svg$/;
 
 const sha256 = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
@@ -32,6 +34,7 @@ function target(name, outDir = OUT_DIR) {
   const logo = LOGO.exec(name);
   if (logo) return path.join(outDir, 'logos', `${logo[1]}.svg`);
   if (name === TOKENS || name === GEOMETRY) return path.join(outDir, name);
+  if (FAVICONS.includes(name)) return path.join(outDir, 'favicons', name);
   throw new Error(`theme.json lists ${name}, which this repo does not use`);
 }
 
@@ -62,7 +65,7 @@ async function bump() {
   const versions = JSON.parse((await get(`${BASE}/versions.json`, fetch)).toString());
   const latest = Object.keys(versions).sort().pop(); // v + UTC timestamp sorts as text
   const files = Object.fromEntries(
-    Object.entries(versions[latest]).filter(([name]) => name === TOKENS || name === GEOMETRY || LOGO.test(name)).sort(([a], [b]) => a.localeCompare(b))
+    Object.entries(versions[latest]).filter(([name]) => name === TOKENS || name === GEOMETRY || FAVICONS.includes(name) || LOGO.test(name)).sort(([a], [b]) => a.localeCompare(b))
   );
   fs.writeFileSync(PIN, JSON.stringify({ version: latest, files }, null, 2) + '\n');
   console.log(`[fetch-theme] pinned ${latest}`);

@@ -1,17 +1,21 @@
 {
-  "version": "v2026-11-01-0333",
+  "version": "v2026-11-01-0437",
   "files": {
-    "logo-black.svg": "0cb80666a03163f7e7c2a0f212cf8286a0dcde04678d3931aed0a50841b4d90a",
-    "logo-clearcolor.svg": "56695cebfc4f3f475849826a7b7f70faf2879a55645c5228cc7fbb571f065dec",
-    "logo-cream.svg": "c9922a23320f85d74b7e02d7671b523327d8aec22ba02504b9c70051968b7cbf",
-    "logo-gold.svg": "3ab5d219cc43c2be8c43467b8d58f8dda11053a5e03ec341044cd456ab60fb0f",
-    "logo-gray.svg": "a725f07122724c9d47b041a15b1ca876ee3c2136ab1a98b5bf6ed97170b74a75",
-    "logo-green.svg": "2978db926e9e38dd58f61195d2873f250932a50c05ff6c63362cf208033cb7f0",
-    "logo-lime.svg": "f8ca9ca24c4d39bc1a816e3b74a040669d37e949736400b56f17eb95f3d0a095",
-    "logo-orange.svg": "aac3b0ab1326432e9c33d24d9fd0d4762e6c5d2f7b5df8dbed3764c2a39bb699",
-    "logo-red.svg": "4cf5d713340b3e0edb6203722db9d55530d1ab955935403f002a55a6cf1f5fad",
-    "logo-white.svg": "da7e2a83dc166010b01d9baef7356c0db22d4d82a5ba6d2bb7f3ce879b9a2f91",
-    "logo-yellow.svg": "3f60cb2ee473994f22c20905e9196299f8ed7378ef55a260a70c0c33841f84c2",
+    "apple-touch-icon.png": "13d4c692439d051cfed30d16877023f18be63369beaaa8e6bafbdb14dcc34803",
+    "favicon.ico": "9666e9cb8a1b8233f4c3440eaf8046e3fcc98ec6f4632249d563df985b69f93a",
+    "favicon.svg": "6a7fee6be812acf87e0d0d8cb4458b23e76d925928250ca4f758155f5d8823e4",
+    "logo-black.svg": "49065090e0d871379104a5cbaec291e483bb2ac23987a421298dde5106f4826a",
+    "logo-clearcolor.svg": "6a7fee6be812acf87e0d0d8cb4458b23e76d925928250ca4f758155f5d8823e4",
+    "logo-cream.svg": "75f73e871d189ae0130e7518c7190e6438cb524674c62dc129c67d80b4ac9d42",
+    "logo-geometry.json": "b21b25b912d0eab181c3e34cef26078707a7c3d6ad4f2ac4f2ab05db8580edc4",
+    "logo-gold.svg": "8218a1fa3c1382283797f48dd50e20069dca761a1971c42312e53bb6a6373389",
+    "logo-gray.svg": "ef3c1094e14d59ed53dafba2c21348a646486687f3d0ac294ba2c1ed3db0cacf",
+    "logo-green.svg": "8a460f2f06b04ff296a091dce20a36294a5247f5b1e8a1df2fedf279cf96d93a",
+    "logo-lime.svg": "b8faf6523e03806546946fbf5f7a309b84cf2f536307796dfddbeb3b12a300f7",
+    "logo-orange.svg": "97dd5a3871f9f984915afdcfe0942fee7207906fa5c185a562d892219c3b1a39",
+    "logo-red.svg": "256453c7937ccff1cd4b97c1f2cfbc68f4d9b8a379063204c40b7f784dc0ce73",
+    "logo-white.svg": "b5a5c46bef43372ccf95e8f52437cc640f4620ac7700865303d30c6e2414f56a",
+    "logo-yellow.svg": "25362f73647db95936a01d3a60ad4d2a4d795308e2cdc6f2752817b8367927f5",
     "yl-tokens.css": "0ac897a75a1428a8ead190b503449a911e8b545b283d60e0b96cc8d47f76acb6"
   }
 }

@@ -31,6 +31,11 @@ that also lives in the loaders and in other sites. They are now generated in the
   width (no longer set in its SCSS). Change the logo in yl-theme and both follow after a bump.
 - `config.json`'s unused `manifestIcon` now names the served path.
 
+- **Favicons.** `favicon.svg`, `favicon.ico` (16, 32, 48 px) and `apple-touch-icon.png` (180 px on navy) are generated
+  in the theme from the same geometry and fetched into `src/generated/favicons/`; `angular.json` serves them from the
+  site root. `index.html` links all three, the service worker caches them, and the hand-built `src/favicon.ico` (cut
+  from an older crop of the artwork) is removed.
+
 ## Notes
 
 - A build now needs `theme.yannislam.org` for the logos too, the first time
