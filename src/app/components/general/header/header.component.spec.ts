@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import { TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
@@ -13,156 +14,168 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
 // own logic (navigation, theme toggling, resume resolution, scroll-driven
 // rotation) without depending on the full Angular/ng-bootstrap module wiring.
 describe('HeaderComponent', () => {
-  let component: HeaderComponent;
-  let router: { navigate: jasmine.Spy; navigateByUrl: jasmine.Spy };
-  let analyticsService: { sendAnalyticEvent: jasmine.Spy };
-  let themeService: { cycle: jasmine.Spy; mode: jasmine.Spy };
-  let resumeService: { open: jasmine.Spy };
-  let configService: { menu: any[] };
-
-  beforeEach(() => {
-    router = {
-      navigate: jasmine.createSpy('navigate').and.returnValue(Promise.resolve(true)),
-      navigateByUrl: jasmine.createSpy('navigateByUrl'),
+    let component: HeaderComponent;
+    let router: {
+        navigate: Mock;
+        navigateByUrl: Mock;
     };
-    analyticsService = { sendAnalyticEvent: jasmine.createSpy('sendAnalyticEvent') };
-    themeService = {
-      cycle: jasmine.createSpy('cycle'),
-      mode: jasmine.createSpy('mode').and.returnValue('dark'),
+    let analyticsService: {
+        sendAnalyticEvent: Mock;
     };
-    resumeService = { open: jasmine.createSpy('open') };
-    configService = { menu: [{ navTitle: 'About', scrollSection: 'about' }] };
+    let themeService: {
+        cycle: Mock;
+        mode: Mock;
+    };
+    let resumeService: {
+        open: Mock;
+    };
+    let configService: {
+        menu: any[];
+    };
 
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: Router, useValue: router },
-        { provide: AnalyticsService, useValue: analyticsService },
-        { provide: ThemeService, useValue: themeService },
-        { provide: ResumeService, useValue: resumeService },
-        { provide: SiteConfigService, useValue: configService },
-        { provide: PLATFORM_ID, useValue: 'browser' },
-      ]
-    });
-    component = TestBed.runInInjectionContext(() => new HeaderComponent());
-  });
+    beforeEach(() => {
+        router = {
+            navigate: vi.fn().mockName('navigate').mockResolvedValue(true),
+            navigateByUrl: vi.fn().mockName('navigateByUrl'),
+        };
+        analyticsService = { sendAnalyticEvent: vi.fn().mockName('sendAnalyticEvent') };
+        themeService = {
+            cycle: vi.fn().mockName('cycle'),
+            mode: vi.fn().mockName('mode').mockReturnValue('dark'),
+        };
+        resumeService = { open: vi.fn().mockName('open') };
+        configService = { menu: [{ navTitle: 'About', scrollSection: 'about' }] };
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('exposes the menu from SiteConfigService', () => {
-    expect(component.menu).toEqual(configService.menu);
-  });
-
-  describe('navigate()', () => {
-    it('scrolls to the section when the menu item has a scrollSection', () => {
-      spyOn(component, 'scroll');
-
-      component.navigate({ scrollSection: 'about' });
-
-      expect(component.scroll).toHaveBeenCalledWith('about');
-      expect(router.navigateByUrl).not.toHaveBeenCalled();
-    });
-
-    it('navigates by URL when the menu item only has a siteLocation', () => {
-      component.responsiveMenuVisible = true;
-
-      component.navigate({ siteLocation: '/projects' });
-
-      expect(router.navigateByUrl).toHaveBeenCalledWith('/projects');
-      expect(component.responsiveMenuVisible).toBeFalse();
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: Router, useValue: router },
+                { provide: AnalyticsService, useValue: analyticsService },
+                { provide: ThemeService, useValue: themeService },
+                { provide: ResumeService, useValue: resumeService },
+                { provide: SiteConfigService, useValue: configService },
+                { provide: PLATFORM_ID, useValue: 'browser' },
+            ]
+        });
+        component = TestBed.runInInjectionContext(() => new HeaderComponent());
     });
 
-    it('does nothing for a menu item with neither field', () => {
-      component.navigate({});
-
-      expect(router.navigateByUrl).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('onBackdropClick()', () => {
-    it('closes the mobile menu when the click lands directly on the overlay', () => {
-      component.responsiveMenuVisible = true;
-      const overlay = document.createElement('div');
-      const event = new MouseEvent('click');
-      Object.defineProperty(event, 'target', { value: overlay });
-      Object.defineProperty(event, 'currentTarget', { value: overlay });
-
-      component.onBackdropClick(event);
-
-      expect(component.responsiveMenuVisible).toBeFalse();
+    it('should create', () => {
+        expect(component).toBeTruthy();
     });
 
-    it('leaves the menu open when the click bubbled up from inside the drawer', () => {
-      component.responsiveMenuVisible = true;
-      const overlay = document.createElement('div');
-      const drawerLink = document.createElement('a');
-      const event = new MouseEvent('click');
-      Object.defineProperty(event, 'target', { value: drawerLink });
-      Object.defineProperty(event, 'currentTarget', { value: overlay });
-
-      component.onBackdropClick(event);
-
-      expect(component.responsiveMenuVisible).toBeTrue();
-    });
-  });
-
-  it('toggleTheme() cycles the theme and logs the resulting mode as an analytics event', () => {
-    component.toggleTheme();
-
-    expect(themeService.cycle).toHaveBeenCalled();
-    expect(analyticsService.sendAnalyticEvent).toHaveBeenCalledWith('theme_toggle', 'header', 'dark');
-  });
-
-  describe('logoRotationDeg', () => {
-    // logoRotationDeg reads the live document/viewport size to know how
-    // far the page can actually scroll, so pin those rather than relying
-    // on whatever size the Karma test page happens to be.
-    function mockMaxScroll(px: number): void {
-      spyOnProperty(document.documentElement, 'scrollHeight', 'get').and.returnValue(px);
-      spyOnProperty(window, 'innerHeight', 'get').and.returnValue(0);
-    }
-
-    it('is 0 before any scrolling', () => {
-      mockMaxScroll(2000);
-      component.pageYPosition = 0;
-      expect(component.logoRotationDeg).toBe(0);
+    it('exposes the menu from SiteConfigService', () => {
+        expect(component.menu).toEqual(configService.menu);
     });
 
-    it('scales linearly up to 900px of scroll on a page long enough to reach it', () => {
-      mockMaxScroll(2000);
-      component.pageYPosition = 450;
-      expect(component.logoRotationDeg).toBe(180);
+    describe('navigate()', () => {
+        it('scrolls to the section when the menu item has a scrollSection', () => {
+            vi.spyOn(component, 'scroll').mockReturnValue(undefined);
+
+            component.navigate({ scrollSection: 'about' });
+
+            expect(component.scroll).toHaveBeenCalledWith('about');
+            expect(router.navigateByUrl).not.toHaveBeenCalled();
+        });
+
+        it('navigates by URL when the menu item only has a siteLocation', () => {
+            component.responsiveMenuVisible = true;
+
+            component.navigate({ siteLocation: '/projects' });
+
+            expect(router.navigateByUrl).toHaveBeenCalledWith('/projects');
+            expect(component.responsiveMenuVisible).toBe(false);
+        });
+
+        it('does nothing for a menu item with neither field', () => {
+            component.navigate({});
+
+            expect(router.navigateByUrl).not.toHaveBeenCalled();
+        });
     });
 
-    it('holds at 360deg for any scroll depth beyond 900px', () => {
-      mockMaxScroll(2000);
-      component.pageYPosition = 5000;
-      expect(component.logoRotationDeg).toBe(360);
+    describe('onBackdropClick()', () => {
+        it('closes the mobile menu when the click lands directly on the overlay', () => {
+            component.responsiveMenuVisible = true;
+            const overlay = document.createElement('div');
+            const event = new MouseEvent('click');
+            Object.defineProperty(event, 'target', { value: overlay });
+            Object.defineProperty(event, 'currentTarget', { value: overlay });
+
+            component.onBackdropClick(event);
+
+            expect(component.responsiveMenuVisible).toBe(false);
+        });
+
+        it('leaves the menu open when the click bubbled up from inside the drawer', () => {
+            component.responsiveMenuVisible = true;
+            const overlay = document.createElement('div');
+            const drawerLink = document.createElement('a');
+            const event = new MouseEvent('click');
+            Object.defineProperty(event, 'target', { value: drawerLink });
+            Object.defineProperty(event, 'currentTarget', { value: overlay });
+
+            component.onBackdropClick(event);
+
+            expect(component.responsiveMenuVisible).toBe(true);
+        });
     });
 
-    it('scales the full turn down to fit a page shorter than 900px of scroll', () => {
-      mockMaxScroll(200);
-      component.pageYPosition = 100;
-      expect(component.logoRotationDeg).toBe(180);
+    it('toggleTheme() cycles the theme and logs the resulting mode as an analytics event', () => {
+        component.toggleTheme();
+
+        expect(themeService.cycle).toHaveBeenCalled();
+        expect(analyticsService.sendAnalyticEvent).toHaveBeenCalledWith('theme_toggle', 'header', 'dark');
     });
 
-    it('completes exactly one turn at the bottom of a short page', () => {
-      mockMaxScroll(200);
-      component.pageYPosition = 200;
-      expect(component.logoRotationDeg).toBe(360);
+    describe('logoRotationDeg', () => {
+        // logoRotationDeg reads the live document/viewport size to know how
+        // far the page can actually scroll, so pin those rather than relying
+        // on whatever size the Karma test page happens to be.
+        function mockMaxScroll(px: number): void {
+            vi.spyOn(document.documentElement, 'scrollHeight', 'get').mockReturnValue(px);
+            vi.spyOn(window, 'innerHeight', 'get').mockReturnValue(0);
+        }
+
+        it('is 0 before any scrolling', () => {
+            mockMaxScroll(2000);
+            component.pageYPosition = 0;
+            expect(component.logoRotationDeg).toBe(0);
+        });
+
+        it('scales linearly up to 900px of scroll on a page long enough to reach it', () => {
+            mockMaxScroll(2000);
+            component.pageYPosition = 450;
+            expect(component.logoRotationDeg).toBe(180);
+        });
+
+        it('holds at 360deg for any scroll depth beyond 900px', () => {
+            mockMaxScroll(2000);
+            component.pageYPosition = 5000;
+            expect(component.logoRotationDeg).toBe(360);
+        });
+
+        it('scales the full turn down to fit a page shorter than 900px of scroll', () => {
+            mockMaxScroll(200);
+            component.pageYPosition = 100;
+            expect(component.logoRotationDeg).toBe(180);
+        });
+
+        it('completes exactly one turn at the bottom of a short page', () => {
+            mockMaxScroll(200);
+            component.pageYPosition = 200;
+            expect(component.logoRotationDeg).toBe(360);
+        });
+
+        it('falls back to the fixed 900px distance when the page cannot scroll at all', () => {
+            mockMaxScroll(0);
+            component.pageYPosition = 0;
+            expect(component.logoRotationDeg).toBe(0);
+        });
     });
 
-    it('falls back to the fixed 900px distance when the page cannot scroll at all', () => {
-      mockMaxScroll(0);
-      component.pageYPosition = 0;
-      expect(component.logoRotationDeg).toBe(0);
+    it('downloadResume() delegates to ResumeService', () => {
+        component.downloadResume();
+
+        expect(resumeService.open).toHaveBeenCalled();
     });
-  });
-
-  it('downloadResume() delegates to ResumeService', () => {
-    component.downloadResume();
-
-    expect(resumeService.open).toHaveBeenCalled();
-  });
 });

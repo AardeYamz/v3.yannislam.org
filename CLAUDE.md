@@ -11,8 +11,8 @@ to get wrong.
 npm install
 npm start                    # dev server at http://localhost:4200
 npm run build                # prerender every route + postbuild env substitution
-npm test                     # Karma + Jasmine, watch mode
-npm test -- --watch=false --browsers=ChromeHeadless   # single run, as CI does
+npm test                     # Vitest, watch mode
+npm test -- --watch=false                            # single run, as CI does
 ng test --include='**/component-name.component.spec.ts'
 npm run test:e2e             # Playwright
 npm run test:perf            # Lighthouse CI

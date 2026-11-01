@@ -44,7 +44,7 @@ CLI is a dev dependency, so `npx ng …` works without a global install.
 npm install
 npm start            # dev server at http://localhost:4200, reloads on save
 npm run build        # production build: prerender every route + postbuild env substitution
-npm test             # Karma + Jasmine unit tests (watch mode)
+npm test             # Vitest unit tests (watch mode)
 npm run test:e2e     # Playwright end-to-end tests
 npm run test:perf    # Lighthouse CI (mobile preset; test:perf:desktop for desktop)
 ```
@@ -252,17 +252,18 @@ edits on save.
 
 ## Testing
 
-### Unit tests (Karma + Jasmine)
+### Unit tests (Vitest)
 
 ```bash
 npm test                                             # watch mode
-npm test -- --watch=false --browsers=ChromeHeadless  # single run, as CI does
-npm test -- --watch=false --code-coverage            # with coverage
+npm test -- --watch=false                            # single run, as CI does
+npm test -- --watch=false --coverage                 # with coverage
 ng test --include='**/header.component.spec.ts'      # one spec
 ```
 
-Karma needs Chrome or Chromium. If it isn't found, point `CHROME_BIN` at a
-binary, e.g. `CHROME_BIN=/opt/pw-browsers/chromium`. CI uploads coverage from
+Vitest runs the specs in Playwright's Chromium (`npx playwright install chromium`
+once). Specs use `vi.fn` / `vi.spyOn`; `src/test-setup.ts` restores mocks and
+real timers after every test. CI uploads coverage from
 the Node 24 leg to [Codecov](https://codecov.io).
 
 ### End-to-end tests (Playwright)
@@ -340,7 +341,7 @@ flowchart TB
 
 | Job | Runs on | Needs | What it does |
 |---|---|---|---|
-| `unit-tests` | Node 24.x and 26.x | | `npm ci`, then Karma in `ChromeHeadless` with coverage; uploads to Codecov from the 24.x leg |
+| `unit-tests` | Node 24.x and 26.x | | `npm ci`, then Vitest in Chromium with coverage; uploads to Codecov from the 24.x leg |
 | `build` | Node 24.x | | `npm run build`, prerendering every route; uploads the output as an artifact |
 | `lighthouse` | `mobile`, `desktop` | `build` | Lighthouse CI against the build artifact |
 | `e2e` | 2 shards, `fail-fast: false` | `build` | Playwright against the build artifact (browsers cached on `package-lock.json`). PRs run Chromium and a mobile (Pixel 7) context and skip `@external`; pushes to `main` and the Monday run add Firefox and WebKit |

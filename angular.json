@@ -25,9 +25,8 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/favicon.ico",
               "src/assets",
-              { "glob": "*", "input": "src/generated/favicons", "output": "/" },
-              { "glob": "*.svg", "input": "src/generated/logos", "output": "assets/images/logos" },
               "src/manifest.webmanifest",
               "src/robots.txt",
               "src/sitemap.xml"
@@ -109,19 +108,28 @@
           }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": [],
             "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/assets",
-              { "glob": "*", "input": "src/generated/favicons", "output": "/" },
-              { "glob": "*.svg", "input": "src/generated/logos", "output": "assets/images/logos" }
+            "runner": "vitest",
+            "buildTarget": "::development",
+            "coverageThresholds": {
+              "statements": 50,
+              "branches": 50,
+              "functions": 50,
+              "lines": 50
+            },
+            "browsers": [
+              "chromium"
             ],
-            "styles": ["src/generated/yl-tokens.css", "src/styles.scss"],
-            "scripts": [],
-            "karmaConfig": "karma.conf.js"
+            "setupFiles": [
+              "src/test-setup.ts"
+            ],
+            "coverageReporters": [
+              "html",
+              "text-summary",
+              "lcovonly"
+            ]
           }
         }
       }
