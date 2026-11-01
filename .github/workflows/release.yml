@@ -44,10 +44,10 @@ jobs:
           existing=$(gh api --paginate "repos/$REPO/releases" --jq "[.[] | select(.target_commitish == \"$SHA\")] | length" | awk '{n+=$1} END {print n+0}')
           echo "skip=$([ "$existing" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
-      # Tag is vCCYYMMDDHHMMSS in UTC at release time. --target pins the tag
+      # Tag is vCCYYMMDD-HHMMSS in UTC at release time. --target pins the tag
       # to the deployed commit rather than whatever main has moved on to.
       - name: Create tag and release
         if: steps.check.outputs.skip != 'true'
         run: |
-          tag="v$(date -u +%Y%m%d%H%M%S)"
+          tag="v$(date -u +%Y%m%d-%H%M%S)"
           gh release create "$tag" --repo "$REPO" --target "$SHA" --title "$tag" --generate-notes
