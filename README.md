@@ -405,7 +405,7 @@ Bumps are grouped: `angular` (the `@angular/*` packages and libraries tied to
 an Angular major, which must move together), `testing`, and a
 `minor-and-patch` catch-all. Other majors arrive one per PR so each can be
 reverted alone. Angular majors are ignored by Dependabot and upgraded by hand
-with `ng update` (see `docs/changes/20260727-205542-UPGRADE-NOTES.md`).
+with `ng update`.
 
 ## Further documentation
 
