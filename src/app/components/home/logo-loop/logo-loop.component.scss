@@ -26,36 +26,10 @@
     overflow: visible;
 }
 
-.logo-loop__piece {
-    pointer-events: auto;
-    opacity: 1;
-    transform-box: fill-box;
-    transform-origin: center;
-    // Back in slowly when scrolling up out of About.
-    transition: transform 0.3s ease-out, opacity 0.8s ease-in 0.2s;
-
-    // Stay solid (out of the loop) and grow.
-    &:hover {
-        transform: scale(1.12);
-
-        .logo-loop__shape {
-            animation: none;
-            stroke-dashoffset: 0;
-            fill-opacity: 1;
-            opacity: 1;
-        }
-    }
-
-    &--burst {
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.35s ease-out;
-    }
-}
-
 // Draw the outline (the dash uncovers it; pathLength=1 so nothing to
 // measure), fill it in, hold, then fade, and go round again.
 .logo-loop__shape {
+    pointer-events: auto;
     stroke-width: 4;
     stroke-linejoin: round;
     stroke-dasharray: 1 2;
@@ -65,6 +39,14 @@
     animation-delay: calc(var(--i) * 0.12s);
 }
 
+// Hovering any piece holds the whole mark solid (out of the loop).
+:host:has(.logo-loop__shape:hover) .logo-loop__shape {
+    animation: none;
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+    opacity: 1;
+}
+
 @keyframes logo-loop {
     0%   { stroke-dashoffset: 1; fill-opacity: 0; opacity: 1; }
     30%  { stroke-dashoffset: 0; fill-opacity: 0; opacity: 1; }
@@ -72,20 +54,6 @@
     82%  { stroke-dashoffset: 0; fill-opacity: 1; opacity: 1; }
     94%  { stroke-dashoffset: 0; fill-opacity: 1; opacity: 0; }
     100% { stroke-dashoffset: 1; fill-opacity: 0; opacity: 0; }
-}
-
-.logo-loop__mini {
-    pointer-events: none;
-    transform-box: fill-box;
-    transform-origin: center;
-    opacity: 0;
-    animation: logo-loop-mini 2.3s ease-out forwards;
-}
-
-@keyframes logo-loop-mini {
-    0%   { opacity: 0; transform: translate(0, 0) scale(0.3) rotate(0deg); }
-    20%  { opacity: 1; }
-    100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1) rotate(var(--rot)); }
 }
 
 // No motion: show the finished mark and skip the loop.
