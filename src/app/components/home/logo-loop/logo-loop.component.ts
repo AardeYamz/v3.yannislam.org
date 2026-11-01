@@ -1,22 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ThemeService } from 'src/app/services/theme/theme.service';
+import logoGeometry from 'src/generated/logo-geometry.json';
 
-// The YL mark, one entry per piece, verbatim from the `<polygon>`s in
-// src/assets/images/logos/clearcolor.svg (same 800x800 viewBox space), in the
-// same order as yl-theme's loading screen so the two animations match.
-const PIECES: readonly { fill: string; points: string }[] = [
-  { fill: '#fff200', points: '287,194 287,80 343,193' },
-  { fill: '#fff200', points: '437,194 493,80 493,194' },
-  { fill: '#7f7f7f', points: '360,204 420,204 390,265' },
-  { fill: '#ffc90e', points: '354,333 289,203 348,203 384,275' },
-  { fill: '#ffc90e', points: '425,333 396,275 432,203 491,203' },
-  { fill: '#ed1c24', points: '361,342 390,284 419,342 390,402' },
-  { fill: '#b5e61d', points: '323,539 384,417 384,667 323,669' },
-  { fill: '#ffc90e', points: '395,412 458,538 458,670 396,670' },
-  { fill: '#22b14c', points: '321,680 377,680 352,731 295,731' },
-  { fill: '#ff7f27', points: '484,731 427,731 402,681 458,680' },
-  { fill: '#efe4b0', points: '601,731 496,731 471,681 575,680' }
-];
+// The mark's polygons come from yl-theme (fetched by scripts/fetch-theme.js into src/generated/), in the same order as
+// its loader so the two animations match. This mark draws a 4-unit stroke (see the SCSS), so it takes each piece's
+// `line` polygon: pulled in by half the stroke, which puts the stroke's outer edge on the logo's real edge and keeps
+// the outlined mark the size of the filled one with equal gaps. The stroke width is the geometry's `stroke` too (set on
+// the polygons in the template), so the two cannot disagree.
+const PIECES: readonly { fill: string; points: string }[] = logoGeometry.pieces.map(p => ({ fill: p.fill, points: p.line }));
 
 interface Piece {
   index: number;
@@ -53,6 +44,7 @@ export class LogoLoopComponent {
   private themeService = inject(ThemeService);
 
   readonly pieces = PIECE_LIST;
+  readonly stroke = logoGeometry.stroke;
 
   // Matches clearcolor/black/white.svg: full colour for the default theme,
   // one flat colour for light/dark (same rule as the loading screen).

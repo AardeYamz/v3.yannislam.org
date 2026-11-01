@@ -2,6 +2,9 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, E
 import { isPlatformBrowser } from '@angular/common';
 import type { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
 import { ThemeService } from 'src/app/services/theme/theme.service';
+// The mark's polygons come from yl-theme (fetched by scripts/fetch-theme.js into src/generated/), so the loading screen
+// is drawn from the same numbers as the logos and yl-theme's own loader.
+import logoGeometry from 'src/generated/logo-geometry.json';
 
 // Just the handful of animejs functions this component actually calls,
 // destructured at the `await import('animejs')` call site (ngAfterViewInit)
@@ -41,6 +44,9 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
 
   readonly overlayRef = viewChild.required<ElementRef<HTMLDivElement>>('overlay');
   readonly logoGroupRef = viewChild.required<ElementRef<SVGGElement>>('logoGroup');
+
+  // { name, fill, points, line } per piece; `points` is the piece as drawn (the loading screen only fills them).
+  readonly pieces = logoGeometry.pieces;
 
   readonly finished = output<void>();
 

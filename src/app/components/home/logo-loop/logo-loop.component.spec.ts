@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LogoLoopComponent } from './logo-loop.component';
 import { ThemeService } from 'src/app/services/theme/theme.service';
+import logoGeometry from 'src/generated/logo-geometry.json';
 
 describe('LogoLoopComponent', () => {
     let fixture: ComponentFixture<LogoLoopComponent>;
@@ -39,5 +40,14 @@ describe('LogoLoopComponent', () => {
         expect(component.pieceFill(piece)).toBe('#000000');
         mode.mockReturnValue('dark');
         expect(component.pieceFill(piece)).toBe('#ffffff');
+    });
+
+    it("draws the theme's geometry: each piece's inset polygon, stroked at the geometry's width", () => {
+        const shapes = Array.from(el().querySelectorAll('.logo-loop__shape'));
+        expect(shapes.length).toBe(logoGeometry.pieces.length);
+        shapes.forEach((shape, i) => {
+            expect(shape.getAttribute('points')).toBe(logoGeometry.pieces[i].line);
+            expect(shape.getAttribute('stroke-width')).toBe(String(logoGeometry.stroke));
+        });
     });
 });
