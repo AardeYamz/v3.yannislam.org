@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy, AfterViewInit, signal, PLATFORM_ID, inject } from '@angular/core';
-import { isPlatformBrowser, DatePipe } from '@angular/common';
+import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { LinkPreviewDirective } from '../../../directives/link-preview/link-preview.directive';
 import { IconComponent } from 'src/app/icons/icon.component';
@@ -16,14 +17,11 @@ import { Contact, FooterConfig } from 'src/app/services/site-config/site-config.
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [LinkPreviewDirective, DatePipe, IconComponent],
-    host: {
-        '(window:scroll)': 'checkScrollPosition()',
-        '(window:resize)': 'checkScrollPosition()',
-    },
 })
-export class FooterComponent implements AfterViewInit {
+export class FooterComponent {
     analyticsService = inject(AnalyticsService);
     configService = inject(SiteConfigService);
+    private scrollService = inject(ScrollService);
 
     socials: Contact[];
     mobileSocials: Contact[];
@@ -31,23 +29,26 @@ export class FooterComponent implements AfterViewInit {
     footer: FooterConfig;
     currentDate = new Date();
 
+    // Small threshold so momentum/overscroll right at the end of the page
+    // still counts as "at the bottom" instead of requiring the scroll
+    // position to land on the exact last pixel.
+    private static readonly BOTTOM_THRESHOLD_PX = 4;
+
     // Whether the page is scrolled all the way to the bottom — on wide
     // viewports this collapses the fixed side bars (footer-left-bar /
     // footer-right-bar) into a single inline row within the footer itself,
-    // mirroring the layout already used on mobile. A signal (rather than a
-    // plain property) since it's written from a window scroll/resize
-    // listener outside any template binding; under zoneless change
-    // detection only a signal write is guaranteed to refresh an OnPush view.
-    atBottom = signal<boolean>(false);
-
-    // Domino (Angular's server-side DOM emulation) provides a `window`
-    // stand-in during prerendering, but scroll APIs like `scrollY` aren't
-    // meaningfully implemented there, so this is gated to the browser only.
-    private readonly isBrowser: boolean;
+    // mirroring the layout already used on mobile. Used to be computed from
+    // this component's own `window:scroll`/`window:resize` listeners,
+    // re-reading `document.documentElement.scrollHeight` (a forced layout)
+    // on every single scroll event. Derived from the shared ScrollService
+    // instead — one passive listener and one cached `maxScroll` (recomputed
+    // only on resize) for the whole page, rather than every scroll-driven
+    // component doing its own layout read per tick.
+    readonly atBottom = computed(() =>
+        this.scrollService.y() >= this.scrollService.maxScroll() - FooterComponent.BOTTOM_THRESHOLD_PX
+    );
 
     constructor() {
-        const platformId = inject(PLATFORM_ID);
-
         this.socials = this.configService.contacts;
         // Email is always in config.json's contact list (see CLAUDE.md's
         // "Add a New Social Link" section) -- non-null assertion rather
@@ -56,23 +57,5 @@ export class FooterComponent implements AfterViewInit {
         this.email = this.socials.find((item) => item.name === "Email")!;
         this.mobileSocials = this.socials.filter((item) => item.name !== "Email");
         this.footer = this.configService.footer;
-        this.isBrowser = isPlatformBrowser(platformId);
-    }
-
-    ngAfterViewInit() {
-        if (!this.isBrowser) return;
-        this.checkScrollPosition();
-    }
-
-    checkScrollPosition() {
-        if (!this.isBrowser) return;
-
-        // Small threshold so momentum/overscroll right at the end of the
-        // page still counts as "at the bottom" instead of requiring the
-        // scroll position to land on the exact last pixel.
-        const bottomThresholdPx = 4;
-        const scrolledToBottom = window.innerHeight + window.scrollY
-            >= document.documentElement.scrollHeight - bottomThresholdPx;
-        this.atBottom.set(scrolledToBottom);
     }
 }
