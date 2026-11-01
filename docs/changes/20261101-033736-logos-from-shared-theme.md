@@ -20,8 +20,8 @@ that also lives in the loaders and in other sites. They are now generated in the
   the build and the unit tests, so the header, the falling logos and the web
   manifest use the same URLs as before. No component changed.
 - The eleven SVGs are removed from `src/assets/images/logos/`. They are
-  byte-identical to what the theme generates (and carry the straightened
-  geometry from the same change).
+  byte-identical to what the theme generates (the original geometry and the
+  same centred crop).
 - `config.json`'s unused `manifestIcon` now names the served path.
 
 ## Notes
