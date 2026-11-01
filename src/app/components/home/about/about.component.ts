@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, signal, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, OnInit, OnDestroy, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { AosDirective } from '../../../directives/aos/aos.directive';
@@ -16,6 +17,8 @@ export class AboutComponent implements OnInit, OnDestroy {
 
   analyticsService = inject(AnalyticsService);
   configService = inject(SiteConfigService);
+  // Guards window/document access during SSR prerendering.
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   get data() { return this.configService.data; }
 
