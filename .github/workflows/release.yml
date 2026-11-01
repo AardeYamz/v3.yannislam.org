@@ -3,6 +3,8 @@ name: Release
 # Fires when Vercel reports a successful *Production* deployment (the GitHub
 # Deployments API entry Vercel creates for every push to main), so a tag and
 # release exist only for commits that actually shipped, not merely merged.
+# Vercel sets deployment.ref to the commit SHA, not the branch name, so the
+# environment alone identifies a push to main (previews are 'Preview').
 on:
   deployment_status:
 
@@ -18,8 +20,7 @@ jobs:
   release:
     if: >-
       github.event.deployment_status.state == 'success' &&
-      github.event.deployment.environment == 'Production' &&
-      github.event.deployment.ref == 'main'
+      github.event.deployment.environment == 'Production'
     runs-on: ubuntu-26.04
     timeout-minutes: 5
 
