@@ -43,6 +43,19 @@ export interface AardeYamzCard {
   content: string[];
 }
 
+export interface DavidImage {
+  src: string;
+  alt: string;
+  // Spans the full row instead of sharing it two-up.
+  wide?: boolean;
+}
+
+export interface DavidPage {
+  title: string;
+  subtitle: string;
+  images: DavidImage[];
+}
+
 // Every entry that can carry a `logoKey` (work/education/volunteering) gets
 // `imgs`/`image_alt` populated at runtime by SiteConfigService.resolveLogoKeys
 // — they don't exist in config.json itself, so they're optional here and
@@ -108,6 +121,7 @@ export interface AboutConfig {
   email: string;
   contact: Contact[];
   aardeyamz: AardeYamzCard[];
+  david: DavidPage;
   experiences: Experiences;
 }
 

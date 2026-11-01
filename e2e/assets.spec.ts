@@ -79,7 +79,7 @@ test.describe('assets', () => {
     // This is the check that notices when that didn't happen.
     const sitemap = await (await request.get('/sitemap.xml')).text();
 
-    for (const path of ['/', '/projects', '/projects/highschool', '/aardeyamz']) {
+    for (const path of ['/', '/projects', '/projects/highschool', '/aardeyamz', '/david']) {
       expect(sitemap).toContain(`<loc>https://yannislam.org${path}</loc>`);
     }
   });

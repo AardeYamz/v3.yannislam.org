@@ -15,5 +15,9 @@ export const routes: Routes = [
     path: 'aardeyamz',
     loadComponent: () => import('./components/other/aardeyamz/aardeyamz.component').then(m => m.AardeYamzComponent)
   },
+  {
+    path: 'david',
+    loadComponent: () => import('./components/other/david/david.component').then(m => m.DavidComponent)
+  },
   { path: '**', pathMatch: 'full', redirectTo: '/' },
 ];

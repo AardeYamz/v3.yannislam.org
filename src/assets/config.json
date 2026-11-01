@@ -137,6 +137,16 @@
         "handle": "@AardeYamz"
       }
     ],
+    "david": {
+      "title": "David",
+      "subtitle": "A Meme Page For David",
+      "images": [
+        { "src": "assets/images/david/david-and-yannis.jpg", "alt": "David and Yannis posing together", "wide": true },
+        { "src": "assets/images/david/sleeping-david.jpg", "alt": "David asleep" },
+        { "src": "assets/images/david/dwight-david.jpg", "alt": "David next to a Dwight Schrute meme" },
+        { "src": "assets/images/david/henry-and-david.jpg", "alt": "Henry and David", "wide": true }
+      ]
+    },
     "aardeyamz": [
       {
         "title": "Yannis Lam",

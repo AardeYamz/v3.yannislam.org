@@ -9,6 +9,7 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'projects', renderMode: RenderMode.Prerender },
   { path: 'projects/highschool', renderMode: RenderMode.Prerender },
   { path: 'aardeyamz', renderMode: RenderMode.Prerender },
+  { path: 'david', renderMode: RenderMode.Prerender },
   // Safety net for any route not explicitly listed above (e.g. the client-side
   // '**' redirect-to-'/' route) - still resolved to static HTML at build time.
   { path: '**', renderMode: RenderMode.Prerender },

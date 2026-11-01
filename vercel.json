@@ -34,7 +34,7 @@
       ]
     },
     {
-      "source": "/(projects|projects/highschool|aardeyamz)",
+      "source": "/(projects|projects/highschool|aardeyamz|david)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=60, stale-while-revalidate=86400" }
       ]

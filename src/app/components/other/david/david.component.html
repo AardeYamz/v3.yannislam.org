@@ -1,0 +1,17 @@
+<main>
+    <section class="section david">
+        <div class="container">
+            <div class="section-box">
+                <h3 class="section-title">{{david.title}}</h3>
+                <p class="david-subtitle">{{david.subtitle}}</p>
+                <div class="david-grid mt-5" data-aos="fade-up" data-aos-duration="1000">
+                    @for (image of david.images; track image.src) {
+                        <figure class="david-figure" [class.wide]="image.wide">
+                            <img [src]="image.src" [alt]="image.alt" loading="lazy" decoding="async">
+                        </figure>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

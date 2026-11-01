@@ -65,6 +65,12 @@ test.describe('navigation', () => {
     await expect(page.locator('.section.namecard')).toBeVisible();
   });
 
+  test('direct hard navigation renders /david', async ({ page }) => {
+    await gotoAndSettle(page, '/david');
+    await expect(page.locator('.section.david')).toBeVisible();
+    await expect(page.locator('.david-figure img')).toHaveCount(4);
+  });
+
   test('AardeYamz is an easter egg: reachable directly but absent from the visible nav', async ({ page }) => {
     await expect(page.locator('.nav-right ul.menu-ul').getByText('AardeYamz', { exact: true })).toHaveCount(0);
   });

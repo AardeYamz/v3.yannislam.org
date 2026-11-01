@@ -1,0 +1,45 @@
+@use "./../../../../variables.scss" as *;
+
+// Same top offset as the AardeYamz page (see aardeyamz.component.scss): the
+// fixed nav bar doesn't push content down, and this page's only content is
+// the section below.
+main {
+    display: block;
+    padding-top: 98px;
+}
+
+.david-subtitle {
+    font-family: $CodeFont;
+    font-size: 14px;
+    color: $Primary;
+}
+
+.david-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.david-figure {
+    margin: 0;
+    overflow: hidden;
+    border-radius: $ShapeLarge;
+    background-color: $SurfaceContainer;
+    box-shadow: $Elevation1;
+
+    &.wide {
+        grid-column: 1 / -1;
+    }
+
+    img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-width: 767px) {
+    .david-grid {
+        grid-template-columns: 1fr;
+    }
+}

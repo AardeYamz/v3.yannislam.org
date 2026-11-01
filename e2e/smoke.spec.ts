@@ -1,6 +1,6 @@
 import { test, expect, gotoAndSettle, headerNav } from './fixtures';
 
-const ROUTES = ['/', '/projects', '/projects/highschool', '/aardeyamz'];
+const ROUTES = ['/', '/projects', '/projects/highschool', '/aardeyamz', '/david'];
 
 test.describe('smoke', () => {
   test('home page boots: loading overlay plays out, header mounts, scroll is restored', async ({ page }) => {
