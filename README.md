@@ -411,3 +411,5 @@ with `ng update`.
 
 - [`CLAUDE.md`](CLAUDE.md): conventions for agents (and people) changing the code
 - [`docs/README.md`](docs/README.md): index of change write-ups, open plans and reviews
+- [`AGENTS.md`](AGENTS.md): the short version of `CLAUDE.md` for any AI coding agent
+- [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)
