@@ -1,6 +1,17 @@
 {
-  "version": "v2026-10-31-1532",
+  "version": "v2026-11-01-0333",
   "files": {
+    "logo-black.svg": "0cb80666a03163f7e7c2a0f212cf8286a0dcde04678d3931aed0a50841b4d90a",
+    "logo-clearcolor.svg": "56695cebfc4f3f475849826a7b7f70faf2879a55645c5228cc7fbb571f065dec",
+    "logo-cream.svg": "c9922a23320f85d74b7e02d7671b523327d8aec22ba02504b9c70051968b7cbf",
+    "logo-gold.svg": "3ab5d219cc43c2be8c43467b8d58f8dda11053a5e03ec341044cd456ab60fb0f",
+    "logo-gray.svg": "a725f07122724c9d47b041a15b1ca876ee3c2136ab1a98b5bf6ed97170b74a75",
+    "logo-green.svg": "2978db926e9e38dd58f61195d2873f250932a50c05ff6c63362cf208033cb7f0",
+    "logo-lime.svg": "f8ca9ca24c4d39bc1a816e3b74a040669d37e949736400b56f17eb95f3d0a095",
+    "logo-orange.svg": "aac3b0ab1326432e9c33d24d9fd0d4762e6c5d2f7b5df8dbed3764c2a39bb699",
+    "logo-red.svg": "4cf5d713340b3e0edb6203722db9d55530d1ab955935403f002a55a6cf1f5fad",
+    "logo-white.svg": "da7e2a83dc166010b01d9baef7356c0db22d4d82a5ba6d2bb7f3ce879b9a2f91",
+    "logo-yellow.svg": "3f60cb2ee473994f22c20905e9196299f8ed7378ef55a260a70c0c33841f84c2",
     "yl-tokens.css": "0ac897a75a1428a8ead190b503449a911e8b545b283d60e0b96cc8d47f76acb6"
   }
 }

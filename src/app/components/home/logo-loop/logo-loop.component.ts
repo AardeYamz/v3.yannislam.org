@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
 // The YL mark, one entry per piece, verbatim from the `<polygon>`s in
-// src/assets/images/logos/clearcolor.svg (same 800x800 viewBox space), in the
+// clearcolor.svg, the theme's logo (logos/logo.svg.tmpl in yl-theme; same 800x800 viewBox space), in the
 // same order as yl-theme's loading screen so the two animations match.
 const PIECES: readonly { fill: string; points: string }[] = [
   { fill: '#fff200', points: '287,194 287,80 343,194' },
