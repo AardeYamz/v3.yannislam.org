@@ -70,7 +70,7 @@ to an inert placeholder and warns.
   [ng-bootstrap](https://ng-bootstrap.github.io/) 21 for layout, nav and dropdowns
 - Material Design 3 color tokens (`--md-sys-color-*`) alongside the site's own
   `--color-*` palette, in the shared `yl-tokens.css` (fetched from
-  yl-theme per `theme.json` into `src/generated/`)
+  yl-theme per `theme.json` into `src/generated/`, with the logos)
 - Inline SVG icons (`src/app/icons/`): the dozen Font Awesome glyphs the site
   uses, inlined instead of loading the Font Awesome CSS and webfonts
 - [ngx-owl-carousel-o](https://www.npmjs.com/package/ngx-owl-carousel-o) for
@@ -151,7 +151,7 @@ flowchart TB
 | `AardeYamzComponent` + `NamecardComponent` | Page (lazy) | `/aardeyamz` |
 | `SiteConfigService` | Service | The only reader of `config.json`, typed by `site-config.model.ts` |
 | `ThemeService` | Service | `default` / `light` / `dark` modes, as signals, saved in `localStorage` and applied as `[data-theme]` on `<html>`. The colors themselves are not here: they come from `yl-tokens.css` (below) |
-| `yl-tokens.css` | Dependency | Color tokens from the separate [yl-theme](https://github.com/AardeYamz/yl-theme) project. `theme.json` pins a version and SHA-256; `scripts/fetch-theme.js` downloads it from `theme.yannislam.org` into git-ignored `src/generated/` before every start, build, test and e2e run, and `angular.json` loads it as a global stylesheet |
+| `yl-tokens.css` | Dependency | Color tokens from the separate [yl-theme](https://github.com/AardeYamz/yl-theme) project. `theme.json` pins a version and SHA-256; `scripts/fetch-theme.js` downloads it, the eleven logos and `logo-geometry.json` (which the loading screen and banner mark draw from) and the favicons, from `theme.yannislam.org` into git-ignored `src/generated/` before every start, build, test and e2e run; `angular.json` loads the tokens as a global stylesheet and serves the logos at `assets/images/logos/` |
 | `AnalyticsService` | Service | Calls the global `gtag()` for custom events |
 | `ResumeService` | Service | Builds the resume download link from `resume-manifest.json` |
 
@@ -201,7 +201,7 @@ src/
 │   ├── config.json           # All page content
 │   ├── resume-manifest.json  # Written by the pre-hook
 │   ├── fonts/  images/  resume/
-├── generated/yl-tokens.css   # Color tokens per [data-theme], fetched from yl-theme (git-ignored; see theme.json)
+├── generated/                # yl-tokens.css (color tokens per [data-theme]), logos/<variant>.svg and logo-geometry.json, fetched from yl-theme (git-ignored; see theme.json)
 ├── styles.scss               # Global styles
 ├── bootstrap-custom.scss     # Bootstrap overrides
 ├── fonts.scss                # @font-face (Calibre, SF Mono)
@@ -355,7 +355,7 @@ A newer push to the same PR cancels the older run
 |---|---|---|
 | [Build & Test](.github/workflows/build-test.yml) | PR to `main`/`master`/`develop`; push to `main`; Mondays 07:00 UTC; manual | The jobs above |
 | [Security](.github/workflows/security.yml) | Same, Mondays 06:30 UTC | Lints the workflow files with zizmor |
-| [Release](.github/workflows/release.yml) | Vercel `deployment_status` | On a successful Production deploy of `main`, tags `vYYYYMMDDHHMMSS` and creates a release for that commit |
+| [Release](.github/workflows/release.yml) | Vercel `deployment_status` | On a successful Production deploy of `main`, tags `vYYYYMMDD-HHMMSS` and creates a release for that commit |
 | [Merge main into PRs](.github/workflows/sync-prs.yml) | Push to `main`; manual | Merges `main` into each open PR that is behind; comments once on conflicts; skips fork and Dependabot PRs |
 | [Dependabot auto-merge](.github/workflows/dependabot-auto-merge.yml) | `pull_request_target` | Waits for checks, then merges Dependabot patch/minor bumps and dev-only majors; production majors wait for review |
 | [Vercel build warnings](.github/workflows/vercel-build-warnings.yml) | Vercel `deployment_status` | Fetches a preview deploy's Vercel build log and keeps its warning/error lines in a sticky PR comment (needs `VERCEL_TOKEN`) |
@@ -405,9 +405,11 @@ Bumps are grouped: `angular` (the `@angular/*` packages and libraries tied to
 an Angular major, which must move together), `testing`, and a
 `minor-and-patch` catch-all. Other majors arrive one per PR so each can be
 reverted alone. Angular majors are ignored by Dependabot and upgraded by hand
-with `ng update` (see `docs/changes/20260727-205542-UPGRADE-NOTES.md`).
+with `ng update`.
 
 ## Further documentation
 
 - [`CLAUDE.md`](CLAUDE.md): conventions for agents (and people) changing the code
 - [`docs/README.md`](docs/README.md): index of change write-ups, open plans and reviews
+- [`AGENTS.md`](AGENTS.md): the short version of `CLAUDE.md` for any AI coding agent
+- [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)

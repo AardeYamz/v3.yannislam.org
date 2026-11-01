@@ -1,0 +1,80 @@
+// Desktop only: below 992px (the width the rest of the site treats as
+// desktop) this renders nothing and the banner keeps its falling logos.
+:host {
+    display: none;
+}
+
+@media (min-width: 992px) {
+    :host {
+        display: block;
+        position: absolute;
+        z-index: 1;
+        right: 5vw;
+        top: 50%;
+        height: min(72vh, 640px);
+        aspect-ratio: 340 / 676;
+        margin-top: 49px; // the banner copy is pushed down by .content's 98px
+        transform: translateY(-50%);
+        // Only the pieces take the pointer, so the copy underneath stays clickable.
+        pointer-events: none;
+    }
+}
+
+.logo-loop {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+// Draw the outline (the dash uncovers it; pathLength=1 so nothing to
+// measure), fill it in, hold, then fade, and go round again.
+.logo-loop__shape {
+    pointer-events: auto;
+    // Sharp corners: the tips are acute (about 26 degrees), so lift the miter cap.
+    stroke-linejoin: miter;
+    stroke-miterlimit: 10;
+    stroke-dasharray: 1 2;
+    stroke-dashoffset: 1;
+    fill-opacity: 0;
+    animation: logo-loop 6s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.12s);
+}
+
+// Hovering any piece drops out of the loop: the outlines stay drawn and just
+// fill in.
+:host:has(.logo-loop__shape:hover) .logo-loop__shape {
+    animation: logo-loop-fill 0.5s ease-out forwards;
+    animation-delay: calc(var(--i) * 0.04s);
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+}
+
+@keyframes logo-loop-fill {
+    from { fill-opacity: 0; }
+    to   { fill-opacity: 1; }
+}
+
+// The dash pattern is only for drawing the outline: a dashed path can't join
+// its closing corner, which leaves a notch, so once a piece is fully drawn
+// the dashing is switched off (31%-94%).
+@keyframes logo-loop {
+    0%   { stroke-dasharray: 1 2; stroke-dashoffset: 1; fill-opacity: 0; opacity: 1; }
+    30%  { stroke-dasharray: 1 2; stroke-dashoffset: 0; fill-opacity: 0; opacity: 1; }
+    31%  { stroke-dasharray: none; stroke-dashoffset: 0; fill-opacity: 0; opacity: 1; }
+    45%  { stroke-dasharray: none; stroke-dashoffset: 0; fill-opacity: 1; opacity: 1; }
+    82%  { stroke-dasharray: none; stroke-dashoffset: 0; fill-opacity: 1; opacity: 1; }
+    94%  { stroke-dasharray: none; stroke-dashoffset: 0; fill-opacity: 1; opacity: 0; }
+    95%  { stroke-dasharray: 1 2; stroke-dashoffset: 0; fill-opacity: 1; opacity: 0; }
+    100% { stroke-dasharray: 1 2; stroke-dashoffset: 1; fill-opacity: 0; opacity: 0; }
+}
+
+// No motion: show the finished mark and skip the loop.
+@media (prefers-reduced-motion: reduce) {
+    .logo-loop__shape {
+        animation: none;
+        stroke-dasharray: none;
+        stroke-dashoffset: 0;
+        fill-opacity: 1;
+    }
+}
