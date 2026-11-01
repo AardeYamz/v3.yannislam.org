@@ -1,21 +1,22 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
-// The YL mark, one entry per piece, verbatim from the `<polygon>`s in
-// clearcolor.svg, the theme's logo (logos/logo.svg.tmpl in yl-theme; same 800x800 viewBox space), in the
-// same order as yl-theme's loading screen so the two animations match.
+// The YL mark, one entry per piece, in the same order as yl-theme's loading screen so the two animations
+// match. The points are yl-theme's logo (scripts/logo_geometry.py; see its docs/logo-geometry.md) pulled in by half
+// the 4-unit stroke the SCSS draws, so the stroke's outer edge lands on the logo's real edge: the outlined mark is the
+// same size as the filled one and the gaps between pieces stay equal. (yl-theme's loader does the same: LOGO_LINE.)
 const PIECES: readonly { fill: string; points: string }[] = [
-  { fill: '#fff200', points: '287,195 287,79 345,195' },
-  { fill: '#fff200', points: '494,195 494,79 436,195' },
-  { fill: '#7f7f7f', points: '359,203.5 422,203.5 390.5,266.5' },
-  { fill: '#ffc90e', points: '355,335 289,203 349,203 385,275' },
-  { fill: '#ffc90e', points: '426,335 396,275 432,203 492,203' },
-  { fill: '#ed1c24', points: '359.5,343.5 390.5,281.5 421.5,343.5 390.5,405.5' },
-  { fill: '#b5e61d', points: '322,539 386,411 386,671 322,671' },
-  { fill: '#ffc90e', points: '395,411 459,539 459,671 395,671' },
-  { fill: '#22b14c', points: '320,679 380,679 353,733 293,733' },
-  { fill: '#ff7f27', points: '487,733 427,733 400,679 460,679' },
-  { fill: '#efe4b0', points: '603,733 497,733 470,679 576,679' }
+  { fill: '#fff200', points: '289,192.5 289,87.47 341.51,192.5' },
+  { fill: '#fff200', points: '492,87.47 492,192.5 439.49,192.5' },
+  { fill: '#7f7f7f', points: '390.5,260.35 363.58,206.5 417.42,206.5' },
+  { fill: '#ffc90e', points: '353.83,328 293.09,206.5 347.92,206.5 381.25,273.16' },
+  { fill: '#ffc90e', points: '399.75,273.16 433.08,206.5 487.91,206.5 427.17,328' },
+  { fill: '#ed1c24', points: '390.5,401.33 361.66,343.65 390.5,285.97 419.34,343.65' },
+  { fill: '#b5e61d', points: '383.5,422.93 383.5,668 324,668 324,541.93' },
+  { fill: '#ffc90e', points: '457,541.93 457,668 397.5,668 397.5,422.93' },
+  { fill: '#22b14c', points: '351.76,731 296.24,731 320.74,682 376.26,682' },
+  { fill: '#ff7f27', points: '484.76,731 429.24,731 404.74,682 460.26,682' },
+  { fill: '#efe4b0', points: '599.76,731 500.42,731 475.92,682 575.26,682' }
 ];
 
 interface Piece {

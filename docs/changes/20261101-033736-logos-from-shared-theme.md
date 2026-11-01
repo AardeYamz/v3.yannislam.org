@@ -21,8 +21,9 @@ that also lives in the loaders and in other sites. They are now generated in the
   manifest use the same URLs as before. No component changed.
 - The eleven SVGs are removed from `src/assets/images/logos/`. They are
   what the theme generates, but the theme's geometry was re-measured from the
-  original PNGs (the SVGs had drifted by up to 6 px, and the bottoms were not
-  level) and the crop refit, so the logos change slightly.
+  original PNGs (the SVGs had drifted by up to 6 px, the bottoms were not level
+  and the gaps between pieces were unequal): now every gap is one width, set by
+  one number in yl-theme, and the crop is refit, so the logos change slightly.
 - The loading screen's polygons and the banner mark use the same geometry.
 - `config.json`'s unused `manifestIcon` now names the served path.
 
