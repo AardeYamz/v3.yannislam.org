@@ -1,3 +1,4 @@
+import type { MockedObject } from "vitest";
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -11,51 +12,55 @@ import { SiteConfigService } from './services/site-config/site-config.service';
 import { ThemeService } from './services/theme/theme.service';
 
 describe('AppComponent', () => {
-  let analyticsService: jasmine.SpyObj<AnalyticsService>;
-  let configService: jasmine.SpyObj<SiteConfigService>;
-  let themeService: jasmine.SpyObj<ThemeService>;
+    let analyticsService: MockedObject<AnalyticsService>;
+    let configService: MockedObject<SiteConfigService>;
+    let themeService: MockedObject<ThemeService>;
 
-  beforeEach(() => {
-    const analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['sendAnalyticEvent']);
-    const configServiceSpy = jasmine.createSpyObj('SiteConfigService', [], {
-      data: { banner: { greeting: 'Hello', name: 'Test', typeSection: [], blurb: [] } },
-      contacts: [],
-      footer: { repo: { url: '', text: '' }, builtWith: { text: '', url: '', linkText: '' }, designCredits: [] }
+    beforeEach(() => {
+        const analyticsServiceSpy = {
+            sendAnalyticEvent: vi.fn().mockName("AnalyticsService.sendAnalyticEvent")
+        };
+        const configServiceSpy = {
+            data: { banner: { greeting: 'Hello', name: 'Test', typeSection: [], blurb: [] } },
+            contacts: [],
+            footer: { repo: { url: '', text: '' }, builtWith: { text: '', url: '', linkText: '' }, designCredits: [] }
+        };
+        const themeServiceSpy = {
+            mode: vi.fn().mockName('mode').mockReturnValue('default')
+        };
+
+        TestBed.configureTestingModule({
+            imports: [RouterTestingModule, LoadingScreenComponent, HeaderComponent, FooterComponent, AppComponent],
+            providers: [
+                provideNoopAnimations(),
+                { provide: AnalyticsService, useValue: analyticsServiceSpy },
+                { provide: SiteConfigService, useValue: configServiceSpy },
+                { provide: ThemeService, useValue: themeServiceSpy }
+            ]
+        });
+
+        analyticsService = TestBed.inject(AnalyticsService) as MockedObject<AnalyticsService>;
+        configService = TestBed.inject(SiteConfigService) as MockedObject<SiteConfigService>;
+        themeService = TestBed.inject(ThemeService) as MockedObject<ThemeService>;
     });
-    const themeServiceSpy = jasmine.createSpyObj('ThemeService', [], { mode: jasmine.createSpy('mode').and.returnValue('default') });
 
-    TestBed.configureTestingModule({
-    imports: [RouterTestingModule, LoadingScreenComponent, HeaderComponent, FooterComponent, AppComponent],
-    providers: [
-        provideNoopAnimations(),
-        { provide: AnalyticsService, useValue: analyticsServiceSpy },
-        { provide: SiteConfigService, useValue: configServiceSpy },
-        { provide: ThemeService, useValue: themeServiceSpy }
-    ]
-});
+    it('should create the app', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        const app = fixture.componentInstance;
+        expect(app).toBeTruthy();
+    });
 
-    analyticsService = TestBed.inject(AnalyticsService) as jasmine.SpyObj<AnalyticsService>;
-    configService = TestBed.inject(SiteConfigService) as jasmine.SpyObj<SiteConfigService>;
-    themeService = TestBed.inject(ThemeService) as jasmine.SpyObj<ThemeService>;
-  });
+    it('should have headerReady as false initially', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        const app = fixture.componentInstance;
+        expect(app.headerReady).toBe(false);
+    });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it('should have headerReady as false initially', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.headerReady).toBe(false);
-  });
-
-  it('should set headerReady to true when loading screen finishes', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    app.onLoadingScreenFinished();
-    expect(app.headerReady).toBe(true);
-  });
+    it('should set headerReady to true when loading screen finishes', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        const app = fixture.componentInstance;
+        app.onLoadingScreenFinished();
+        expect(app.headerReady).toBe(true);
+    });
 
 });

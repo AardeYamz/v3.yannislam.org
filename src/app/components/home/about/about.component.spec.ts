@@ -1,3 +1,4 @@
+import type { MockedObject } from "vitest";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule } from '@angular/common';
 
@@ -7,54 +8,56 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
 import { AosDirective } from 'src/app/directives/aos/aos.directive';
 
 describe('AboutComponent', () => {
-  let component: AboutComponent;
-  let fixture: ComponentFixture<AboutComponent>;
-  let analyticsService: jasmine.SpyObj<AnalyticsService>;
-  let configService: jasmine.SpyObj<SiteConfigService>;
+    let component: AboutComponent;
+    let fixture: ComponentFixture<AboutComponent>;
+    let analyticsService: MockedObject<AnalyticsService>;
+    let configService: MockedObject<SiteConfigService>;
 
-  beforeEach(() => {
-    const analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['sendAnalyticEvent']);
-    const configServiceSpy = jasmine.createSpyObj('SiteConfigService', [], {
-      data: {
-        about: {
-          first: 'John',
-          last: 'Doe',
-          email: 'john@example.com',
-          contact: [],
-          aardeyamz: []
-        },
-        experiences: {}
-      }
+    beforeEach(() => {
+        const analyticsServiceSpy = {
+            sendAnalyticEvent: vi.fn().mockName("AnalyticsService.sendAnalyticEvent")
+        };
+        const configServiceSpy = {
+            data: {
+                about: {
+                    first: 'John',
+                    last: 'Doe',
+                    email: 'john@example.com',
+                    contact: [],
+                    aardeyamz: []
+                },
+                experiences: {}
+            }
+        };
+
+        TestBed.configureTestingModule({
+            imports: [CommonModule, AosDirective, AboutComponent],
+            providers: [
+                { provide: AnalyticsService, useValue: analyticsServiceSpy },
+                { provide: SiteConfigService, useValue: configServiceSpy }
+            ]
+        });
+
+        analyticsService = TestBed.inject(AnalyticsService) as MockedObject<AnalyticsService>;
+        configService = TestBed.inject(SiteConfigService) as MockedObject<SiteConfigService>;
+        fixture = TestBed.createComponent(AboutComponent);
+        component = fixture.componentInstance;
     });
 
-    TestBed.configureTestingModule({
-    imports: [CommonModule, AosDirective, AboutComponent],
-    providers: [
-        { provide: AnalyticsService, useValue: analyticsServiceSpy },
-        { provide: SiteConfigService, useValue: configServiceSpy }
-    ]
-});
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 
-    analyticsService = TestBed.inject(AnalyticsService) as jasmine.SpyObj<AnalyticsService>;
-    configService = TestBed.inject(SiteConfigService) as jasmine.SpyObj<SiteConfigService>;
-    fixture = TestBed.createComponent(AboutComponent);
-    component = fixture.componentInstance;
-  });
+    it('should get data from config service', () => {
+        expect(component.data).toBeDefined();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should have analytics service', () => {
+        expect(component.analyticsService).toBeDefined();
+    });
 
-  it('should get data from config service', () => {
-    expect(component.data).toBeDefined();
-  });
-
-  it('should have analytics service', () => {
-    expect(component.analyticsService).toBeDefined();
-  });
-
-  it('should have config service', () => {
-    expect(component.configService).toBeDefined();
-  });
+    it('should have config service', () => {
+        expect(component.configService).toBeDefined();
+    });
 
 });

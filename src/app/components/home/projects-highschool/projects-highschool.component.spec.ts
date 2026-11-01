@@ -1,49 +1,50 @@
+import type { MockedObject } from "vitest";
 import { TestBed } from '@angular/core/testing';
 import { ProjectsHighschoolComponent } from './projects-highschool.component';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 describe('ProjectsHighschoolComponent', () => {
-  let component: ProjectsHighschoolComponent;
-  let configService: jasmine.SpyObj<SiteConfigService>;
+    let component: ProjectsHighschoolComponent;
+    let configService: MockedObject<SiteConfigService>;
 
-  beforeEach(() => {
-    configService = jasmine.createSpyObj('SiteConfigService', [], {
-      projects: {
-        highschool: {
-          sectionId: 'projects-highschool',
-          navNumber: '5.2.',
-          headingText: 'High School Projects',
-          list: [
-            { title: 'High School Project 1', description: ['A learning project'], imgs: [], timeframe: '2019' }
-          ]
-        }
-      }
+    beforeEach(() => {
+        configService = {
+            projects: {
+                highschool: {
+                    sectionId: 'projects-highschool',
+                    navNumber: '5.2.',
+                    headingText: 'High School Projects',
+                    list: [
+                        { title: 'High School Project 1', description: ['A learning project'], imgs: [], timeframe: '2019' }
+                    ]
+                }
+            }
+        } as unknown as MockedObject<SiteConfigService>;
+
+        TestBed.configureTestingModule({
+            providers: [{ provide: SiteConfigService, useValue: configService }]
+        });
+        component = TestBed.runInInjectionContext(() => new ProjectsHighschoolComponent());
     });
 
-    TestBed.configureTestingModule({
-      providers: [{ provide: SiteConfigService, useValue: configService }]
+    it('should create', () => {
+        expect(component).toBeTruthy();
     });
-    component = TestBed.runInInjectionContext(() => new ProjectsHighschoolComponent());
-  });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should get highschool projects from configService', () => {
+        expect(component.highschool).toBe(configService.projects.highschool);
+    });
 
-  it('should get highschool projects from configService', () => {
-    expect(component.highschool).toBe(configService.projects.highschool);
-  });
+    it('should have highschool property defined', () => {
+        expect(component.highschool).toBeDefined();
+    });
 
-  it('should have highschool property defined', () => {
-    expect(component.highschool).toBeDefined();
-  });
+    it('should have a highschool projects list array', () => {
+        expect(Array.isArray(component.highschool.list)).toBe(true);
+    });
 
-  it('should have a highschool projects list array', () => {
-    expect(Array.isArray(component.highschool.list)).toBe(true);
-  });
-
-  it('should handle highschool list with items', () => {
-    expect(component.highschool.list.length).toBeGreaterThan(0);
-    expect(component.highschool.list[0].title).toBe('High School Project 1');
-  });
+    it('should handle highschool list with items', () => {
+        expect(component.highschool.list.length).toBeGreaterThan(0);
+        expect(component.highschool.list[0].title).toBe('High School Project 1');
+    });
 });
