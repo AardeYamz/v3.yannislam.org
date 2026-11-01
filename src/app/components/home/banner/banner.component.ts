@@ -1,10 +1,14 @@
-import { Component, ChangeDetectionStrategy, Inject, PLATFORM_ID, signal, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, PLATFORM_ID, signal, OnDestroy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
+import { FloatingLogosComponent } from '../floating-logos/floating-logos.component';
+import { LogoLoopComponent } from '../logo-loop/logo-loop.component';
+import { TypewriterComponent } from './typewriter/typewriter.component';
+import { LinkPreviewDelegateDirective } from '../../../directives/link-preview/link-preview-delegate.directive';
 
 // Minimum/maximum time the guided auto-scroll is allowed to take, regardless of page length.
 const AUTO_SCROLL_MIN_DURATION_MS = 6000;
@@ -66,24 +70,22 @@ export function scrollEaseProgress(t: number, durationMs: number, easeMs = AUTO_
         fadeStaggerAnimation('bannerTrigger', 'translateX(-50px)')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [FloatingLogosComponent, LogoLoopComponent, TypewriterComponent, LinkPreviewDelegateDirective]
 })
 export class BannerComponent implements OnDestroy {
+    analyticsService = inject(AnalyticsService);
+    configService = inject(SiteConfigService);
+    private resumeService = inject(ResumeService);
+
     // Guards window/document access during SSR prerendering.
-    readonly isBrowser: boolean;
+    readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
     showScrollArrow = signal(false);
 
     private autoScrollFrame: number | null = null;
     private cancelAutoScroll: (() => void) | null = null;
 
-    constructor(
-        public analyticsService: AnalyticsService,
-        public configService: SiteConfigService,
-        private resumeService: ResumeService,
-        @Inject(PLATFORM_ID) platformId: object,
-    ) {
-        this.isBrowser = isPlatformBrowser(platformId);
+    constructor() {
         if (this.isBrowser) {
             setTimeout(() => this.showScrollArrow.set(true), 5000);
         }

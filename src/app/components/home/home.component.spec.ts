@@ -3,7 +3,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { HomeComponent } from './home.component';
-import { HomeModule } from './home.module';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ThemeService } from 'src/app/services/theme/theme.service';
@@ -36,7 +35,7 @@ describe('HomeComponent', () => {
     const resumeServiceSpy = jasmine.createSpyObj('ResumeService', ['open']);
 
     TestBed.configureTestingModule({
-      imports: [HomeModule, RouterTestingModule],
+      imports: [HomeComponent, RouterTestingModule],
       providers: [
         provideNoopAnimations(),
         { provide: SiteConfigService, useValue: configServiceSpy },

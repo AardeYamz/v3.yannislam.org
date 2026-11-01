@@ -34,7 +34,7 @@
             "styles": [
               "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
               "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
-              "src/theme.scss",
+              "src/generated/yl-tokens.css",
               "src/styles.scss",
               "src/aos.scss",
               "src/link-preview.scss",
@@ -44,7 +44,15 @@
             "stylePreprocessorOptions": {
               "includePaths": [
                 "."
-              ]
+              ],
+              "sass": {
+                "silenceDeprecations": [
+                  "import",
+                  "global-builtin",
+                  "color-functions",
+                  "if-function"
+                ]
+              }
             },
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -65,7 +73,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
+                  "maximumWarning": "7kb",
                   "maximumError": "8kb"
                 }
               ],
@@ -106,7 +114,7 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/theme.scss", "src/styles.scss"],
+            "styles": ["src/generated/yl-tokens.css", "src/styles.scss"],
             "scripts": [],
             "karmaConfig": "karma.conf.js"
           }

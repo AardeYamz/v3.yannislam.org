@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestroy, Output, PLATFORM_ID, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, output } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import type { animate, createTimeline, JSAnimation, random, stagger } from 'animejs';
 import { ThemeService } from 'src/app/services/theme/theme.service';
@@ -19,8 +19,10 @@ const FLY_DISTANCE = 260;
 
 // Floor so a fast load doesn't just flash the intro and immediately cut to
 // the outro before the assembly animation (and a beat of the breathe loop)
-// has had a chance to actually play.
-const MIN_DISPLAY_MS = 1400;
+// has had a chance to actually play. Kept short deliberately: this overlay
+// is the LCP element until it fades, so every millisecond here is a
+// millisecond added to LCP/FCP (see docs/todo/desktop-performance.md).
+const MIN_DISPLAY_MS = 400;
 
 // With prefers-reduced-motion, the intro/breathe/scale-punch are skipped
 // entirely (see ngAfterViewInit/playOutro) - this just holds the overlay up
@@ -28,17 +30,19 @@ const MIN_DISPLAY_MS = 1400;
 const REDUCED_MOTION_DISPLAY_MS = 300;
 
 @Component({
-  selector: 'app-loading-screen',
-  templateUrl: './loading-screen.component.html',
-  styleUrls: ['./loading-screen.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-loading-screen',
+    templateUrl: './loading-screen.component.html',
+    styleUrls: ['./loading-screen.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('overlay', { static: true }) overlayRef!: ElementRef<HTMLDivElement>;
-  @ViewChild('logoGroup', { static: true }) logoGroupRef!: ElementRef<SVGGElement>;
+  private themeService = inject(ThemeService);
+  private cdr = inject(ChangeDetectorRef);
 
-  @Output() finished = new EventEmitter<void>();
+  readonly overlayRef = viewChild.required<ElementRef<HTMLDivElement>>('overlay');
+  readonly logoGroupRef = viewChild.required<ElementRef<SVGGElement>>('logoGroup');
+
+  readonly finished = output<void>();
 
   // Deliberately the same default on the server and on every client boot
   // (cold or hydrating a prerendered page) - see ngAfterViewInit's server
@@ -67,11 +71,9 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   // HTML for SEO/crawlability, independent of this component entirely.
   private readonly isBrowser: boolean;
 
-  constructor(
-    private themeService: ThemeService,
-    private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) platformId: object,
-  ) {
+  constructor() {
+    const platformId = inject(PLATFORM_ID);
+
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
@@ -136,7 +138,7 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
 
   private playIntro(): void {
     const { animate, random, stagger } = this.animejsFns!;
-    const pieces = Array.from(this.logoGroupRef.nativeElement.querySelectorAll<SVGGraphicsElement>('.logo-piece'));
+    const pieces = Array.from(this.logoGroupRef().nativeElement.querySelectorAll<SVGGraphicsElement>('.logo-piece'));
 
     // Sort top-left -> bottom-right so the default (first-to-last) stagger
     // sweeps the assembly diagonally across the mark in that direction.
@@ -156,7 +158,7 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   }
 
   private playBreathe(): void {
-    this.breathe = this.animejsFns!.animate(this.logoGroupRef.nativeElement, {
+    this.breathe = this.animejsFns!.animate(this.logoGroupRef().nativeElement, {
       scale: [1, 1.035],
       duration: 1000,
       ease: 'inOutSine',
@@ -168,7 +170,7 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
   private playOutro(): void {
     this.breathe?.revert();
 
-    const overlay = this.overlayRef.nativeElement;
+    const overlay = this.overlayRef().nativeElement;
     const finish = () => {
       // This callback comes from animejs's own rAF-driven timeline (or, for
       // reduced motion, runs synchronously outside any Angular-bound event)
@@ -187,7 +189,7 @@ export class LoadingScreenComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const logoGroup = this.logoGroupRef.nativeElement;
+    const logoGroup = this.logoGroupRef().nativeElement;
     this.animejsFns.createTimeline()
       .add(logoGroup, { scale: 1.1, duration: 200, ease: 'outQuad' })
       .add(overlay, {

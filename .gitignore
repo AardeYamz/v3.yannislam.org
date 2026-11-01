@@ -11,6 +11,15 @@
 npm-debug.log
 yarn-error.log
 
+# Local environment files and Vercel CLI state. The CLI writes .env.local,
+# which carries a VERCEL_OIDC_TOKEN, and .vercel/, which holds this project's
+# ids. Ignored here (and not only in a clone's local .git/info/exclude) so a
+# fresh checkout or CI runner is protected before anyone reaches for `git add`.
+.env
+.env.*
+!.env.example
+.vercel
+
 # Claude Code session worktrees
 /.claude/
 
@@ -54,3 +63,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Fetched by scripts/fetch-theme.js from the yl-theme project (see theme.json)
+/src/generated/

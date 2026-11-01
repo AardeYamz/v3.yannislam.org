@@ -11,7 +11,7 @@ $OrangeOpacity : var(--color-orange-opacity);
 $MainFont: Calibre, San Francisco, SF Pro Text, -apple-system, system-ui, BlinkMacSystemFont, Roboto, Helvetica Neue, Segoe UI, Arial, sans-serif;
 $CodeFont: SF Mono, Fira Code, Fira Mono, Roboto Mono, Lucida Console, Monaco, Monospace;
 
-// --- Material Design 3 tokens (see theme.scss for the underlying custom properties) ---
+// --- Material Design 3 tokens (see the shared yl-tokens.css, fetched per theme.json, for the underlying custom properties) ---
 
 $Primary: var(--md-sys-color-primary);
 $OnPrimary: var(--md-sys-color-on-primary);

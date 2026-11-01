@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, PLATFORM_ID, QueryList, ViewChildren, effect } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, PLATFORM_ID, effect, inject, viewChildren } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
@@ -75,15 +75,21 @@ const DODGE_MAX_PX = 90;
 const DODGE_APPROACH = 0.12;
 const DODGE_TARGET_DECAY = 0.94;
 
+// Same width the banner's looping mark and the rest of the site treat as desktop.
+const DESKTOP_QUERY = '(min-width: 992px)';
+
 @Component({
-  selector: 'app-floating-logos',
-  templateUrl: './floating-logos.component.html',
-  styleUrls: ['./floating-logos.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-floating-logos',
+    templateUrl: './floating-logos.component.html',
+    styleUrls: ['./floating-logos.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
-  @ViewChildren('logoEl') private logoEls!: QueryList<ElementRef<HTMLElement>>;
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private themeService = inject(ThemeService);
+  private cdr = inject(ChangeDetectorRef);
+
+  private readonly logoEls = viewChildren<ElementRef<HTMLElement>>('logoEl');
 
   readonly logos: FloatingLogo[] = this.generateLogos();
 
@@ -111,15 +117,15 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   private tabVisible = true;
   private inViewport = true;
   private intersectionObserver?: IntersectionObserver;
+  private desktopQuery!: MediaQueryList;
+  // Desktop only: falling is limited to the About section (see onIntersect).
+  private aboutOnly = false;
 
   private isFirstThemeCheck = true;
 
-  constructor(
-    private host: ElementRef<HTMLElement>,
-    private themeService: ThemeService,
-    private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) platformId: object,
-  ) {
+  constructor() {
+    const platformId = inject(PLATFORM_ID);
+
     this.isBrowser = isPlatformBrowser(platformId);
     this.prefersReducedMotion = this.isBrowser && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -161,12 +167,33 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   // the viewport entirely (tab stays visible, but this element doesn't) -
   // an IntersectionObserver on the host catches that case the
   // visibilitychange listener can't.
+  //
+  // On desktop the field is fixed to the viewport and only belongs to the
+  // About section: the observer watches #about instead of the host, and
+  // while About is out of view the field is hidden (`is-idle`) and paused.
   private readonly onIntersect = (entries: IntersectionObserverEntry[]) => {
+    const visible = entries[0]?.isIntersecting ?? true;
+    this.host.nativeElement.classList.toggle('is-idle', this.aboutOnly && !visible);
+
     if (this.prefersReducedMotion) return;
 
-    this.inViewport = entries[0]?.isIntersecting ?? true;
+    this.inViewport = visible;
     this.syncLoop();
   };
+
+  // (Re)attaches the observer for the current breakpoint; also runs when the
+  // window crosses the desktop breakpoint.
+  private observeVisibility(): void {
+    this.intersectionObserver?.disconnect();
+    const about = this.desktopQuery.matches ? document.getElementById('about') : null;
+    this.aboutOnly = !!about;
+    this.host.nativeElement.classList.toggle('is-idle', this.aboutOnly);
+    // Counts as "in view" once About's top is in the upper 70% of the screen.
+    this.intersectionObserver = new IntersectionObserver(this.onIntersect, about ? { rootMargin: '0px 0px -30% 0px' } : undefined);
+    this.intersectionObserver.observe(about ?? this.host.nativeElement);
+  }
+
+  private readonly onDesktopChange = () => this.observeVisibility();
 
   private syncLoop(): void {
     if (this.tabVisible && this.inViewport) {
@@ -177,7 +204,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.elements = this.logoEls.map(ref => ref.nativeElement);
+    this.elements = this.logoEls().map(ref => ref.nativeElement);
 
     // getBoundingClientRect(), the resize listener, and the rAF animation
     // loop below all need real layout/browser APIs that don't exist during
@@ -201,8 +228,9 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
     window.addEventListener('resize', this.onResize);
     document.addEventListener('visibilitychange', this.onVisibilityChange);
 
-    this.intersectionObserver = new IntersectionObserver(this.onIntersect);
-    this.intersectionObserver.observe(this.host.nativeElement);
+    this.desktopQuery = window.matchMedia(DESKTOP_QUERY);
+    this.desktopQuery.addEventListener('change', this.onDesktopChange);
+    this.observeVisibility();
 
     if (this.prefersReducedMotion) {
       return;
@@ -218,6 +246,7 @@ export class FloatingLogosComponent implements AfterViewInit, OnDestroy {
       window.removeEventListener('resize', this.onResize);
       document.removeEventListener('visibilitychange', this.onVisibilityChange);
       this.intersectionObserver?.disconnect();
+      this.desktopQuery?.removeEventListener('change', this.onDesktopChange);
     }
   }
 

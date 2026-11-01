@@ -4,6 +4,7 @@
          class="floating-logo"
          [src]="'assets/images/logos/' + logo.variant + '.svg'"
          [style.width.px]="logo.size"
+         [style.height.px]="logo.size"
          [style.opacity]="logo.opacity"
          (mouseenter)="onDodge($event, logo)"
          alt="" />
