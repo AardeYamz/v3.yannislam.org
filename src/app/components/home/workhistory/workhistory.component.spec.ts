@@ -42,9 +42,11 @@ describe('WorkHistoryComponent', () => {
     expect(component.subsection()).toBeTrue();
   });
 
-  it('carousel options autoplay a single item at a time, looping', () => {
-    expect(component.customOptions.items).toBe(1);
-    expect(component.customOptions.loop).toBeTrue();
-    expect(component.customOptions.autoplay).toBeTrue();
+  it('normalizes the string-or-array `link` field to a single href', () => {
+    const entry = { title: 'Role', timeframe: '2024', description: [] };
+
+    expect(component.linkHref({ ...entry, link: 'https://example.com' })).toBe('https://example.com');
+    expect(component.linkHref({ ...entry, link: ['https://example.com'] })).toBe('https://example.com');
+    expect(component.linkHref(entry)).toBeUndefined();
   });
 });

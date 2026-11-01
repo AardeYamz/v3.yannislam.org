@@ -105,17 +105,22 @@
     }
 }
 
-.owl-carousel-o{
-    width: 600px;
-}
-.img-feature-workhistory-container {
-    display:  none;
+// Rows alternate side-to-side; the image column is always first in the DOM so
+// the @for body is written once (see workhistory.component.html). Flipping the
+// row keeps the negative margins on .workhistory-info-* working unchanged.
+.workhistory-container.reverse {
+    flex-direction: row-reverse;
 }
 
-@media (min-width: 768px) and (max-width: 1300px) {
-    .owl-carousel-o{
-        display: none;
+.img-feature-workhistory-container {
+    display: none;
+
+    .img-container {
+        width: auto;
     }
+}
+
+@media (min-width: 768px) {
     .img-feature-workhistory-container {
         width: 50%;
         display: table !important;
@@ -128,9 +133,29 @@
             width: 100%;
         }
     }
-    .workhistory-info-right,
-    .workhistory-info-left {
-        width: 50%;
+}
+
+// Above 1300px this column used to be the fixed-width owl carousel; keep the
+// same 600px now that it renders a plain <img>.
+@media (min-width: 1300px) {
+    .img-feature-workhistory-container {
+        width: 600px;
+        flex-shrink: 0;
+    }
+}
+
+// Only used for entries with more than one image (none in config.json today):
+// a swipeable strip instead of the old autoplaying carousel.
+.img-feature-workhistory-strip {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+
+    .img-container {
+        flex: 0 0 auto;
+        width: 400px;
+        scroll-snap-align: start;
     }
 }
 
@@ -143,9 +168,6 @@
 }
 
 @media (max-width: 768px) {
-    .owl-carousel-o{
-        display: none;
-    }
     .workhistory {
         .workhistory-container {
             height: 100% !important;
@@ -207,13 +229,8 @@
     }
 }
 
-::ng-deep .owl-theme .owl-dots .owl-dot.active span,
- ::ng-deep .owl-theme .owl-dots .owl-dot:hover span {
-    background-color: white !important;
-}
-
-::ng-deep .owl-theme .owl-dots .owl-dot span {
-    background: #ffffff33;
+.link-inherit {
+    color: inherit;
 }
 
 .img-container {

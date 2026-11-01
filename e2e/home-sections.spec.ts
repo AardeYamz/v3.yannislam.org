@@ -61,9 +61,8 @@ test.describe('home sections', () => {
       // instead of a foreground <img> — neither the carousel's copy nor the
       // static thumbnail is visible there, by design.
       if (!isMobile) {
-        // Each entry also carries an owl-carousel copy of the same image,
-        // which stays hidden until the carousel widget finishes initializing
-        // — the static thumbnail is the reliable one to assert on.
+        // Each entry renders a single logo/photo thumbnail (a scroll-snap
+        // strip instead, when an entry has more than one image).
         await expect(entry.locator('.img-feature-workhistory-container img.img-feature-workhistory')).toBeVisible();
       }
     }

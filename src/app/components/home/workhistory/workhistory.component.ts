@@ -1,10 +1,8 @@
 import { Component, ChangeDetectionStrategy, input } from '@angular/core';
-import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o';
 import { IconComponent } from 'src/app/icons/icon.component';
 import { WorkHistoryEntry } from 'src/app/services/site-config/site-config.model';
 import { AosDirective } from '../../../directives/aos/aos.directive';
 import { LogoFallbackDirective } from '../../../directives/logo-fallback/logo-fallback.directive';
-import { NgClass } from '@angular/common';
 import { LogoFallbackBackgroundDirective } from '../../../directives/logo-fallback/logo-fallback-background.directive';
 import { LinkifyPipe } from '../../../pipes/linkify/linkify.pipe';
 
@@ -13,7 +11,7 @@ import { LinkifyPipe } from '../../../pipes/linkify/linkify.pipe';
     templateUrl: './workhistory.component.html',
     styleUrls: ['./workhistory.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [AosDirective, CarouselModule, LogoFallbackDirective, NgClass, LogoFallbackBackgroundDirective, LinkifyPipe, IconComponent]
+    imports: [AosDirective, LogoFallbackDirective, LogoFallbackBackgroundDirective, LinkifyPipe, IconComponent]
 })
 export class WorkHistoryComponent {
   // Reused for both work/volunteering experience entries and college
@@ -25,14 +23,11 @@ export class WorkHistoryComponent {
   headingText = input('');
   subsection = input(false);
 
-  customOptions: OwlOptions = {
-    loop: true,
-    mouseDrag: true,
-    touchDrag: true,
-    pullDrag: false,
-    navSpeed: 700,
-    items: 1,
-    autoplay: true,
-    autoplayTimeout: 3000
+  // `link` is a bare string on some config.json entries and a one-element
+  // array on others (see Experience.link in site-config.model.ts), so binding
+  // it straight into [href] rendered "https://…," for the array half. The
+  // template only ever shows the first link either way.
+  linkHref(entry: WorkHistoryEntry): string | undefined {
+    return Array.isArray(entry.link) ? entry.link[0] : entry.link;
   }
 }

@@ -52,6 +52,11 @@ that each group can ship as its own PR.
 - **Fix:** walk `DIST_DIR` recursively and patch every `*.html` file. Also consider the
   `server/` output if it contains `index.server.html`.
 
+  **Shipped:** `inject-env.js` walks every `.html` under `browser/` and, since
+  [`20261029-104310-1-ga-injection-server-output.md`](../changes/20261029-104310-1-ga-injection-server-output.md),
+  also patches `server/*.html` and the `assets-chunks/*_html.mjs` templates.
+  `grep -rl '%GOOGLE_ANALYTICS_ID%' dist/` is now empty.
+
 ### 3. `target="_black"` typo
 - `src/app/components/home/banner/banner.component.html` "email me!" link:
   `target="_black"` should be `_blank`. It's a `mailto:` link, so the simplest fix is
@@ -99,6 +104,11 @@ that each group can ship as its own PR.
   global CSS files in `angular.json` `styles`, can be removed completely (for example with a CSS
   scroll-snap strip for the few multi-image entries). That removes a dependency
   plus its jQuery-free-but-heavy runtime.
+
+  **Shipped:** the dependency, both stylesheets and every owl rule are gone.
+  Each entry renders one `<img>`; entries with more than one image get a
+  scroll-snap strip. See
+  [`20261029-104310-workhistory-carousel-removal.md`](../changes/20261029-104310-workhistory-carousel-removal.md).
 
 ### 7. `ngx-typed-js` for one typewriter line
 - `banner.component.html:12`. The typed.js wrapper hasn't been maintained for years, and
@@ -217,6 +227,11 @@ that each group can ship as its own PR.
 - `track exp`, `track img`, and `track skill` track by object or string identity. That works,
   but `track $index` or a stable key is clearer. The same goes for `track menuItem` in the header.
 - Replace the inline `style='width: auto;'` and `style='color: inherit'` with classes.
+
+  **Shipped:** one `@for` body with a `reverse` class for odd rows, `$even`
+  instead of `i % 2`, class bindings instead of `[ngClass]`, and
+  `linkHref()` for the string-or-array `link` field (which previously
+  rendered `href="https://…,"`). See the change note linked under #6 above.
 
 ### 16. Header cleanups
 - `responsiveMenuVisible: Boolean` should be `boolean`, and it should be a signal because it's

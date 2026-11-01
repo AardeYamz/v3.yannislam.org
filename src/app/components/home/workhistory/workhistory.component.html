@@ -3,109 +3,83 @@
     <div class="section-box">
       <div data-aos="fade-up" data-aos-duration="1000">
         <h3 class="section-title" [class.subsection-title]="subsection()">
-          <span class='n-section-title'>{{navNumber()}}</span>{{headingText()}}
+          <span class="n-section-title">{{navNumber()}}</span>{{headingText()}}
         </h3>
       </div>
 
-      @for (exp of experienceList(); track exp; let i = $index) {
-        <div class="d-flex workhistory-container"
+      @for (exp of experienceList(); track exp; let even = $even) {
+        <div class="d-flex workhistory-container" [class.reverse]="!even"
           data-aos="fade-up" data-aos-duration="1000">
-          @if (i % 2 == 0) {
-            <owl-carousel-o class='owl-carousel-o' [options]="customOptions">
-              @for (img of exp.imgs; track img) {
-                <ng-template carouselSlide [id]="exp.title + i">
-                  <div class='img-container'>
-                    <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.image_alt || exp.title"
-                      loading="lazy" decoding="async" [appLogoFallback]="exp.organization || ''">
-                  </div>
-                </ng-template>
-              }
-            </owl-carousel-o>
-          }
-          @if (i % 2 == 0) {
-            <div class="img-feature-workhistory-container" data-aos="fade-up" data-aos-duration="1000"
-              >
-              <div class="img-feature-workhistory-box">
-                <div class="img-container" style='width: auto;'>
-                  <img class='img-feature-workhistory rounded' [src]="exp.imgs?.[0] || ''" [alt]="exp.image_alt || exp.title"
+          <div class="img-feature-workhistory-container" data-aos="fade-up" data-aos-duration="1000">
+            <div class="img-feature-workhistory-box">
+              @if (exp.imgs && exp.imgs.length > 1) {
+                <div class="img-feature-workhistory-strip">
+                  @for (img of exp.imgs; track img) {
+                    <div class="img-container">
+                      <img class="img-feature-workhistory rounded" [src]="img" [alt]="exp.image_alt || exp.title"
+                        loading="lazy" decoding="async" [appLogoFallback]="exp.organization || ''">
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="img-container">
+                  <img class="img-feature-workhistory rounded" [src]="exp.imgs?.[0] || ''"
+                    [alt]="exp.image_alt || exp.title" loading="lazy" decoding="async"
                     [appLogoFallback]="exp.organization || ''">
                 </div>
-              </div>
+              }
             </div>
-          }
-          <div [ngClass]="{'workhistory-info-right': i % 2 == 0, 'workhistory-info-left': i % 2 != 0}"
+          </div>
+          <div [class]="even ? 'workhistory-info-right' : 'workhistory-info-left'"
             [appLogoFallbackBg]="exp.imgs?.[0] || ''" [appLogoFallbackBgOrg]="exp.organization || ''">
             <div class="workhistory-box">
-              <h5 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}" class="workhistory-title">
-              {{exp.title}} </h5>
-              @if (exp?.organization) {
-                <h4 [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
-                  class="workhistory-subtitle">
-                &#64; {{exp.organization}}</h4>
+              <h5 [class.text-right]="even" [class.text-left]="!even" class="workhistory-title">
+                {{exp.title}}
+              </h5>
+              @if (exp.organization) {
+                <h4 [class.text-right]="even" [class.text-left]="!even" class="workhistory-subtitle">
+                  &#64; {{exp.organization}}
+                </h4>
               }
               <div class="workhistory-description-box">
-                @if (exp?.timeframe) {
+                @if (exp.timeframe) {
                   <p class="text-right mb-2">
-                    <i>{{exp?.timeframe}}</i>
+                    <i>{{exp.timeframe}}</i>
                   </p>
                 }
-                @if (exp?.subTitle) {
+                @if (exp.subTitle) {
                   <p class="text-right mb-2">
-                    <u>{{exp?.subTitle}}</u>
+                    <u>{{exp.subTitle}}</u>
                   </p>
                 }
-                @for (descParagraph of exp?.description; track descParagraph; let i = $index) {
+                @for (descParagraph of exp.description; track descParagraph) {
                   <p class="mb-1" [innerHTML]="descParagraph | linkify"></p>
                 }
-                <div [ngClass]="{'text-right': i % 2 == 0, 'text-left': i % 2 != 0}"
-                  class="workhistory-links">
-                  @if (exp['link']) {
-                    <a class="mx-3" style='color: inherit' [href]="exp['link']" [attr.aria-label]="'View ' + exp.title + ' project'"
+                <div [class.text-right]="even" [class.text-left]="!even" class="workhistory-links">
+                  @if (linkHref(exp); as href) {
+                    <a class="mx-3 link-inherit" [href]="href" [attr.aria-label]="'View ' + exp.title + ' project'"
                       target="_blank" rel="noopener noreferrer"><app-icon class="ml-3" name="fa-up-right-from-square"></app-icon></a>
-                    }
-                    @if (exp['demoLink']) {
-                      <a style='color: inherit' [href]="exp['demoLink']" [attr.aria-label]="'View ' + exp.title + ' demo'"
-                        target="_blank" rel="noopener noreferrer"><app-icon class="ml-3" name="fa-external-link-alt"></app-icon></a>
-                      }
-                    </div>
-                  </div>
-                  @if (exp?.skills) {
-                    <ul [ngClass]="{'justify-content-end': i % 2 == 0, 'justify-content-start': i % 2 != 0}"
-                      class="workhistory-skills">
-                      @for (skill of exp.skills; track skill) {
-                        <li class="mx-2">
-                          <span class="underline skills">{{skill}}</span>
-                        </li>
-                      }
-                    </ul>
+                  }
+                  @if (exp.demoLink) {
+                    <a class="link-inherit" [href]="exp.demoLink" [attr.aria-label]="'View ' + exp.title + ' demo'"
+                      target="_blank" rel="noopener noreferrer"><app-icon class="ml-3" name="fa-external-link-alt"></app-icon></a>
                   }
                 </div>
               </div>
-              @if (i % 2 != 0) {
-                <owl-carousel-o class='owl-carousel-o' [options]="customOptions">
-                  @for (img of exp.imgs; track img) {
-                    <ng-template carouselSlide [id]="exp.title + i">
-                      <div class='img-container'>
-                        <img class='img-feature-workhistory rounded' [src]="img" [alt]="exp.image_alt || exp.title"
-                          [appLogoFallback]="exp.organization || ''">
-                      </div>
-                    </ng-template>
+              @if (exp.skills) {
+                <ul [class.justify-content-end]="even" [class.justify-content-start]="!even"
+                  class="workhistory-skills">
+                  @for (skill of exp.skills; track skill) {
+                    <li class="mx-2">
+                      <span class="underline skills">{{skill}}</span>
+                    </li>
                   }
-                </owl-carousel-o>
-              }
-              @if (i % 2 != 0) {
-                <div class="img-feature-workhistory-container" data-aos="fade-up" data-aos-duration="1000"
-                  >
-                  <div class="img-feature-workhistory-box">
-                    <div class="img-container" style='width: auto;'>
-                      <img class='img-feature-workhistory rounded' [src]="exp.imgs?.[0] || ''" [alt]="exp.image_alt || exp.title"
-                        [appLogoFallback]="exp.organization || ''">
-                    </div>
-                  </div>
-                </div>
+                </ul>
               }
             </div>
-          }
+          </div>
         </div>
-      </div>
-    </section>
+      }
+    </div>
+  </div>
+</section>

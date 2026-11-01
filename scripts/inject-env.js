@@ -17,10 +17,16 @@
 // src/index.html template and carry the same %GOOGLE_ANALYTICS_ID%
 // placeholder, so a direct load of any non-root route needs this walk to
 // have GA actually wired up rather than shipping the literal placeholder.
+//
+// The SSR output under SERVER_DIR embeds those same HTML templates as .mjs
+// string literals (assets-chunks/*_html.mjs) for on-demand rendering, so it is
+// patched too — Vercel serves browser/ statically today, but a prerender or
+// SSR host would otherwise ship the literal placeholder again.
 const fs = require('node:fs');
 const path = require('node:path');
 
 const DIST_DIR = path.join(__dirname, '..', 'dist', 'v3.yannislam.org', 'browser');
+const SERVER_DIR = path.join(__dirname, '..', 'dist', 'v3.yannislam.org', 'server');
 
 // Vercel sets VERCEL=1 for every build it runs — preview and production
 // alike. Both are real deployments served to the public, so an unresolvable
@@ -81,13 +87,16 @@ function resolveValue({ env, pattern, hint, placeholder }) {
   return { value: raw, problem: null };
 }
 
-function findHtmlFiles(dir) {
+function findFiles(dir, extensions) {
   const results = [];
+  if (!fs.existsSync(dir)) {
+    return results;
+  }
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      results.push(...findHtmlFiles(fullPath));
-    } else if (entry.isFile() && entry.name.endsWith('.html')) {
+      results.push(...findFiles(fullPath, extensions));
+    } else if (entry.isFile() && extensions.some((extension) => entry.name.endsWith(extension))) {
       results.push(fullPath);
     }
   }
@@ -100,11 +109,15 @@ function main() {
     process.exit(1);
   }
 
-  const htmlFiles = findHtmlFiles(DIST_DIR);
+  const htmlFiles = findFiles(DIST_DIR, ['.html']);
   if (htmlFiles.length === 0) {
     console.error(`[inject-env] No .html files found under ${DIST_DIR}`);
     process.exit(1);
   }
+
+  // Server output is optional (outputMode could be static); only patch it when
+  // the build produced it.
+  const targetFiles = [...htmlFiles, ...findFiles(SERVER_DIR, ['.html', '.mjs'])];
 
   // Resolve and validate everything before writing anything, so a build that
   // fails here never leaves a half-substituted dist/ directory behind.
@@ -139,15 +152,15 @@ function main() {
     }
   }
 
-  for (const filePath of htmlFiles) {
-    let html = fs.readFileSync(filePath, 'utf8');
+  for (const filePath of targetFiles) {
+    let contents = fs.readFileSync(filePath, 'utf8');
     for (const { name, value } of resolved) {
-      html = html.split(`%${name}%`).join(value);
+      contents = contents.split(`%${name}%`).join(value);
     }
-    fs.writeFileSync(filePath, html);
+    fs.writeFileSync(filePath, contents);
   }
 
-  console.log(`[inject-env] Injected environment values into ${htmlFiles.length} HTML file(s)`);
+  console.log(`[inject-env] Injected environment values into ${targetFiles.length} file(s)`);
 }
 
 main();
