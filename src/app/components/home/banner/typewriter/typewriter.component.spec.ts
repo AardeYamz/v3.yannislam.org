@@ -55,6 +55,22 @@ describe('TypewriterComponent', () => {
     expect(component.text()).toBe('C');
   });
 
+  it('erases only back to the prefix the next string shares', () => {
+    jasmine.clock().install();
+    create('browser');
+    fixture.componentRef.setInput('strings', ['I am Ab', 'I am Cd']);
+    fixture.detectChanges();
+
+    jasmine.clock().tick(60 * 7 + 1500); // typed in full, pause over
+    expect(component.text()).toBe('I am Ab');
+    jasmine.clock().tick(60 * 2); // erased 'b', 'Ab'
+    expect(component.text()).toBe('I am ');
+    jasmine.clock().tick(60); // nothing more to erase
+    expect(component.text()).toBe('I am ');
+    jasmine.clock().tick(300 + 60 * 2); // pause, then types 'Cd' on the kept prefix
+    expect(component.text()).toBe('I am Cd');
+  });
+
   it('never starts the animation loop during server-side rendering', () => {
     jasmine.clock().install();
     create('server');

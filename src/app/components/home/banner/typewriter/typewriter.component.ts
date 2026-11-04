@@ -8,6 +8,12 @@ const PAUSE_AFTER_ERASE_MS = 300;
 
 type Phase = 'typing' | 'erasing';
 
+function commonPrefixLength(a: string, b: string): number {
+  let i = 0;
+  while (i < a.length && i < b.length && a[i] === b[i]) i++;
+  return i;
+}
+
 // Signal-driven replacement for ngx-typed-js (a few dozen lines instead of a
 // third-party dependency). typed.js calls getComputedStyle() and otherwise
 // assumes a real browser, which throws under Domino during server-side
@@ -81,11 +87,14 @@ export class TypewriterComponent implements OnInit {
     }
 
     this.text.set(full.slice(0, charIndex));
-    if (charIndex > 0) {
+    // Only erase back to what the next string shares with this one ("I am a "
+    // / "我是一名"), then type on from there instead of retyping the prefix.
+    const nextIndex = (stringIndex + 1) % strings.length;
+    const keep = nextIndex === stringIndex ? 0 : commonPrefixLength(full, strings[nextIndex]);
+    if (charIndex > keep) {
       this.timer = setTimeout(() => this.step(strings, stringIndex, charIndex - 1, 'erasing'), BACK_SPEED_MS);
     } else {
-      const nextIndex = (stringIndex + 1) % strings.length;
-      this.timer = setTimeout(() => this.step(strings, nextIndex, 0, 'typing'), PAUSE_AFTER_ERASE_MS);
+      this.timer = setTimeout(() => this.step(strings, nextIndex, keep, 'typing'), PAUSE_AFTER_ERASE_MS);
     }
   }
 }
