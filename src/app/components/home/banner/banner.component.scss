@@ -65,6 +65,11 @@
 
             .banner-description {
                 margin-bottom: 70px;
+                // The Chinese blurb is shorter than the English one; the banner is
+                // vertically centred, so without a floor the name would sit lower
+                // in Chinese. Reserve the English height (7 lines + the first <p>'s
+                // 24px margin) so the name stays at the same height in both.
+                min-height: calc(7lh + 24px);
             }
 
             p {

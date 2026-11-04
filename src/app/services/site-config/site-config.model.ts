@@ -171,8 +171,6 @@ export interface UiStrings {
     themeModes: Record<"default" | "light" | "dark", string>;
     openMenu: string;
     closeMenu: string;
-    // Label of the button that switches to the *other* language.
-    languageButton: string;
     languageAriaLabel: string;
   };
   banner: { emailButton: string; resumeButton: string };

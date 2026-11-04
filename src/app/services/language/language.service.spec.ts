@@ -45,6 +45,6 @@ describe('LanguageService', () => {
     expect(config.menu[0].navTitle).toBe('About');
     service.toggle();
     expect(config.menu[0].navTitle).toBe('关于');
-    expect(config.ui.header.languageButton).toBe('EN');
+    expect(config.ui.header.languageAriaLabel).toContain('English');
   });
 });

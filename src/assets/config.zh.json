@@ -573,7 +573,7 @@
   },
   "banner": {
     "greeting": "你好！我是",
-    "name": "林恩力 (Yannis Lam)；",
+    "name": "林恩力；",
     "blurb": [
       "我是一名<a class='underline' href='https://linkedin.com/in/yannis-lam/' target='_blank' rel='noopener noreferrer'>全栈软件开发工程师</a>，也是技术负责人，在 <a class='underline' href='https://www.voya.com/' target='_blank' rel='noopener noreferrer'>Voya Financial</a> 将传统系统改造为云原生平台。我带领 50 多人的工程师团队，把复杂问题拆解成优雅的解决方案，并通过知识分享提升团队能力。我毕业于<a class='underline' href='https://www.umass.edu/' target='_blank' rel='noopener noreferrer'>马萨诸塞大学阿默斯特分校</a>联邦荣誉学院，拥有计算机科学<i>（理学学士）</i>和经济学<i>（文学学士）</i>双学位。"
     ],
@@ -620,8 +620,8 @@
   },
   "ui": {
     "meta": {
-      "title": "林恩力 (Yannis Lam) | 软件开发工程师",
-      "description": "林恩力 (Yannis Lam) 的作品集。他是一名软件开发工程师，毕业于马萨诸塞大学阿默斯特分校，拥有计算机科学与经济学双学位，专注于网页开发和金融科技。"
+      "title": "林恩力 | 软件开发工程师",
+      "description": "林恩力的作品集。他是一名软件开发工程师，毕业于马萨诸塞大学阿默斯特分校，拥有计算机科学与经济学双学位，专注于网页开发和金融科技。"
     },
     "header": {
       "homeAriaLabel": "Yannis Lam，返回首页",
@@ -637,7 +637,6 @@
       },
       "openMenu": "打开菜单",
       "closeMenu": "关闭菜单",
-      "languageButton": "EN",
       "languageAriaLabel": "切换到英文 (Switch to English)"
     },
     "banner": {
@@ -648,7 +647,7 @@
       "title": "我是谁？",
       "paragraphs": [
         "<span class='underline'>你好！</span> <span class=\"wave-hand\">👋</span>",
-        "我叫<span class='underline'>林恩力 (Yannis Lam)</span>，是一名有抱负、善于解决问题的软件开发工程师。我毕业于马萨诸塞大学阿默斯特分校联邦荣誉学院，拥有计算机科学与经济学双学位。",
+        "我叫<span class='underline'>林恩力</span>，是一名有抱负、善于解决问题的软件开发工程师。我毕业于马萨诸塞大学阿默斯特分校联邦荣誉学院，拥有计算机科学与经济学双学位。",
         "我对金融科技和网页开发很感兴趣，有敏捷软件开发和企业桌面支持的经验。欢迎随时联系我！",
         "我使用过的部分技术包括："
       ],
