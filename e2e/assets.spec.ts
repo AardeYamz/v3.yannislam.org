@@ -33,6 +33,10 @@ const staticFiles = [
   '/manifest.webmanifest',
   '/favicon.ico',
   '/favicon.svg',
+  '/favicon-black.ico',
+  '/favicon-black.svg',
+  '/favicon-white.ico',
+  '/favicon-white.svg',
   '/apple-touch-icon.png',
 ];
 
