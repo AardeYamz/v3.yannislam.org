@@ -47,6 +47,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   responsiveMenuVisible: Boolean = false;
   pageYPosition!: number;
   menu: MenuItem[];
+  ui = inject(SiteConfigService).ui.header;
 
   // Which section (menuItem.scrollSection) is currently scrolled into view,
   // used to highlight the matching nav item — see setupSectionObserver().
@@ -208,6 +209,11 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   toggleTheme() {
     this.themeService.cycle();
     this.analyticsService.sendAnalyticEvent('theme_toggle', 'header', this.themeService.mode());
+  }
+
+  themeAriaLabel(): string {
+    const mode = this.themeService.mode();
+    return this.ui.themeToggleAriaLabel.replace('{mode}', this.ui.themeModes[mode]);
   }
 
   downloadResume() {

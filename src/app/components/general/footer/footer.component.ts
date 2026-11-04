@@ -29,6 +29,7 @@ export class FooterComponent implements AfterViewInit {
     mobileSocials: Contact[];
     email: Contact;
     footer: FooterConfig;
+    get ui() { return this.configService.ui.footer; }
     currentDate = new Date();
 
     // Whether the page is scrolled all the way to the bottom — on wide
