@@ -17,5 +17,6 @@ import { ProjectSection } from 'src/app/services/site-config/site-config.model';
 export class ProjectsHighschoolComponent {
   private configService = inject(SiteConfigService);
 
-  highschool: ProjectSection = this.configService.projects.highschool;
+  get highschool(): ProjectSection { return this.configService.projects.highschool; }
+  get ui() { return this.configService.ui.projects; }
 }

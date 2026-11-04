@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, PLATFORM_ID, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, PLATFORM_ID, effect, inject, input, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 const TYPE_SPEED_MS = 60;
@@ -21,11 +21,10 @@ type Phase = 'typing' | 'erasing';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TypewriterComponent implements OnInit {
-  // Bound once by the parent from config.json and never reassigned
-  // afterward, so a one-time read in ngOnInit (guaranteed to see the bound
-  // value) is enough - no need for the async scheduling an effect() would
-  // add, which would otherwise delay the very first paint of the static
-  // fallback text by a tick.
+  // Read once in ngOnInit (guaranteed to see the bound value, with no effect()
+  // delay on the very first paint of the static fallback text). If the
+  // parent later binds different strings (the language was switched), the
+  // effect below restarts the animation with them.
   readonly strings = input<string[]>([]);
 
   readonly text = signal('');
@@ -33,12 +32,25 @@ export class TypewriterComponent implements OnInit {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private timer: ReturnType<typeof setTimeout> | undefined;
 
+  private started = false;
+
   constructor() {
     inject(DestroyRef).onDestroy(() => clearTimeout(this.timer));
+
+    effect(() => {
+      const strings = this.strings();
+      if (!this.started) return;
+      this.start(strings);
+    });
   }
 
   ngOnInit(): void {
-    const strings = this.strings();
+    this.started = true;
+    this.start(this.strings());
+  }
+
+  private start(strings: string[]): void {
+    clearTimeout(this.timer);
     if (!strings.length) {
       return;
     }

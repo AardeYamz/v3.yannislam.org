@@ -9,6 +9,7 @@ import { ResumeService } from 'src/app/services/resume/resume.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { MenuItem } from 'src/app/services/site-config/site-config.model';
 import { ThemeService } from 'src/app/services/theme/theme.service';
+import { LanguageService } from 'src/app/services/language/language.service';
 
 
 @Component({
@@ -42,11 +43,15 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   analyticsService = inject(AnalyticsService);
   themeService = inject(ThemeService);
   private resumeService = inject(ResumeService);
+  languageService = inject(LanguageService);
+  private configService = inject(SiteConfigService);
 
 
   responsiveMenuVisible: Boolean = false;
   pageYPosition!: number;
-  menu: MenuItem[];
+  // Getters, not fields: the language can change while the header is mounted.
+  get menu(): MenuItem[] { return this.configService.menu; }
+  get ui() { return this.configService.ui.header; }
 
   // Which section (menuItem.scrollSection) is currently scrolled into view,
   // used to highlight the matching nav item — see setupSectionObserver().
@@ -70,10 +75,8 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   private readonly isBrowser: boolean;
 
   constructor() {
-    const configService = inject(SiteConfigService);
     const platformId = inject(PLATFORM_ID);
 
-    this.menu = configService.menu;
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
@@ -208,6 +211,16 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   toggleTheme() {
     this.themeService.cycle();
     this.analyticsService.sendAnalyticEvent('theme_toggle', 'header', this.themeService.mode());
+  }
+
+  toggleLanguage() {
+    const next = this.languageService.toggle();
+    this.analyticsService.sendAnalyticEvent('language_toggle', 'header', next);
+  }
+
+  themeAriaLabel(): string {
+    const mode = this.themeService.mode();
+    return this.ui.themeToggleAriaLabel.replace('{mode}', this.ui.themeModes[mode]);
   }
 
   downloadResume() {

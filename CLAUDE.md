@@ -32,8 +32,11 @@ with Cloudflare in front for DNS and email.
   `projects/highschool`, `aardeyamz` lazy via `loadComponent`; `**` redirects
   to `/`). `src/app/app.routes.server.ts` lists the same paths for
   prerendering; keep the two in step.
-- **Content:** all page copy is in `src/assets/config.json`, read only through
-  `SiteConfigService` and typed by `site-config.model.ts`.
+- **Content:** all page copy is in `src/assets/config.json` (English) and its
+  Simplified Chinese twin `config.zh.json`, read only through
+  `SiteConfigService` and typed by `site-config.model.ts`. Change both files
+  together; a unit test checks they have the same shape. `LanguageService`
+  picks the language (saved choice, then a `zh.*` hostname, else English).
 - **Services:** `SiteConfigService`, `ThemeService` (`default`/`light`/`dark`
   as signals, `localStorage`, `[data-theme]` on `<html>`), `AnalyticsService`
   (custom `gtag()` events only; GA4 enhanced measurement tracks page views),
@@ -50,6 +53,9 @@ with Cloudflare in front for DNS and email.
 ### Content and components
 
 - Never import `config.json` in a component; inject `SiteConfigService`.
+  Its properties follow the language signal, so read them through getters in
+  components rather than copying them into fields. No user-visible text in
+  templates: put it in the `ui` block of `config.json` and `config.zh.json`.
 - `config.json` has no runtime validation. Keep new entries in the same shape
   as their neighbours and update `site-config.model.ts` with any new field.
 - Components follow the Angular trio (`.ts` / `.html` / `.scss`, plus

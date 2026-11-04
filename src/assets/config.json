@@ -618,6 +618,61 @@
       }
     ]
   },
+  "ui": {
+    "meta": {
+      "title": "Yannis Lam | Software Developer",
+      "description": "Portfolio of Yannis Lam, a software developer with a dual degree in Computer Science and Economics from UMass Amherst, specializing in web development and financial technology."
+    },
+    "header": {
+      "homeAriaLabel": "Yannis Lam, home",
+      "logoAlt": "Yannis Lam logo",
+      "primaryNavLabel": "Primary",
+      "mobileNavLabel": "Mobile",
+      "themeToggleTitle": "Toggle color theme",
+      "themeToggleAriaLabel": "Toggle color theme (currently {mode})",
+      "themeModes": {
+        "default": "default",
+        "light": "light",
+        "dark": "dark"
+      },
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "languageButton": "中文",
+      "languageAriaLabel": "Switch to Chinese (简体中文)"
+    },
+    "banner": {
+      "emailButton": "email me!",
+      "resumeButton": "resume"
+    },
+    "about": {
+      "title": "Who am I?",
+      "paragraphs": [
+        "Hello <span class='underline'>There!</span> <span class=\"wave-hand\">👋</span>",
+        "My name is <span class='underline'> Yannis Lam</span>. I am an ambitious and resourceful Software Developer. I graduated with a dual degree in Computer Science and Economics at the University of Massachusetts Amherst Commonwealth Honors College.",
+        "I am interested in financial technologies and web development. I have experience with agile software development and enterprise desktop support. Feel free to reach out to me!",
+        "Some of the technologies that I have worked on include :"
+      ],
+      "imageAlt": "Git User"
+    },
+    "education": {
+      "title": "Where did I go to school?"
+    },
+    "projects": {
+      "viewButton": "View {heading}",
+      "backToProjects": "← Back to Projects"
+    },
+    "namecard": {
+      "title": "What's in a name?"
+    },
+    "workhistory": {
+      "viewProject": "View {title} project",
+      "viewDemo": "View {title} demo"
+    },
+    "footer": {
+      "designedBy": "Designed by",
+      "emailAriaLabel": "Email {handle}"
+    }
+  },
   "siteTitle": "Yannis Lam",
   "manifestName": "yannislam.org",
   "manifestShortName": "YL",
