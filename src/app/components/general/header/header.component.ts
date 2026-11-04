@@ -52,6 +52,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   // in that case.
   readonly responsiveMenuVisible = signal(false);
   menu: MenuItem[];
+  ui = inject(SiteConfigService).ui.header;
 
   // hasScrolled/logoRotationDeg used to be a plain field + getter, updated
   // from this component's own `window:scroll` HostListener. Now derived
@@ -247,6 +248,11 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   toggleTheme() {
     this.themeService.cycle();
     this.analyticsService.sendAnalyticEvent('theme_toggle', 'header', this.themeService.mode());
+  }
+
+  themeAriaLabel(): string {
+    const mode = this.themeService.mode();
+    return this.ui.themeToggleAriaLabel.replace('{mode}', this.ui.themeModes[mode]);
   }
 
   downloadResume() {

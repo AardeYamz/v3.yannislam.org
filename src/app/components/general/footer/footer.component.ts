@@ -27,6 +27,7 @@ export class FooterComponent {
     mobileSocials: Contact[];
     email: Contact;
     footer: FooterConfig;
+    get ui() { return this.configService.ui.footer; }
     currentDate = new Date();
 
     // Small threshold so momentum/overscroll right at the end of the page

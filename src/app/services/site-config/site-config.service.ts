@@ -8,6 +8,7 @@ import {
   MenuItem,
   ProjectsConfig,
   SiteConfig,
+  UiStrings,
 } from './site-config.model';
 
 // Single point of access for src/assets/config.json so components don't each
@@ -27,6 +28,7 @@ export class SiteConfigService {
   readonly contacts: Contact[] = this.data.about.contact;
   readonly projects: ProjectsConfig = this.resolveLogoKeys(this.data.projects);
   readonly footer: FooterConfig = this.data.footer;
+  readonly ui: UiStrings = this.data.ui;
 
   // Entries reference a shared logo by "logoKey" instead of repeating the
   // same image URL/alt text everywhere (config.json's "logos" map). Expand

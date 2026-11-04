@@ -6,6 +6,7 @@ import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
+import config from '../../../../assets/config.json';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 // These tests instantiate HeaderComponent directly (not through TestBed +
@@ -20,7 +21,7 @@ describe('HeaderComponent', () => {
   let themeService: { cycle: jasmine.Spy; mode: jasmine.Spy };
   let resumeService: { open: jasmine.Spy };
   let scrollService: { y: ReturnType<typeof signal<number>>; maxScroll: ReturnType<typeof signal<number>> };
-  let configService: { menu: any[] };
+  let configService: { menu: any[]; ui: typeof config.ui };
 
   beforeEach(() => {
     router = {
@@ -34,7 +35,7 @@ describe('HeaderComponent', () => {
     };
     resumeService = { open: jasmine.createSpy('open') };
     scrollService = { y: signal(0), maxScroll: signal(0) };
-    configService = { menu: [{ navTitle: 'About', scrollSection: 'about' }] };
+    configService = { menu: [{ navTitle: 'About', scrollSection: 'about' }], ui: config.ui };
 
     TestBed.configureTestingModule({
       providers: [
