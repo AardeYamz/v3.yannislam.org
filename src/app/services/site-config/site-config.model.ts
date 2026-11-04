@@ -158,7 +158,36 @@ export interface ProjectsConfig {
   highschool: ProjectSection;
 }
 
+export interface UiStrings {
+  header: {
+    homeAriaLabel: string;
+    logoAlt: string;
+    primaryNavLabel: string;
+    mobileNavLabel: string;
+    themeToggleTitle: string;
+    // "{mode}" is replaced with the matching themeModes entry.
+    themeToggleAriaLabel: string;
+    themeModes: Record<"default" | "light" | "dark", string>;
+    openMenu: string;
+    closeMenu: string;
+  };
+  banner: { emailButton: string; resumeButton: string };
+  about: {
+    title: string;
+    // HTML, rendered with [innerHTML] (same as banner.blurb).
+    paragraphs: string[];
+    imageAlt: string;
+  };
+  education: { title: string };
+  // "{heading}", "{title}" and "{handle}" are placeholders filled in by the template.
+  projects: { viewButton: string; backToProjects: string };
+  namecard: { title: string };
+  workhistory: { viewProject: string; viewDemo: string };
+  footer: { designedBy: string; emailAriaLabel: string };
+}
+
 export interface SiteConfig {
+  ui: UiStrings;
   siteMenu: MenuItem[];
   logos: Record<string, Logo>;
   about: AboutConfig;

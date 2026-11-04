@@ -33,7 +33,7 @@
     [attr.inert]="atBottom() ? null : ''">
     <ul class="footer-bottom-socials">
       <li>
-        <a class="footer-bottom-email" href={{email.url}} target='_blank' rel="noopener noreferrer" [attr.aria-label]="'Email ' + email.handle">
+        <a class="footer-bottom-email" href={{email.url}} target='_blank' rel="noopener noreferrer" [attr.aria-label]="ui.emailAriaLabel.replace('{handle}', email.handle ?? '')">
           <app-icon [name]="email.icon"></app-icon>
           <span class="footer-bottom-email-text">{{email.handle}}</span>
         </a>
@@ -56,7 +56,7 @@
   date:'yyyy'}}</div>
   <div class="mt-2">{{footer.builtWith.text}} <a href={{footer.builtWith.url}} target="_blank"
   rel="nofollow noopener noreferrer">{{footer.builtWith.linkText}}</a></div>
-  <div class="mt-2">Designed by
+  <div class="mt-2">{{ui.designedBy}}
     @for (credit of footer.designCredits; track credit.url) {
       <a href={{credit.url}} target="_blank" rel="nofollow noopener noreferrer">{{credit.name}}</a>{{credit.separator}}
     }

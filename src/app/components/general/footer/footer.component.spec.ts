@@ -5,6 +5,7 @@ import { FooterComponent } from './footer.component';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { LinkPreviewDirective } from 'src/app/directives/link-preview/link-preview.directive';
+import config from '../../../../assets/config.json';
 import { IconComponent } from 'src/app/icons/icon.component';
 
 describe('FooterComponent', () => {
@@ -16,6 +17,7 @@ describe('FooterComponent', () => {
   beforeEach(() => {
     const analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['sendAnalyticEvent']);
     const configServiceSpy = jasmine.createSpyObj('SiteConfigService', [], {
+      ui: config.ui,
       contacts: [{ name: 'Email', url: 'mailto:test@example.com', handle: 'test@example.com', icon: 'fa-envelope' }],
       footer: {
         repo: { url: 'https://github.com', text: 'View Source' },

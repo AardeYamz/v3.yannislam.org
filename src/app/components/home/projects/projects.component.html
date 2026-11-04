@@ -21,7 +21,7 @@
         <div class="container">
             <div class="section-box projects-highschool-link-box" data-aos="fade-up" data-aos-duration="1000">
                 <a [routerLink]="['/projects', 'highschool']" class="main-btn text-capitalize">
-                    View {{projects.highschool.headingText}}
+                    {{ui.viewButton.replace('{heading}', projects.highschool.headingText)}}
                 </a>
             </div>
         </div>

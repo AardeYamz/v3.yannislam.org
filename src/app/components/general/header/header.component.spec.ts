@@ -5,6 +5,7 @@ import { HeaderComponent } from './header.component';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
+import config from '../../../../assets/config.json';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 
 // These tests instantiate HeaderComponent directly (not through TestBed +
@@ -18,7 +19,7 @@ describe('HeaderComponent', () => {
   let analyticsService: { sendAnalyticEvent: jasmine.Spy };
   let themeService: { cycle: jasmine.Spy; mode: jasmine.Spy };
   let resumeService: { open: jasmine.Spy };
-  let configService: { menu: any[] };
+  let configService: { menu: any[]; ui: typeof config.ui };
 
   beforeEach(() => {
     router = {
@@ -31,7 +32,7 @@ describe('HeaderComponent', () => {
       mode: jasmine.createSpy('mode').and.returnValue('dark'),
     };
     resumeService = { open: jasmine.createSpy('open') };
-    configService = { menu: [{ navTitle: 'About', scrollSection: 'about' }] };
+    configService = { menu: [{ navTitle: 'About', scrollSection: 'about' }], ui: config.ui };
 
     TestBed.configureTestingModule({
       providers: [
