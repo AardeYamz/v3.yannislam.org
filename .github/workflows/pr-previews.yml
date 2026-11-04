@@ -8,11 +8,13 @@ name: PR previews
 # production of that project, which owns the prs.yannislam.org domain. A deploy replaces the previous one, so a PR that is
 # closed or merged drops out on the next run; there is nothing to clean up.
 on:
+  # pull_request only, on purpose. A push or workflow_dispatch run can write the default branch's Actions cache, and this workflow
+  # builds other people's PR code, so those triggers would let a PR poison what main's own builds restore (CodeQL:
+  # actions/cache-poisoning). A pull_request run writes only its own merge-ref scope. The cost: when main moves, or sync-prs.yml
+  # merges it into PR branches (a GITHUB_TOKEN push starts no run), previews stay as they were until the next PR event;
+  # close and reopen any PR to refresh them all.
   pull_request:
     types: [opened, synchronize, reopened, closed]
-  push:
-    branches: [main]   # a changed main changes what every PR builds against
-  workflow_dispatch:   # sync-prs.yml dispatches this after merging main into a PR branch (its push starts no pull_request run)
 
 permissions:
   contents: read
@@ -66,10 +68,7 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
-          # No dependency cache: on push and workflow_dispatch runs it is written to the default branch's scope, and this job runs
-          # a PR's code, so a PR could poison what main's own builds restore (CodeQL: cache poisoning). setup-node may enable
-          # caching on its own, so it is switched off explicitly.
-          package-manager-cache: false
+          package-manager-cache: false   # nothing here needs a dependency cache; PR code runs in this job
 
       - run: npm ci
 

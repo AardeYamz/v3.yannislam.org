@@ -71,6 +71,4 @@ jobs:
           done < <(gh pr list --state open --json number,headRefName,isCrossRepository,author \
             --jq '.[] | select((.isCrossRepository | not) and .author.login != "app/dependabot") | "\(.number) \(.headRefName)"')
           echo "UPDATED=$updated" >> "$GITHUB_ENV"
-          # Their new heads started no pull_request run, so republish the previews (prs.yannislam.org) from the updated branches.
-          if [ "$updated" -gt 0 ]; then gh workflow run pr-previews.yml --ref "$BASE"; fi
 
