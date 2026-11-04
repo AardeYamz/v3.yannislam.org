@@ -85,11 +85,11 @@
         <div [ngClass]="{'text-right': idx % 2 == 0, 'text-left': idx % 2 != 0}"
           class="workhistory-links">
           @if (exp['link']) {
-            <a class="mx-3 workhistory-link" [href]="exp['link']" [attr.aria-label]="'View ' + exp.title + ' project'"
+            <a class="mx-3 workhistory-link" [href]="exp['link']" [attr.aria-label]="ui.viewProject.replace('{title}', exp.title)"
               target="_blank" rel="noopener noreferrer"><app-icon class="ml-3" name="fa-up-right-from-square"></app-icon></a>
           }
           @if (exp['demoLink']) {
-            <a class="workhistory-link" [href]="exp['demoLink']" [attr.aria-label]="'View ' + exp.title + ' demo'"
+            <a class="workhistory-link" [href]="exp['demoLink']" [attr.aria-label]="ui.viewDemo.replace('{title}', exp.title)"
               target="_blank" rel="noopener noreferrer"><app-icon class="ml-3" name="fa-external-link-alt"></app-icon></a>
           }
         </div>

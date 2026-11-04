@@ -18,5 +18,6 @@ export class ProjectsComponent {
   private configService = inject(SiteConfigService);
 
   projects: ProjectsConfig = this.configService.projects;
+  get ui() { return this.configService.ui.projects; }
 }
 
