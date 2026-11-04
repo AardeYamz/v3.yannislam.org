@@ -29,10 +29,10 @@
       <div class="div-btn-banner">
         <a (click)='analyticsService.sendAnalyticEvent("click_send_mail", "banner", "email")'
           href="mailto:email@yannislam.org" class="main-btn text-capitalize">
-          email me!
+          {{ data.ui.banner.emailButton }}
         </a>
         <button type="button" (click)='openResume()' class="main-btn text-capitalize">
-          resume
+          {{ data.ui.banner.resumeButton }}
         </button>
       </div>
     </div>
