@@ -66,8 +66,10 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
-          # No `cache: npm`: on push and workflow_dispatch runs the cache is written to the default branch's scope, and this job
-          # runs a PR's code, so a PR could poison what main's own builds restore (CodeQL: cache poisoning).
+          # No dependency cache: on push and workflow_dispatch runs it is written to the default branch's scope, and this job runs
+          # a PR's code, so a PR could poison what main's own builds restore (CodeQL: cache poisoning). setup-node may enable
+          # caching on its own, so it is switched off explicitly.
+          package-manager-cache: false
 
       - run: npm ci
 
