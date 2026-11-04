@@ -125,13 +125,19 @@ jobs:
             else echo "$n $sha" >> "$RUNNER_TEMP/skipped.txt"; fi
           done
 
-          # Index page listing what is live, so the bare host is not a 404.
+          # Index page listing what is live, so the bare host is not a 404. Styled with the shared yl-theme at the version
+          # this repo pins in theme.json (same files the site itself uses), so it matches the rest of yannislam.org.
+          theme="https://theme.yannislam.org/$(jq -r .version theme.json)"
           {
-            echo '<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>PR previews</title>'
-            echo '<style>body{font:16px system-ui;margin:3rem auto;max-width:32rem;padding:0 1rem}</style><h1>PR previews</h1><ul>'
+            echo '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">'
+            echo "<title>PR previews</title><link rel=\"stylesheet\" href=\"$theme/yl-theme.css\"><script src=\"$theme/yl-theme.js\" defer></script>"
+            echo '<style>body{margin:0;padding-inline:var(--yl-gutter,1.25rem);line-height:1.5}main{max-width:40rem;padding-block:1rem 4rem}small{font-family:var(--yl-mono,monospace)}a{color:var(--md-sys-color-primary,inherit)}</style>'
+            echo '<header class="yl-head sticky"><a class="yl-brand" href="https://yannislam.org" aria-label="Yannis Lam, home" data-yl-logo></a><h1 class="yl-title">PR previews</h1><button type="button" class="yl-theme-toggle" data-yl-theme-toggle></button></header>'
+            echo '<main><h2 class="yl-section-title">Open pull requests</h2><ul>'
             while read -r n sha; do echo "<li><a href=\"/pr-$n/\">#$n</a> <small>$sha</small></li>"; done < "$RUNNER_TEMP/staged.txt"
             echo '</ul>'
             test -s "$RUNNER_TEMP/staged.txt" || echo '<p>No open pull requests.</p>'
+            echo '</main>'
           } > site/index.html
 
           # Previews are for review, not for search engines or caches. Each PR's own vercel.json is not used (only this one applies).
