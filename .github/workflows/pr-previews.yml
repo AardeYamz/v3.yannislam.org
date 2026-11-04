@@ -173,5 +173,5 @@ jobs:
             else gh pr comment "$n" --body "$marker
           $body" </dev/null; fi
           }
-          while read -r n sha; do post "$n" "**Preview:** https://prs.yannislam.org/pr-$n/ (deployed \`$sha\`)"; done < "$RUNNER_TEMP/staged.txt"
+          while read -r n sha; do post "$n" "**Preview:** https://prs.yannisl.am/pr-$n/ (deployed \`$sha\`)"; done < "$RUNNER_TEMP/staged.txt"
           while read -r n sha; do post "$n" "**No preview available:** \`$sha\` did not build. [Run]($RUN)"; done < "$RUNNER_TEMP/skipped.txt"
