@@ -78,7 +78,7 @@ test('writes the logo geometry next to the tokens', async () => {
 });
 
 test('writes the favicons under favicons/, which angular.json serves from the site root', async () => {
-  const bodies = { 'favicon.ico': Buffer.from('ico'), 'favicon.svg': Buffer.from('<svg/>'), 'apple-touch-icon.png': Buffer.from('png') };
+  const bodies = { 'favicon.ico': Buffer.from('ico'), 'favicon.svg': Buffer.from('<svg/>'), 'favicon-black.ico': Buffer.from('b'), 'favicon-white.svg': Buffer.from('<svg id="w"/>'), 'apple-touch-icon.png': Buffer.from('png') };
   const outDir = tmpDir();
   await ensureTheme({ pin: pin(bodies), outDir, fetchImpl: okFetch(bodies) });
   for (const name of Object.keys(bodies)) {
