@@ -308,7 +308,6 @@
     margin: 0;
     padding: 6px;
     list-style: none;
-    min-width: 190px;
     border-radius: 12px;
     background: $SurfaceContainerHigh;
     color: $OnSurface;
@@ -318,7 +317,7 @@
 .lang-option {
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
     width: 100%;
     padding: 8px 10px;
     border: 0;
@@ -335,7 +334,7 @@
     }
 
     &[aria-current='true'] {
-        font-weight: 700;
+        background: rgba(128, 128, 128, 0.3);
     }
 }
 
