@@ -11,7 +11,7 @@ import { loadConfig, loadedConfig } from 'src/app/services/site-config/config-lo
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { MenuItem } from 'src/app/services/site-config/site-config.model';
 import { ThemeService } from 'src/app/services/theme/theme.service';
-import { LANGUAGES, Language, LanguageService, htmlLang, languageName } from 'src/app/services/language/language.service';
+import { LANGUAGES, Language, LanguageService, languageName } from 'src/app/services/language/language.service';
 
 
 @Component({
@@ -37,8 +37,6 @@ import { LANGUAGES, Language, LanguageService, htmlLang, languageName } from 'sr
     imports: [RouterLink, NgStyle, IconComponent, FlagComponent, forwardRef(() => HeaderComponent)],
     host: {
         '(window:scroll)': 'getScrollPosition()',
-        '(document:click)': 'closeLanguageMenu($event)',
-        '(document:keydown.escape)': 'closeLanguageMenu()',
     },
 })
 
@@ -219,15 +217,17 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.analyticsService.sendAnalyticEvent('theme_toggle', 'header', this.themeService.mode());
   }
 
-  readonly languages = LANGUAGES;
-  readonly languageName = languageName;
-  readonly htmlLang = htmlLang;
-  // The language menu is a dropdown under the one flag button.
-  languageMenuOpen = signal(false);
+  languageLabel(): string {
+    return `${this.ui.languagePickerLabel}: ${languageName(this.languageService.language())}`;
+  }
 
-  async selectLanguage(lang: Language) {
-    this.languageMenuOpen.set(false);
-    if (lang === this.languageService.language()) return;
+  // Each click on the flag button moves on to the next language, wrapping round.
+  nextLanguage() {
+    const current = LANGUAGES.indexOf(this.languageService.language());
+    void this.selectLanguage(LANGUAGES[(current + 1) % LANGUAGES.length]);
+  }
+
+  private async selectLanguage(lang: Language) {
     const section = await this.sectionForHash();
     await this.languageService.select(lang);
     // Keep a section link in the address bar in the new language.
@@ -272,12 +272,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   private async scrollToHash() {
     const section = await this.sectionForHash();
     if (section) this.scroll(section);
-  }
-
-  // Closes the language menu on Escape or a click anywhere outside it.
-  closeLanguageMenu(event?: Event) {
-    if (event && (event.target as Element | null)?.closest?.('.lang-picker')) return;
-    this.languageMenuOpen.set(false);
   }
 
   themeAriaLabel(): string {
