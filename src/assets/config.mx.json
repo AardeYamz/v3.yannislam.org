@@ -46,6 +46,9 @@
       "hidden": true
     }
   ],
+  "logoAbout": {
+    "voya": "Voya Financial, Inc. (NYSE: VOYA) es una empresa líder en retiro, beneficios para empleados y administración de inversiones que atiende a clientes individuales, de centros de trabajo e institucionales. Con más de 18 millones de relaciones con clientes, alrededor de 11,000 empleados y $1.19 billones de dólares en activos totales bajo administración y gestión, es uno de los 5 principales proveedores de planes de retiro de Estados Unidos por número de participantes y uno de los 3 principales proveedores de seguros de salud complementarios grupales. Voya busca despejar el camino de sus clientes hacia la confianza financiera y una vida más plena."
+  },
   "logos": {
     "voya": {
       "src": "https://cdn.voya.com/global/images/logo/1.0.1/logo.svg",
@@ -189,7 +192,6 @@
             "subTitle": "Desarrollador de software, desarrollo de aplicaciones de back office",
             "timeframe": "12/2022 - Actualidad",
             "tab": "Voya SDE",
-            "about": "Voya Financial, Inc. (NYSE: VOYA) es una empresa líder en salud, patrimonio e inversión que ofrece productos, soluciones y tecnologías para que sus 15.2 millones de clientes individuales, de centros de trabajo e institucionales estén bien planificados, bien invertidos y bien protegidos. Voya también tiene un propósito y se compromete a hacer negocios de manera económica, ética, social y ambientalmente responsable. Voya ha sido reconocida como una de las Empresas Más Éticas del Mundo® por Ethisphere, miembro del Índice de Igualdad de Género de Bloomberg y “Mejor lugar para trabajar en inclusión de la discapacidad” en el Disability Equality Index.",
             "description": [
               "Dirigí un equipo multifuncional de desarrolladores en India para migrar 5,100 planes de retiro (668 mil participantes y $51.8 mil millones de dólares en activos) de OneAmerica a la plataforma de nómina de Voya",
               "Impulsé la migración a la nube, dividiendo aplicaciones Java monolíticas basadas en Struts en microservicios SpringBoot nativos de Kubernetes",
@@ -213,7 +215,6 @@
             "subTitle": "Asociado del programa rotativo de recursos y desarrollo de TI",
             "timeframe": "05/2021 - 12/2022",
             "tab": "Rotación",
-            "about": "Voya Financial, Inc. (NYSE: VOYA) es una empresa líder en salud, patrimonio e inversión que ofrece productos, soluciones y tecnologías para que sus 15.2 millones de clientes individuales, de centros de trabajo e institucionales estén bien planificados, bien invertidos y bien protegidos. Voya también tiene un propósito y se compromete a hacer negocios de manera económica, ética, social y ambientalmente responsable. Voya ha sido reconocida como una de las Empresas Más Éticas del Mundo® por Ethisphere, miembro del Índice de Igualdad de Género de Bloomberg y “Mejor lugar para trabajar en inclusión de la discapacidad” en el Disability Equality Index.",
             "description": [
               "Lideré el desarrollo front-end en Angular para la migración de la aplicación Common Remitter a la nube de Azure",
               "Refactoricé la aplicación Java Participant Web (my.voya.com) y eliminé endpoints sin uso para reducir la deuda técnica",
@@ -233,7 +234,6 @@
             "subTitle": "Practicante de desarrollo de Salesforce en TI",
             "timeframe": "05/2019 - 08/2020",
             "tab": "Practicante",
-            "about": "Voya Financial, Inc. (NYSE: VOYA) es una empresa líder en salud, patrimonio e inversión que ofrece productos, soluciones y tecnologías para que sus 15.2 millones de clientes individuales, de centros de trabajo e institucionales estén bien planificados, bien invertidos y bien protegidos. Voya también tiene un propósito y se compromete a hacer negocios de manera económica, ética, social y ambientalmente responsable. Voya ha sido reconocida como una de las Empresas Más Éticas del Mundo® por Ethisphere, miembro del Índice de Igualdad de Género de Bloomberg y “Mejor lugar para trabajar en inclusión de la discapacidad” en el Disability Equality Index.",
             "description": [
               "Mejoré la cobertura de pruebas y estabilicé los entornos de Salesforce al refactorizar pruebas unitarias automatizadas de Apex",
               "Desarrollé experiencia práctica en Apex, SOQL, SOSL y Visualforce mediante trabajo de desarrollo aplicado",

@@ -193,6 +193,8 @@ export interface SiteConfig {
   ui: UiStrings;
   siteMenu: MenuItem[];
   logos: Record<string, Logo>;
+  // Shared "about" blurb per logoKey, for entries that don't set their own.
+  logoAbout?: Record<string, string>;
   about: AboutConfig;
   banner: Banner;
   footer: FooterConfig;
