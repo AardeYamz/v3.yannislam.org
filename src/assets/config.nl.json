@@ -46,6 +46,9 @@
       "hidden": true
     }
   ],
+  "logoAbout": {
+    "voya": "Voya Financial, Inc. (NYSE: VOYA) is een toonaangevend bedrijf voor pensioenen, secundaire arbeidsvoorwaarden en vermogensbeheer dat particuliere, zakelijke en institutionele klanten bedient. Met meer dan 18 miljoen klantrelaties, ongeveer 11.000 medewerkers en $1,19 biljoen aan totaal beheerd en administratief vermogen is het, naar aantal deelnemers, een van de vijf grootste pensioenverstrekkers in de VS en een van de drie grootste aanbieders van collectieve aanvullende zorgverzekeringen. Voya wil de weg van zijn klanten naar financieel vertrouwen en een zinvoller leven vrijmaken."
+  },
   "logos": {
     "voya": {
       "src": "https://cdn.voya.com/global/images/logo/1.0.1/logo.svg",
@@ -189,7 +192,6 @@
             "subTitle": "Softwareontwikkelaar, ontwikkeling van back-officeapplicaties",
             "timeframe": "12/2022 - heden",
             "tab": "Voya SDE",
-            "about": "Voya Financial, Inc. (NYSE: VOYA) is een toonaangevend gezondheids-, vermogens- en beleggingsbedrijf met producten, oplossingen en technologieën waarmee de 15,2 miljoen particuliere, zakelijke en institutionele klanten goed gepland, goed belegd en goed beschermd zijn. Voya werkt ook vanuit een bredere missie en wil economisch, ethisch, sociaal en ecologisch verantwoord ondernemen. Voya is onderscheiden als een van de World’s Most Ethical Companies® door Ethisphere, lid van de Bloomberg Gender-Equality Index en “Best Place to Work for Disability Inclusion” in de Disability Equality Index.",
             "description": [
               "Leidde een multidisciplinair team van ontwikkelaars in India bij de migratie van 5.100 pensioenregelingen (668.000 deelnemers en $51,8 miljard aan vermogen) van OneAmerica naar het Payroll-platform van Voya",
               "Stuurde de cloudmigratie aan door monolithische Java-applicaties op basis van Struts op te splitsen in Kubernetes-native SpringBoot-microservices",
@@ -213,7 +215,6 @@
             "subTitle": "Deelnemer roulerend IT-resource- en ontwikkelprogramma",
             "timeframe": "05/2021 - 12/2022",
             "tab": "Rotatie",
-            "about": "Voya Financial, Inc. (NYSE: VOYA) is een toonaangevend gezondheids-, vermogens- en beleggingsbedrijf met producten, oplossingen en technologieën waarmee de 15,2 miljoen particuliere, zakelijke en institutionele klanten goed gepland, goed belegd en goed beschermd zijn. Voya werkt ook vanuit een bredere missie en wil economisch, ethisch, sociaal en ecologisch verantwoord ondernemen. Voya is onderscheiden als een van de World’s Most Ethical Companies® door Ethisphere, lid van de Bloomberg Gender-Equality Index en “Best Place to Work for Disability Inclusion” in de Disability Equality Index.",
             "description": [
               "Leidde de Angular-frontendontwikkeling voor de migratie van de Common Remitter-applicatie naar de Azure-cloud",
               "Herstructureerde de Java-applicatie Participant Web (my.voya.com) en verwijderde ongebruikte endpoints om technische schuld te verminderen",
@@ -233,7 +234,6 @@
             "subTitle": "Stagiair Salesforce-ontwikkeling (IT)",
             "timeframe": "05/2019 - 08/2020",
             "tab": "Stagiair",
-            "about": "Voya Financial, Inc. (NYSE: VOYA) is een toonaangevend gezondheids-, vermogens- en beleggingsbedrijf met producten, oplossingen en technologieën waarmee de 15,2 miljoen particuliere, zakelijke en institutionele klanten goed gepland, goed belegd en goed beschermd zijn. Voya werkt ook vanuit een bredere missie en wil economisch, ethisch, sociaal en ecologisch verantwoord ondernemen. Voya is onderscheiden als een van de World’s Most Ethical Companies® door Ethisphere, lid van de Bloomberg Gender-Equality Index en “Best Place to Work for Disability Inclusion” in de Disability Equality Index.",
             "description": [
               "Verbeterde de testdekking en stabiliseerde Salesforce-omgevingen door geautomatiseerde Apex-unittests te herstructureren",
               "Bouwde praktische expertise op in Apex, SOQL, SOSL en Visualforce door ontwikkelwerk in de praktijk",
