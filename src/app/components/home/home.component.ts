@@ -16,5 +16,5 @@ import { Experiences } from 'src/app/services/site-config/site-config.model';
 export class HomeComponent {
   private configService = inject(SiteConfigService);
 
-  experiences: Experiences = this.configService.experiences;
+  get experiences(): Experiences { return this.configService.experiences; }
 }

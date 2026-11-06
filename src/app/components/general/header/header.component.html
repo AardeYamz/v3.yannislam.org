@@ -22,6 +22,26 @@
         [attr.aria-label]="themeAriaLabel()">
         <app-icon [name]="themeService.mode() === 'default' ? 'fa-circle-half-stroke' : (themeService.mode() === 'light' ? 'fa-sun' : 'fa-moon')"></app-icon>
       </button>
+      <div class="lang-picker">
+        <button type="button" class="lang-toggle" (click)="languageMenuOpen.set(!languageMenuOpen())"
+          [attr.aria-label]="ui.languagePickerLabel" [title]="ui.languagePickerLabel"
+          aria-haspopup="true" [attr.aria-expanded]="languageMenuOpen()" aria-controls="language-menu">
+          <app-flag [lang]="languageService.language()"></app-flag>
+        </button>
+        @if (languageMenuOpen()) {
+          <ul id="language-menu" class="lang-menu">
+            @for (option of languages; track option) {
+              <li>
+                <button type="button" class="lang-option" (click)="selectLanguage(option)"
+                  [title]="languageName(option)" [attr.aria-label]="languageName(option)"
+                  [attr.lang]="htmlLang(option)" [attr.aria-current]="option === languageService.language() ? 'true' : null">
+                  <app-flag [lang]="option"></app-flag>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
     </div>
     <button type="button" class="menu-toggle" (click)="responsiveMenuVisible = !responsiveMenuVisible"
       [attr.aria-label]="responsiveMenuVisible ? ui.closeMenu : ui.openMenu"

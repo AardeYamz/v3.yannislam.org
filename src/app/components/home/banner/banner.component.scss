@@ -28,7 +28,11 @@
                 font-weight: 600;
                 font-size: 80px;
                 line-height: 1.1;
-                margin: 0;
+                // background-clip: text paints only inside the element box, and CJK
+                // glyphs reach past a 1.1 line box (the Chinese name was clipped).
+                // Pad the box out and pull the margin back so layout is unchanged.
+                padding: 0.15em 0;
+                margin: -0.15em 0;
                 font-family: $MainFont;
 
                 background: var(--name-gradient);
@@ -65,6 +69,11 @@
 
             .banner-description {
                 margin-bottom: 70px;
+                // The Chinese blurb is shorter than the English one; the banner is
+                // vertically centred, so without a floor the name would sit lower
+                // in Chinese. Reserve the English height (7 lines + the first <p>'s
+                // 24px margin) so the name stays at the same height in both.
+                min-height: calc(7lh + 24px);
             }
 
             p {

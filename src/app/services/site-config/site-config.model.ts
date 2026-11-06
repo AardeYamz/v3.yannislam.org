@@ -159,6 +159,7 @@ export interface ProjectsConfig {
 }
 
 export interface UiStrings {
+  meta: { title: string; description: string };
   header: {
     homeAriaLabel: string;
     logoAlt: string;
@@ -170,6 +171,8 @@ export interface UiStrings {
     themeModes: Record<"default" | "light" | "dark", string>;
     openMenu: string;
     closeMenu: string;
+    // Label of the single flag button that opens the language menu.
+    languagePickerLabel: string;
   };
   banner: { emailButton: string; resumeButton: string };
   about: {
@@ -183,7 +186,7 @@ export interface UiStrings {
   projects: { viewButton: string; backToProjects: string };
   namecard: { title: string };
   workhistory: { viewProject: string; viewDemo: string };
-  footer: { designedBy: string; emailAriaLabel: string };
+  footer: { designedBy: string; emailAriaLabel: string; disclaimer: string };
 }
 
 export interface SiteConfig {

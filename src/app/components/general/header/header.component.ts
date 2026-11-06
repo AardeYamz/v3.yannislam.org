@@ -2,13 +2,16 @@ import { Component, ChangeDetectionStrategy, AfterViewInit, OnDestroy, signal, P
 import { isPlatformBrowser, NgStyle } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
+import { FlagComponent } from 'src/app/components/general/flag/flag.component';
 import { IconComponent } from 'src/app/icons/icon.component';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
+import { loadConfig, loadedConfig } from 'src/app/services/site-config/config-loader';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { MenuItem } from 'src/app/services/site-config/site-config.model';
 import { ThemeService } from 'src/app/services/theme/theme.service';
+import { LANGUAGES, Language, LanguageService, htmlLang, languageName } from 'src/app/services/language/language.service';
 
 
 @Component({
@@ -31,9 +34,11 @@ import { ThemeService } from 'src/app/services/theme/theme.service';
         fadeStaggerAnimation('animateMenu', 'translateX(-20px)', '.container > *')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterLink, NgStyle, IconComponent, forwardRef(() => HeaderComponent)],
+    imports: [RouterLink, NgStyle, IconComponent, FlagComponent, forwardRef(() => HeaderComponent)],
     host: {
         '(window:scroll)': 'getScrollPosition()',
+        '(document:click)': 'closeLanguageMenu($event)',
+        '(document:keydown.escape)': 'closeLanguageMenu()',
     },
 })
 
@@ -42,12 +47,15 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   analyticsService = inject(AnalyticsService);
   themeService = inject(ThemeService);
   private resumeService = inject(ResumeService);
+  languageService = inject(LanguageService);
+  private configService = inject(SiteConfigService);
 
 
   responsiveMenuVisible: Boolean = false;
   pageYPosition!: number;
-  menu: MenuItem[];
-  ui = inject(SiteConfigService).ui.header;
+  // Getters, not fields: the language can change while the header is mounted.
+  get menu(): MenuItem[] { return this.configService.menu; }
+  get ui() { return this.configService.ui.header; }
 
   // Which section (menuItem.scrollSection) is currently scrolled into view,
   // used to highlight the matching nav item — see setupSectionObserver().
@@ -71,10 +79,8 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   private readonly isBrowser: boolean;
 
   constructor() {
-    const configService = inject(SiteConfigService);
     const platformId = inject(PLATFORM_ID);
 
-    this.menu = configService.menu;
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
@@ -85,6 +91,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     if (!this.isBrowser) return;
 
     this.setupSectionObserver();
+    void this.scrollToHash();
     // Routes other than "/" (e.g. /projects, /aardeyamz) don't have these
     // section ids in the DOM at all, and navigating back to "/" mounts a
     // fresh HomeComponent — re-run the observer setup after every
@@ -200,6 +207,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     event?.preventDefault();
     if (menuItem?.scrollSection) {
       this.scroll(menuItem.scrollSection);
+      this.setHash(menuItem);
     } else if (menuItem?.siteLocation) {
       this.router.navigateByUrl(menuItem.siteLocation);
       this.responsiveMenuVisible = false;
@@ -209,6 +217,67 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   toggleTheme() {
     this.themeService.cycle();
     this.analyticsService.sendAnalyticEvent('theme_toggle', 'header', this.themeService.mode());
+  }
+
+  readonly languages = LANGUAGES;
+  readonly languageName = languageName;
+  readonly htmlLang = htmlLang;
+  // The language menu is a dropdown under the one flag button.
+  languageMenuOpen = signal(false);
+
+  async selectLanguage(lang: Language) {
+    this.languageMenuOpen.set(false);
+    if (lang === this.languageService.language()) return;
+    const section = await this.sectionForHash();
+    await this.languageService.select(lang);
+    // Keep a section link in the address bar in the new language.
+    const item = this.menu.find((i) => i.scrollSection === section);
+    if (item) this.setHash(item);
+    this.analyticsService.sendAnalyticEvent('language_toggle', 'header', lang);
+  }
+
+  // The part of a nav item's siteLocation after the '#' (its localized anchor), or ''.
+  private fragmentOf(item: Partial<MenuItem>): string {
+    return item.siteLocation?.split('#')[1] ?? '';
+  }
+
+  // Puts the item's anchor for the current language in the address bar, without navigating.
+  private setHash(item: Partial<MenuItem>) {
+    if (!this.isBrowser || !item.siteLocation?.includes('#')) return;
+    history.replaceState(history.state, '', item.siteLocation);
+  }
+
+  // The section the address bar's #fragment points at, or ''. Both the section id
+  // (#volunteering) and any language's anchor (#志愿服务, #志願服務) resolve: the
+  // ids stay English and the anchors are aliases for them, so old links keep
+  // working. Other languages' anchors come from their config, fetched on demand.
+  private async sectionForHash(): Promise<string> {
+    if (!this.isBrowser) return '';
+    let hash = '';
+    try {
+      hash = decodeURIComponent(window.location.hash.slice(1));
+    } catch {
+      return '';
+    }
+    if (!hash) return '';
+    if (document.getElementById(hash)) return hash;
+    await Promise.all(LANGUAGES.map((lang) => loadConfig(lang).catch(() => undefined)));
+    for (const lang of LANGUAGES) {
+      const item = loadedConfig(lang).siteMenu.find((i) => i.scrollSection && this.fragmentOf(i) === hash);
+      if (item) return item.scrollSection!;
+    }
+    return '';
+  }
+
+  private async scrollToHash() {
+    const section = await this.sectionForHash();
+    if (section) this.scroll(section);
+  }
+
+  // Closes the language menu on Escape or a click anywhere outside it.
+  closeLanguageMenu(event?: Event) {
+    if (event && (event.target as Element | null)?.closest?.('.lang-picker')) return;
+    this.languageMenuOpen.set(false);
   }
 
   themeAriaLabel(): string {
