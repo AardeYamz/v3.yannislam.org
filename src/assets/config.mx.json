@@ -1,0 +1,812 @@
+{
+  "siteMenu": [
+    {
+      "navID": 1,
+      "navNumber": "01. ",
+      "navTitle": "Acerca de",
+      "navContent": "¿Quién soy?",
+      "scrollSection": "about",
+      "siteLocation": "/#acerca-de"
+    },
+    {
+      "navNumber": "02. ",
+      "navTitle": "Educación",
+      "navContent": "¿Dónde estudié?",
+      "scrollSection": "education",
+      "siteLocation": "/#educacion"
+    },
+    {
+      "navNumber": "03. ",
+      "navTitle": "Experiencia",
+      "navContent": "¿Cuál es mi experiencia?",
+      "scrollSection": "workhistory",
+      "siteLocation": "/#experiencia"
+    },
+    {
+      "navID": 4,
+      "navNumber": "04. ",
+      "navTitle": "Voluntariado",
+      "navContent": "¿Cómo retribuyo?",
+      "scrollSection": "volunteering",
+      "siteLocation": "/#voluntariado"
+    },
+    {
+      "navID": 5,
+      "navNumber": "05. ",
+      "navTitle": "Proyectos",
+      "navContent": "¿Qué he construido?",
+      "scrollSection": "",
+      "siteLocation": "/projects"
+    },
+    {
+      "navTitle": "AardeYamz",
+      "navContent": "",
+      "scrollSection": "",
+      "siteLocation": "/aardeyamz",
+      "hidden": true
+    }
+  ],
+  "logos": {
+    "voya": {
+      "src": "https://cdn.voya.com/global/images/logo/1.0.1/logo.svg",
+      "alt": "Voya Financial Logo"
+    },
+    "umassAmherst": {
+      "src": "https://www.umass.edu/brand/sites/default/files/styles/tile_max_250px/public/2025-10/Seal%20Small-PMS_Black3.png",
+      "alt": "UMass Amherst"
+    },
+    "umassResLife": {
+      "src": "https://pbs.twimg.com/profile_images/642029086622113792/R_xe0hTC_400x400.png",
+      "alt": "UMass Residential Life Logo"
+    },
+    "manningCICS": {
+      "src": "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg",
+      "alt": "UMass Amherst Manning College of Computer & Information Sciences Logo"
+    },
+    "braintreePS": {
+      "src": "https://graph.facebook.com/BraintreeEDU/picture?width=720&height=720",
+      "alt": "Braintree Public Schools Logo"
+    },
+    "homeDepot": {
+      "src": "https://corporate.homedepot.com/sites/default/files/image_gallery/THD_logo.jpg",
+      "alt": "Home Depot Logo"
+    },
+    "projectRise": {
+      "src": "https://www.thayer.org/uploaded/themes/project_rise_18/images/Horizontal_W_Thayer_1.png",
+      "alt": "Project RISE Boston Logo"
+    },
+    "cbcgb": {
+      "src": "data:,",
+      "alt": "Chinese Baptist Church of Greater Boston"
+    },
+    "epicMovement": {
+      "src": "https://epicmovement.com/wp-content/uploads/sites/39/2026/03/RGB-Endorsed.png",
+      "alt": "Epic Movement Logo"
+    },
+    "craigsDoors": {
+      "src": "https://images.squarespace-cdn.com/content/v1/5a68c543c027d8520a74c74a/658c179a-80ed-4f21-bec2-be3c907f57bf/craigs-2.png",
+      "alt": "Craig's Doors Logo"
+    },
+    "fbcAmherst": {
+      "src": "https://images.squarespace-cdn.com/content/v1/60f4e051476ec73ef23d5056/abbbe5eb-523c-4002-bea2-87677a31045c/FBC+Logo_Primary.png",
+      "alt": "First Baptist Church of Amherst Logo"
+    },
+    "ariseYouth": {
+      "src": "https://images.squarespace-cdn.com/content/5c7d8e4cc2ff6107242ff5f6/1556760518783-TJ3O5QM4FWX1FTQVVKGS/ARISElogoBMGrayFinal.png?format=1500w&content-type=image%2Fpng",
+      "alt": "ARISE Youth Ministries Logo"
+    }
+  },
+  "about": {
+    "first": "Yannis",
+    "last": "Lam",
+    "email": "email@yannislam.org",
+    "contact": [
+      {
+        "icon": "fa-envelope",
+        "name": "Email",
+        "url": "mailto:email@yannislam.org",
+        "handle": "email@yannislam.org"
+      },
+      {
+        "icon": "fa-linkedin-in",
+        "name": "Linkedin",
+        "url": "https://linkedin.com/in/yannis-lam/",
+        "handle": "/in/yannis-lam/"
+      },
+      {
+        "icon": "fa-github",
+        "name": "Github",
+        "url": "https://github.com/AardeYamz"
+      },
+      {
+        "icon": "fa-tiktok",
+        "name": "TikTok",
+        "url": "https://tiktok.com/@AardeYamz",
+        "handle": "@AardeYamz"
+      },
+      {
+        "icon": "fa-facebook-f",
+        "name": "Facebook",
+        "url": "https://fb.com/AardeYamz",
+        "handle": "/AardeYamz"
+      },
+      {
+        "icon": "fa-instagram",
+        "name": "Instagram",
+        "url": "https://instagram.com/AardeYamz",
+        "handle": "@AardeYamz"
+      }
+    ],
+    "aardeyamz": [
+      {
+        "title": "Yannis Lam",
+        "language": "Griego / Chino / Inglés",
+        "pronounciation": "/y æ - n ih s · l a m/",
+        "content": [
+          "el regalo de mis papás para mí en inglés",
+          "mi nombre legal en Estados Unidos",
+          "Yannis (Γιάννης) - nombre griego que significa \"Dios es misericordioso\" o \"con la gracia de Dios\"; comúnmente se traduce como \"Juan\"",
+          "Lam (林) - romanización británica común, en Hong Kong, del apellido chino que significa \"bosque\""
+        ]
+      },
+      {
+        "title": "林恩力",
+        "language": "Chino",
+        "pronounciation": "/lam4 jan1 lik6/",
+        "content": [
+          "el nombre que mis papás decidieron ponerme en chino",
+          "como me llaman las personas chinas",
+          "林 - apellido chino común que significa \"bosque\"; se romaniza como \"Lam\" o \"Lin\"",
+          "恩 - carácter chino que significa \"gracia\"; nombre chino común para niñas cuyo nombre en inglés es \"Grace\"",
+          "力 - carácter chino que significa \"fuerza\""
+        ]
+      },
+      {
+        "title": "Aarde · Yamz",
+        "language": "Neerlandés / Inglés",
+        "pronounciation": "/ardə jæm/",
+        "content": [
+          "lo que mi amiga Allison y yo decidimos que era un buen nombre de usuario que nadie había reclamado en 2014",
+          "como me llama la gente en internet",
+          "Aarde - palabra neerlandesa que significa \"tierra\"",
+          "Yamz - abreviatura de mi nombre en inglés \"Yannis\"; como me decían mis amigos en la preparatoria"
+        ]
+      }
+    ],
+    "experiences": {
+      "work": {
+        "sectionId": "workhistory",
+        "navNumber": "03.",
+        "headingText": "¿Cuál es mi experiencia?",
+        "list": [
+          {
+            "logoKey": "voya",
+            "link": [
+              "https://www.voya.com/"
+            ],
+            "organization": "Voya Financial",
+            "title": "Desarrollador de software",
+            "subTitle": "Desarrollador de software, desarrollo de aplicaciones de back office",
+            "timeframe": "12/2022 - Actualidad",
+            "tab": "Voya SDE",
+            "about": "Voya Financial, Inc. (NYSE: VOYA) es una empresa líder en salud, patrimonio e inversión que ofrece productos, soluciones y tecnologías para que sus 15.2 millones de clientes individuales, de centros de trabajo e institucionales estén bien planificados, bien invertidos y bien protegidos. Voya también tiene un propósito y se compromete a hacer negocios de manera económica, ética, social y ambientalmente responsable. Voya ha sido reconocida como una de las Empresas Más Éticas del Mundo® por Ethisphere, miembro del Índice de Igualdad de Género de Bloomberg y “Mejor lugar para trabajar en inclusión de la discapacidad” en el Disability Equality Index.",
+            "description": [
+              "Dirigí un equipo multifuncional de desarrolladores en India para migrar 5,100 planes de retiro (668 mil participantes y $51.8 mil millones de dólares en activos) de OneAmerica a la plataforma de nómina de Voya",
+              "Impulsé la migración a la nube, dividiendo aplicaciones Java monolíticas basadas en Struts en microservicios SpringBoot nativos de Kubernetes",
+              "Encabecé la corrección de vulnerabilidades y la modernización de las actualizaciones de SpringBoot y JDK con pipelines agénticos impulsados por Copilot",
+              "Construí y mantuve la suite de aplicaciones de back office (Task Manager, Common Remitter, Case Installation, Claims Integration y Voya PayCloud) para los negocios de Retiro y Beneficios para Empleados",
+              "Elevé los estándares de documentación y de comunidad de práctica entre más de 50 desarrolladores Java"
+            ],
+            "skills": [
+              "Azure RedHat Openshift",
+              "CyberArk Conjur",
+              "SpringBoot, Struts, & JBoss (Java)",
+              "Active Directory",
+              "ServiceNow",
+              "GitHub Copilot"
+            ]
+          },
+          {
+            "logoKey": "voya",
+            "organization": "Voya Financial",
+            "title": "Desarrollador de software asociado",
+            "subTitle": "Asociado del programa rotativo de recursos y desarrollo de TI",
+            "timeframe": "05/2021 - 12/2022",
+            "tab": "Rotación",
+            "about": "Voya Financial, Inc. (NYSE: VOYA) es una empresa líder en salud, patrimonio e inversión que ofrece productos, soluciones y tecnologías para que sus 15.2 millones de clientes individuales, de centros de trabajo e institucionales estén bien planificados, bien invertidos y bien protegidos. Voya también tiene un propósito y se compromete a hacer negocios de manera económica, ética, social y ambientalmente responsable. Voya ha sido reconocida como una de las Empresas Más Éticas del Mundo® por Ethisphere, miembro del Índice de Igualdad de Género de Bloomberg y “Mejor lugar para trabajar en inclusión de la discapacidad” en el Disability Equality Index.",
+            "description": [
+              "Lideré el desarrollo front-end en Angular para la migración de la aplicación Common Remitter a la nube de Azure",
+              "Refactoricé la aplicación Java Participant Web (my.voya.com) y eliminé endpoints sin uso para reducir la deuda técnica",
+              "Conecté a los equipos de desarrollo de aplicaciones y de DevOps para integrar un pipeline de CI/CD avanzado"
+            ],
+            "skills": [
+              "Azure Platform",
+              "Angular",
+              "CICD Pipelines",
+              "GitHub"
+            ]
+          },
+          {
+            "logoKey": "voya",
+            "organization": "Voya Financial",
+            "title": "Desarrollador de software practicante",
+            "subTitle": "Practicante de desarrollo de Salesforce en TI",
+            "timeframe": "05/2019 - 08/2020",
+            "tab": "Practicante",
+            "about": "Voya Financial, Inc. (NYSE: VOYA) es una empresa líder en salud, patrimonio e inversión que ofrece productos, soluciones y tecnologías para que sus 15.2 millones de clientes individuales, de centros de trabajo e institucionales estén bien planificados, bien invertidos y bien protegidos. Voya también tiene un propósito y se compromete a hacer negocios de manera económica, ética, social y ambientalmente responsable. Voya ha sido reconocida como una de las Empresas Más Éticas del Mundo® por Ethisphere, miembro del Índice de Igualdad de Género de Bloomberg y “Mejor lugar para trabajar en inclusión de la discapacidad” en el Disability Equality Index.",
+            "description": [
+              "Mejoré la cobertura de pruebas y estabilicé los entornos de Salesforce al refactorizar pruebas unitarias automatizadas de Apex",
+              "Desarrollé experiencia práctica en Apex, SOQL, SOSL y Visualforce mediante trabajo de desarrollo aplicado",
+              "Me familiaricé con las metodologías Agile y Scrum a lo largo de todo el ciclo de vida del desarrollo de software"
+            ],
+            "skills": [
+              "Salesforce.com CRM Platform",
+              "SOQL & SOSL",
+              "Pruebas unitarias"
+            ]
+          },
+          {
+            "logoKey": "umassResLife",
+            "link": [
+              "https://www.umass.edu/living/"
+            ],
+            "organization": "Vida Residencial de UMass",
+            "title": "Mentor entre pares",
+            "timeframe": "01/2021 - 05/2021",
+            "tab": "UMass",
+            "description": [
+              "Brindé mentoría entre pares a más de 400 estudiantes de primer año en el Gorman/Wheeler Residential Cluster durante la transición de emergencia al aprendizaje a distancia.",
+              "Ofrecí orientación sobre recursos académicos, integración social y los retos de la vida residencial propios de las condiciones de la pandemia.",
+              "Colaboré con asistentes residenciales y equipos de mentores para impartir seminarios educativos y fomentar una comunidad incluyente."
+            ],
+            "skills": [
+              "Mentoría entre pares",
+              "Apoyo a la comunidad",
+              "Comunicación en crisis"
+            ]
+          },
+          {
+            "logoKey": "manningCICS",
+            "link": [
+              "https://people.cs.umass.edu/~jaimedavila/Courses/345/COMPSCI_345_syllabus.pdf"
+            ],
+            "organization": "Manning College of Computer & Information Sciences",
+            "title": "Asistente de licenciatura - CS 345",
+            "subTitle": "Asistente de curso de licenciatura - CS 345",
+            "timeframe": "09/2020 - 05/2021",
+            "tab": "CICS 345",
+            "description": [
+              "Fui asistente de curso de licenciatura del instructor Liam Rothschild y del profesor Jaime Dávila en CS 345: Práctica y Aplicaciones de la Administración de Datos",
+              "Supervisé clases semanales de 100 estudiantes, califiqué tareas y di horas de asesoría semanales sobre SQL y fundamentos de administración de datos",
+              "Desarrollé material nuevo para el curso, incluidas bases de datos SQL y autocalificadores en Python"
+            ],
+            "skills": [
+              "Docencia",
+              "SQL",
+              "RDBMS",
+              "Participación estudiantil"
+            ]
+          },
+          {
+            "logoKey": "manningCICS",
+            "link": [
+              "https://sites.google.com/view/cics256/home"
+            ],
+            "organization": "Manning College of Computer & Information Sciences",
+            "title": "Asistente de licenciatura - CICS 256",
+            "subTitle": "Asistente de curso de licenciatura - CICS 256 / 290M",
+            "timeframe": "09/2019 - 12/2019",
+            "tab": "CICS 256",
+            "description": [
+              "Fui asistente de curso de licenciatura de los profesores Rui Wang y Tauhidur Rahman en CICS 256/290M: Cómputo Físico",
+              "Supervisé laboratorios semanales de física, electrónica y programación de Arduino para un grupo de 35 estudiantes",
+              "Califiqué reportes semanales de laboratorio de 2 grupos, con un total de 75 estudiantes"
+            ],
+            "skills": [
+              "Arduino",
+              "Raspberry Pi",
+              "Circuitos",
+              "Cómputo físico"
+            ]
+          },
+          {
+            "logoKey": "braintreePS",
+            "link": [
+              "https://www.braintreeschools.org/"
+            ],
+            "organization": "Escuelas Públicas de Braintree",
+            "title": "Practicante universitario y técnico suplente",
+            "subTitle": "Oficina de Tecnología y Rendición de Cuentas",
+            "timeframe": "08/2017 - 06/2021",
+            "description": [
+              "Di soporte a toda la infraestructura tecnológica del distrito escolar desde la Oficina de Tecnología y Rendición de Cuentas de la preparatoria de Braintree",
+              "Me especialicé en reparación de Chromebooks, Chrome OS y administración de la Consola de administración de Google, y reparé más de 300 dispositivos dañados",
+              "Lideré la incorporación BYOD y las iniciativas de inventario de más de 7,000 dispositivos en todo el distrito",
+              "Ascendí de practicante de preparatoria a técnico suplente, supervisando equipos de hasta 20 técnicos",
+              "Reinstalé la imagen de más de 1,000 computadoras con Windows mediante DISM y SCCM, y administré el despliegue de dispositivos Android Go desde la Consola de administración de Google",
+              "Brindé soporte de mesa de ayuda a maestros y administradores, y gestioné la distribución de iPad Air y las reparaciones de equipo audiovisual"
+            ],
+            "skills": [
+              "Chrome OS",
+              "Google Admin Console",
+              "DISM & SCCM",
+              "Administración de inventario",
+              "Liderazgo de equipos"
+            ]
+          },
+          {
+            "logoKey": "braintreePS",
+            "link": [
+              "https://www.braintreeschools.org/"
+            ],
+            "organization": "Escuelas Públicas de Braintree",
+            "title": "Técnico estudiante",
+            "subTitle": "Oficina de Tecnología y Rendición de Cuentas",
+            "timeframe": "12/2016 - 08/2017",
+            "description": [
+              "Administré la inscripción y distribución de más de 500 Chromebooks e inventarié más de 1,000 dispositivos en seis edificios para evaluar daños",
+              "Actualicé 400 computadoras HP de Windows 7 a Windows 10 con DISM y WinPE, y migré 30 iMacs de OS X El Capitan a macOS High Sierra",
+              "Organicé los sistemas de almacenamiento de inventario y apoyé la instalación de más de 200 proyectores EPSON en todo el distrito"
+            ],
+            "skills": [
+              "Reparación de Chromebooks",
+              "DISM & WinPE",
+              "Inventario",
+              "Mesa de ayuda"
+            ]
+          },
+          {
+            "logoKey": "homeDepot",
+            "link": [
+              "https://www.homedepot.com/"
+            ],
+            "organization": "Home Depot",
+            "title": "Especialista en pedidos de clientes",
+            "timeframe": "05/2018 - 09/2018",
+            "tab": "Home Depot",
+            "description": [
+              "Administré el mostrador de servicio como especialista en surtido de pedidos en línea y atención al cliente",
+              "Resolví con eficiencia consultas complejas de clientes sobre compras, devoluciones y recomendaciones de productos",
+              "Mantuve la precisión del inventario y optimicé las operaciones del mostrador para un servicio de alto volumen"
+            ],
+            "skills": [
+              "Servicio al cliente",
+              "Resolución de problemas",
+              "Gestión de operaciones"
+            ]
+          },
+          {
+            "logoKey": "projectRise",
+            "link": [
+              "https://www.thayer.org/projectrise"
+            ],
+            "organization": "Project RISE Boston",
+            "title": "Maestro de matemáticas y consejero de campamento",
+            "subTitle": "Maestro de matemáticas (grados 6 a 10)",
+            "timeframe": "05/2015 - 08/2016",
+            "tab": "Project RISE",
+            "description": [
+              "Impartí matemáticas y coordiné actividades de campamento para 70 estudiantes de secundaria y preparatoria de zonas urbanas durante un programa de siete semanas",
+              "Impartí cinco clases de matemáticas de 50 minutos, 4 días a la semana, con temas desde aritmética hasta trigonometría",
+              "Construí y lancé \"projectriseboston.org\" (actualizado desde entonces) y produje un video promocional de 5 minutos que muestra la experiencia del campamento"
+            ],
+            "skills": [
+              "Docencia",
+              "Wix",
+              "Desarrollo web"
+            ]
+          }
+        ]
+      },
+      "education": [
+        {
+          "logoKey": "umassAmherst",
+          "organization": "Universidad de Massachusetts Amherst, Commonwealth Honors College",
+          "timeframe": "09/2017 - 05/2021",
+          "link": [
+            "https://www.cics.umass.edu/"
+          ],
+          "title": "Ciencias de la Computación (Licenciatura)",
+          "tab": "CICS BS",
+          "description": [
+            "Promedio (GPA): 3.69",
+            "Licenciatura en Ciencias, Manning College of Information & Computer Sciences",
+            "Reconocimientos: Cuadro de Honor del Decano (6 semestres)",
+            "Materias avanzadas: Cómputo Físico, Estructuras de Datos, Administración de Datos, Programación Web, Informática Forense, Derecho de Internet, Redes de Computadoras"
+          ]
+        },
+        {
+          "logoKey": "umassAmherst",
+          "organization": "Universidad de Massachusetts Amherst, Commonwealth Honors College",
+          "timeframe": "09/2017 - 05/2021",
+          "link": [
+            "https://www.umass.edu/economics/"
+          ],
+          "title": "Economía (Licenciatura)",
+          "tab": "ECON BA",
+          "description": [
+            "Promedio (GPA): 3.69",
+            "Licenciatura en Artes, College of Social & Behavioral Sciences",
+            "Materias relevantes: Economía Política del Medio Ambiente, Teoría de Juegos, Dinero y Banca, Econometría"
+          ]
+        },
+        {
+          "logoKey": "braintreePS",
+          "organization": "Preparatoria de Braintree",
+          "timeframe": "09/2013 - 06/2017",
+          "link": [
+            "https://www.braintreeschools.org/"
+          ],
+          "title": "Diploma de preparatoria",
+          "tab": "Prepa",
+          "description": [
+            "Promedio (GPA): 3.83 ~ Summa Cum Laude",
+            "Cursé 10 materias AP y aprobé 10 exámenes AP, con el lugar 8 de 401 en mi generación",
+            "Miembro de la Edna M. Parker National Honor Society y reconocido como estudiante destacado de mi generación"
+          ]
+        }
+      ],
+      "volunteering": {
+        "sectionId": "volunteering",
+        "navNumber": "04.",
+        "headingText": "¿Cómo retribuyo?",
+        "list": [
+          {
+            "logoKey": "cbcgb",
+            "organization": "Iglesia Bautista China del Gran Boston",
+            "title": "Miembro del consejo de la iglesia",
+            "subTitle": "Presidente de la congregación en inglés y del departamento juvenil → Presidente de asuntos generales → Secretario del consejo",
+            "tab": "CBCGB",
+            "timeframe": "11/2022 - Actualidad",
+            "description": [
+              "Líder laico electo en el consejo de la Iglesia Bautista China del Gran Boston, donde he sido presidente de la congregación en inglés y del departamento juvenil (2022-24), presidente de asuntos generales (2024-25) y secretario del consejo (2025-26).",
+              "Coordiné eventos del ministerio, el presupuesto y tareas administrativas junto con líderes de la congregación, diáconos y el equipo pastoral."
+            ],
+            "skills": [
+              "Liderazgo en la iglesia",
+              "Coordinación de presupuesto",
+              "Planeación del ministerio"
+            ]
+          },
+          {
+            "logoKey": "epicMovement",
+            "link": "https://epicmovement.com/",
+            "organization": "Epic Movement en UMass Amherst",
+            "title": "Presidente",
+            "tab": "Epic Movement",
+            "timeframe": "08/2020 - 05/2021",
+            "about": "Epic Movement es un ministerio de Cru que visualiza a estudiantes y profesores asiático-estadounidenses transformados por su relación con Jesucristo, que valoran sus culturas y participan activamente en la obra redentora de Dios de maneras que honran a todas las personas y contextos. Epic Movement en UMass Amherst se fundó en el otoño de 2008.",
+            "description": [
+              "Asumí la presidencia en mi último año y dirigí a una mesa directiva de 14 líderes y a 80 miembros de la comunidad durante la transición de emergencia de UMass al aprendizaje a distancia.",
+              "Encabecé iniciativas virtuales para formar comunidad y mantener la participación y el crecimiento espiritual durante retos organizativos sin precedentes.",
+              "Coordiné la planeación estratégica, la asignación de presupuesto y la toma de decisiones colaborativa entre estructuras de liderazgo distribuidas."
+            ],
+            "skills": [
+              "Liderazgo estratégico",
+              "Formación de comunidad",
+              "Gestión del cambio"
+            ]
+          },
+          {
+            "logoKey": "craigsDoors",
+            "organization": "Craig's Doors",
+            "title": "Voluntario de cocina",
+            "tab": "Craig's Doors",
+            "timeframe": "01/2020 - 03/2020",
+            "description": [
+              "Fui voluntario en la cocina de Craig's Doors, una organización de refugio y servicios de apoyo para personas sin hogar en Amherst, MA.",
+              "Contribuí a la preparación y el servicio de comidas que brindaban apoyo diario a miembros vulnerables de la comunidad.",
+              "Trabajé en colaboración con equipos diversos de voluntarios y personal en un entorno impulsado por una misión."
+            ],
+            "skills": [
+              "Servicio comunitario",
+              "Servicio de alimentos",
+              "Colaboración"
+            ]
+          },
+          {
+            "logoKey": "umassAmherst",
+            "link": "https://www.umass.edu/",
+            "organization": "Universidad de Massachusetts Amherst",
+            "title": "Embajador de graduación",
+            "tab": "Graduación",
+            "timeframe": "05/2019",
+            "description": [
+              "Seleccionado como embajador de graduación para representar a la universidad y coordinar la ceremonia de graduación y los eventos de celebración.",
+              "Brindé orientación y apoyo logístico a estudiantes graduados, familias y dignatarios durante toda la graduación.",
+              "Contribuí a crear una experiencia memorable para la generación 2019."
+            ],
+            "skills": [
+              "Coordinación de eventos",
+              "Comunicación",
+              "Participación estudiantil"
+            ]
+          },
+          {
+            "logoKey": "fbcAmherst",
+            "organization": "Primera Iglesia Bautista de Amherst",
+            "title": "Organizador de eventos del ministerio universitario Agape",
+            "tab": "Agape",
+            "timeframe": "09/2018 - 05/2019",
+            "description": [
+              "Diseñé y realicé eventos de convivencia para el ministerio universitario Agape, fomentando el crecimiento espiritual y la conexión de más de 50 estudiantes universitarios.",
+              "Gestioné la logística, el presupuesto y la coordinación de participantes en reuniones quincenales y eventos especiales.",
+              "Construí y mantuve una participación comunitaria significativa en un ministerio de jóvenes adultos en crecimiento."
+            ],
+            "skills": [
+              "Planeación de eventos",
+              "Formación de comunidad",
+              "Liderazgo"
+            ]
+          },
+          {
+            "logoKey": "ariseYouth",
+            "link": "https://www.ariseyouth.org/",
+            "organization": "ARISE Youth Ministries",
+            "title": "Consejero juvenil",
+            "tab": "ARISE",
+            "timeframe": "07/2018 - 08/2019",
+            "about": "ARISE es un ministerio paraeclesiástico dedicado a amar a la Iglesia Coreana de Nueva Inglaterra, principalmente sirviendo a los jóvenes de segunda generación.",
+            "description": [
+              "Fui mentor de niños coreano-estadounidenses de secundaria durante retiros de una semana, brindándoles guía espiritual y cuidado pastoral.",
+              "Facilité actividades devocionales, estudios bíblicos y discusiones en grupo adaptados a las necesidades de desarrollo de los adolescentes.",
+              "Creé contenido multimedia que documenta las experiencias de los retiros, fortaleciendo la participación de la comunidad y la conexión con los exalumnos."
+            ],
+            "skills": [
+              "Mentoría juvenil",
+              "Liderazgo",
+              "Competencia cultural"
+            ]
+          }
+        ]
+      },
+      "skills": [
+        "Java & SpringBoot",
+        "Azure Cloud y Kubernetes",
+        "Angular & React JS",
+        "CyberArk Conjur",
+        "GitHub Copilot y herramientas de IA",
+        "HTML & CSS",
+        "Active Directory & ServiceNow"
+      ]
+    }
+  },
+  "banner": {
+    "greeting": "¡Hola! Me llamo",
+    "name": "Yannis Lam;",
+    "blurb": [
+      "Soy <a class='underline' href='https://linkedin.com/in/yannis-lam/' target='_blank' rel='noopener noreferrer'>desarrollador de software Full Stack</a> y líder técnico que transforma sistemas heredados en plataformas nativas de la nube en <a class='underline' href='https://www.voya.com/' target='_blank' rel='noopener noreferrer'>Voya Financial</a>. Lidero equipos de más de 50 ingenieros, descompongo problemas complejos en soluciones elegantes y elevo las capacidades compartiendo conocimiento. Me gradué del Commonwealth Honors College de la <a class='underline' href='https://www.umass.edu/' target='_blank' rel='noopener noreferrer'>Universidad de Massachusetts Amherst</a> con doble licenciatura en Ciencias de la Computación <i>(B.S.)</i> y Economía <i>(B.A.)</i>."
+    ],
+    "typeSection": [
+      "Soy desarrollador de software Full Stack",
+      "Soy especialista en migración a la nube",
+      "Soy ingeniero de Java",
+      "Soy científico de la computación",
+      "Soy economista",
+      "Soy un desarrollador potenciado con IA",
+      "Soy desarrollador front end",
+      "Soy desarrollador back end",
+      "Soy fotógrafo",
+      "Soy Yannis"
+    ]
+  },
+  "footer": {
+    "repo": {
+      "url": "https://github.com/AardeYamz/v3.yannislam.org",
+      "text": "</Yannis Lam>"
+    },
+    "builtWith": {
+      "text": "Adaptado y construido con 🧡 y 🍊 usando",
+      "linkText": "Angular",
+      "url": "https://angular.dev/"
+    },
+    "designCredits": [
+      {
+        "name": "Lê Thanh Tuấn",
+        "url": "https://github.com/lethanhtuan939/Portfolio",
+        "separator": ", "
+      },
+      {
+        "name": "Jośe Andreś",
+        "url": "https://github.com/andresjosehr/andresjosehr-portfolio",
+        "separator": ", & "
+      },
+      {
+        "name": "Brittany Chiang",
+        "url": "https://github.com/bchiang7/v4",
+        "separator": ""
+      }
+    ]
+  },
+  "ui": {
+    "meta": {
+      "title": "Yannis Lam | Desarrollador de software",
+      "description": "Portafolio de Yannis Lam, desarrollador de software con doble licenciatura en Ciencias de la Computación y Economía por UMass Amherst, especializado en desarrollo web y tecnología financiera."
+    },
+    "header": {
+      "homeAriaLabel": "Yannis Lam, inicio",
+      "logoAlt": "Logotipo de Yannis Lam",
+      "primaryNavLabel": "Principal",
+      "mobileNavLabel": "Móvil",
+      "themeToggleTitle": "Cambiar el tema de color",
+      "themeToggleAriaLabel": "Cambiar el tema de color (actual: {mode})",
+      "themeModes": {
+        "default": "predeterminado",
+        "light": "claro",
+        "dark": "oscuro"
+      },
+      "openMenu": "Abrir menú",
+      "closeMenu": "Cerrar menú",
+      "languagePickerLabel": "Idioma"
+    },
+    "banner": {
+      "emailButton": "¡escríbeme!",
+      "resumeButton": "currículum"
+    },
+    "about": {
+      "title": "¿Quién soy?",
+      "paragraphs": [
+        "¡<span class='underline'>Hola!</span> <span class=\"wave-hand\">👋</span>",
+        "Me llamo <span class='underline'>Yannis Lam</span>. Soy un desarrollador de software ambicioso e ingenioso. Me gradué con doble licenciatura en Ciencias de la Computación y Economía en el Commonwealth Honors College de la Universidad de Massachusetts Amherst.",
+        "Me interesan las tecnologías financieras y el desarrollo web. Tengo experiencia en desarrollo ágil de software y en soporte de escritorio empresarial. ¡No dudes en contactarme!",
+        "Algunas de las tecnologías con las que he trabajado son:"
+      ],
+      "imageAlt": "Foto de Yannis Lam"
+    },
+    "education": {
+      "title": "¿Dónde estudié?"
+    },
+    "projects": {
+      "viewButton": "Ver {heading}",
+      "backToProjects": "← Volver a Proyectos"
+    },
+    "namecard": {
+      "title": "¿Qué hay en un nombre?"
+    },
+    "workhistory": {
+      "viewProject": "Ver el proyecto {title}",
+      "viewDemo": "Ver la demostración de {title}"
+    },
+    "footer": {
+      "designedBy": "Diseño de",
+      "emailAriaLabel": "Enviar correo a {handle}",
+      "disclaimer": "Este sitio se escribió en inglés. No necesariamente domino los demás idiomas, así que las traducciones pueden tener errores."
+    }
+  },
+  "siteTitle": "Yannis Lam",
+  "manifestName": "yannislam.org",
+  "manifestShortName": "YL",
+  "manifestStartUrl": "/",
+  "manifestBackgroundColor": "#ff8b00",
+  "manifestThemeColor": "#ff8b00",
+  "manifestDisplay": "standalone",
+  "manifestIcon": "assets/images/logos/clearcolor.svg",
+  "heading": "Yannis Lam",
+  "subHeading": "",
+  "projects": {
+    "sectionId": "projects",
+    "navNumber": "05.",
+    "headingText": "¿Qué he construido?",
+    "college": {
+      "sectionId": "projects-college",
+      "navNumber": "5.1.",
+      "headingText": "Proyectos universitarios",
+      "list": [
+        {
+          "imgs": [
+            "assets/images/projects/OLS Regression Plot.png"
+          ],
+          "title": "Análisis de los factores salariales en Massachusetts",
+          "timeframe": "Tesis de licenciatura - 2021",
+          "description": [
+            "Investigué la brecha salarial entre el trabajo remoto y el presencial durante la recesión por COVID-19. Aunque las condiciones de la pandemia amplificaron estas diferencias, el análisis mostró que las disparidades salariales estructurales ya existían antes de la pandemia por región, industria, ocupación e historial laboral.",
+            "Construí modelos predictivos con regresión lineal, lasso y ridge para analizar la determinación de los salarios en Massachusetts. Examiné las relaciones causales entre variables demográficas y laborales y el salario por hora, aportando información sobre el potencial de ingresos por ocupación dentro del estado."
+          ]
+        },
+        {
+          "imgs": [
+            "assets/images/projects/DBTBT.png"
+          ],
+          "title": "DBTBT.com",
+          "timeframe": "Otoño de 2019",
+          "description": [
+            "En CS 326: Programación Web, me asocié con Christian Daher, Bhogesh Maddirala y Matthew Lehoullier para construir una plataforma que fomenta decisiones financieras más inteligentes. La aplicación compara productos de Amazon con alternativas de inversión en acciones del mismo precio, para ayudar a los usuarios a redirigir las compras impulsivas hacia la creación de patrimonio a largo plazo.",
+            "Stack tecnológico: Node.js (backend y servidor de sockets), React (frontend), Apache y Nginx (proxies inversos), Amazon EC2 y GCP Compute Engine (hospedaje), Amazon RDS con MySQL (base de datos), Amazon Route 53 (DNS). Publicado en https://www.dbtbt.com/"
+          ],
+          "link": "https://github.com/cdaher3/DBTBT"
+        },
+        {
+          "imgs": [
+            "assets/images/projects/20191020_053757.jpg"
+          ],
+          "title": "Controlador de timelapse en Python con Raspberry Pi",
+          "timeframe": "HackUMass VII - octubre de 2019",
+          "description": [
+            "Construí un sistema automatizado de fotografía timelapse con Henry Cheung, Veronica Gusev y Nhan Le. Un script de Python en la Raspberry Pi controlaba una cámara réflex a intervalos configurables y capturaba imágenes que se compilaban y codificaban automáticamente en videos timelapse."
+          ],
+          "link": "https://github.com/dergoose/hackumass2019"
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_6074.JPG"
+          ],
+          "title": "Ventana inteligente con Arduino",
+          "timeframe": "Otoño de 2018",
+          "description": [
+            "Construí un sistema automatizado de persianas con Jeffrey Carr para CICS 290M: Cómputo Físico. Un microcontrolador Arduino medía la luz ambiental con una fotorresistencia y ajustaba automáticamente una persiana controlada por servomotor para optimizar la iluminación natural en tiempo real."
+          ],
+          "link": "https://sites.google.com/umass.edu/smartblinds/about"
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_1246.JPG"
+          ],
+          "title": "Armado de la PC ZebRed",
+          "timeframe": "Junio de 2016 - Actualidad",
+          "description": [
+            "Estación de trabajo de escritorio de alto rendimiento armada a la medida y optimizada para desarrollo y trabajo creativo. Seleccioné los componentes por rendimiento, eficiencia térmica y valor a largo plazo. La he refinado y actualizado continuamente durante más de 8 años de uso activo."
+          ],
+          "link": "https://pcpartpicker.com/user/Aardeyamz/saved/whJdFT"
+        },
+        {
+          "imgs": [
+            "assets/images/projects/20181013_141834.jpg"
+          ],
+          "title": "Sistema de seguridad con Arduino",
+          "timeframe": "HackUMass VI - octubre de 2018",
+          "description": [
+            "Construí un sistema de alarma por proximidad ultrasónica con Jeffrey Carr, Henry Cheung y Steven Yen. Un microcontrolador Arduino medía la distancia con un sensor ultrasónico y daba retroalimentación visual con un anillo NeoPixel que se intensificaba al acercarse los objetos y se ponía rojo al llegar al umbral de la alarma."
+          ],
+          "link": "https://github.com/jcarr98/HackUMass2018"
+        }
+      ]
+    },
+    "highschool": {
+      "sectionId": "projects-highschool",
+      "navNumber": "5.2.",
+      "headingText": "Proyectos de preparatoria",
+      "list": [
+        {
+          "imgs": [
+            "assets/images/projects/IMG_9104.JPG"
+          ],
+          "title": "La reina del desierto: madre de reyes",
+          "timeframe": "National History Day - primavera de 2017",
+          "description": [
+            "Proyecto final de preparatoria que explora la importancia histórica de Gertrude Bell y su influencia en la geopolítica moderna de Medio Oriente. Colaboré con Matthew Pugsley, Katie O'Neil y Laura Wang en la investigación y la presentación en el concurso nacional."
+          ]
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_20160311_201710.jpg"
+          ],
+          "title": "Cienciología: una exploración de lo desconocido",
+          "timeframe": "National History Day - primavera de 2016",
+          "description": [
+            "Investigué la vida de L. Ron Hubbard y los orígenes del movimiento de la cienciología con Matthew Pugsley, Katie O'Neil y Laura Wang. Nuestra exhibición obtuvo el tercer lugar en el concurso regional de History Day de la costa sur de Massachusetts."
+          ]
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_20150314_120402.jpg"
+          ],
+          "title": "En busca del MH370: análisis de datos satelitales",
+          "timeframe": "Feria de ciencias - primavera de 2015",
+          "description": [
+            "Analicé datos satelitales publicados para reconstruir una trayectoria de vuelo probable y propuse coordenadas de impacto del vuelo 370 de Malaysia Airlines en el océano Índico. Gané el primer lugar en la feria de ciencias de la preparatoria y avancé a los concursos regional y estatal."
+          ]
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_1787.JPG"
+          ],
+          "title": "Nublados por el engaño: el sistema judicial de Salem",
+          "timeframe": "National History Day - primavera de 2015",
+          "description": [
+            "Examiné las fallas institucionales y los defectos legales que desencadenaron los juicios de brujas de Salem. Colaboré con Lily Tang, Matthew Pugsley, Amanda Ramos y Caitlin Leach en la investigación y exhibición de los hallazgos, y obtuvimos el primer lugar en el concurso regional de la costa sur y una mención honorífica a nivel estatal."
+          ]
+        }
+      ]
+    }
+  }
+}
