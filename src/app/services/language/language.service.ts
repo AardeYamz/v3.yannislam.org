@@ -3,24 +3,25 @@ import { isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
 import { loadConfig } from '../site-config/config-loader';
 
-export type Language = 'en' | 'zh' | 'hk';
-export const LANGUAGES: readonly Language[] = ['en', 'zh', 'hk'];
+export type Language = 'en' | 'zh' | 'hk' | 'mx';
+export const LANGUAGES: readonly Language[] = ['en', 'zh', 'hk', 'mx'];
 
 // Each language's own name, shown in the language buttons' labels.
 const LANGUAGE_NAMES: Record<Language, string> = {
   en: 'English',
   zh: '简体中文',
   hk: '繁體中文（香港）',
+  mx: 'Español (México)',
 };
 export const languageName = (lang: Language): string => LANGUAGE_NAMES[lang];
 
 // <html lang> value for each language.
-const HTML_LANG: Record<Language, string> = { en: 'en', zh: 'zh-Hans', hk: 'zh-Hant-HK' };
+const HTML_LANG: Record<Language, string> = { en: 'en', zh: 'zh-Hans', hk: 'zh-Hant-HK', mx: 'es-MX' };
 export const htmlLang = (lang: Language): string => HTML_LANG[lang];
 
 export const LANGUAGE_STORAGE_KEY = 'yl-language';
-// Hostname prefixes that pin an edition (zh.yannislam.org, hk.yannislam.org).
-const HOST_PREFIXES: Record<string, Language> = { 'zh.': 'zh', 'hk.': 'hk' };
+// Hostname prefixes that pin an edition (zh.yannislam.org, hk.yannislam.org, mx.yannislam.org).
+const HOST_PREFIXES: Record<string, Language> = { 'zh.': 'zh', 'hk.': 'hk', 'mx.': 'mx' };
 
 // Time zones (IANA ids) that default the page to Chinese when the browser's
 // language list doesn't already say so. The time zone is the only "where are you"
@@ -32,22 +33,39 @@ const ZH_TIME_ZONES = new Set([
 const HK_TIME_ZONES = new Set(['Asia/Hong_Kong', 'Hongkong', 'Asia/Macau', 'Asia/Macao', 'Asia/Taipei']);
 // Chinese language tags written in Traditional script.
 const HK_TAG = /^zh-(hk|mo|tw|hant)/;
+// Mexico's time zones.
+const MX_TIME_ZONES = new Set([
+  'America/Mexico_City', 'America/Cancun', 'America/Merida', 'America/Monterrey', 'America/Matamoros',
+  'America/Chihuahua', 'America/Ciudad_Juarez', 'America/Ojinaga', 'America/Mazatlan', 'America/Hermosillo',
+  'America/Tijuana', 'America/Bahia_Banderas', 'Mexico/General',
+]);
+
+// The edition a browser language tag asks for, or undefined (English, or no edition).
+function languageForTag(tag: string): Language | undefined {
+  const lower = tag.toLowerCase();
+  if (lower.startsWith('zh')) return HK_TAG.test(lower) ? 'hk' : 'zh';
+  if (lower.startsWith('es')) return 'mx';
+  return undefined;
+}
 
 /**
- * The language to show a visitor who has not chosen one: a Chinese entry in the
- * browser's language list wins, otherwise a Chinese-speaking region's time zone
- * does, otherwise English (so a visitor in the US gets English).
+ * The language to show a visitor who has not chosen one: the first entry in the
+ * browser's language list that has an edition wins, otherwise the edition of the
+ * region the time zone is in, otherwise English (so a visitor in the US gets English).
  */
 export function detectLanguage(languages: readonly string[], timeZone: string): Language {
-  const chinese = languages.map((tag) => tag.toLowerCase()).find((tag) => tag.startsWith('zh'));
-  if (chinese) return HK_TAG.test(chinese) ? 'hk' : 'zh';
+  for (const tag of languages) {
+    const lang = languageForTag(tag);
+    if (lang) return lang;
+  }
   if (HK_TIME_ZONES.has(timeZone)) return 'hk';
+  if (MX_TIME_ZONES.has(timeZone)) return 'mx';
   return ZH_TIME_ZONES.has(timeZone) ? 'zh' : 'en';
 }
 
-// Which copy of the page text (config.json / config.zh.json / config.hk.json) is
+// Which copy of the page text (config.json and its translations) is
 // showing. Both editions are the same prerendered app, so the language is
-// resolved in the browser: a saved choice wins, then a zh.* / hk.* hostname, then the
+// resolved in the browser: a saved choice wins, then a zh.* / hk.* / mx.* hostname, then the
 // visitor's browser languages and time zone (detectLanguage), else English.
 //
 // The server and the first client render always use English so hydration
