@@ -22,6 +22,11 @@
         [attr.aria-label]="themeAriaLabel()">
         <app-icon [name]="themeService.mode() === 'default' ? 'fa-circle-half-stroke' : (themeService.mode() === 'light' ? 'fa-sun' : 'fa-moon')"></app-icon>
       </button>
+      <!-- One flag button: shows the current language, and each click moves to the next. -->
+      <button type="button" class="lang-toggle" (click)="nextLanguage()"
+        [attr.aria-label]="languageLabel()" [title]="languageLabel()">
+        <app-flag [lang]="languageService.language()"></app-flag>
+      </button>
     </div>
     <button type="button" class="menu-toggle" (click)="responsiveMenuVisible = !responsiveMenuVisible"
       [attr.aria-label]="responsiveMenuVisible ? ui.closeMenu : ui.openMenu"
