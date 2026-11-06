@@ -244,6 +244,7 @@ JSON at build time, so keep new entries in the same shape as their neighbours.
 |---|---|
 | `siteMenu` | Nav items: `navTitle`, `siteLocation` (route or `/#anchor`), optional `navNumber` / `navContent` / `scrollSection` |
 | `logos` | Map of `{ src, alt }`, referenced by `logoKey` from work, education and volunteering entries. With no `logoKey` or an empty `src`, a placeholder logo is drawn from the organization's name |
+| `logoAbout` | Map of `logoKey` to an "about" blurb, shared by every entry with that `logoKey` that has no `about` of its own (e.g. the three Voya roles) |
 | `about` | `first` / `last` name, `email`, the `contact` list (each with an `icon` key such as `fa-linkedin` from the icon registry, and a `link`), and the `aardeyamz` name-meaning cards |
 | `about.experiences` | `work` and `volunteering`, each a `list` of `organization`, `title`, `timeframe`, `description[]`, `skills[]` (optional `logoKey`, `link`, `about`, `tab`); a top-level `education` array of the same shape; a flat `skills` summary |
 | `banner` | `greeting`, `name`, `blurb`, and the `typeSection` strings the typewriter cycles through |
