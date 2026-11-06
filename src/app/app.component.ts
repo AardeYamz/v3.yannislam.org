@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
     // that first render, under the loading screen. Only a non-English
     // language touches the title/description tags (index.html authors the
     // English ones, see ngOnInit).
-    afterNextRender(() => this.languageService.init());
+    afterNextRender(() => void this.languageService.init());
     effect(() => {
       const lang = this.languageService.language();
       if (lang === 'en' && !this.languageSwitched) return;

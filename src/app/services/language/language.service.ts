@@ -1,12 +1,25 @@
 import { DOCUMENT, Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
+import { loadConfig } from '../site-config/config-loader';
 
 export type Language = 'en' | 'zh';
+export const LANGUAGES: readonly Language[] = ['en', 'zh'];
+
+// Each language's own name, shown in the language buttons' labels.
+const LANGUAGE_NAMES: Record<Language, string> = {
+  en: 'English',
+  zh: '简体中文',
+};
+export const languageName = (lang: Language): string => LANGUAGE_NAMES[lang];
+
+// <html lang> value for each language.
+const HTML_LANG: Record<Language, string> = { en: 'en', zh: 'zh-Hans' };
+export const htmlLang = (lang: Language): string => HTML_LANG[lang];
 
 export const LANGUAGE_STORAGE_KEY = 'yl-language';
-// Hostname prefix that pins the Chinese edition (zh.yannislam.org).
-const ZH_HOST_PREFIX = 'zh.';
+// Hostname prefixes that pin an edition (zh.yannislam.org).
+const HOST_PREFIXES: Record<string, Language> = { 'zh.': 'zh' };
 
 // Time zones (IANA ids) that default the page to Chinese when the browser's
 // language list doesn't already say so. The time zone is the only "where are you"
@@ -25,7 +38,7 @@ export function detectLanguage(languages: readonly string[], timeZone: string): 
   return ZH_TIME_ZONES.has(timeZone) ? 'zh' : 'en';
 }
 
-// Which of the two copies of the page text (config.json / config.zh.json) is
+// Which copy of the page text (config.json / config.zh.json) is
 // showing. Both editions are the same prerendered app, so the language is
 // resolved in the browser: a saved choice wins, then a zh.* hostname, then the
 // visitor's browser languages and time zone (detectLanguage), else English.
@@ -43,26 +56,34 @@ export class LanguageService {
   private readonly languageSignal = signal<Language>('en');
   readonly language = this.languageSignal.asReadonly();
 
-  init(): void {
+  async init(): Promise<void> {
     if (!this.isBrowser) return;
-    this.languageSignal.set(this.resolveInitialLanguage());
+    await this.set(this.resolveInitialLanguage());
   }
 
-  toggle(): Language {
-    const next: Language = this.languageSignal() === 'en' ? 'zh' : 'en';
+  // Fetches the language's text first, so the page never renders half-switched.
+  private async set(lang: Language): Promise<void> {
+    try {
+      await loadConfig(lang);
+    } catch {
+      return; // offline: stay on the current language
+    }
+    this.languageSignal.set(lang);
+  }
+
+  async select(next: Language): Promise<void> {
     try {
       localStorage.setItem(LANGUAGE_STORAGE_KEY, next);
     } catch {
       // Storage can be blocked (private mode); the choice then lasts for the visit only.
     }
-    this.languageSignal.set(next);
-    return next;
+    await this.set(next);
   }
 
   /** Keeps <html lang> and the title/description tags in step with the language. */
   applyToDocument(lang: Language, ui: { title: string; description: string }): void {
     if (!this.isBrowser) return;
-    this.document.documentElement.lang = lang === 'zh' ? 'zh-Hans' : 'en';
+    this.document.documentElement.lang = HTML_LANG[lang];
     this.title.setTitle(ui.title);
     this.meta.updateTag({ name: 'title', content: ui.title });
     this.meta.updateTag({ name: 'description', content: ui.description });
@@ -79,9 +100,11 @@ export class LanguageService {
     } catch {
       // see toggle()
     }
-    if (stored === 'en' || stored === 'zh') return stored;
+    if (LANGUAGES.includes(stored as Language)) return stored as Language;
 
-    if (window.location.hostname.toLowerCase().startsWith(ZH_HOST_PREFIX)) return 'zh';
+    const host = window.location.hostname.toLowerCase();
+    const pinned = Object.entries(HOST_PREFIXES).find(([prefix]) => host.startsWith(prefix));
+    if (pinned) return pinned[1];
 
     let timeZone = '';
     try {

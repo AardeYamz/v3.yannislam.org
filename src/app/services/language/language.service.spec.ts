@@ -18,17 +18,17 @@ describe('LanguageService', () => {
     expect(service.language()).toBe('en');
   });
 
-  it('toggle() switches language and remembers the choice', () => {
-    expect(service.toggle()).toBe('zh');
+  it('select() switches language and remembers the choice', async () => {
+    await service.select('zh');
     expect(service.language()).toBe('zh');
     expect(localStorage.getItem(LANGUAGE_STORAGE_KEY)).toBe('zh');
-    expect(service.toggle()).toBe('en');
+    await service.select('en');
     expect(localStorage.getItem(LANGUAGE_STORAGE_KEY)).toBe('en');
   });
 
-  it('init() restores a saved choice', () => {
+  it('init() restores a saved choice', async () => {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, 'zh');
-    service.init();
+    await service.init();
     expect(service.language()).toBe('zh');
   });
 
@@ -40,12 +40,11 @@ describe('LanguageService', () => {
     expect(document.documentElement.lang).toBe('en');
   });
 
-  it('SiteConfigService follows the language', () => {
+  it('SiteConfigService follows the language', async () => {
     const config = TestBed.inject(SiteConfigService);
     expect(config.menu[0].navTitle).toBe('About');
-    service.toggle();
+    await service.select('zh');
     expect(config.menu[0].navTitle).toBe('关于');
-    expect(config.ui.header.languageAriaLabel).toContain('English');
   });
 
   it('detectLanguage() picks English for the US and Chinese for Chinese locales or regions', () => {

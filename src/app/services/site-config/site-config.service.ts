@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import config from '../../../assets/config.json';
-import configZh from '../../../assets/config.zh.json';
 import { Language, LanguageService } from '../language/language.service';
+import { loadedConfig } from './config-loader';
 import {
   Contact,
   Experiences,
@@ -37,17 +36,13 @@ interface Edition {
 })
 export class SiteConfigService {
   private readonly languageService = inject(LanguageService);
-  private readonly sources: Record<Language, SiteConfig> = {
-    en: config as SiteConfig,
-    zh: configZh as SiteConfig,
-  };
   private readonly editions = new Map<Language, Edition>();
 
   private get edition(): Edition {
     const lang = this.languageService.language();
     let edition = this.editions.get(lang);
     if (!edition) {
-      edition = this.buildEdition(this.sources[lang]);
+      edition = this.buildEdition(loadedConfig(lang));
       this.editions.set(lang, edition);
     }
     return edition;

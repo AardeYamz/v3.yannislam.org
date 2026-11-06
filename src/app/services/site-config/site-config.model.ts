@@ -171,7 +171,8 @@ export interface UiStrings {
     themeModes: Record<"default" | "light" | "dark", string>;
     openMenu: string;
     closeMenu: string;
-    languageAriaLabel: string;
+    // Label of the single flag button that opens the language menu.
+    languagePickerLabel: string;
   };
   banner: { emailButton: string; resumeButton: string };
   about: {
