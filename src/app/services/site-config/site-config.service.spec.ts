@@ -75,6 +75,15 @@ describe('SiteConfigService', () => {
     }
   });
 
+  it('gives every Voya entry the shared logoAbout blurb', () => {
+    const voyaEntries = service.experiences.work.list.filter((e: any) => e.logoKey === 'voya');
+
+    expect(service.data.logoAbout?.['voya']).toBeTruthy();
+    for (const entry of voyaEntries) {
+      expect(entry.about).toBe(service.data.logoAbout!['voya']);
+    }
+  });
+
   it('never mutates the imported config.json module (resolveLogoKeys is pure)', async () => {
     // A mutating implementation would have added imgs/image_alt directly
     // onto the objects inside the imported JSON module (service.data is
