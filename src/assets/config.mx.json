@@ -49,7 +49,7 @@
   "logos": {
     "voya": {
       "src": "https://cdn.voya.com/global/images/logo/1.0.1/logo.svg",
-      "alt": "Voya Financial Logo"
+      "alt": "Logotipo de Voya Financial"
     },
     "umassAmherst": {
       "src": "https://www.umass.edu/brand/sites/default/files/styles/tile_max_250px/public/2025-10/Seal%20Small-PMS_Black3.png",
@@ -57,43 +57,43 @@
     },
     "umassResLife": {
       "src": "https://pbs.twimg.com/profile_images/642029086622113792/R_xe0hTC_400x400.png",
-      "alt": "UMass Residential Life Logo"
+      "alt": "Logotipo de UMass Residential Life"
     },
     "manningCICS": {
       "src": "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg",
-      "alt": "UMass Amherst Manning College of Computer & Information Sciences Logo"
+      "alt": "Logotipo de UMass Amherst Manning College of Computer & Information Sciences"
     },
     "braintreePS": {
       "src": "https://graph.facebook.com/BraintreeEDU/picture?width=720&height=720",
-      "alt": "Braintree Public Schools Logo"
+      "alt": "Logotipo de Braintree Public Schools"
     },
     "homeDepot": {
       "src": "https://corporate.homedepot.com/sites/default/files/image_gallery/THD_logo.jpg",
-      "alt": "Home Depot Logo"
+      "alt": "Logotipo de Home Depot"
     },
     "projectRise": {
       "src": "https://www.thayer.org/uploaded/themes/project_rise_18/images/Horizontal_W_Thayer_1.png",
-      "alt": "Project RISE Boston Logo"
+      "alt": "Logotipo de Project RISE Boston"
     },
     "cbcgb": {
       "src": "data:,",
-      "alt": "Chinese Baptist Church of Greater Boston"
+      "alt": "Iglesia Bautista China del Gran Boston"
     },
     "epicMovement": {
       "src": "https://epicmovement.com/wp-content/uploads/sites/39/2026/03/RGB-Endorsed.png",
-      "alt": "Epic Movement Logo"
+      "alt": "Logotipo de Epic Movement"
     },
     "craigsDoors": {
       "src": "https://images.squarespace-cdn.com/content/v1/5a68c543c027d8520a74c74a/658c179a-80ed-4f21-bec2-be3c907f57bf/craigs-2.png",
-      "alt": "Craig's Doors Logo"
+      "alt": "Logotipo de Craig's Doors"
     },
     "fbcAmherst": {
       "src": "https://images.squarespace-cdn.com/content/v1/60f4e051476ec73ef23d5056/abbbe5eb-523c-4002-bea2-87677a31045c/FBC+Logo_Primary.png",
-      "alt": "First Baptist Church of Amherst Logo"
+      "alt": "Logotipo de First Baptist Church of Amherst"
     },
     "ariseYouth": {
       "src": "https://images.squarespace-cdn.com/content/5c7d8e4cc2ff6107242ff5f6/1556760518783-TJ3O5QM4FWX1FTQVVKGS/ARISElogoBMGrayFinal.png?format=1500w&content-type=image%2Fpng",
-      "alt": "ARISE Youth Ministries Logo"
+      "alt": "Logotipo de ARISE Youth Ministries"
     }
   },
   "about": {
