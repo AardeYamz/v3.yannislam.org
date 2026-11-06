@@ -637,7 +637,7 @@
       },
       "openMenu": "開啟選單",
       "closeMenu": "關閉選單",
-      "languageAriaLabel": "切換語言為{language}"
+      "languagePickerLabel": "語言"
     },
     "banner": {
       "emailButton": "電郵給我！",

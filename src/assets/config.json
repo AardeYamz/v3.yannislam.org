@@ -637,7 +637,7 @@
       },
       "openMenu": "Open menu",
       "closeMenu": "Close menu",
-      "languageAriaLabel": "Switch language to {language}"
+      "languagePickerLabel": "Language"
     },
     "banner": {
       "emailButton": "email me!",

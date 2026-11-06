@@ -1,6 +1,7 @@
 import { DOCUMENT, Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
+import { loadConfig } from '../site-config/config-loader';
 
 export type Language = 'en' | 'zh' | 'hk';
 export const LANGUAGES: readonly Language[] = ['en', 'zh', 'hk'];
@@ -15,6 +16,7 @@ export const languageName = (lang: Language): string => LANGUAGE_NAMES[lang];
 
 // <html lang> value for each language.
 const HTML_LANG: Record<Language, string> = { en: 'en', zh: 'zh-Hans', hk: 'zh-Hant-HK' };
+export const htmlLang = (lang: Language): string => HTML_LANG[lang];
 
 export const LANGUAGE_STORAGE_KEY = 'yl-language';
 // Hostname prefixes that pin an edition (zh.yannislam.org, hk.yannislam.org).
@@ -61,18 +63,28 @@ export class LanguageService {
   private readonly languageSignal = signal<Language>('en');
   readonly language = this.languageSignal.asReadonly();
 
-  init(): void {
+  async init(): Promise<void> {
     if (!this.isBrowser) return;
-    this.languageSignal.set(this.resolveInitialLanguage());
+    await this.set(this.resolveInitialLanguage());
   }
 
-  select(next: Language): void {
+  // Fetches the language's text first, so the page never renders half-switched.
+  private async set(lang: Language): Promise<void> {
+    try {
+      await loadConfig(lang);
+    } catch {
+      return; // offline: stay on the current language
+    }
+    this.languageSignal.set(lang);
+  }
+
+  async select(next: Language): Promise<void> {
     try {
       localStorage.setItem(LANGUAGE_STORAGE_KEY, next);
     } catch {
       // Storage can be blocked (private mode); the choice then lasts for the visit only.
     }
-    this.languageSignal.set(next);
+    await this.set(next);
   }
 
   /** Keeps <html lang> and the title/description tags in step with the language. */

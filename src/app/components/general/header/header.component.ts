@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, AfterViewInit, OnDestroy, signal, P
 import { isPlatformBrowser, NgStyle } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
+import { FlagComponent } from 'src/app/components/general/flag/flag.component';
 import { IconComponent } from 'src/app/icons/icon.component';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
@@ -9,7 +10,7 @@ import { ResumeService } from 'src/app/services/resume/resume.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { MenuItem } from 'src/app/services/site-config/site-config.model';
 import { ThemeService } from 'src/app/services/theme/theme.service';
-import { LANGUAGES, Language, LanguageService, languageName } from 'src/app/services/language/language.service';
+import { LANGUAGES, Language, LanguageService, htmlLang, languageName } from 'src/app/services/language/language.service';
 
 
 @Component({
@@ -32,9 +33,11 @@ import { LANGUAGES, Language, LanguageService, languageName } from 'src/app/serv
         fadeStaggerAnimation('animateMenu', 'translateX(-20px)', '.container > *')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterLink, NgStyle, IconComponent, forwardRef(() => HeaderComponent)],
+    imports: [RouterLink, NgStyle, IconComponent, FlagComponent, forwardRef(() => HeaderComponent)],
     host: {
         '(window:scroll)': 'getScrollPosition()',
+        '(document:click)': 'closeLanguageMenu($event)',
+        '(document:keydown.escape)': 'closeLanguageMenu()',
     },
 })
 
@@ -213,18 +216,23 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.analyticsService.sendAnalyticEvent('theme_toggle', 'header', this.themeService.mode());
   }
 
-  // Every language except the one showing; each gets its own flag button.
-  otherLanguages(): Language[] {
-    return LANGUAGES.filter((lang) => lang !== this.languageService.language());
-  }
-
-  languageLabel(lang: Language): string {
-    return this.ui.languageAriaLabel.replace('{language}', languageName(lang));
-  }
+  readonly languages = LANGUAGES;
+  readonly languageName = languageName;
+  readonly htmlLang = htmlLang;
+  // The language menu is a dropdown under the one flag button.
+  languageMenuOpen = signal(false);
 
   selectLanguage(lang: Language) {
-    this.languageService.select(lang);
+    this.languageMenuOpen.set(false);
+    if (lang === this.languageService.language()) return;
+    void this.languageService.select(lang);
     this.analyticsService.sendAnalyticEvent('language_toggle', 'header', lang);
+  }
+
+  // Closes the language menu on Escape or a click anywhere outside it.
+  closeLanguageMenu(event?: Event) {
+    if (event && (event.target as Element | null)?.closest?.('.lang-picker')) return;
+    this.languageMenuOpen.set(false);
   }
 
   themeAriaLabel(): string {

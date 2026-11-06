@@ -16,8 +16,8 @@ Simplified Chinese. Builds on the Chinese edition.
   `select(lang)`. An `hk.*` hostname pins Hong Kong. `detectLanguage()` sends
   `zh-HK`/`zh-MO`/`zh-TW`/`zh-Hant` browsers and the Hong Kong, Macau and Taipei
   time zones to `hk`. `<html lang>` is `zh-Hant-HK`.
-- **Header**: one flag button per other language (US, China, Hong Kong flags,
-  inline SVG); `ui.header.languageAriaLabel` takes a `{language}` placeholder.
+- **Header**: one flag button showing the current language, opening a menu of all three (US, China, Hong Kong flags,
+  inline SVG); `ui.header.languagePickerLabel` labels the button. The two translations are lazy chunks (Lighthouse script budget); `select()` and `init()` are async and wait for the chunk.
 
 ## Going live
 

@@ -18,19 +18,19 @@ describe('LanguageService', () => {
     expect(service.language()).toBe('en');
   });
 
-  it('select() switches language and remembers the choice', () => {
-    service.select('zh');
+  it('select() switches language and remembers the choice', async () => {
+    await service.select('zh');
     expect(service.language()).toBe('zh');
     expect(localStorage.getItem(LANGUAGE_STORAGE_KEY)).toBe('zh');
-    service.select('hk');
+    await service.select('hk');
     expect(service.language()).toBe('hk');
-    service.select('en');
+    await service.select('en');
     expect(localStorage.getItem(LANGUAGE_STORAGE_KEY)).toBe('en');
   });
 
-  it('init() restores a saved choice', () => {
+  it('init() restores a saved choice', async () => {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, 'zh');
-    service.init();
+    await service.init();
     expect(service.language()).toBe('zh');
   });
 
@@ -44,12 +44,12 @@ describe('LanguageService', () => {
     expect(document.documentElement.lang).toBe('en');
   });
 
-  it('SiteConfigService follows the language', () => {
+  it('SiteConfigService follows the language', async () => {
     const config = TestBed.inject(SiteConfigService);
     expect(config.menu[0].navTitle).toBe('About');
-    service.select('zh');
+    await service.select('zh');
     expect(config.menu[0].navTitle).toBe('关于');
-    service.select('hk');
+    await service.select('hk');
     expect(config.menu[0].navTitle).toBe('關於');
   });
 
