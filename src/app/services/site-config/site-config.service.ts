@@ -66,9 +66,9 @@ export class SiteConfigService {
       data,
       logos,
       menu: data.siteMenu.filter((item) => !item.hidden),
-      experiences: this.resolveLogoKeys(data.about.experiences, logos),
+      experiences: this.resolveLogoKeys(data.about.experiences, logos, data.logoAbout),
       contacts: data.about.contact,
-      projects: this.resolveLogoKeys(data.projects, logos),
+      projects: this.resolveLogoKeys(data.projects, logos, data.logoAbout),
       footer: data.footer,
     };
   }
@@ -84,21 +84,25 @@ export class SiteConfigService {
   // object graph is the kind of surprise that breaks HMR and makes tests
   // depend on run order. A one-time deep clone at startup is cheap for data
   // this size.
-  private resolveLogoKeys<T>(value: T, logos: Record<string, Logo>): T {
+  private resolveLogoKeys<T>(value: T, logos: Record<string, Logo>, logoAbout?: Record<string, string>): T {
     if (Array.isArray(value)) {
-      return value.map((item) => this.resolveLogoKeys(item, logos)) as T;
+      return value.map((item) => this.resolveLogoKeys(item, logos, logoAbout)) as T;
     }
     if (value && typeof value === 'object') {
       const resolved = Object.fromEntries(
         Object.entries(value as Record<string, unknown>)
-          .map(([key, child]) => [key, this.resolveLogoKeys(child, logos)])
+          .map(([key, child]) => [key, this.resolveLogoKeys(child, logos, logoAbout)])
       ) as T;
 
       const logoKey = (resolved as { logoKey?: unknown }).logoKey;
       if (typeof logoKey === 'string') {
         const logo = logos[logoKey];
+        // An entry's own "about" wins; otherwise use the blurb shared by
+        // every entry with this logoKey ("logoAbout"), so e.g. the three
+        // Voya roles don't each repeat the company description.
+        const about = (resolved as { about?: unknown }).about ?? logoAbout?.[logoKey];
         if (logo) {
-          return { ...resolved, imgs: [logo.src], image_alt: logo.alt };
+          return { ...resolved, imgs: [logo.src], image_alt: logo.alt, ...(about !== undefined && { about }) };
         }
       }
       return resolved;
