@@ -669,7 +669,8 @@
     },
     "footer": {
       "designedBy": "设计灵感来自",
-      "emailAriaLabel": "发送邮件至 {handle}"
+      "emailAriaLabel": "发送邮件至 {handle}",
+      "disclaimer": "本网站以英文撰写。我不一定精通其他语言，译文可能有错误，敬请见谅。"
     }
   },
   "siteTitle": "林恩力",

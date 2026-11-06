@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { LANGUAGE_STORAGE_KEY, LanguageService } from './language.service';
+import { LANGUAGE_STORAGE_KEY, LanguageService, detectLanguage } from './language.service';
 import { SiteConfigService } from '../site-config/site-config.service';
 
 describe('LanguageService', () => {
@@ -46,5 +46,13 @@ describe('LanguageService', () => {
     service.toggle();
     expect(config.menu[0].navTitle).toBe('关于');
     expect(config.ui.header.languageAriaLabel).toContain('English');
+  });
+
+  it('detectLanguage() picks English for the US and Chinese for Chinese locales or regions', () => {
+    expect(detectLanguage(['en-US', 'en'], 'America/New_York')).toBe('en');
+    expect(detectLanguage(['en-US'], 'Asia/Shanghai')).toBe('zh');
+    expect(detectLanguage(['zh-CN'], 'America/New_York')).toBe('zh');
+    expect(detectLanguage(['en-US', 'zh-CN'], 'America/Los_Angeles')).toBe('zh');
+    expect(detectLanguage([], '')).toBe('en');
   });
 });

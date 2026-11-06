@@ -8,10 +8,27 @@ export const LANGUAGE_STORAGE_KEY = 'yl-language';
 // Hostname prefix that pins the Chinese edition (zh.yannislam.org).
 const ZH_HOST_PREFIX = 'zh.';
 
+// Time zones (IANA ids) that default the page to Chinese when the browser's
+// language list doesn't already say so. The time zone is the only "where are you"
+// signal available without an IP lookup or sending anything to a third party.
+const ZH_TIME_ZONES = new Set([
+  'Asia/Shanghai', 'Asia/Chongqing', 'Asia/Harbin', 'Asia/Urumqi', 'Asia/Kashgar', 'PRC',
+]);
+
+/**
+ * The language to show a visitor who has not chosen one: a Chinese entry in the
+ * browser's language list wins, otherwise a Chinese-speaking region's time zone
+ * does, otherwise English (so a visitor in the US gets English).
+ */
+export function detectLanguage(languages: readonly string[], timeZone: string): Language {
+  if (languages.some((tag) => tag.toLowerCase().startsWith('zh'))) return 'zh';
+  return ZH_TIME_ZONES.has(timeZone) ? 'zh' : 'en';
+}
+
 // Which of the two copies of the page text (config.json / config.zh.json) is
 // showing. Both editions are the same prerendered app, so the language is
-// resolved in the browser: a saved choice wins, then zh.* hostnames are Chinese,
-// and everything else is English.
+// resolved in the browser: a saved choice wins, then a zh.* hostname, then the
+// visitor's browser languages and time zone (detectLanguage), else English.
 //
 // The server and the first client render always use English so hydration
 // matches the prerendered HTML; init() then switches (AppComponent calls it
@@ -64,6 +81,14 @@ export class LanguageService {
     }
     if (stored === 'en' || stored === 'zh') return stored;
 
-    return window.location.hostname.toLowerCase().startsWith(ZH_HOST_PREFIX) ? 'zh' : 'en';
+    if (window.location.hostname.toLowerCase().startsWith(ZH_HOST_PREFIX)) return 'zh';
+
+    let timeZone = '';
+    try {
+      timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone ?? '';
+    } catch {
+      // No Intl time zone: fall back on the browser languages alone.
+    }
+    return detectLanguage(navigator.languages?.length ? navigator.languages : [navigator.language ?? ''], timeZone);
   }
 }

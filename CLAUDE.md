@@ -36,7 +36,8 @@ with Cloudflare in front for DNS and email.
   Simplified Chinese twin `config.zh.json`, read only through
   `SiteConfigService` and typed by `site-config.model.ts`. Change both files
   together; a unit test checks they have the same shape. `LanguageService`
-  picks the language (saved choice, then a `zh.*` hostname, else English).
+  picks the language (saved choice, then a `zh.*` hostname, then the browser's
+  languages and time zone via `detectLanguage`, else English).
 - **Services:** `SiteConfigService`, `ThemeService` (`default`/`light`/`dark`
   as signals, `localStorage`, `[data-theme]` on `<html>`), `AnalyticsService`
   (custom `gtag()` events only; GA4 enhanced measurement tracks page views),

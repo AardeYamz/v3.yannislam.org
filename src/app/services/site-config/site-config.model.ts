@@ -185,7 +185,7 @@ export interface UiStrings {
   projects: { viewButton: string; backToProjects: string };
   namecard: { title: string };
   workhistory: { viewProject: string; viewDemo: string };
-  footer: { designedBy: string; emailAriaLabel: string };
+  footer: { designedBy: string; emailAriaLabel: string; disclaimer: string };
 }
 
 export interface SiteConfig {

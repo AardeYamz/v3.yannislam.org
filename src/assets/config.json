@@ -669,7 +669,8 @@
     },
     "footer": {
       "designedBy": "Designed by",
-      "emailAriaLabel": "Email {handle}"
+      "emailAriaLabel": "Email {handle}",
+      "disclaimer": "This site was written in English. I am not necessarily fluent in the other languages, so translations may contain mistakes."
     }
   },
   "siteTitle": "Yannis Lam",
