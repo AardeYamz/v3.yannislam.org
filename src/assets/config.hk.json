@@ -1,0 +1,812 @@
+{
+  "siteMenu": [
+    {
+      "navID": 1,
+      "navNumber": "01. ",
+      "navTitle": "關於",
+      "navContent": "我是誰？",
+      "scrollSection": "about",
+      "siteLocation": "/#關於"
+    },
+    {
+      "navNumber": "02. ",
+      "navTitle": "教育",
+      "navContent": "我在哪裏求學？",
+      "scrollSection": "education",
+      "siteLocation": "/#教育"
+    },
+    {
+      "navNumber": "03. ",
+      "navTitle": "經歷",
+      "navContent": "我有哪些經歷？",
+      "scrollSection": "workhistory",
+      "siteLocation": "/#經歷"
+    },
+    {
+      "navID": 4,
+      "navNumber": "04. ",
+      "navTitle": "義工服務",
+      "navContent": "我如何回饋社會？",
+      "scrollSection": "volunteering",
+      "siteLocation": "/#志願服務"
+    },
+    {
+      "navID": 5,
+      "navNumber": "05. ",
+      "navTitle": "項目",
+      "navContent": "我做過什麼？",
+      "scrollSection": "",
+      "siteLocation": "/projects"
+    },
+    {
+      "navTitle": "AardeYamz",
+      "navContent": "",
+      "scrollSection": "",
+      "siteLocation": "/aardeyamz",
+      "hidden": true
+    }
+  ],
+  "logoAbout": {
+    "voya": "Voya Financial, Inc.（紐約證券交易所代號：VOYA）是一家領先的退休、員工福利及投資管理公司，服務個人、企業及機構客戶。公司擁有逾 1,800 萬客戶關係、約 11,000 名員工，管理及託管資產總值達 1.19 萬億美元，按參與者人數計是美國五大退休計劃服務商之一，亦是三大團體補充健康保險服務商之一。Voya 的目標是為客戶掃除通往財務信心和更充實生活的障礙。"
+  },
+  "logos": {
+    "voya": {
+      "src": "https://cdn.voya.com/global/images/logo/1.0.1/logo.svg",
+      "alt": "Voya Financial 標誌"
+    },
+    "umassAmherst": {
+      "src": "https://www.umass.edu/brand/sites/default/files/styles/tile_max_250px/public/2025-10/Seal%20Small-PMS_Black3.png",
+      "alt": "麻省大學阿默斯特分校"
+    },
+    "umassResLife": {
+      "src": "https://pbs.twimg.com/profile_images/642029086622113792/R_xe0hTC_400x400.png",
+      "alt": "麻省大學住宿生活部標誌"
+    },
+    "manningCICS": {
+      "src": "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg",
+      "alt": "麻省大學阿默斯特分校曼寧資訊及電腦科學學院標誌"
+    },
+    "braintreePS": {
+      "src": "https://graph.facebook.com/BraintreeEDU/picture?width=720&height=720",
+      "alt": "布倫特裏公立學校標誌"
+    },
+    "homeDepot": {
+      "src": "https://corporate.homedepot.com/sites/default/files/image_gallery/THD_logo.jpg",
+      "alt": "家得寶（Home Depot）標誌"
+    },
+    "projectRise": {
+      "src": "https://www.thayer.org/uploaded/themes/project_rise_18/images/Horizontal_W_Thayer_1.png",
+      "alt": "波士頓 Project RISE 標誌"
+    },
+    "cbcgb": {
+      "src": "data:,",
+      "alt": "波士頓華人浸信教會"
+    },
+    "epicMovement": {
+      "src": "https://epicmovement.com/wp-content/uploads/sites/39/2026/03/RGB-Endorsed.png",
+      "alt": "Epic Movement 標誌"
+    },
+    "craigsDoors": {
+      "src": "https://images.squarespace-cdn.com/content/v1/5a68c543c027d8520a74c74a/658c179a-80ed-4f21-bec2-be3c907f57bf/craigs-2.png",
+      "alt": "Craig's Doors 標誌"
+    },
+    "fbcAmherst": {
+      "src": "https://images.squarespace-cdn.com/content/v1/60f4e051476ec73ef23d5056/abbbe5eb-523c-4002-bea2-87677a31045c/FBC+Logo_Primary.png",
+      "alt": "阿默斯特第一浸信會標誌"
+    },
+    "ariseYouth": {
+      "src": "https://images.squarespace-cdn.com/content/5c7d8e4cc2ff6107242ff5f6/1556760518783-TJ3O5QM4FWX1FTQVVKGS/ARISElogoBMGrayFinal.png?format=1500w&content-type=image%2Fpng",
+      "alt": "ARISE 青少年事工標誌"
+    }
+  },
+  "about": {
+    "first": "Yannis",
+    "last": "Lam",
+    "email": "email@yannislam.org",
+    "contact": [
+      {
+        "icon": "fa-envelope",
+        "name": "Email",
+        "url": "mailto:email@yannislam.org",
+        "handle": "email@yannislam.org"
+      },
+      {
+        "icon": "fa-linkedin-in",
+        "name": "Linkedin",
+        "url": "https://linkedin.com/in/yannis-lam/",
+        "handle": "/in/yannis-lam/"
+      },
+      {
+        "icon": "fa-github",
+        "name": "Github",
+        "url": "https://github.com/AardeYamz"
+      },
+      {
+        "icon": "fa-tiktok",
+        "name": "TikTok",
+        "url": "https://tiktok.com/@AardeYamz",
+        "handle": "@AardeYamz"
+      },
+      {
+        "icon": "fa-facebook-f",
+        "name": "Facebook",
+        "url": "https://fb.com/AardeYamz",
+        "handle": "/AardeYamz"
+      },
+      {
+        "icon": "fa-instagram",
+        "name": "Instagram",
+        "url": "https://instagram.com/AardeYamz",
+        "handle": "@AardeYamz"
+      }
+    ],
+    "aardeyamz": [
+      {
+        "title": "Yannis Lam",
+        "language": "希臘語 / 中文 / 英語",
+        "pronounciation": "/y æ - n ih s · l a m/",
+        "content": [
+          "父母送給我的英文名",
+          "我在美國的法定姓名",
+          "Yannis (Γιάννης) - 希臘名字，意為「神是恩慈的」或「蒙神恩典」；對應英文名「John」（約翰）",
+          "Lam (林) - 中文姓氏「林」在香港常用的粵語拼法，意為「森林」"
+        ]
+      },
+      {
+        "title": "林恩力",
+        "language": "中文",
+        "pronounciation": "/lam4 jan1 lik6/",
+        "content": [
+          "父母為我取的中文名字",
+          "華人對我的稱呼",
+          "林 - 常見的中文姓氏，意為「森林」；粵語拼作「Lam」，普通話拼作「Lin」",
+          "恩 - 意為「恩典」的漢字；英文名為「Grace」的女孩常用此字作中文名",
+          "力 - 意為「力量」或「力氣」的漢字"
+        ]
+      },
+      {
+        "title": "Aarde · Yamz",
+        "language": "荷蘭語 / 英語",
+        "pronounciation": "/ardə jæm/",
+        "content": [
+          "2014 年我和朋友 Allison 想出的好用戶名稱，當時還沒有人用過",
+          "網友對我的稱呼",
+          "Aarde - 荷蘭語，意為「地球」",
+          "Yamz - 我的英文名「Yannis」的縮寫；高中時朋友們這樣叫我"
+        ]
+      }
+    ],
+    "experiences": {
+      "work": {
+        "sectionId": "workhistory",
+        "navNumber": "03.",
+        "headingText": "我有哪些經歷？",
+        "list": [
+          {
+            "logoKey": "voya",
+            "link": [
+              "https://www.voya.com/"
+            ],
+            "organization": "Voya Financial",
+            "title": "軟件開發工程師",
+            "subTitle": "軟件開發工程師，後台應用開發",
+            "timeframe": "2022年12月 - 至今",
+            "tab": "Voya 開發",
+            "description": [
+              "帶領一支位於印度的跨職能開發團隊，將 5,100 個退休計劃（66.8 萬名計劃成員、518 億美元資產）從 OneAmerica 遷移至 Voya 的薪酬平台",
+              "推動雲遷移工作，將基於 Struts 的單體 Java 應用拆分為 Kubernetes 原生的 SpringBoot 微服務",
+              "藉助由 Copilot 驅動的 AI 代理流水線，主導 SpringBoot 與 JDK 升級的漏洞修復和現代化改造",
+              "為退休與員工福利業務建立並維護後台應用套件，包括 Task Manager、Common Remitter、Case Installation、Claims Integration 和 Voya PayCloud",
+              "為 50 多名 Java 開發人員提升文件與實踐社區的標準"
+            ],
+            "skills": [
+              "Azure RedHat Openshift",
+              "CyberArk Conjur",
+              "SpringBoot、Struts 與 JBoss (Java)",
+              "Active Directory",
+              "ServiceNow",
+              "GitHub Copilot"
+            ]
+          },
+          {
+            "logoKey": "voya",
+            "organization": "Voya Financial",
+            "title": "助理軟件開發工程師",
+            "subTitle": "IT 資源與開發輪調計劃專員",
+            "timeframe": "2021年5月 - 2022年12月",
+            "tab": "輪調",
+            "description": [
+              "主導 Common Remitter 應用遷移至 Azure 雲的 Angular 前端開發",
+              "重構 Participant Web Java 應用（my.voya.com），清理未使用的介面以減少技術債務",
+              "協調應用開發與 DevOps 團隊，整合先進的 CI/CD 流水線"
+            ],
+            "skills": [
+              "Azure 平台",
+              "Angular",
+              "CI/CD 流水線",
+              "GitHub"
+            ]
+          },
+          {
+            "logoKey": "voya",
+            "organization": "Voya Financial",
+            "title": "軟件開發實習生",
+            "subTitle": "IT Salesforce 開發實習生",
+            "timeframe": "2019年5月 - 2020年8月",
+            "tab": "實習",
+            "description": [
+              "透過重構自動化 Apex 單元測試，提高測試覆蓋率並穩定 Salesforce 環境",
+              "透過實際開發工作，熟練掌握 Apex、SOQL、SOSL 和 Visualforce",
+              "在完整的軟件開發生命週期中接觸敏捷與 Scrum 方法"
+            ],
+            "skills": [
+              "Salesforce.com CRM 平台",
+              "SOQL 與 SOSL",
+              "單元測試"
+            ]
+          },
+          {
+            "logoKey": "umassResLife",
+            "link": [
+              "https://www.umass.edu/living/"
+            ],
+            "organization": "麻省大學住宿生活部",
+            "title": "朋輩導師",
+            "timeframe": "2021年1月 - 2021年5月",
+            "tab": "麻省大學",
+            "description": [
+              "在緊急轉為遙距教學期間，為 Gorman/Wheeler 住宿社區的 400 多名一年級新生提供朋輩輔導。",
+              "針對疫情特殊情況，就學術資源、社交融入和住宿生活方面的挑戰提供指導。",
+              "與宿舍助理和朋輩導師團隊合作，舉辦教育講座並營造包容的社區氛圍。"
+            ],
+            "skills": [
+              "朋輩輔導",
+              "社區支援",
+              "危機溝通"
+            ]
+          },
+          {
+            "logoKey": "manningCICS",
+            "link": [
+              "https://people.cs.umass.edu/~jaimedavila/Courses/345/COMPSCI_345_syllabus.pdf"
+            ],
+            "organization": "曼寧資訊及電腦科學學院",
+            "title": "本科助教 - CS 345",
+            "subTitle": "本科課程助理 - CS 345",
+            "timeframe": "2020年9月 - 2021年5月",
+            "tab": "CICS 345",
+            "description": [
+              "擔任講師 Liam Rothschild 與 Jaime Dávila 教授的本科課程助理，協助 CS 345：數據管理實踐與應用",
+              "每週協助管理 100 名學生的課堂、批改作業，並主持每週諮詢時段，講解 SQL 與數據管理基礎",
+              "開發新的教材，包括 SQL 數據庫和基於 Python 的自動評分程序"
+            ],
+            "skills": [
+              "教學",
+              "SQL",
+              "關聯式數據庫",
+              "學生參與"
+            ]
+          },
+          {
+            "logoKey": "manningCICS",
+            "link": [
+              "https://sites.google.com/view/cics256/home"
+            ],
+            "organization": "曼寧資訊及電腦科學學院",
+            "title": "本科助教 - CICS 256",
+            "subTitle": "本科課程助理 - CICS 256 / 290M",
+            "timeframe": "2019年9月 - 2019年12月",
+            "tab": "CICS 256",
+            "description": [
+              "擔任 Rui Wang 與 Tauhidur Rahman 教授的本科課程助理，協助 CICS 256/290M：物理計算",
+              "為 35 名學生的班級每週帶領物理、電子學和 Arduino 編程實驗",
+              "批改兩個班級共 75 名學生的每週實驗報告"
+            ],
+            "skills": [
+              "Arduino",
+              "Raspberry Pi",
+              "電路",
+              "物理計算"
+            ]
+          },
+          {
+            "logoKey": "braintreePS",
+            "link": [
+              "https://www.braintreeschools.org/"
+            ],
+            "organization": "布倫特裏公立學校",
+            "title": "大學實習生兼替假技術員",
+            "subTitle": "技術與問責辦公室",
+            "timeframe": "2017年8月 - 2021年6月",
+            "description": [
+              "在布倫特裏高中技術與問責辦公室，支援整個學區的技術基礎設施",
+              "專注於 Chromebook 維修、Chrome OS 和 Google 管理控制台管理，修復了 300 多台受損設備",
+              "主導全學區 7,000 多台設備的自帶設備（BYOD）接入和庫存管理工作",
+              "從高中實習生晉升為替假技術員，帶領多達 20 名技術員的團隊",
+              "使用 DISM 和 SCCM 為 1,000 多台 Windows 電腦重新部署系統鏡像，並透過 Google 管理控制台管理 Android Go 設備的部署",
+              "為教師和行政人員提供技術支援，並負責 iPad Air 的分發和視聽設備的維修"
+            ],
+            "skills": [
+              "Chrome OS",
+              "Google 管理控制台",
+              "DISM 與 SCCM",
+              "庫存管理",
+              "團隊領導"
+            ]
+          },
+          {
+            "logoKey": "braintreePS",
+            "link": [
+              "https://www.braintreeschools.org/"
+            ],
+            "organization": "布倫特裏公立學校",
+            "title": "學生技術員",
+            "subTitle": "技術與問責辦公室",
+            "timeframe": "2016年12月 - 2017年8月",
+            "description": [
+              "負責 500 多台 Chromebook 的登記和發放，並對六棟校舍的 1,000 多台設備進行庫存盤點和損壞評估",
+              "使用 DISM 和 WinPE 將 400 台惠普電腦從 Windows 7 升級到 Windows 10，並將 30 台 iMac 從 OS X El Capitan 遷移到 macOS High Sierra",
+              "整理庫存儲存系統，並協助全學區 200 多台愛普生（EPSON）投影機的安裝"
+            ],
+            "skills": [
+              "Chromebook 維修",
+              "DISM 與 WinPE",
+              "庫存",
+              "技術支援"
+            ]
+          },
+          {
+            "logoKey": "homeDepot",
+            "link": [
+              "https://www.homedepot.com/"
+            ],
+            "organization": "家得寶（Home Depot）",
+            "title": "客戶訂單專員",
+            "timeframe": "2018年5月 - 2018年9月",
+            "tab": "家得寶",
+            "description": [
+              "作為網上訂單處理及客戶支援專員，負責管理服務枱",
+              "高效解決客戶在購買、退貨和產品推薦方面的各種複雜諮詢",
+              "確保庫存準確無誤，並優化服務枱營運以應對高客流量"
+            ],
+            "skills": [
+              "客戶服務",
+              "解決問題",
+              "營運管理"
+            ]
+          },
+          {
+            "logoKey": "projectRise",
+            "link": [
+              "https://www.thayer.org/projectrise"
+            ],
+            "organization": "波士頓 Project RISE",
+            "title": "數學教師兼營地輔導員",
+            "subTitle": "數學教師（6 - 10 年級）",
+            "timeframe": "2015年5月 - 2016年8月",
+            "tab": "Project RISE",
+            "description": [
+              "在為期七週的計劃中，為 70 名市區初中及高中學生教授數學並協調營地活動",
+              "每週四天，每天帶領五節 50 分鐘的數學課，內容涵蓋算術到三角學",
+              "建立並推出「projectriseboston.org」網站（此後已更新），並製作了一支 5 分鐘的宣傳片展示營地體驗"
+            ],
+            "skills": [
+              "教學",
+              "Wix",
+              "網頁開發"
+            ]
+          }
+        ]
+      },
+      "education": [
+        {
+          "logoKey": "umassAmherst",
+          "organization": "麻省大學阿默斯特分校，聯邦榮譽學院",
+          "timeframe": "2017年9月 - 2021年5月",
+          "link": [
+            "https://www.cics.umass.edu/"
+          ],
+          "title": "電腦科學（理學士）",
+          "tab": "CICS 理學士",
+          "description": [
+            "GPA：3.69",
+            "理學士，曼寧資訊及電腦科學學院",
+            "榮譽：院長嘉許名單（6 個學期）",
+            "進階課程：物理計算、數據結構、數據管理、網頁編程、數碼鑑證、互聯網法、電腦網絡"
+          ]
+        },
+        {
+          "logoKey": "umassAmherst",
+          "organization": "麻省大學阿默斯特分校，聯邦榮譽學院",
+          "timeframe": "2017年9月 - 2021年5月",
+          "link": [
+            "https://www.umass.edu/economics/"
+          ],
+          "title": "經濟學（文學士）",
+          "tab": "經濟學文學士",
+          "description": [
+            "GPA：3.69",
+            "文學士，社會與行為科學學院",
+            "相關課程：環境政治經濟學、博弈論、貨幣與銀行、計量經濟學"
+          ]
+        },
+        {
+          "logoKey": "braintreePS",
+          "organization": "布倫特裏高中",
+          "timeframe": "2013年9月 - 2017年6月",
+          "link": [
+            "https://www.braintreeschools.org/"
+          ],
+          "title": "高中畢業文憑",
+          "tab": "高中",
+          "description": [
+            "GPA：3.83 ~ 最優等榮譽畢業（Summa Cum Laude）",
+            "修讀 10 門 AP 課程並通過 10 項 AP 考試，全級排名第 8（共 401 人）",
+            "入選 Edna M. Parker 國家榮譽學會，並獲評年級優秀學生"
+          ]
+        }
+      ],
+      "volunteering": {
+        "sectionId": "volunteering",
+        "navNumber": "04.",
+        "headingText": "我如何回饋社會？",
+        "list": [
+          {
+            "logoKey": "cbcgb",
+            "organization": "波士頓華人浸信教會",
+            "title": "教會堂務委員",
+            "subTitle": "堂務委員：英語堂及青少年部 → 總務 → 書記",
+            "tab": "CBCGB",
+            "timeframe": "2022年11月 - 至今",
+            "description": [
+              "經會友選舉擔任波士頓華人浸信教會堂務委員，先後負責英語堂及青少年部（2022-24）、總務（2024-25）和書記（2025-26）工作。",
+              "與各堂會領袖、執事和教牧同工一同協調事工活動、預算和行政事務。"
+            ],
+            "skills": [
+              "教會領導",
+              "預算協調",
+              "事工規劃"
+            ]
+          },
+          {
+            "logoKey": "epicMovement",
+            "link": "https://epicmovement.com/",
+            "organization": "麻省大學阿默斯特分校 Epic Movement",
+            "title": "會長",
+            "tab": "Epic Movement",
+            "timeframe": "2020年8月 - 2021年5月",
+            "about": "Epic Movement 是 Cru（學園傳道會）旗下的事工，願景是讓亞裔美國學生和教職員因與耶穌基督的關係而得到更新，珍視自己的文化，並積極以尊重所有人和各種處境的方式參與神的救贖工作。麻省大學阿默斯特分校的 Epic Movement 成立於 2008 年秋季。",
+            "description": [
+              "在大四時接任會長，帶領由 14 位負責人組成的執行委員會和 80 名團契成員度過學校緊急轉為遙距教學的時期。",
+              "主導網上社群建設活動，在前所未有的組織挑戰中維持成員的參與和屬靈成長。",
+              "在分散的領導架構下統籌策略規劃、預算分配和協作決策。"
+            ],
+            "skills": [
+              "策略領導",
+              "社群建設",
+              "變革管理"
+            ]
+          },
+          {
+            "logoKey": "craigsDoors",
+            "organization": "Craig's Doors",
+            "title": "廚房義工",
+            "tab": "Craig's Doors",
+            "timeframe": "2020年1月 - 2020年3月",
+            "description": [
+              "在 Craig's Doors 的廚房當義工；這是麻省阿默斯特一家為無家者提供庇護和支援服務的機構。",
+              "參與備餐和供餐工作，為弱勢社區成員提供每日援助。",
+              "在使命驅動的環境中，與來自不同背景的義工和職員團隊合作。"
+            ],
+            "skills": [
+              "社區服務",
+              "餐飲服務",
+              "團隊協作"
+            ]
+          },
+          {
+            "logoKey": "umassAmherst",
+            "link": "https://www.umass.edu/",
+            "organization": "麻省大學阿默斯特分校",
+            "title": "畢業典禮大使",
+            "tab": "畢業典禮",
+            "timeframe": "2019年5月",
+            "description": [
+              "獲選為畢業典禮大使，代表學校並協調畢業典禮及慶祝活動。",
+              "在畢業典禮期間為畢業生、家人和貴賓提供引導和後勤支援。",
+              "為 2019 屆畢業生創造難忘的人生里程碑體驗。"
+            ],
+            "skills": [
+              "活動統籌",
+              "溝通",
+              "學生參與"
+            ]
+          },
+          {
+            "logoKey": "fbcAmherst",
+            "organization": "阿默斯特第一浸信會",
+            "title": "Agape 大學事工活動策劃",
+            "tab": "Agape",
+            "timeframe": "2018年9月 - 2019年5月",
+            "description": [
+              "為 Agape 大學事工設計並舉辦團契活動，促進 50 多名大學生的屬靈成長與彼此聯繫。",
+              "負責每兩週一次的聚會和特別活動的後勤、預算和參與者協調。",
+              "在不斷壯大的青年事工中建立並維持有意義的社群參與。"
+            ],
+            "skills": [
+              "活動策劃",
+              "社群建設",
+              "領導力"
+            ]
+          },
+          {
+            "logoKey": "ariseYouth",
+            "link": "https://www.ariseyouth.org/",
+            "organization": "ARISE 青少年事工",
+            "title": "青少年輔導員",
+            "tab": "ARISE",
+            "timeframe": "2018年7月 - 2019年8月",
+            "about": "ARISE 是一個福音機構，致力於愛護新英格蘭地區的韓裔教會，主要服事第二代青少年。",
+            "description": [
+              "透過為期一週的退修會，輔導韓裔美國初中男生，提供屬靈指導和牧養關懷。",
+              "根據青少年的成長特點帶領靈修活動、查經和小組討論。",
+              "製作媒體內容記錄退修會體驗，加強社群參與和校友聯繫。"
+            ],
+            "skills": [
+              "青少年輔導",
+              "領導力",
+              "文化勝任力"
+            ]
+          }
+        ]
+      },
+      "skills": [
+        "Java 與 SpringBoot",
+        "Azure 雲與 Kubernetes",
+        "Angular 與 React JS",
+        "CyberArk Conjur",
+        "GitHub Copilot 與 AI 工具",
+        "HTML 與 CSS",
+        "Active Directory 與 ServiceNow"
+      ]
+    }
+  },
+  "banner": {
+    "greeting": "你好！我是",
+    "name": "林恩力;",
+    "blurb": [
+      "我是一名<a class='underline' href='https://linkedin.com/in/yannis-lam/' target='_blank' rel='noopener noreferrer'>全棧軟件開發工程師</a>，也是技術負責人，在 <a class='underline' href='https://www.voya.com/' target='_blank' rel='noopener noreferrer'>Voya Financial</a> 將傳統系統改造為雲原生平台。我帶領 50 多人的工程師團隊，把複雜問題拆解成優雅的解決方案，並透過知識分享提升團隊能力。我畢業於<a class='underline' href='https://www.umass.edu/' target='_blank' rel='noopener noreferrer'>麻省大學阿默斯特分校</a>聯邦榮譽學院，擁有電腦科學<i>（理學士）</i>和經濟學<i>（文學士）</i>雙學位。"
+    ],
+    "typeSection": [
+      "我是一名全棧軟件開發工程師",
+      "我是一名雲遷移專家",
+      "我是一名 Java 工程師",
+      "我是一名電腦科學家",
+      "我是一名經濟學家",
+      "我是一名 AI 輔助開發者",
+      "我是一名前端開發者",
+      "我是一名後端開發者",
+      "我是一名攝影師",
+      "我是林恩力"
+    ]
+  },
+  "footer": {
+    "repo": {
+      "url": "https://github.com/AardeYamz/v3.yannislam.org",
+      "text": "</林恩力>"
+    },
+    "builtWith": {
+      "text": "以 🧡 和 🍊 改編製作，使用",
+      "linkText": "Angular",
+      "url": "https://angular.dev/"
+    },
+    "designCredits": [
+      {
+        "name": "Lê Thanh Tuấn",
+        "url": "https://github.com/lethanhtuan939/Portfolio",
+        "separator": "、"
+      },
+      {
+        "name": "Jośe Andreś",
+        "url": "https://github.com/andresjosehr/andresjosehr-portfolio",
+        "separator": " 與 "
+      },
+      {
+        "name": "Brittany Chiang",
+        "url": "https://github.com/bchiang7/v4",
+        "separator": ""
+      }
+    ]
+  },
+  "ui": {
+    "meta": {
+      "title": "林恩力 | 軟件開發工程師",
+      "description": "林恩力的個人作品集：軟件開發工程師，畢業於麻省大學阿默斯特分校，擁有電腦科學與經濟學雙學位，專注於網頁開發和金融科技。"
+    },
+    "header": {
+      "homeAriaLabel": "林恩力，返回首頁",
+      "logoAlt": "Yannis Lam 標誌",
+      "primaryNavLabel": "主要導覽",
+      "mobileNavLabel": "手機版導覽",
+      "themeToggleTitle": "切換顏色主題",
+      "themeToggleAriaLabel": "切換顏色主題（目前：{mode}）",
+      "themeModes": {
+        "default": "預設",
+        "light": "淺色",
+        "dark": "深色"
+      },
+      "openMenu": "開啟選單",
+      "closeMenu": "關閉選單",
+      "languagePickerLabel": "語言"
+    },
+    "banner": {
+      "emailButton": "電郵給我！",
+      "resumeButton": "履歷"
+    },
+    "about": {
+      "title": "我是誰？",
+      "paragraphs": [
+        "<span class='underline'>你好！</span> <span class=\"wave-hand\">👋</span>",
+        "我叫<span class='underline'>林恩力</span>，是一名有抱負、善於解決問題的軟件開發工程師。我畢業於麻省大學阿默斯特分校聯邦榮譽學院，擁有電腦科學與經濟學雙學位。",
+        "我對金融科技和網頁開發很感興趣，有敏捷軟件開發和企業桌面支援的經驗。歡迎隨時聯絡我！",
+        "我使用過的部分技術包括："
+      ],
+      "imageAlt": "Yannis Lam 的照片"
+    },
+    "education": {
+      "title": "我在哪裏求學？"
+    },
+    "projects": {
+      "viewButton": "查看{heading}",
+      "backToProjects": "← 返回項目"
+    },
+    "namecard": {
+      "title": "我的名字有什麼含義？"
+    },
+    "workhistory": {
+      "viewProject": "查看項目：{title}",
+      "viewDemo": "查看示範：{title}"
+    },
+    "footer": {
+      "designedBy": "設計靈感來自",
+      "emailAriaLabel": "電郵至 {handle}",
+      "disclaimer": "本網站以英文撰寫。我不一定精通其他語言，譯文可能有錯誤，敬請見諒。"
+    }
+  },
+  "siteTitle": "林恩力",
+  "manifestName": "yannislam.org",
+  "manifestShortName": "YL",
+  "manifestStartUrl": "/",
+  "manifestBackgroundColor": "#ff8b00",
+  "manifestThemeColor": "#ff8b00",
+  "manifestDisplay": "standalone",
+  "manifestIcon": "assets/images/logos/clearcolor.svg",
+  "heading": "林恩力",
+  "subHeading": "",
+  "projects": {
+    "sectionId": "projects",
+    "navNumber": "05.",
+    "headingText": "我做過什麼？",
+    "college": {
+      "sectionId": "projects-college",
+      "navNumber": "5.1.",
+      "headingText": "大學項目",
+      "list": [
+        {
+          "imgs": [
+            "assets/images/projects/OLS Regression Plot.png"
+          ],
+          "title": "麻省薪酬影響因素分析",
+          "timeframe": "畢業論文 - 2021",
+          "description": [
+            "研究新冠疫情衰退期間遙距與實地工作之間的工資差距。雖然疫情放大了這些差異，但分析顯示，在地域、行業、職業和工作經歷方面，結構性的工資差距在疫情之前就已存在。",
+            "使用線性迴歸、Lasso 迴歸和嶺迴歸建立預測模型，分析麻省的薪酬決定因素，考察人口統計和就業變數與小時工資之間的因果關係，為了解麻省各職業的收入潛力提供參考。"
+          ]
+        },
+        {
+          "imgs": [
+            "assets/images/projects/DBTBT.png"
+          ],
+          "title": "DBTBT.com",
+          "timeframe": "2019年秋季",
+          "description": [
+            "在 CS 326：網頁編程課程中，與 Christian Daher、Bhogesh Maddirala 和 Matthew Lehoullier 合作開發一個鼓勵更明智財務決策的平台。該應用將亞馬遜商品與價格相近的股票投資方案進行對比，幫助用戶把衝動消費轉向長期財富積累。",
+            "技術棧：Node.js（後端與 socket 伺服器）、React（前端）、Apache 與 Nginx（反向代理）、Amazon EC2 與 GCP Compute Engine（寄存）、Amazon RDS 搭配 MySQL（數據庫）、Amazon Route 53（DNS）。已部署上線：https://www.dbtbt.com/ 。"
+          ],
+          "link": "https://github.com/cdaher3/DBTBT"
+        },
+        {
+          "imgs": [
+            "assets/images/projects/20191020_053757.jpg"
+          ],
+          "title": "Raspberry Pi Python 縮時攝影控制器",
+          "timeframe": "HackUMass VII - 2019年10月",
+          "description": [
+            "與 Henry Cheung、Veronica Gusev 和 Nhan Le 合作建立自動化縮時攝影系統。Raspberry Pi 上的 Python 腳本按可配置的時間間隔控制單反相機拍照，所拍相片會自動合成並編碼為縮時影片。"
+          ],
+          "link": "https://github.com/dergoose/hackumass2019"
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_6074.JPG"
+          ],
+          "title": "Arduino 智能窗戶",
+          "timeframe": "2018年秋季",
+          "description": [
+            "在 CICS 290M：物理計算課程中，與 Jeffrey Carr 合作製作自動遮陽簾系統。Arduino 微控制器透過光敏電阻監測環境光線強度，並即時自動調節伺服馬達控制的遮陽簾，以優化自然採光。"
+          ],
+          "link": "https://sites.google.com/umass.edu/smartblinds/about"
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_1246.JPG"
+          ],
+          "title": "ZebRed 電腦組裝",
+          "timeframe": "2016年6月 - 至今",
+          "description": [
+            "為開發和創意工作定製組裝的高效能桌上電腦工作站。在效能、散熱效率和長期價值之間精心挑選組件，並在 8 年多的使用中不斷改進和升級。"
+          ],
+          "link": "https://pcpartpicker.com/user/Aardeyamz/saved/whJdFT"
+        },
+        {
+          "imgs": [
+            "assets/images/projects/20181013_141834.jpg"
+          ],
+          "title": "Arduino 保安系統",
+          "timeframe": "HackUMass VI - 2018年10月",
+          "description": [
+            "與 Jeffrey Carr、Henry Cheung 和 Steven Yen 合作製作基於超聲波接近感應的警報系統。Arduino 微控制器透過超聲波感應器監測距離，並藉助 NeoPixel 燈環給出視覺反饋：物體越靠近燈光越強，達到警報閾值時變為紅色。"
+          ],
+          "link": "https://github.com/jcarr98/HackUMass2018"
+        }
+      ]
+    },
+    "highschool": {
+      "sectionId": "projects-highschool",
+      "navNumber": "5.2.",
+      "headingText": "高中項目",
+      "list": [
+        {
+          "imgs": [
+            "assets/images/projects/IMG_9104.JPG"
+          ],
+          "title": "沙漠女王：眾王之母",
+          "timeframe": "國家歷史日 - 2017年春季",
+          "description": [
+            "高中畢業專題研習，探討格特魯德·貝爾（Gertrude Bell）的歷史意義及其對現代中東地緣政治的影響。與 Matthew Pugsley、Katie O'Neil 和 Laura Wang 合作研究，並在全國賽事中展示。"
+          ]
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_20160311_201710.jpg"
+          ],
+          "title": "山達基：探索未知",
+          "timeframe": "國家歷史日 - 2016年春季",
+          "description": [
+            "與 Matthew Pugsley、Katie O'Neil 和 Laura Wang 一起研究 L. 羅恩·哈伯德（L. Ron Hubbard）的生平和山達基運動的起源。我們的展品在麻省南岸地區歷史日比賽中獲得第三名。"
+          ]
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_20150314_120402.jpg"
+          ],
+          "title": "尋找 MH370：衞星數據分析",
+          "timeframe": "科學展覽 - 2015年春季",
+          "description": [
+            "分析公開發佈的衞星數據，重建馬來西亞航空 MH370 航班的可能飛行路徑，並提出其在印度洋的墜毀座標。在高中科學展覽中獲得第一名，並晉級地區和州級比賽。"
+          ]
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_1787.JPG"
+          ],
+          "title": "被妄想蒙蔽：塞勒姆法庭制度",
+          "timeframe": "國家歷史日 - 2015年春季",
+          "description": [
+            "探究導致塞勒姆審巫案的制度失靈與法律缺陷。與 Lily Tang、Matthew Pugsley、Amanda Ramos 和 Caitlin Leach 合作研究並展示成果，在南岸地區比賽中獲得第一名，並在州級比賽中獲得榮譽提名。"
+          ]
+        }
+      ]
+    }
+  }
+}
