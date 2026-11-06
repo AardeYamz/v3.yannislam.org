@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import config from '../../../assets/config.json';
 import configZh from '../../../assets/config.zh.json';
+import configHk from '../../../assets/config.hk.json';
 import { Language, LanguageService } from '../language/language.service';
 import {
   Contact,
@@ -40,6 +41,7 @@ export class SiteConfigService {
   private readonly sources: Record<Language, SiteConfig> = {
     en: config as SiteConfig,
     zh: configZh as SiteConfig,
+    hk: configHk as SiteConfig,
   };
   private readonly editions = new Map<Language, Edition>();
 

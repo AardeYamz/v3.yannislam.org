@@ -2,11 +2,23 @@ import { DOCUMENT, Injectable, PLATFORM_ID, inject, signal } from '@angular/core
 import { isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
 
-export type Language = 'en' | 'zh';
+export type Language = 'en' | 'zh' | 'hk';
+export const LANGUAGES: readonly Language[] = ['en', 'zh', 'hk'];
+
+// Each language's own name, shown in the language buttons' labels.
+const LANGUAGE_NAMES: Record<Language, string> = {
+  en: 'English',
+  zh: '简体中文',
+  hk: '繁體中文（香港）',
+};
+export const languageName = (lang: Language): string => LANGUAGE_NAMES[lang];
+
+// <html lang> value for each language.
+const HTML_LANG: Record<Language, string> = { en: 'en', zh: 'zh-Hans', hk: 'zh-Hant-HK' };
 
 export const LANGUAGE_STORAGE_KEY = 'yl-language';
-// Hostname prefix that pins the Chinese edition (zh.yannislam.org).
-const ZH_HOST_PREFIX = 'zh.';
+// Hostname prefixes that pin an edition (zh.yannislam.org, hk.yannislam.org).
+const HOST_PREFIXES: Record<string, Language> = { 'zh.': 'zh', 'hk.': 'hk' };
 
 // Time zones (IANA ids) that default the page to Chinese when the browser's
 // language list doesn't already say so. The time zone is the only "where are you"
@@ -14,6 +26,10 @@ const ZH_HOST_PREFIX = 'zh.';
 const ZH_TIME_ZONES = new Set([
   'Asia/Shanghai', 'Asia/Chongqing', 'Asia/Harbin', 'Asia/Urumqi', 'Asia/Kashgar', 'PRC',
 ]);
+// Traditional-script regions: Hong Kong, Macau and Taiwan.
+const HK_TIME_ZONES = new Set(['Asia/Hong_Kong', 'Hongkong', 'Asia/Macau', 'Asia/Macao', 'Asia/Taipei']);
+// Chinese language tags written in Traditional script.
+const HK_TAG = /^zh-(hk|mo|tw|hant)/;
 
 /**
  * The language to show a visitor who has not chosen one: a Chinese entry in the
@@ -21,13 +37,15 @@ const ZH_TIME_ZONES = new Set([
  * does, otherwise English (so a visitor in the US gets English).
  */
 export function detectLanguage(languages: readonly string[], timeZone: string): Language {
-  if (languages.some((tag) => tag.toLowerCase().startsWith('zh'))) return 'zh';
+  const chinese = languages.map((tag) => tag.toLowerCase()).find((tag) => tag.startsWith('zh'));
+  if (chinese) return HK_TAG.test(chinese) ? 'hk' : 'zh';
+  if (HK_TIME_ZONES.has(timeZone)) return 'hk';
   return ZH_TIME_ZONES.has(timeZone) ? 'zh' : 'en';
 }
 
-// Which of the two copies of the page text (config.json / config.zh.json) is
+// Which copy of the page text (config.json / config.zh.json / config.hk.json) is
 // showing. Both editions are the same prerendered app, so the language is
-// resolved in the browser: a saved choice wins, then a zh.* hostname, then the
+// resolved in the browser: a saved choice wins, then a zh.* / hk.* hostname, then the
 // visitor's browser languages and time zone (detectLanguage), else English.
 //
 // The server and the first client render always use English so hydration
@@ -48,21 +66,19 @@ export class LanguageService {
     this.languageSignal.set(this.resolveInitialLanguage());
   }
 
-  toggle(): Language {
-    const next: Language = this.languageSignal() === 'en' ? 'zh' : 'en';
+  select(next: Language): void {
     try {
       localStorage.setItem(LANGUAGE_STORAGE_KEY, next);
     } catch {
       // Storage can be blocked (private mode); the choice then lasts for the visit only.
     }
     this.languageSignal.set(next);
-    return next;
   }
 
   /** Keeps <html lang> and the title/description tags in step with the language. */
   applyToDocument(lang: Language, ui: { title: string; description: string }): void {
     if (!this.isBrowser) return;
-    this.document.documentElement.lang = lang === 'zh' ? 'zh-Hans' : 'en';
+    this.document.documentElement.lang = HTML_LANG[lang];
     this.title.setTitle(ui.title);
     this.meta.updateTag({ name: 'title', content: ui.title });
     this.meta.updateTag({ name: 'description', content: ui.description });
@@ -79,9 +95,11 @@ export class LanguageService {
     } catch {
       // see toggle()
     }
-    if (stored === 'en' || stored === 'zh') return stored;
+    if (LANGUAGES.includes(stored as Language)) return stored as Language;
 
-    if (window.location.hostname.toLowerCase().startsWith(ZH_HOST_PREFIX)) return 'zh';
+    const host = window.location.hostname.toLowerCase();
+    const pinned = Object.entries(HOST_PREFIXES).find(([prefix]) => host.startsWith(prefix));
+    if (pinned) return pinned[1];
 
     let timeZone = '';
     try {

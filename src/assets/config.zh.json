@@ -637,7 +637,7 @@
       },
       "openMenu": "打开菜单",
       "closeMenu": "关闭菜单",
-      "languageAriaLabel": "切换到英文 (Switch to English)"
+      "languageAriaLabel": "切换语言为{language}"
     },
     "banner": {
       "emailButton": "给我发邮件！",

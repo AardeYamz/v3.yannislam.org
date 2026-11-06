@@ -637,7 +637,7 @@
       },
       "openMenu": "Open menu",
       "closeMenu": "Close menu",
-      "languageAriaLabel": "Switch to Chinese (简体中文)"
+      "languageAriaLabel": "Switch language to {language}"
     },
     "banner": {
       "emailButton": "email me!",

@@ -9,7 +9,7 @@ import { ResumeService } from 'src/app/services/resume/resume.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { MenuItem } from 'src/app/services/site-config/site-config.model';
 import { ThemeService } from 'src/app/services/theme/theme.service';
-import { LanguageService } from 'src/app/services/language/language.service';
+import { LANGUAGES, Language, LanguageService, languageName } from 'src/app/services/language/language.service';
 
 
 @Component({
@@ -213,9 +213,18 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.analyticsService.sendAnalyticEvent('theme_toggle', 'header', this.themeService.mode());
   }
 
-  toggleLanguage() {
-    const next = this.languageService.toggle();
-    this.analyticsService.sendAnalyticEvent('language_toggle', 'header', next);
+  // Every language except the one showing; each gets its own flag button.
+  otherLanguages(): Language[] {
+    return LANGUAGES.filter((lang) => lang !== this.languageService.language());
+  }
+
+  languageLabel(lang: Language): string {
+    return this.ui.languageAriaLabel.replace('{language}', languageName(lang));
+  }
+
+  selectLanguage(lang: Language) {
+    this.languageService.select(lang);
+    this.analyticsService.sendAnalyticEvent('language_toggle', 'header', lang);
   }
 
   themeAriaLabel(): string {

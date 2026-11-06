@@ -1,5 +1,6 @@
 import en from '../../../assets/config.json';
 import zh from '../../../assets/config.zh.json';
+import hk from '../../../assets/config.hk.json';
 
 // config.zh.json must mirror config.json: same keys in the same places and the
 // same list lengths, so a component never meets a field in one language that
@@ -28,22 +29,24 @@ function compare(a: unknown, b: unknown, path: string, problems: string[]): void
   }
 }
 
-describe('config.zh.json', () => {
-  it('has the same shape as config.json', () => {
-    const problems: string[] = [];
-    compare(en, zh, 'config', problems);
-    expect(problems).toEqual([]);
-  });
+for (const [name, translation] of [['config.zh.json', zh], ['config.hk.json', hk]] as const) {
+  describe(name, () => {
+    it('has the same shape as config.json', () => {
+      const problems: string[] = [];
+      compare(en, translation, 'config', problems);
+      expect(problems).toEqual([]);
+    });
 
-  it('keeps links, images and icons identical to the English config', () => {
-    const urls = (config: unknown): string[] => {
-      const found: string[] = [];
-      JSON.stringify(config, (key, value) => {
-        if (['src', 'url', 'link', 'demoLink', 'icon', 'imgs', 'siteLocation', 'scrollSection'].includes(key)) found.push(JSON.stringify(value));
-        return value;
-      });
-      return found;
-    };
-    expect(urls(zh)).toEqual(urls(en));
+    it('keeps links, images and icons identical to the English config', () => {
+      const urls = (config: unknown): string[] => {
+        const found: string[] = [];
+        JSON.stringify(config, (key, value) => {
+          if (['src', 'url', 'link', 'demoLink', 'icon', 'imgs', 'siteLocation', 'scrollSection'].includes(key)) found.push(JSON.stringify(value));
+          return value;
+        });
+        return found;
+      };
+      expect(urls(translation)).toEqual(urls(en));
+    });
   });
-});
+}
