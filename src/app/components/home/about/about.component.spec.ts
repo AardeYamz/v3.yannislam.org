@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { AboutComponent } from './about.component';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import config from '../../../../assets/config.json';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { AosDirective } from 'src/app/directives/aos/aos.directive';
 
@@ -15,6 +16,7 @@ describe('AboutComponent', () => {
   beforeEach(() => {
     const analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['sendAnalyticEvent']);
     const configServiceSpy = jasmine.createSpyObj('SiteConfigService', [], {
+      ui: config.ui.about,
       data: {
         about: {
           first: 'John',

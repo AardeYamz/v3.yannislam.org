@@ -5,6 +5,7 @@ import { BannerComponent, scrollEaseProgress } from './banner.component';
 import { FloatingLogosComponent } from '../floating-logos/floating-logos.component';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
+import config from '../../../../assets/config.json';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { ThemeService } from 'src/app/services/theme/theme.service';
 
@@ -21,6 +22,7 @@ describe('BannerComponent', () => {
     const resumeServiceSpy = jasmine.createSpyObj('ResumeService', ['open']);
     const configServiceSpy = jasmine.createSpyObj('SiteConfigService', [], {
       data: {
+        ui: config.ui,
         banner: {
           greeting: 'Hello',
           name: 'John Doe',

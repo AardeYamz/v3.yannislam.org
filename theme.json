@@ -1,7 +1,11 @@
 {
-  "version": "v2026-11-01-0437",
+  "version": "v2026-11-04-2151",
   "files": {
     "apple-touch-icon.png": "13d4c692439d051cfed30d16877023f18be63369beaaa8e6bafbdb14dcc34803",
+    "favicon-black.ico": "5da67bd45495b7f66e31b09486c75011bdccbd0366c5ace3f93bb519bd6dc477",
+    "favicon-black.svg": "49065090e0d871379104a5cbaec291e483bb2ac23987a421298dde5106f4826a",
+    "favicon-white.ico": "e14f7c59260edfc3a38b6a95f4c5efc7e650f5cf716365d04d691436729bbc77",
+    "favicon-white.svg": "b5a5c46bef43372ccf95e8f52437cc640f4620ac7700865303d30c6e2414f56a",
     "favicon.ico": "9666e9cb8a1b8233f4c3440eaf8046e3fcc98ec6f4632249d563df985b69f93a",
     "favicon.svg": "6a7fee6be812acf87e0d0d8cb4458b23e76d925928250ca4f758155f5d8823e4",
     "logo-black.svg": "49065090e0d871379104a5cbaec291e483bb2ac23987a421298dde5106f4826a",

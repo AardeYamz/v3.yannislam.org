@@ -357,6 +357,7 @@ A newer push to the same PR cancels the older run
 | [Security](.github/workflows/security.yml) | Same, Mondays 06:30 UTC | Lints the workflow files with zizmor |
 | [Release](.github/workflows/release.yml) | Vercel `deployment_status` | On a successful Production deploy of `main`, tags `vYYYYMMDD-HHMMSS` and creates a release for that commit |
 | [Merge main into PRs](.github/workflows/sync-prs.yml) | Push to `main`; manual | Merges `main` into each open PR that is behind; comments once on conflicts; skips fork and Dependabot PRs |
+| [PR previews](.github/workflows/pr-previews.yml) | PR open/sync/reopen/close | Builds every open same-repo PR with `--base-href /pr-N/` and publishes them together at `prs.yannislam.org/pr-N/` (separate static Vercel project), commenting the link |
 | [Dependabot auto-merge](.github/workflows/dependabot-auto-merge.yml) | `pull_request_target` | Waits for checks, then merges Dependabot patch/minor bumps and dev-only majors; production majors wait for review |
 | [Vercel build warnings](.github/workflows/vercel-build-warnings.yml) | Vercel `deployment_status` | Fetches a preview deploy's Vercel build log and keeps its warning/error lines in a sticky PR comment (needs `VERCEL_TOKEN`) |
 | [Dependabot](.github/dependabot.yml) | Mondays 06:00 UTC | Weekly `npm` and `github-actions` updates |

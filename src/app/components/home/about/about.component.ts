@@ -21,6 +21,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   get data() { return this.configService.data; }
+  get ui() { return this.configService.ui.about; }
 
   ngOnInit() {
     if (!this.isBrowser) return;

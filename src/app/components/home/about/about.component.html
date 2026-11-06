@@ -4,30 +4,15 @@
     <div class="section-box">
       <div class="about-title" data-aos="fade-up">
         <h3 class="section-title">
-          <span class='n-section-title'>01.</span> Who am I?
+          <span class='n-section-title'>01.</span> {{ui.title}}
         </h3>
       </div>
       <div class="row">
         <div class="col-12 col-md-6 mb-4 mb-md-0">
           <div class="about-description">
-            <p data-aos="fade-up" data-aos-duration="1000">
-              Hello <span class='underline'>There!</span> <span class="wave-hand">👋</span>
-            </p>
-            <p data-aos="fade-up" data-aos-duration="1000">
-              My name is <span class='underline'> Yannis Lam</span>. I am an ambitious and resourceful
-              Software Developer. I graduated with a dual degree in Computer Science and Economics at the
-              University of Massachusetts Amherst Commonwealth Honors College.
-            </p>
-
-            <p data-aos="fade-up" data-aos-duration="1000">
-              I am interested in financial technologies and web development.
-              I have experience with agile software development and enterprise desktop support. Feel free
-              to reach out to me!
-            </p>
-
-            <p data-aos="fade-up" data-aos-duration="1000">Some of the technologies that I have worked on
-              include :
-            </p>
+            @for (paragraph of ui.paragraphs; track $index) {
+              <p data-aos="fade-up" data-aos-duration="1000" [innerHTML]="paragraph"></p>
+            }
 
             <ul class="skills-list" data-aos="fade-up">
               @for (skill of data?.about?.experiences?.skills ; track skill; let i = $index) {
@@ -46,7 +31,7 @@
               <img (click)='analyticsService.sendAnalyticEvent("click_image", "about", "image")' width="300"
                 height="400" src="assets/images/profiles/profile.jpg"
                 srcset="assets/images/profiles/profile.jpg 1x, assets/images/profiles/profile@2x.jpg 2x"
-                alt="Git User">
+                [alt]="ui.imageAlt">
             </picture>
             </div>
           </div>
