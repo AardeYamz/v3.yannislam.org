@@ -1,0 +1,812 @@
+{
+  "siteMenu": [
+    {
+      "navID": 1,
+      "navNumber": "01. ",
+      "navTitle": "Over mij",
+      "navContent": "Wie ben ik?",
+      "scrollSection": "about",
+      "siteLocation": "/#over-mij"
+    },
+    {
+      "navNumber": "02. ",
+      "navTitle": "Opleiding",
+      "navContent": "Waar heb ik gestudeerd?",
+      "scrollSection": "education",
+      "siteLocation": "/#opleiding"
+    },
+    {
+      "navNumber": "03. ",
+      "navTitle": "Ervaring",
+      "navContent": "Wat is mijn ervaring?",
+      "scrollSection": "workhistory",
+      "siteLocation": "/#ervaring"
+    },
+    {
+      "navID": 4,
+      "navNumber": "04. ",
+      "navTitle": "Vrijwilligerswerk",
+      "navContent": "Hoe geef ik iets terug?",
+      "scrollSection": "volunteering",
+      "siteLocation": "/#vrijwilligerswerk"
+    },
+    {
+      "navID": 5,
+      "navNumber": "05. ",
+      "navTitle": "Projecten",
+      "navContent": "Wat heb ik gebouwd?",
+      "scrollSection": "",
+      "siteLocation": "/projects"
+    },
+    {
+      "navTitle": "AardeYamz",
+      "navContent": "",
+      "scrollSection": "",
+      "siteLocation": "/aardeyamz",
+      "hidden": true
+    }
+  ],
+  "logoAbout": {
+    "voya": "Voya Financial, Inc. (NYSE: VOYA) is een toonaangevend bedrijf voor pensioenen, secundaire arbeidsvoorwaarden en vermogensbeheer dat particuliere, zakelijke en institutionele klanten bedient. Met meer dan 18 miljoen klantrelaties, ongeveer 11.000 medewerkers en $1,19 biljoen aan totaal beheerd en administratief vermogen is het, naar aantal deelnemers, een van de vijf grootste pensioenverstrekkers in de VS en een van de drie grootste aanbieders van collectieve aanvullende zorgverzekeringen. Voya wil de weg van zijn klanten naar financieel vertrouwen en een zinvoller leven vrijmaken."
+  },
+  "logos": {
+    "voya": {
+      "src": "https://cdn.voya.com/global/images/logo/1.0.1/logo.svg",
+      "alt": "Logo van Voya Financial"
+    },
+    "umassAmherst": {
+      "src": "https://www.umass.edu/brand/sites/default/files/styles/tile_max_250px/public/2025-10/Seal%20Small-PMS_Black3.png",
+      "alt": "UMass Amherst"
+    },
+    "umassResLife": {
+      "src": "https://pbs.twimg.com/profile_images/642029086622113792/R_xe0hTC_400x400.png",
+      "alt": "Logo van UMass Residential Life"
+    },
+    "manningCICS": {
+      "src": "https://pbs.twimg.com/profile_images/905902678026354688/c_4AcKhd_400x400.jpg",
+      "alt": "Logo van UMass Amherst Manning College of Computer & Information Sciences"
+    },
+    "braintreePS": {
+      "src": "https://graph.facebook.com/BraintreeEDU/picture?width=720&height=720",
+      "alt": "Logo van Braintree Public Schools"
+    },
+    "homeDepot": {
+      "src": "https://corporate.homedepot.com/sites/default/files/image_gallery/THD_logo.jpg",
+      "alt": "Logo van Home Depot"
+    },
+    "projectRise": {
+      "src": "https://www.thayer.org/uploaded/themes/project_rise_18/images/Horizontal_W_Thayer_1.png",
+      "alt": "Logo van Project RISE Boston"
+    },
+    "cbcgb": {
+      "src": "data:,",
+      "alt": "Chinese Baptist Church of Greater Boston"
+    },
+    "epicMovement": {
+      "src": "https://epicmovement.com/wp-content/uploads/sites/39/2026/03/RGB-Endorsed.png",
+      "alt": "Logo van Epic Movement"
+    },
+    "craigsDoors": {
+      "src": "https://images.squarespace-cdn.com/content/v1/5a68c543c027d8520a74c74a/658c179a-80ed-4f21-bec2-be3c907f57bf/craigs-2.png",
+      "alt": "Logo van Craig's Doors"
+    },
+    "fbcAmherst": {
+      "src": "https://images.squarespace-cdn.com/content/v1/60f4e051476ec73ef23d5056/abbbe5eb-523c-4002-bea2-87677a31045c/FBC+Logo_Primary.png",
+      "alt": "Logo van First Baptist Church of Amherst"
+    },
+    "ariseYouth": {
+      "src": "https://images.squarespace-cdn.com/content/5c7d8e4cc2ff6107242ff5f6/1556760518783-TJ3O5QM4FWX1FTQVVKGS/ARISElogoBMGrayFinal.png?format=1500w&content-type=image%2Fpng",
+      "alt": "Logo van ARISE Youth Ministries"
+    }
+  },
+  "about": {
+    "first": "Yannis",
+    "last": "Lam",
+    "email": "email@yannislam.org",
+    "contact": [
+      {
+        "icon": "fa-envelope",
+        "name": "Email",
+        "url": "mailto:email@yannislam.org",
+        "handle": "email@yannislam.org"
+      },
+      {
+        "icon": "fa-linkedin-in",
+        "name": "Linkedin",
+        "url": "https://linkedin.com/in/yannis-lam/",
+        "handle": "/in/yannis-lam/"
+      },
+      {
+        "icon": "fa-github",
+        "name": "Github",
+        "url": "https://github.com/AardeYamz"
+      },
+      {
+        "icon": "fa-tiktok",
+        "name": "TikTok",
+        "url": "https://tiktok.com/@AardeYamz",
+        "handle": "@AardeYamz"
+      },
+      {
+        "icon": "fa-facebook-f",
+        "name": "Facebook",
+        "url": "https://fb.com/AardeYamz",
+        "handle": "/AardeYamz"
+      },
+      {
+        "icon": "fa-instagram",
+        "name": "Instagram",
+        "url": "https://instagram.com/AardeYamz",
+        "handle": "@AardeYamz"
+      }
+    ],
+    "aardeyamz": [
+      {
+        "title": "Yannis Lam",
+        "language": "Grieks / Chinees / Engels",
+        "pronounciation": "/y æ - n ih s · l a m/",
+        "content": [
+          "het cadeau van mijn ouders aan mij in het Engels",
+          "mijn officiële naam in Amerika",
+          "Yannis (Γιάννης) - Griekse naam die \"God is genadig\" of \"met Gods genade\" betekent; meestal vertaald als \"Johannes\"",
+          "Lam (林) - gangbare Britse Hongkongse romanisatie van de Chinese achternaam die \"bos\" betekent"
+        ]
+      },
+      {
+        "title": "林恩力",
+        "language": "Chinees",
+        "pronounciation": "/lam4 jan1 lik6/",
+        "content": [
+          "de naam die mijn ouders me in het Chinees gaven",
+          "hoe Chinese mensen me noemen",
+          "林 - veelvoorkomende Chinese achternaam die \"bos\" betekent; geromaniseerd als \"Lam\" of \"Lin\"",
+          "恩 - Chinees karakter dat \"genade\" betekent; gebruikelijke Chinese naam voor meisjes met de Engelse naam \"Grace\"",
+          "力 - Chinees karakter dat \"kracht\" betekent"
+        ]
+      },
+      {
+        "title": "Aarde · Yamz",
+        "language": "Nederlands / Engels",
+        "pronounciation": "/ardə jæm/",
+        "content": [
+          "wat mijn vriendin Allison en ik in 2014 een goede gebruikersnaam vonden die nog niemand had",
+          "hoe mensen op internet me noemen",
+          "Aarde - Nederlands woord voor onze planeet en de grond onder onze voeten",
+          "Yamz - een afkorting van mijn Engelse naam \"Yannis\"; zo noemden mijn vrienden me op de middelbare school"
+        ]
+      }
+    ],
+    "experiences": {
+      "work": {
+        "sectionId": "workhistory",
+        "navNumber": "03.",
+        "headingText": "Wat is mijn ervaring?",
+        "list": [
+          {
+            "logoKey": "voya",
+            "link": [
+              "https://www.voya.com/"
+            ],
+            "organization": "Voya Financial",
+            "title": "Softwareontwikkelaar",
+            "subTitle": "Softwareontwikkelaar, ontwikkeling van back-officeapplicaties",
+            "timeframe": "12/2022 - heden",
+            "tab": "Voya SDE",
+            "description": [
+              "Leidde een multidisciplinair team van ontwikkelaars in India bij de migratie van 5.100 pensioenregelingen (668.000 deelnemers en $51,8 miljard aan vermogen) van OneAmerica naar het Payroll-platform van Voya",
+              "Stuurde de cloudmigratie aan door monolithische Java-applicaties op basis van Struts op te splitsen in Kubernetes-native SpringBoot-microservices",
+              "Trok het herstel van kwetsbaarheden en de modernisering van SpringBoot- en JDK-upgrades met agentische, door Copilot aangestuurde pipelines",
+              "Bouwde en onderhield de Back Office Applications Suite (Task Manager, Common Remitter, Case Installation, Claims Integration en Voya PayCloud) voor de pensioen- en secundaire arbeidsvoorwaardenbedrijven",
+              "Verhoogde de standaarden voor documentatie en communities of practice onder meer dan 50 Java-ontwikkelaars"
+            ],
+            "skills": [
+              "Azure RedHat Openshift",
+              "CyberArk Conjur",
+              "SpringBoot, Struts, & JBoss (Java)",
+              "Active Directory",
+              "ServiceNow",
+              "GitHub Copilot"
+            ]
+          },
+          {
+            "logoKey": "voya",
+            "organization": "Voya Financial",
+            "title": "Junior softwareontwikkelaar",
+            "subTitle": "Deelnemer roulerend IT-resource- en ontwikkelprogramma",
+            "timeframe": "05/2021 - 12/2022",
+            "tab": "Rotatie",
+            "description": [
+              "Leidde de Angular-frontendontwikkeling voor de migratie van de Common Remitter-applicatie naar de Azure-cloud",
+              "Herstructureerde de Java-applicatie Participant Web (my.voya.com) en verwijderde ongebruikte endpoints om technische schuld te verminderen",
+              "Verbond de teams voor applicatieontwikkeling en DevOps om een geavanceerde CI/CD-pipeline te integreren"
+            ],
+            "skills": [
+              "Azure Platform",
+              "Angular",
+              "CICD Pipelines",
+              "GitHub"
+            ]
+          },
+          {
+            "logoKey": "voya",
+            "organization": "Voya Financial",
+            "title": "Stagiair softwareontwikkelaar",
+            "subTitle": "Stagiair Salesforce-ontwikkeling (IT)",
+            "timeframe": "05/2019 - 08/2020",
+            "tab": "Stagiair",
+            "description": [
+              "Verbeterde de testdekking en stabiliseerde Salesforce-omgevingen door geautomatiseerde Apex-unittests te herstructureren",
+              "Bouwde praktische expertise op in Apex, SOQL, SOSL en Visualforce door ontwikkelwerk in de praktijk",
+              "Maakte kennis met Agile- en Scrum-methodologieën gedurende de volledige levenscyclus van softwareontwikkeling"
+            ],
+            "skills": [
+              "Salesforce.com CRM Platform",
+              "SOQL & SOSL",
+              "Unittests"
+            ]
+          },
+          {
+            "logoKey": "umassResLife",
+            "link": [
+              "https://www.umass.edu/living/"
+            ],
+            "organization": "UMass Residential Life",
+            "title": "Peermentor",
+            "timeframe": "01/2021 - 05/2021",
+            "tab": "UMass",
+            "description": [
+              "Begeleidde als peermentor ruim 400 eerstejaarsstudenten in het Gorman/Wheeler Residential Cluster tijdens de noodzakelijke overstap naar onderwijs op afstand.",
+              "Gaf advies over studiebronnen, sociale integratie en de uitdagingen van het wonen op de campus onder pandemie-omstandigheden.",
+              "Werkte samen met residentieassistenten en peermentorteams om educatieve seminars te geven en een inclusieve gemeenschap te bevorderen."
+            ],
+            "skills": [
+              "Peermentoring",
+              "Ondersteuning van de gemeenschap",
+              "Crisiscommunicatie"
+            ]
+          },
+          {
+            "logoKey": "manningCICS",
+            "link": [
+              "https://people.cs.umass.edu/~jaimedavila/Courses/345/COMPSCI_345_syllabus.pdf"
+            ],
+            "organization": "Manning College of Computer & Information Sciences",
+            "title": "Student-assistent - CS 345",
+            "subTitle": "Student-assistent bij de cursus - CS 345",
+            "timeframe": "09/2020 - 05/2021",
+            "tab": "CICS 345",
+            "description": [
+              "Was student-assistent van docent Liam Rothschild en professor Jaime Dávila bij CS 345: Practice and Applications of Data Management",
+              "Hield wekelijks toezicht bij lessen van 100 studenten, beoordeelde opdrachten en hield wekelijks spreekuur over SQL en de basis van datamanagement",
+              "Ontwikkelde nieuw cursusmateriaal, waaronder SQL-databases en automatische beoordelaars in Python"
+            ],
+            "skills": [
+              "Onderwijs",
+              "SQL",
+              "RDBMS",
+              "Studentbetrokkenheid"
+            ]
+          },
+          {
+            "logoKey": "manningCICS",
+            "link": [
+              "https://sites.google.com/view/cics256/home"
+            ],
+            "organization": "Manning College of Computer & Information Sciences",
+            "title": "Student-assistent - CICS 256",
+            "subTitle": "Student-assistent bij de cursus - CICS 256 / 290M",
+            "timeframe": "09/2019 - 12/2019",
+            "tab": "CICS 256",
+            "description": [
+              "Was student-assistent van professoren Rui Wang en Tauhidur Rahman bij CICS 256/290M: Physical Computing",
+              "Hield wekelijks toezicht bij practica over natuurkunde, elektronica en Arduino-programmeren voor een groep van 35 studenten",
+              "Beoordeelde wekelijkse praktikumverslagen van 2 groepen met in totaal 75 studenten"
+            ],
+            "skills": [
+              "Arduino",
+              "Raspberry Pi",
+              "Schakelingen",
+              "Physical computing"
+            ]
+          },
+          {
+            "logoKey": "braintreePS",
+            "link": [
+              "https://www.braintreeschools.org/"
+            ],
+            "organization": "Braintree Public Schools",
+            "title": "Stagiair (hbo/universiteit) en invaltechnicus",
+            "subTitle": "Afdeling Technologie & Verantwoording",
+            "timeframe": "08/2017 - 06/2021",
+            "description": [
+              "Ondersteunde de technische infrastructuur van het hele schooldistrict vanuit de afdeling Technologie & Verantwoording van Braintree High School",
+              "Specialiseerde zich in Chromebook-reparatie, Chrome OS en beheer van de Google Admin Console en repareerde ruim 300 beschadigde apparaten",
+              "Leidde BYOD-onboarding en inventarisatie-initiatieven voor meer dan 7.000 apparaten in het hele district",
+              "Doorgegroeid van stagiair op de middelbare school tot invaltechnicus, met leiding over teams van maximaal 20 technici",
+              "Installeerde meer dan 1.000 Windows-computers opnieuw met DISM en SCCM en beheerde de uitrol van Android Go-apparaten via de Google Admin Console",
+              "Bood helpdeskondersteuning aan docenten en bestuurders en regelde de uitgifte van iPad Air-toestellen en reparaties van AV-apparatuur"
+            ],
+            "skills": [
+              "Chrome OS",
+              "Google Admin Console",
+              "DISM & SCCM",
+              "Voorraadbeheer",
+              "Teamleiding"
+            ]
+          },
+          {
+            "logoKey": "braintreePS",
+            "link": [
+              "https://www.braintreeschools.org/"
+            ],
+            "organization": "Braintree Public Schools",
+            "title": "Studenttechnicus",
+            "subTitle": "Afdeling Technologie & Verantwoording",
+            "timeframe": "12/2016 - 08/2017",
+            "description": [
+              "Beheerde de registratie en uitgifte van ruim 500 Chromebooks en inventariseerde meer dan 1.000 apparaten in zes gebouwen om schade vast te stellen",
+              "Upgradede 400 HP-computers van Windows 7 naar Windows 10 met DISM en WinPE en migreerde 30 iMacs van OS X El Capitan naar macOS High Sierra",
+              "Organiseerde voorraadopslagsystemen en ondersteunde de installatie van ruim 200 EPSON-beamers in het hele district"
+            ],
+            "skills": [
+              "Chromebook-reparatie",
+              "DISM & WinPE",
+              "Voorraad",
+              "Helpdesk"
+            ]
+          },
+          {
+            "logoKey": "homeDepot",
+            "link": [
+              "https://www.homedepot.com/"
+            ],
+            "organization": "Home Depot",
+            "title": "Specialist klantbestellingen",
+            "timeframe": "05/2018 - 09/2018",
+            "tab": "Home Depot",
+            "description": [
+              "Beheerde de servicebalie als specialist in de afhandeling van online bestellingen en klantenservice",
+              "Loste complexe klantvragen over aankopen, retouren en productadvies efficiënt op",
+              "Hield de voorraad nauwkeurig bij en optimaliseerde de werkzaamheden aan de balie voor drukke dienstverlening"
+            ],
+            "skills": [
+              "Klantenservice",
+              "Probleemoplossend vermogen",
+              "Operationeel management"
+            ]
+          },
+          {
+            "logoKey": "projectRise",
+            "link": [
+              "https://www.thayer.org/projectrise"
+            ],
+            "organization": "Project RISE Boston",
+            "title": "Wiskundedocent en kampbegeleider",
+            "subTitle": "Wiskundedocent (groep 6 t/m 10)",
+            "timeframe": "05/2015 - 08/2016",
+            "tab": "Project RISE",
+            "description": [
+              "Gaf wiskundeles en coördineerde kampactiviteiten voor 70 scholieren uit de binnenstad in een programma van zeven weken",
+              "Gaf vijf wiskundelessen van 50 minuten, 4 dagen per week, met onderwerpen van rekenen tot goniometrie",
+              "Bouwde en lanceerde \"projectriseboston.org\" (inmiddels vernieuwd) en maakte een promotievideo van 5 minuten over de kampervaring"
+            ],
+            "skills": [
+              "Onderwijs",
+              "Wix",
+              "Webontwikkeling"
+            ]
+          }
+        ]
+      },
+      "education": [
+        {
+          "logoKey": "umassAmherst",
+          "organization": "University of Massachusetts Amherst, Commonwealth Honors College",
+          "timeframe": "09/2017 - 05/2021",
+          "link": [
+            "https://www.cics.umass.edu/"
+          ],
+          "title": "Informatica (BS)",
+          "tab": "CICS BS",
+          "description": [
+            "GPA: 3,69",
+            "Bachelor of Science, Manning College of Information & Computer Sciences",
+            "Onderscheidingen: Dean's List (6 semesters)",
+            "Gevorderde vakken: Physical Computing, datastructuren, datamanagement, webprogrammeren, digitale forensica, internetrecht, computernetwerken"
+          ]
+        },
+        {
+          "logoKey": "umassAmherst",
+          "organization": "University of Massachusetts Amherst, Commonwealth Honors College",
+          "timeframe": "09/2017 - 05/2021",
+          "link": [
+            "https://www.umass.edu/economics/"
+          ],
+          "title": "Economie (BA)",
+          "tab": "ECON BA",
+          "description": [
+            "GPA: 3,69",
+            "Bachelor of Arts, College of Social & Behavioral Sciences",
+            "Relevante vakken: politieke economie van het milieu, speltheorie, geld en bankwezen, econometrie"
+          ]
+        },
+        {
+          "logoKey": "braintreePS",
+          "organization": "Braintree High School",
+          "timeframe": "09/2013 - 06/2017",
+          "link": [
+            "https://www.braintreeschools.org/"
+          ],
+          "title": "Highschooldiploma",
+          "tab": "HS",
+          "description": [
+            "GPA: 3,83 ~ Summa Cum Laude",
+            "Volgde 10 AP-vakken en slaagde voor 10 AP-examens, met plaats 8 van 401 in mijn jaar",
+            "Opgenomen in de Edna M. Parker National Honor Society en erkend als uitblinker van mijn jaar"
+          ]
+        }
+      ],
+      "volunteering": {
+        "sectionId": "volunteering",
+        "navNumber": "04.",
+        "headingText": "Hoe geef ik iets terug?",
+        "list": [
+          {
+            "logoKey": "cbcgb",
+            "organization": "Chinese Baptist Church of Greater Boston",
+            "title": "Lid van de kerkenraad",
+            "subTitle": "Voorzitter Engelstalige gemeente en jeugdafdeling → voorzitter algemene zaken → secretaris van de kerkenraad",
+            "tab": "CBCGB",
+            "timeframe": "11/2022 - heden",
+            "description": [
+              "Gekozen lekenleider in de kerkenraad van de Chinese Baptist Church of Greater Boston, als voorzitter van de Engelstalige gemeente en jeugdafdeling (2022-24), voorzitter algemene zaken (2024-25) en secretaris van de kerkenraad (2025-26).",
+              "Coördineerde activiteiten, begroting en administratieve taken samen met gemeenteleiders, diakenen en het pastorale team."
+            ],
+            "skills": [
+              "Kerkelijk leiderschap",
+              "Budgetcoördinatie",
+              "Activiteitenplanning"
+            ]
+          },
+          {
+            "logoKey": "epicMovement",
+            "link": "https://epicmovement.com/",
+            "organization": "Epic Movement aan UMass Amherst",
+            "title": "Voorzitter",
+            "tab": "Epic Movement",
+            "timeframe": "08/2020 - 05/2021",
+            "about": "Epic Movement is een Cru-organisatie die Aziatisch-Amerikaanse studenten en docenten voor zich ziet die veranderd zijn door hun relatie met Jezus Christus, de waarde van hun culturen omarmen en actief meewerken aan Gods verlossende werk, op een manier die alle mensen en contexten eert. Epic Movement aan UMass Amherst is opgericht in het najaar van 2008.",
+            "description": [
+              "Nam in mijn laatste jaar het voorzitterschap over en leidde een bestuur van 14 leiders en 80 leden door de noodgedwongen overstap van UMass naar onderwijs op afstand.",
+              "Trok virtuele initiatieven voor gemeenschapsvorming om betrokkenheid en geestelijke groei te behouden tijdens ongekende organisatorische uitdagingen.",
+              "Coördineerde strategische planning, budgettoewijzing en gezamenlijke besluitvorming binnen verspreide leiderschapsstructuren."
+            ],
+            "skills": [
+              "Strategisch leiderschap",
+              "Gemeenschapsvorming",
+              "Verandermanagement"
+            ]
+          },
+          {
+            "logoKey": "craigsDoors",
+            "organization": "Craig's Doors",
+            "title": "Keukenvrijwilliger",
+            "tab": "Craig's Doors",
+            "timeframe": "01/2020 - 03/2020",
+            "description": [
+              "Was vrijwilliger in de keuken van Craig's Doors, een opvang- en ondersteuningsorganisatie voor daklozen in Amherst, MA.",
+              "Hielp mee aan de bereiding en uitgifte van maaltijden die dagelijks steun boden aan kwetsbare mensen in de gemeenschap.",
+              "Werkte samen met diverse teams van vrijwilligers en medewerkers in een missiegedreven omgeving."
+            ],
+            "skills": [
+              "Maatschappelijke dienstverlening",
+              "Voedselbereiding en -uitgifte",
+              "Samenwerking"
+            ]
+          },
+          {
+            "logoKey": "umassAmherst",
+            "link": "https://www.umass.edu/",
+            "organization": "University of Massachusetts Amherst",
+            "title": "Ambassadeur diploma-uitreiking",
+            "tab": "Diploma-uitreiking",
+            "timeframe": "05/2019",
+            "description": [
+              "Geselecteerd als ambassadeur van de diploma-uitreiking om de universiteit te vertegenwoordigen en de uitreikingsceremonie en feestelijkheden te coördineren.",
+              "Bood begeleiding en logistieke ondersteuning aan afstuderende studenten, families en gasten tijdens de hele uitreiking.",
+              "Droeg bij aan een gedenkwaardige mijlpaal voor de Class of 2019."
+            ],
+            "skills": [
+              "Evenementencoördinatie",
+              "Communicatie",
+              "Studentbetrokkenheid"
+            ]
+          },
+          {
+            "logoKey": "fbcAmherst",
+            "organization": "First Baptist Church of Amherst",
+            "title": "Evenementenplanner Agape College Ministry",
+            "tab": "Agape",
+            "timeframe": "09/2018 - 05/2019",
+            "description": [
+              "Ontwierp en organiseerde ontmoetingsactiviteiten voor Agape College Ministry, gericht op geestelijke groei en verbondenheid van meer dan 50 studenten.",
+              "Verzorgde de logistiek, het budget en de coördinatie van deelnemers bij tweewekelijkse bijeenkomsten en bijzondere evenementen.",
+              "Bouwde en onderhield betekenisvolle betrokkenheid in een groeiende groep jongvolwassenen."
+            ],
+            "skills": [
+              "Evenementenplanning",
+              "Gemeenschapsvorming",
+              "Leiderschap"
+            ]
+          },
+          {
+            "logoKey": "ariseYouth",
+            "link": "https://www.ariseyouth.org/",
+            "organization": "ARISE Youth Ministries",
+            "title": "Jeugdbegeleider",
+            "tab": "ARISE",
+            "timeframe": "07/2018 - 08/2019",
+            "about": "ARISE is een parakerkelijke organisatie die de Koreaanse kerk in New England wil dienen, vooral door te werken met jongeren van de tweede generatie.",
+            "description": [
+              "Begeleidde Koreaans-Amerikaanse jongens van de onderbouw tijdens retraites van een week, met geestelijke begeleiding en pastorale zorg.",
+              "Begeleidde bezinningsmomenten, bijbelstudies en groepsgesprekken, afgestemd op de ontwikkeling van pubers.",
+              "Maakte mediacontent over de retraites, wat de betrokkenheid van de gemeenschap en de band met oud-deelnemers versterkte."
+            ],
+            "skills": [
+              "Jongerenmentoring",
+              "Leiderschap",
+              "Interculturele competentie"
+            ]
+          }
+        ]
+      },
+      "skills": [
+        "Java & SpringBoot",
+        "Azure Cloud & Kubernetes",
+        "Angular & React JS",
+        "CyberArk Conjur",
+        "GitHub Copilot & AI-tools",
+        "HTML & CSS",
+        "Active Directory & ServiceNow"
+      ]
+    }
+  },
+  "banner": {
+    "greeting": "Hallo! Mijn naam is",
+    "name": "Yannis Lam;",
+    "blurb": [
+      "Ik ben <a class='underline' href='https://linkedin.com/in/yannis-lam/' target='_blank' rel='noopener noreferrer'>full-stack softwareontwikkelaar</a> en technisch leider en verander bij <a class='underline' href='https://www.voya.com/' target='_blank' rel='noopener noreferrer'>Voya Financial</a> verouderde systemen in cloud-native platformen. Ik leid teams van meer dan 50 engineers, splits complexe problemen op in elegante oplossingen en versterk de organisatie door kennis te delen. Ik ben afgestudeerd aan het Commonwealth Honors College van de <a class='underline' href='https://www.umass.edu/' target='_blank' rel='noopener noreferrer'>University of Massachusetts Amherst</a> met een dubbele graad in informatica <i>(B.S.)</i> en economie <i>(B.A.)</i>."
+    ],
+    "typeSection": [
+      "Ik ben een full-stack softwareontwikkelaar",
+      "Ik ben een specialist in cloudmigratie",
+      "Ik ben een Java-engineer",
+      "Ik ben een informaticus",
+      "Ik ben een econoom",
+      "Ik ben een ontwikkelaar versterkt met AI",
+      "Ik ben een frontend-ontwikkelaar",
+      "Ik ben een backend-ontwikkelaar",
+      "Ik ben een fotograaf",
+      "Ik ben Yannis"
+    ]
+  },
+  "footer": {
+    "repo": {
+      "url": "https://github.com/AardeYamz/v3.yannislam.org",
+      "text": "</Yannis Lam>"
+    },
+    "builtWith": {
+      "text": "Aangepast en gebouwd met 🧡 & 🍊 met",
+      "linkText": "Angular",
+      "url": "https://angular.dev/"
+    },
+    "designCredits": [
+      {
+        "name": "Lê Thanh Tuấn",
+        "url": "https://github.com/lethanhtuan939/Portfolio",
+        "separator": ", "
+      },
+      {
+        "name": "Jośe Andreś",
+        "url": "https://github.com/andresjosehr/andresjosehr-portfolio",
+        "separator": ", & "
+      },
+      {
+        "name": "Brittany Chiang",
+        "url": "https://github.com/bchiang7/v4",
+        "separator": ""
+      }
+    ]
+  },
+  "ui": {
+    "meta": {
+      "title": "Yannis Lam | Softwareontwikkelaar",
+      "description": "Portfolio van Yannis Lam, softwareontwikkelaar met een dubbele graad in informatica en economie van UMass Amherst, gespecialiseerd in webontwikkeling en financiële technologie."
+    },
+    "header": {
+      "homeAriaLabel": "Yannis Lam, startpagina",
+      "logoAlt": "Logo van Yannis Lam",
+      "primaryNavLabel": "Hoofdnavigatie",
+      "mobileNavLabel": "Mobiel",
+      "themeToggleTitle": "Kleurthema wisselen",
+      "themeToggleAriaLabel": "Kleurthema wisselen (nu: {mode})",
+      "themeModes": {
+        "default": "standaard",
+        "light": "licht",
+        "dark": "donker"
+      },
+      "openMenu": "Menu openen",
+      "closeMenu": "Menu sluiten",
+      "languagePickerLabel": "Taal"
+    },
+    "banner": {
+      "emailButton": "mail me!",
+      "resumeButton": "cv"
+    },
+    "about": {
+      "title": "Wie ben ik?",
+      "paragraphs": [
+        "<span class='underline'>Hallo daar!</span> <span class=\"wave-hand\">👋</span>",
+        "Mijn naam is <span class='underline'>Yannis Lam</span>. Ik ben een ambitieuze en vindingrijke softwareontwikkelaar. Ik ben afgestudeerd met een dubbele graad in informatica en economie aan het Commonwealth Honors College van de University of Massachusetts Amherst.",
+        "Ik ben geïnteresseerd in financiële technologie en webontwikkeling. Ik heb ervaring met agile softwareontwikkeling en desktopondersteuning voor bedrijven. Neem gerust contact met me op!",
+        "Enkele van de technologieën waarmee ik heb gewerkt:"
+      ],
+      "imageAlt": "Foto van Yannis Lam"
+    },
+    "education": {
+      "title": "Waar heb ik gestudeerd?"
+    },
+    "projects": {
+      "viewButton": "Bekijk {heading}",
+      "backToProjects": "← Terug naar projecten"
+    },
+    "namecard": {
+      "title": "Wat zit er in een naam?"
+    },
+    "workhistory": {
+      "viewProject": "Bekijk het project {title}",
+      "viewDemo": "Bekijk de demo van {title}"
+    },
+    "footer": {
+      "designedBy": "Ontwerp door",
+      "emailAriaLabel": "E-mail {handle}",
+      "disclaimer": "Deze site is in het Engels geschreven. Ik spreek de andere talen niet per se vloeiend, dus vertalingen kunnen fouten bevatten."
+    }
+  },
+  "siteTitle": "Yannis Lam",
+  "manifestName": "yannislam.org",
+  "manifestShortName": "YL",
+  "manifestStartUrl": "/",
+  "manifestBackgroundColor": "#ff8b00",
+  "manifestThemeColor": "#ff8b00",
+  "manifestDisplay": "standalone",
+  "manifestIcon": "assets/images/logos/clearcolor.svg",
+  "heading": "Yannis Lam",
+  "subHeading": "",
+  "projects": {
+    "sectionId": "projects",
+    "navNumber": "05.",
+    "headingText": "Wat heb ik gebouwd?",
+    "college": {
+      "sectionId": "projects-college",
+      "navNumber": "5.1.",
+      "headingText": "Projecten tijdens mijn studie",
+      "list": [
+        {
+          "imgs": [
+            "assets/images/projects/OLS Regression Plot.png"
+          ],
+          "title": "Analyse van salarisfactoren in Massachusetts",
+          "timeframe": "Afstudeerscriptie - 2021",
+          "description": [
+            "Onderzocht het loonverschil tussen werken op afstand en op locatie tijdens de COVID-19-recessie. Hoewel de pandemie deze verschillen vergrootte, toonde de analyse aan dat structurele loonverschillen al voor de pandemie bestonden, naar regio, sector, beroep en arbeidsverleden.",
+            "Bouwde voorspellende modellen met lineaire, lasso- en ridgeregressie om te analyseren hoe salarissen in Massachusetts tot stand komen. Onderzocht causale verbanden tussen demografische en arbeidsgerelateerde variabelen en het uurloon, met inzicht in het verdienpotentieel per beroep binnen de staat."
+          ]
+        },
+        {
+          "imgs": [
+            "assets/images/projects/DBTBT.png"
+          ],
+          "title": "DBTBT.com",
+          "timeframe": "Najaar 2019",
+          "description": [
+            "Werkte bij CS 326: Web Programming samen met Christian Daher, Bhogesh Maddirala en Matthew Lehoullier aan een platform dat slimmere financiële keuzes stimuleert. De applicatie vergelijkt Amazon-producten met beleggingen in aandelen voor hetzelfde bedrag, zodat gebruikers impulsaankopen kunnen omzetten in vermogensopbouw op de lange termijn.",
+            "Techstack: Node.js (backend en socketserver), React (frontend), Apache en Nginx (reverse proxies), Amazon EC2 en GCP Compute Engine (hosting), Amazon RDS met MySQL (database), Amazon Route 53 (DNS). Live te zien op https://www.dbtbt.com/"
+          ],
+          "link": "https://github.com/cdaher3/DBTBT"
+        },
+        {
+          "imgs": [
+            "assets/images/projects/20191020_053757.jpg"
+          ],
+          "title": "Timelapse-controller in Python op een Raspberry Pi",
+          "timeframe": "HackUMass VII - oktober 2019",
+          "description": [
+            "Bouwde met Henry Cheung, Veronica Gusev en Nhan Le een geautomatiseerd timelapse-fotosysteem. Een Python-script op de Raspberry Pi bediende een spiegelreflexcamera met instelbare tussenpozen, waarna de foto's automatisch werden samengevoegd en omgezet in timelapse-video's."
+          ],
+          "link": "https://github.com/dergoose/hackumass2019"
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_6074.JPG"
+          ],
+          "title": "Slim raam met Arduino",
+          "timeframe": "Najaar 2018",
+          "description": [
+            "Bouwde met Jeffrey Carr een geautomatiseerd zonweringsysteem voor CICS 290M: Physical Computing. Een Arduino-microcontroller mat het omgevingslicht met een lichtgevoelige weerstand en stelde een door een servomotor aangestuurde zonwering automatisch bij om het daglicht in realtime te benutten."
+          ],
+          "link": "https://sites.google.com/umass.edu/smartblinds/about"
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_1246.JPG"
+          ],
+          "title": "ZebRed-pc zelfbouw",
+          "timeframe": "juni 2016 - heden",
+          "description": [
+            "Zelfgebouwde, krachtige desktopwerkstation, geoptimaliseerd voor ontwikkeling en creatief werk. Koos de onderdelen op prestaties, thermische efficiëntie en waarde op de lange termijn. Is in ruim 8 jaar actief gebruik voortdurend verfijnd en geüpgraded."
+          ],
+          "link": "https://pcpartpicker.com/user/Aardeyamz/saved/whJdFT"
+        },
+        {
+          "imgs": [
+            "assets/images/projects/20181013_141834.jpg"
+          ],
+          "title": "Beveiligingssysteem met Arduino",
+          "timeframe": "HackUMass VI - oktober 2018",
+          "description": [
+            "Bouwde met Jeffrey Carr, Henry Cheung en Steven Yen een alarmsysteem op basis van ultrasone nabijheidsdetectie. Een Arduino-microcontroller mat de afstand met een ultrasone sensor en gaf visuele feedback via een NeoPixel-ring die feller werd naarmate een object dichterbij kwam en rood werd bij de alarmdrempel."
+          ],
+          "link": "https://github.com/jcarr98/HackUMass2018"
+        }
+      ]
+    },
+    "highschool": {
+      "sectionId": "projects-highschool",
+      "navNumber": "5.2.",
+      "headingText": "Projecten op de middelbare school",
+      "list": [
+        {
+          "imgs": [
+            "assets/images/projects/IMG_9104.JPG"
+          ],
+          "title": "Koningin van de woestijn: moeder van koningen",
+          "timeframe": "National History Day - voorjaar 2017",
+          "description": [
+            "Eindproject van de middelbare school over het historische belang van Gertrude Bell en haar invloed op de moderne geopolitiek van het Midden-Oosten. Deed samen met Matthew Pugsley, Katie O'Neil en Laura Wang onderzoek en presenteerde op de landelijke competitie."
+          ]
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_20160311_201710.jpg"
+          ],
+          "title": "Scientology: een verkenning van het onbekende",
+          "timeframe": "National History Day - voorjaar 2016",
+          "description": [
+            "Onderzocht samen met Matthew Pugsley, Katie O'Neil en Laura Wang het leven van L. Ron Hubbard en de oorsprong van de Scientology-beweging. Onze tentoonstelling werd derde bij de regionale History Day-competitie van de Massachusetts South Shore."
+          ]
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_20150314_120402.jpg"
+          ],
+          "title": "Op zoek naar MH370: analyse van satellietgegevens",
+          "timeframe": "Wetenschapsbeurs - voorjaar 2015",
+          "description": [
+            "Analyseerde openbaar gemaakte satellietgegevens om een waarschijnlijke vliegroute te reconstrueren en stelde inslagcoördinaten voor van Malaysia Airlines-vlucht 370 in de Indische Oceaan. Won de eerste prijs op de wetenschapsbeurs van de school en ging door naar de regionale en staatscompetities."
+          ]
+        },
+        {
+          "imgs": [
+            "assets/images/projects/IMG_1787.JPG"
+          ],
+          "title": "Vertroebeld door waan: het rechtssysteem van Salem",
+          "timeframe": "National History Day - voorjaar 2015",
+          "description": [
+            "Onderzocht het institutionele falen en de juridische gebreken die tot de heksenprocessen van Salem leidden. Deed samen met Lily Tang, Matthew Pugsley, Amanda Ramos en Caitlin Leach onderzoek en toonde de bevindingen, goed voor de eerste prijs bij de South Shore Regional-competitie en een eervolle vermelding op staatsniveau."
+          ]
+        }
+      ]
+    }
+  }
+}

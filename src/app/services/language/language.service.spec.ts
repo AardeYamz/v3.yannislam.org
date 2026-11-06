@@ -53,6 +53,8 @@ describe('LanguageService', () => {
     expect(config.menu[0].navTitle).toBe('關於');
     await service.select('mx');
     expect(config.menu[0].navTitle).toBe('Acerca de');
+    await service.select('nl');
+    expect(config.menu[0].navTitle).toBe('Over mij');
   });
 
   it('detectLanguage() picks English for the US and Chinese for Chinese locales or regions', () => {
@@ -66,6 +68,8 @@ describe('LanguageService', () => {
     expect(detectLanguage(['es-MX', 'en'], 'America/Chicago')).toBe('mx');
     expect(detectLanguage(['en-US', 'es'], 'America/Chicago')).toBe('mx');
     expect(detectLanguage(['en-US'], 'America/Mexico_City')).toBe('mx');
+    expect(detectLanguage(['nl-NL', 'en'], 'America/Chicago')).toBe('nl');
+    expect(detectLanguage(['en-US'], 'Europe/Amsterdam')).toBe('nl');
     expect(detectLanguage([], '')).toBe('en');
   });
 });

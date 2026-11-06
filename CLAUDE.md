@@ -34,7 +34,7 @@ with Cloudflare in front for DNS and email.
   prerendering; keep the two in step.
 - **Content:** all page copy is in `src/assets/config.json` (English) and its
   Simplified Chinese twin `config.zh.json` and Traditional (Hong Kong) twin
-  `config.hk.json`, Mexican Spanish twin `config.mx.json`, read only through
+  `config.hk.json`, Mexican Spanish twin `config.mx.json`, Dutch twin `config.nl.json`, read only through
   `SiteConfigService` and typed by `site-config.model.ts`. Change all the files
   together; a unit test checks they have the same shape. `LanguageService`
   picks the language (saved choice, then a `zh.*` / `hk.*` hostname, then the browser's
