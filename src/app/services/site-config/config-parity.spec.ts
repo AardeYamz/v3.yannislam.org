@@ -41,7 +41,9 @@ for (const [name, translation] of [['config.zh.json', zh], ['config.hk.json', hk
       const urls = (config: unknown): string[] => {
         const found: string[] = [];
         JSON.stringify(config, (key, value) => {
-          if (['src', 'url', 'link', 'demoLink', 'icon', 'imgs', 'siteLocation', 'scrollSection'].includes(key)) found.push(JSON.stringify(value));
+          // A nav item's #anchor is translated (section ids are not), so compare only its path.
+          if (key === 'siteLocation') found.push(JSON.stringify(String(value).split('#')[0]));
+          else if (['src', 'url', 'link', 'demoLink', 'icon', 'imgs', 'scrollSection'].includes(key)) found.push(JSON.stringify(value));
           return value;
         });
         return found;

@@ -6,21 +6,21 @@
       "navTitle": "關於",
       "navContent": "我是誰？",
       "scrollSection": "about",
-      "siteLocation": "/#about"
+      "siteLocation": "/#關於"
     },
     {
       "navNumber": "02. ",
       "navTitle": "教育",
       "navContent": "我在哪裏求學？",
       "scrollSection": "education",
-      "siteLocation": "/#education"
+      "siteLocation": "/#教育"
     },
     {
       "navNumber": "03. ",
       "navTitle": "經歷",
       "navContent": "我有哪些經歷？",
       "scrollSection": "workhistory",
-      "siteLocation": "/#experiences"
+      "siteLocation": "/#經歷"
     },
     {
       "navID": 4,
@@ -28,7 +28,7 @@
       "navTitle": "義工服務",
       "navContent": "我如何回饋社會？",
       "scrollSection": "volunteering",
-      "siteLocation": "/#volunteering"
+      "siteLocation": "/#志願服務"
     },
     {
       "navID": 5,
