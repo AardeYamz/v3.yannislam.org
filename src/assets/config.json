@@ -189,7 +189,7 @@
             "subTitle": "Software Developer, Back Office Application Development",
             "timeframe": "12/2022 - Present",
             "tab": "Voya SDE",
-            "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
+            "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading retirement, employee benefits and investment management company serving individual, workplace and institutional clients. With more than 18 million customer relationships, about 11,000 employees and $1.19 trillion in total assets under management and administration, it is a top 5 U.S. retirement plan provider by participants and a top 3 group supplemental health insurance provider. Voya aims to clear its customers' path to financial confidence and a more fulfilling life.",
             "description": [
               "Directed a cross-functional team of India-based developers to migrate 5,100 retirement plans — 668K participants and $51.8B in assets — from OneAmerica onto Voya's Payroll platform",
               "Drove cloud migration efforts, breaking up monolithic Struts-based Java applications into Kubernetes-native SpringBoot microservices",
@@ -213,7 +213,7 @@
             "subTitle": "IT Resource & Development Rotational Program Associate",
             "timeframe": "05/2021 - 12/2022",
             "tab": "Rotation",
-            "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
+            "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading retirement, employee benefits and investment management company serving individual, workplace and institutional clients. With more than 18 million customer relationships, about 11,000 employees and $1.19 trillion in total assets under management and administration, it is a top 5 U.S. retirement plan provider by participants and a top 3 group supplemental health insurance provider. Voya aims to clear its customers' path to financial confidence and a more fulfilling life.",
             "description": [
               "Led Angular front-end development for the Common Remitter application's migration to Azure cloud",
               "Refactored the Participant Web Java application (my.voya.com), eliminating unused endpoints to reduce technical debt",
@@ -233,7 +233,7 @@
             "subTitle": "IT Salesforce Development Intern",
             "timeframe": "05/2019 - 08/2020",
             "tab": "Intern",
-            "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading health, wealth and investment company offering products, solutions and technologies that help its 15.2 million individual, workplace and institutional clients become well planned, well invested and well protected. Voya also is purpose-driven and committed to conducting business in a way that is economically, ethically, socially and environmentally responsible. Voya has earned recognition as: one of the World’s Most Ethical Companies® by Ethisphere; a member of the Bloomberg Gender-Equality Index; and a “Best Place to Work for Disability Inclusion” on the Disability Equality Index.",
+            "about": "Voya Financial, Inc. (NYSE: VOYA) is a leading retirement, employee benefits and investment management company serving individual, workplace and institutional clients. With more than 18 million customer relationships, about 11,000 employees and $1.19 trillion in total assets under management and administration, it is a top 5 U.S. retirement plan provider by participants and a top 3 group supplemental health insurance provider. Voya aims to clear its customers' path to financial confidence and a more fulfilling life.",
             "description": [
               "Improved test coverage and stabilized Salesforce environments by refactoring automated Apex unit tests",
               "Built hands-on expertise in Apex, SOQL, SOSL, and Visualforce through applied development work",
