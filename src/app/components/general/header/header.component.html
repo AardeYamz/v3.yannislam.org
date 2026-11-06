@@ -26,7 +26,7 @@
         <button type="button" class="lang-toggle" (click)="languageMenuOpen.set(!languageMenuOpen())"
           [attr.aria-label]="ui.languagePickerLabel" [title]="ui.languagePickerLabel"
           aria-haspopup="true" [attr.aria-expanded]="languageMenuOpen()" aria-controls="language-menu">
-          <app-flag [lang]="languageService.language()"></app-flag>
+          <app-flag-burst [lang]="languageService.language()" [count]="burstCount()" [color]="burstColor()"></app-flag-burst>
         </button>
         @if (languageMenuOpen()) {
           <ul id="language-menu" class="lang-menu">
