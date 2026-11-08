@@ -32,6 +32,12 @@ const staticFiles = [
   '/sitemap.xml',
   '/manifest.webmanifest',
   '/favicon.ico',
+  '/favicon.svg',
+  '/favicon-black.ico',
+  '/favicon-black.svg',
+  '/favicon-white.ico',
+  '/favicon-white.svg',
+  '/apple-touch-icon.png',
 ];
 
 test.describe('assets', () => {

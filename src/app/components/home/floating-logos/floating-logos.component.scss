@@ -4,6 +4,16 @@
     z-index: 1;
     pointer-events: none;
     overflow: hidden;
+    transition: opacity 0.5s ease;
+}
+
+// Desktop, About not in view: nothing shows, falls or takes the pointer.
+:host(.is-idle) {
+    opacity: 0;
+
+    .floating-logo {
+        pointer-events: none;
+    }
 }
 
 .floating-logos {

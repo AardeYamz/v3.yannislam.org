@@ -5,6 +5,7 @@ import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { FloatingLogosComponent } from '../floating-logos/floating-logos.component';
+import { LogoLoopComponent } from '../logo-loop/logo-loop.component';
 import { TypewriterComponent } from './typewriter/typewriter.component';
 import { LinkPreviewDelegateDirective } from '../../../directives/link-preview/link-preview-delegate.directive';
 
@@ -16,7 +17,7 @@ import { LinkPreviewDelegateDirective } from '../../../directives/link-preview/l
         fadeStaggerAnimation('bannerTrigger', 'translateX(-50px)')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FloatingLogosComponent, TypewriterComponent, LinkPreviewDelegateDirective]
+    imports: [FloatingLogosComponent, LogoLoopComponent, TypewriterComponent, LinkPreviewDelegateDirective]
 })
 export class BannerComponent {
     analyticsService = inject(AnalyticsService);

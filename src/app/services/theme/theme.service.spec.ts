@@ -109,6 +109,35 @@ describe('ThemeService', () => {
     expect(themeColorMeta.getAttribute('content')).toBe('#05070c');
   });
 
+  it('points both favicon links at the file for the mode', () => {
+    stubMatchMedia(false);
+    const links = ['favicon.svg', 'favicon.ico'].map((href) => {
+      const link = document.createElement('link');
+      link.rel = 'icon';
+      link.setAttribute('href', href);
+      document.head.appendChild(link);
+      return link;
+    });
+    const service = TestBed.inject(ThemeService);
+    const appRef = TestBed.inject(ApplicationRef);
+    const hrefs = () => links.map((l) => l.getAttribute('href'));
+    appRef.tick();
+    expect(hrefs()).toEqual(['favicon.svg', 'favicon.ico']);
+
+    service.cycle(); // -> light
+    appRef.tick();
+    expect(hrefs()).toEqual(['favicon-black.svg', 'favicon-black.ico']);
+
+    service.cycle(); // -> dark
+    appRef.tick();
+    expect(hrefs()).toEqual(['favicon-white.svg', 'favicon-white.ico']);
+
+    service.cycle(); // -> default
+    appRef.tick();
+    expect(hrefs()).toEqual(['favicon.svg', 'favicon.ico']);
+    links.forEach((l) => l.remove());
+  });
+
   // The service mirrors --color-navy / --color-orange as literals (the browser chrome colour and the logo fallback can't read
   // CSS custom properties). The tokens are fetched from the yl-theme project (theme.json), so this fails if a theme bump
   // moves a colour and these literals were not updated.

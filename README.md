@@ -11,7 +11,8 @@
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
 [![DNS & Email by Cloudflare](https://img.shields.io/badge/DNS%20%26%20Email-Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://www.cloudflare.com/)
 [![Google Analytics](https://img.shields.io/badge/Analytics-Google%20Analytics-E37400?logo=googleanalytics&logoColor=white)](https://analytics.google.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/Code-MIT-yellow.svg)](LICENSE)
+[![License: CC BY 4.0](https://img.shields.io/badge/Content-CC%20BY%204.0-lightgrey.svg)](LICENSE-CONTENT)
 
 The source of [yannislam.org](https://yannislam.org): an Angular 22 portfolio
 site, prerendered to static HTML and served from Vercel. Nearly all of the
@@ -70,7 +71,7 @@ to an inert placeholder and warns.
   [ng-bootstrap](https://ng-bootstrap.github.io/) 21 for layout, nav and dropdowns
 - Material Design 3 color tokens (`--md-sys-color-*`) alongside the site's own
   `--color-*` palette, in the shared `yl-tokens.css` (fetched from
-  yl-theme per `theme.json` into `src/generated/`)
+  yl-theme per `theme.json` into `src/generated/`, with the logos)
 - Inline SVG icons (`src/app/icons/`): the dozen Font Awesome glyphs the site
   uses, inlined instead of loading the Font Awesome CSS and webfonts
 - [ngx-owl-carousel-o](https://www.npmjs.com/package/ngx-owl-carousel-o) for
@@ -123,6 +124,16 @@ flowchart TB
 
     Theme["ThemeService"] --> App & Header & Loading & Floating
 
+    subgraph ThemeRepo["yl-theme (separate repo)"]
+        Tokens[("yl-tokens.css<br/>timestamped release")] --> ThemeHost["theme.yannislam.org<br/>(Vercel project)"]
+    end
+    Pin[("theme.json<br/>version + SHA-256")] --> Fetch["scripts/fetch-theme.js<br/>(pre* hooks)"]
+    ThemeHost -->|"download"| Fetch
+    Fetch -->|"verify, then write"| Generated[("src/generated/yl-tokens.css<br/>git-ignored")]
+    Generated -->|"angular.json styles"| CSS["--color-* and --md-sys-color-*<br/>per [data-theme]"]
+    Theme -->|"sets data-theme"| CSS
+    CSS -.->|"var(...)"| Shell
+
     Analytics["AnalyticsService"] --> Header & Footer & Banner & About & Education & Contact
     Analytics -->|"gtag"| GA[("Google Analytics")]
 ```
@@ -140,7 +151,8 @@ flowchart TB
 | `ProjectsComponent`, `ProjectsHighschoolComponent` | Pages (lazy) | `/projects` and `/projects/highschool` |
 | `AardeYamzComponent` + `NamecardComponent` | Page (lazy) | `/aardeyamz` |
 | `SiteConfigService` | Service | The only reader of `config.json`, typed by `site-config.model.ts` |
-| `ThemeService` | Service | `default` / `light` / `dark` modes, as signals, saved in `localStorage` and applied as `[data-theme]` on `<html>` |
+| `ThemeService` | Service | `default` / `light` / `dark` modes, as signals, saved in `localStorage` and applied as `[data-theme]` on `<html>`. The colors themselves are not here: they come from `yl-tokens.css` (below) |
+| `yl-tokens.css` | Dependency | Color tokens from the separate [yl-theme](https://github.com/AardeYamz/yl-theme) project. `theme.json` pins a version and SHA-256; `scripts/fetch-theme.js` downloads it, the eleven logos and `logo-geometry.json` (which the loading screen and banner mark draw from) and the favicons, from `theme.yannislam.org` into git-ignored `src/generated/` before every start, build, test and e2e run; `angular.json` loads the tokens as a global stylesheet and serves the logos at `assets/images/logos/` |
 | `AnalyticsService` | Service | Calls the global `gtag()` for custom events |
 | `ResumeService` | Service | Builds the resume download link from `resume-manifest.json` |
 
@@ -190,7 +202,7 @@ src/
 │   ├── config.json           # All page content
 │   ├── resume-manifest.json  # Written by the pre-hook
 │   ├── fonts/  images/  resume/
-├── generated/yl-tokens.css   # Color tokens per [data-theme], fetched from yl-theme (git-ignored; see theme.json)
+├── generated/                # yl-tokens.css (color tokens per [data-theme]), logos/<variant>.svg and logo-geometry.json, fetched from yl-theme (git-ignored; see theme.json)
 ├── styles.scss               # Global styles
 ├── bootstrap-custom.scss     # Bootstrap overrides
 ├── fonts.scss                # @font-face (Calibre, SF Mono)
@@ -228,6 +240,7 @@ JSON at build time, so keep new entries in the same shape as their neighbours.
 |---|---|
 | `siteMenu` | Nav items: `navTitle`, `siteLocation` (route or `/#anchor`), optional `navNumber` / `navContent` / `scrollSection` |
 | `logos` | Map of `{ src, alt }`, referenced by `logoKey` from work, education and volunteering entries. With no `logoKey` or an empty `src`, a placeholder logo is drawn from the organization's name |
+| `logoAbout` | Map of `logoKey` to an "about" blurb, shared by every entry with that `logoKey` that has no `about` of its own (e.g. the three Voya roles) |
 | `about` | `first` / `last` name, `email`, the `contact` list (each with an `icon` key such as `fa-linkedin` from the icon registry, and a `link`), and the `aardeyamz` name-meaning cards |
 | `about.experiences` | `work` and `volunteering`, each a `list` of `organization`, `title`, `timeframe`, `description[]`, `skills[]` (optional `logoKey`, `link`, `about`, `tab`); a top-level `education` array of the same shape; a flat `skills` summary |
 | `banner` | `greeting`, `name`, `blurb`, and the `typeSection` strings the typewriter cycles through |
@@ -316,6 +329,9 @@ flowchart TB
     Fix -.-> PR
     Gate -->|"yes"| Merge["Merge to main"]
 
+    ThemeHost["theme.yannislam.org<br/>(yl-theme, pinned in theme.json)"] -.->|"fetch-theme.js in the<br/>pre* hooks of every build"| Build
+    ThemeHost -.-> Vercel
+
     Merge --> Vercel["Vercel build + deploy"]
     Vercel --> Edge["Vercel Edge"]
     Vercel -->|"deployment_status"| Release["Release: tag + notes"]
@@ -341,8 +357,9 @@ A newer push to the same PR cancels the older run
 |---|---|---|
 | [Build & Test](.github/workflows/build-test.yml) | PR to `main`/`master`/`develop`; push to `main`; Mondays 07:00 UTC; manual | The jobs above |
 | [Security](.github/workflows/security.yml) | Same, Mondays 06:30 UTC | Lints the workflow files with zizmor |
-| [Release](.github/workflows/release.yml) | Vercel `deployment_status` | On a successful Production deploy of `main`, tags `vYYYYMMDDHHMMSS` and creates a release for that commit |
+| [Release](.github/workflows/release.yml) | Vercel `deployment_status` | On a successful Production deploy of `main`, tags `vYYYYMMDD-HHMMSS` and creates a release for that commit |
 | [Merge main into PRs](.github/workflows/sync-prs.yml) | Push to `main`; manual | Merges `main` into each open PR that is behind; comments once on conflicts; skips fork and Dependabot PRs |
+| [PR previews](.github/workflows/pr-previews.yml) | PR open/sync/reopen/close | Builds every open same-repo PR with `--base-href /pr-N/` and publishes them together at `prs.yannislam.org/pr-N/` (separate static Vercel project), commenting the link |
 | [Dependabot auto-merge](.github/workflows/dependabot-auto-merge.yml) | `pull_request_target` | Waits for checks, then merges Dependabot patch/minor bumps and dev-only majors; production majors wait for review |
 | [Vercel build warnings](.github/workflows/vercel-build-warnings.yml) | Vercel `deployment_status` | Fetches a preview deploy's Vercel build log and keeps its warning/error lines in a sticky PR comment (needs `VERCEL_TOKEN`) |
 | [Dependabot](.github/dependabot.yml) | Mondays 06:00 UTC | Weekly `npm` and `github-actions` updates |
@@ -362,6 +379,9 @@ flowchart LR
 
     CF --> Mail["Cloudflare Email Routing"] --> Inbox["@yannislam.org inbox"]
     CF -.->|"legacy CNAMEs"| Netlify["Netlify (older sites)"]
+
+    Build["Build (CI and Vercel)"] -->|"fetch yl-tokens.css<br/>at the pinned version"| ThemeCF["theme.yannislam.org<br/>(DNS-only CNAME)"]
+    ThemeCF --> ThemeVercel["Vercel: yl-theme project"]
 ```
 
 | Concern | Provider | Details |
@@ -370,6 +390,7 @@ flowchart LR
 | Site | Vercel | Proxied `A`/`CNAME` records point at Vercel Edge, which serves `dist/v3.yannislam.org/browser` |
 | Email | Cloudflare Email Routing | MX/SPF/DKIM/DMARC for `@yannislam.org` |
 | Legacy sites | Netlify | `alpha.`, `v1.` and `v2.` still point at earlier versions of the site |
+| Theme tokens | Vercel (`yl-theme` project) | `theme.yannislam.org` is a DNS-only CNAME to Vercel. The build downloads the pinned `yl-tokens.css` from it, so a build needs that host to be reachable |
 
 ## Dependency security
 
@@ -387,9 +408,11 @@ Bumps are grouped: `angular` (the `@angular/*` packages and libraries tied to
 an Angular major, which must move together), `testing`, and a
 `minor-and-patch` catch-all. Other majors arrive one per PR so each can be
 reverted alone. Angular majors are ignored by Dependabot and upgraded by hand
-with `ng update` (see `docs/changes/20260727-205542-UPGRADE-NOTES.md`).
+with `ng update`.
 
 ## Further documentation
 
 - [`CLAUDE.md`](CLAUDE.md): conventions for agents (and people) changing the code
 - [`docs/README.md`](docs/README.md): index of change write-ups, open plans and reviews
+- [`AGENTS.md`](AGENTS.md): the short version of `CLAUDE.md` for any AI coding agent
+- [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)

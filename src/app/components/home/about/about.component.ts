@@ -16,4 +16,5 @@ export class AboutComponent {
 
 
   get data() { return this.configService.data; }
+  get ui() { return this.configService.ui.about; }
 }

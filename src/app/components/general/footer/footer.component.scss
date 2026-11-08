@@ -151,28 +151,24 @@ footer {
         }
     }
 
-    // Desktop-only counterpart to .footer-mobile-contact: hidden/collapsed
-    // by default (the fixed side bars handle contact links at that width),
-    // and grown into view — with the side bars fading out in tandem, see
-    // .footer-sides-collapsed above — once FooterComponent.atBottom flips
-    // true. max-height (rather than just opacity) gives the row an actual
-    // collapse/expand motion instead of a plain crossfade.
+    // Desktop-only counterpart to .footer-mobile-contact: invisible by
+    // default (the fixed side bars handle contact links at that width), and
+    // faded in -- with the side bars fading out in tandem, see
+    // .footer-sides-collapsed above -- once FooterComponent.atBottom flips
+    // true. The row always occupies its space and only fades/slides: growing
+    // it with max-height made the page taller while the visitor was at the
+    // bottom, which pushed the row below the fold (and could flip atBottom
+    // back), so the side bars vanished without the row ever appearing.
     .footer-bottom-contact {
         align-items: center;
         justify-content: center;
-        overflow: hidden;
-        max-height: 0;
-        margin-top: 0;
+        margin-top: 24px;
         opacity: 0;
         transform: translateY(16px);
-        transition: max-height 0.4s cubic-bezier(0.645, 0.045, 0.355, 1),
-            margin-top 0.4s cubic-bezier(0.645, 0.045, 0.355, 1),
-            opacity 0.3s ease,
+        transition: opacity 0.3s ease,
             transform 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
 
         &-visible {
-            max-height: 80px;
-            margin-top: 24px;
             opacity: 1;
             transform: translateY(0);
         }

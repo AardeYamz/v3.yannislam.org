@@ -8,6 +8,7 @@ import {
   MenuItem,
   ProjectsConfig,
   SiteConfig,
+  UiStrings,
 } from './site-config.model';
 
 // Single point of access for src/assets/config.json so components don't each
@@ -27,6 +28,7 @@ export class SiteConfigService {
   readonly contacts: Contact[] = this.data.about.contact;
   readonly projects: ProjectsConfig = this.resolveLogoKeys(this.data.projects);
   readonly footer: FooterConfig = this.data.footer;
+  readonly ui: UiStrings = this.data.ui;
 
   // Entries reference a shared logo by "logoKey" instead of repeating the
   // same image URL/alt text everywhere (config.json's "logos" map). Expand
@@ -52,8 +54,12 @@ export class SiteConfigService {
       const logoKey = (resolved as { logoKey?: unknown }).logoKey;
       if (typeof logoKey === 'string') {
         const logo = this.logos[logoKey];
+        // An entry's own "about" wins; otherwise use the blurb shared by
+        // every entry with this logoKey ("logoAbout"), so e.g. the three
+        // Voya roles don't each repeat the company description.
+        const about = (resolved as { about?: unknown }).about ?? this.data.logoAbout?.[logoKey];
         if (logo) {
-          return { ...resolved, imgs: [logo.src], image_alt: logo.alt };
+          return { ...resolved, imgs: [logo.src], image_alt: logo.alt, ...(about !== undefined && { about }) };
         }
       }
       return resolved;

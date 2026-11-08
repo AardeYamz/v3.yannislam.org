@@ -23,6 +23,13 @@ const ORANGE_BY_MODE: Record<ThemeMode, string> = {
   light: '#d9720c',
   dark: '#ffb020'
 };
+// The favicon follows the mode the way the logo does (see logoVariant): clearcolor, black on the light page, white on
+// the dark one. The files come from yl-theme (favicon.* is the clearcolor one).
+const FAVICON_SUFFIX_BY_MODE: Record<ThemeMode, string> = {
+  default: '',
+  light: '-black',
+  dark: '-white'
+};
 
 @Injectable({
   providedIn: 'root'
@@ -89,5 +96,11 @@ export class ThemeService {
 
     document.querySelector('meta[name="theme-color"]')
       ?.setAttribute('content', NAVY_BY_MODE[mode]);
+
+    const suffix = FAVICON_SUFFIX_BY_MODE[mode];
+    document.querySelectorAll<HTMLLinkElement>('link[rel="icon"]').forEach((link) => {
+      const href = link.getAttribute('href') ?? '';
+      link.setAttribute('href', href.replace(/favicon(-\w+)?(\.\w+)$/, `favicon${suffix}$2`));
+    });
   }
 }

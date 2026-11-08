@@ -18,4 +18,5 @@ export class ProjectsHighschoolComponent {
   private configService = inject(SiteConfigService);
 
   highschool: ProjectSection = this.configService.projects.highschool;
+  get ui() { return this.configService.ui.projects; }
 }
