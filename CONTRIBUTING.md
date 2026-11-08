@@ -2,7 +2,7 @@
 
 Thanks for taking a look. This is a personal portfolio site, so changes are best kept small and focused. Bug fixes, accessibility and performance improvements, and typo fixes are welcome; for a larger change or a new feature, open an issue first. The full conventions are in [`CLAUDE.md`](CLAUDE.md), and [`README.md`](README.md) covers the stack, architecture and CI.
 
-The site's content, name, photos and résumé are mine and are not part of what the [MIT license](LICENSE) invites you to reuse as your own. Please don't submit changes that swap them out.
+The code is [MIT](LICENSE). The written page copy (`src/assets/config.json`) is [CC BY 4.0](LICENSE-CONTENT): reuse it with attribution. My name, photos, logos and résumé are not covered by either license and are mine alone. Please don't submit changes that swap them out.
 
 ## Set up
 

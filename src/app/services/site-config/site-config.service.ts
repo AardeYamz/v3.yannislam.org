@@ -54,8 +54,12 @@ export class SiteConfigService {
       const logoKey = (resolved as { logoKey?: unknown }).logoKey;
       if (typeof logoKey === 'string') {
         const logo = this.logos[logoKey];
+        // An entry's own "about" wins; otherwise use the blurb shared by
+        // every entry with this logoKey ("logoAbout"), so e.g. the three
+        // Voya roles don't each repeat the company description.
+        const about = (resolved as { about?: unknown }).about ?? this.data.logoAbout?.[logoKey];
         if (logo) {
-          return { ...resolved, imgs: [logo.src], image_alt: logo.alt };
+          return { ...resolved, imgs: [logo.src], image_alt: logo.alt, ...(about !== undefined && { about }) };
         }
       }
       return resolved;
