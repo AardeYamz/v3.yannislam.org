@@ -667,6 +667,12 @@
       "viewProject": "查看項目：{title}",
       "viewDemo": "查看示範：{title}"
     },
+    "contact": {
+      "preTitle": "05. 下一步",
+      "title": "歡迎聯絡我！",
+      "paragraph": "如果你想傾傾新的機會，我很樂意收到你的來信。給我留言，我看到後會盡快回覆。",
+      "button": "打個招呼"
+    },
     "footer": {
       "designedBy": "設計靈感來自",
       "emailAriaLabel": "電郵至 {handle}",
