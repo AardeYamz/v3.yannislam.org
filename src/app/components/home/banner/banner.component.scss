@@ -31,7 +31,7 @@
                 margin: 0;
                 font-family: $MainFont;
 
-                background: var(--name-gradient);
+                background: var(--yl-color-name-gradient, var(--name-gradient));
                 color: #fff;
                 background-clip: text;
                 -webkit-background-clip: text;

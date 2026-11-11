@@ -1,6 +1,22 @@
 @use "./variables.scss" as *;
 @use "./bootstrap-custom.scss" as *;
 
+// The translucent ground of the work-history cards on small screens. v3's own: no other page uses it, so it lives
+// here, not in the shared theme (which drops it when its deprecated names go: yl-theme
+// docs/proposal-condense-color-tokens.md). Each value is that mode's surface colour at about 90%, except the default
+// mode's, which is deliberately the older, bluer navy (#0a192f).
+:root {
+    --color-card-overlay: rgba(10, 25, 47, 0.89);
+}
+
+:root[data-theme="light"] {
+    --color-card-overlay: rgba(244, 241, 234, 0.92);
+}
+
+:root[data-theme="dark"] {
+    --color-card-overlay: rgba(5, 7, 12, 0.92);
+}
+
 html {
     // LoadingScreenComponent toggles body { overflow: hidden } while its
     // overlay is up; without a reserved gutter that removes and re-adds

@@ -1,13 +1,3 @@
-$Navy : var(--color-navy);
-$LightNavy : var(--color-light-navy);
-$LightestNavy : var(--color-lightest-navy);
-$Slate : var(--color-slate);
-$LightSlate : var(--color-light-slate);
-$LightestSlate: var(--color-lightest-slate);
-$White : var(--color-white);
-$Orange : var(--color-orange);
-$OrangeOpacity : var(--color-orange-opacity);
-
 $MainFont: Calibre, San Francisco, SF Pro Text, -apple-system, system-ui, BlinkMacSystemFont, Roboto, Helvetica Neue, Segoe UI, Arial, sans-serif;
 $CodeFont: SF Mono, Fira Code, Fira Mono, Roboto Mono, Lucida Console, Monaco, Monospace;
 
@@ -15,38 +5,28 @@ $CodeFont: SF Mono, Fira Code, Fira Mono, Roboto Mono, Lucida Console, Monaco, M
 
 $Primary: var(--md-sys-color-primary);
 $OnPrimary: var(--md-sys-color-on-primary);
-$PrimaryContainer: var(--md-sys-color-primary-container);
-$OnPrimaryContainer: var(--md-sys-color-on-primary-container);
 $Secondary: var(--md-sys-color-secondary);
-$OnSecondary: var(--md-sys-color-on-secondary);
-$SecondaryContainer: var(--md-sys-color-secondary-container);
-$OnSecondaryContainer: var(--md-sys-color-on-secondary-container);
 $Surface: var(--md-sys-color-surface);
 $OnSurface: var(--md-sys-color-on-surface);
 $OnSurfaceVariant: var(--md-sys-color-on-surface-variant);
-$SurfaceContainerLowest: var(--md-sys-color-surface-container-lowest);
-$SurfaceContainerLow: var(--md-sys-color-surface-container-low);
 $SurfaceContainer: var(--md-sys-color-surface-container);
 $SurfaceContainerHigh: var(--md-sys-color-surface-container-high);
-$SurfaceContainerHighest: var(--md-sys-color-surface-container-highest);
 $Outline: var(--md-sys-color-outline);
 $OutlineVariant: var(--md-sys-color-outline-variant);
-$Scrim: var(--md-sys-color-scrim);
+// The theme's own colour, for which M3 has no role: the brightest ink (the name card's text). The fallback is the
+// same colour under its old name, for theme versions before the token condensing; drop it with the theme bump that
+// pins a version with --yl-color-emphasis (yl-theme docs/proposal-condense-color-tokens.md, release A).
+$Emphasis: var(--yl-color-emphasis, var(--color-white));
 
-$ShapeNone: var(--md-sys-shape-corner-none);
 $ShapeExtraSmall: var(--md-sys-shape-corner-extra-small);
 $ShapeSmall: var(--md-sys-shape-corner-small);
 $ShapeMedium: var(--md-sys-shape-corner-medium);
 $ShapeLarge: var(--md-sys-shape-corner-large);
-$ShapeExtraLarge: var(--md-sys-shape-corner-extra-large);
 $ShapeFull: var(--md-sys-shape-corner-full);
 
-$Elevation0: var(--md-sys-elevation-level0);
 $Elevation1: var(--md-sys-elevation-level1);
 $Elevation2: var(--md-sys-elevation-level2);
 $Elevation3: var(--md-sys-elevation-level3);
-$Elevation4: var(--md-sys-elevation-level4);
-$Elevation5: var(--md-sys-elevation-level5);
 
 $MotionEasingStandard: var(--md-sys-motion-easing-standard);
 
