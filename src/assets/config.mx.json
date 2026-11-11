@@ -667,6 +667,12 @@
       "viewProject": "Ver el proyecto {title}",
       "viewDemo": "Ver la demostración de {title}"
     },
+    "contact": {
+      "preTitle": "05. Lo que sigue",
+      "title": "¡Ponte en contacto!",
+      "paragraph": "Con gusto recibiré tu mensaje si quieres platicar sobre nuevas oportunidades. Escríbeme y te responderé en cuanto vea tu mensaje.",
+      "button": "Saluda"
+    },
     "footer": {
       "designedBy": "Diseño de",
       "emailAriaLabel": "Enviar correo a {handle}",
