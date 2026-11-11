@@ -183,6 +183,7 @@ export interface UiStrings {
   projects: { viewButton: string; backToProjects: string };
   namecard: { title: string };
   workhistory: { viewProject: string; viewDemo: string };
+  contact: { preTitle: string; title: string; paragraph: string; button: string };
   footer: { designedBy: string; emailAriaLabel: string };
 }
 
