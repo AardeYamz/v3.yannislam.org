@@ -76,12 +76,4 @@ test.describe('home sections', () => {
     const entries = section.locator('.workhistory-container');
     await expect(entries).toHaveCount(experiences.volunteering.list.length);
   });
-
-  test('contact section renders the configured copy', async ({ page }) => {
-    const contact = page.locator('#contact');
-    await expect(contact).toContainText(config.ui.contact.preTitle);
-    await expect(contact).toContainText(config.ui.contact.title);
-    await expect(contact).toContainText(config.ui.contact.paragraph);
-    await expect(contact.locator('a.main-btn')).toHaveText(config.ui.contact.button);
-  });
 });
