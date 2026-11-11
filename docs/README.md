@@ -14,6 +14,7 @@ site is, how to build, test and deploy it) and [`CLAUDE.md`](../CLAUDE.md)
 
 - [`pr-16-material-design-3-review.md`](reviews/pr-16-material-design-3-review.md): PR #16, Material Design 3 tokens
 - [`pr-24-ssr-prerendering-review.md`](reviews/pr-24-ssr-prerendering-review.md): PR #24, SSR prerendering
+- [`audit-findings-2026-11-09.md`](reviews/audit-findings-2026-11-09.md): whole-repo audit work list (findings, not fixes), 2026-11-09
 - [`security-audit-2026-10-26.md`](reviews/security-audit-2026-10-26.md): whole-repo security review. Findings 1 (CSP, now report-only) and 7 (GA ID fail-closed) have been acted on; the 2026-10-28 follow-up is in [`todo/security-review.md`](todo/security-review.md)
 
 ## Change write-ups by area
