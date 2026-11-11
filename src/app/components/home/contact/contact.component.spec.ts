@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ContactComponent } from './contact.component';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { AosDirective } from 'src/app/directives/aos/aos.directive';
 
 describe('ContactComponent', () => {
@@ -31,6 +32,15 @@ describe('ContactComponent', () => {
 
   it('should have analytics service', () => {
     expect(component.analyticsService).toBeDefined();
+  });
+
+  it('renders the configured contact copy', () => {
+    fixture.detectChanges();
+    const ui = TestBed.inject(SiteConfigService).ui.contact;
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    for (const value of [ui.preTitle, ui.title, ui.paragraph, ui.button]) {
+      expect(text).toContain(value);
+    }
   });
 
 });
