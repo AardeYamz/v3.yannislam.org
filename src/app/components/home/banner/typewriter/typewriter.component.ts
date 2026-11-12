@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, PLATFORM_ID, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, PLATFORM_ID, effect, inject, input, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 const TYPE_SPEED_MS = 60;
@@ -7,6 +7,12 @@ const PAUSE_AFTER_TYPE_MS = 1500;
 const PAUSE_AFTER_ERASE_MS = 300;
 
 type Phase = 'typing' | 'erasing';
+
+function commonPrefixLength(a: string, b: string): number {
+  let i = 0;
+  while (i < a.length && i < b.length && a[i] === b[i]) i++;
+  return i;
+}
 
 // Signal-driven replacement for ngx-typed-js (a few dozen lines instead of a
 // third-party dependency). typed.js calls getComputedStyle() and otherwise
@@ -21,11 +27,10 @@ type Phase = 'typing' | 'erasing';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TypewriterComponent implements OnInit {
-  // Bound once by the parent from config.json and never reassigned
-  // afterward, so a one-time read in ngOnInit (guaranteed to see the bound
-  // value) is enough - no need for the async scheduling an effect() would
-  // add, which would otherwise delay the very first paint of the static
-  // fallback text by a tick.
+  // Read once in ngOnInit (guaranteed to see the bound value, with no effect()
+  // delay on the very first paint of the static fallback text). If the
+  // parent later binds different strings (the language was switched), the
+  // effect below restarts the animation with them.
   readonly strings = input<string[]>([]);
 
   readonly text = signal('');
@@ -33,12 +38,25 @@ export class TypewriterComponent implements OnInit {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private timer: ReturnType<typeof setTimeout> | undefined;
 
+  private started = false;
+
   constructor() {
     inject(DestroyRef).onDestroy(() => clearTimeout(this.timer));
+
+    effect(() => {
+      const strings = this.strings();
+      if (!this.started) return;
+      this.start(strings);
+    });
   }
 
   ngOnInit(): void {
-    const strings = this.strings();
+    this.started = true;
+    this.start(this.strings());
+  }
+
+  private start(strings: string[]): void {
+    clearTimeout(this.timer);
     if (!strings.length) {
       return;
     }
@@ -69,11 +87,14 @@ export class TypewriterComponent implements OnInit {
     }
 
     this.text.set(full.slice(0, charIndex));
-    if (charIndex > 0) {
+    // Only erase back to what the next string shares with this one ("I am a "
+    // / "我是一名"), then type on from there instead of retyping the prefix.
+    const nextIndex = (stringIndex + 1) % strings.length;
+    const keep = nextIndex === stringIndex ? 0 : commonPrefixLength(full, strings[nextIndex]);
+    if (charIndex > keep) {
       this.timer = setTimeout(() => this.step(strings, stringIndex, charIndex - 1, 'erasing'), BACK_SPEED_MS);
     } else {
-      const nextIndex = (stringIndex + 1) % strings.length;
-      this.timer = setTimeout(() => this.step(strings, nextIndex, 0, 'typing'), PAUSE_AFTER_ERASE_MS);
+      this.timer = setTimeout(() => this.step(strings, nextIndex, keep, 'typing'), PAUSE_AFTER_ERASE_MS);
     }
   }
 }

@@ -23,10 +23,15 @@ export class FooterComponent {
     configService = inject(SiteConfigService);
     private scrollService = inject(ScrollService);
 
-    socials: Contact[];
-    mobileSocials: Contact[];
-    email: Contact;
-    footer: FooterConfig;
+    // Getters, not fields: the language can change while the footer is mounted.
+    get socials(): Contact[] { return this.configService.contacts; }
+    get mobileSocials(): Contact[] { return this.socials.filter((item) => item.name !== "Email"); }
+    // Email is always in config.json's contact list (see CLAUDE.md's
+    // "Add a New Social Link" section) -- non-null assertion rather
+    // than an optional type that every consumer would then need to
+    // guard against for a contact that's never actually missing.
+    get email(): Contact { return this.socials.find((item) => item.name === "Email")!; }
+    get footer(): FooterConfig { return this.configService.footer; }
     get ui() { return this.configService.ui.footer; }
     currentDate = new Date();
 
@@ -49,14 +54,4 @@ export class FooterComponent {
         this.scrollService.y() >= this.scrollService.maxScroll() - FooterComponent.BOTTOM_THRESHOLD_PX
     );
 
-    constructor() {
-        this.socials = this.configService.contacts;
-        // Email is always in config.json's contact list (see CLAUDE.md's
-        // "Add a New Social Link" section) -- non-null assertion rather
-        // than an optional type that every consumer would then need to
-        // guard against for a contact that's never actually missing.
-        this.email = this.socials.find((item) => item.name === "Email")!;
-        this.mobileSocials = this.socials.filter((item) => item.name !== "Email");
-        this.footer = this.configService.footer;
-    }
 }
