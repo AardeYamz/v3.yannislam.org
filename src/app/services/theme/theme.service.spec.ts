@@ -153,4 +153,11 @@ describe('ThemeService', () => {
       expect(service.accentColor()).toBe(tokens.getPropertyValue('--md-sys-color-primary').trim().toLowerCase());
     });
   });
+
+  it('still constructs when localStorage throws', () => {
+    stubMatchMedia(false);
+    spyOn(Storage.prototype, 'getItem').and.throwError('blocked');
+    const service = TestBed.inject(ThemeService);
+    expect(service.mode()).toBe('default');
+  });
 });
