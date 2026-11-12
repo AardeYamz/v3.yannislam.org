@@ -151,7 +151,7 @@
                         // one both just read as "some orange text" with
                         // nothing to tell them apart.
                         &.nav-link-active {
-                            background-color: $SecondaryContainer;
+                            background-color: $SurfaceContainerHigh;
                             color: $Primary;
 
                             span {
@@ -192,7 +192,7 @@
         }
 
         &.nav-link-active {
-            background-color: $SecondaryContainer;
+            background-color: $SurfaceContainerHigh;
             color: $Primary;
 
             .nav-number {
