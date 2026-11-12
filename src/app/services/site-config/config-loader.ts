@@ -15,6 +15,8 @@ export function loadedConfig(lang: Language): SiteConfig {
 /** Fetches the translation for `lang` (a no-op once loaded). */
 export async function loadConfig(lang: Language): Promise<void> {
   if (loaded[lang]) return;
-  const module = await import('../../../assets/config.zh.json');
+  const module = lang === 'zh'
+    ? await import('../../../assets/config.zh.json')
+    : await import('../../../assets/config.hk.json');
   loaded[lang] = module.default as SiteConfig;
 }
