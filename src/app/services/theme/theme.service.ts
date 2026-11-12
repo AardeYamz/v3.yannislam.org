@@ -61,7 +61,7 @@ export class ThemeService {
     // explicit choice (i.e. nothing saved yet) — once they click the logo,
     // that choice is stored and wins over the system preference from then on.
     window.matchMedia(PREFERS_LIGHT_QUERY).addEventListener('change', (event) => {
-      if (localStorage.getItem(STORAGE_KEY)) return;
+      if (this.readStored()) return;
       this.modeSignal.set(event.matches ? 'light' : 'default');
     });
   }
@@ -70,15 +70,20 @@ export class ThemeService {
     const nextIndex = (CYCLE_ORDER.indexOf(this.modeSignal()) + 1) % CYCLE_ORDER.length;
     const next = CYCLE_ORDER[nextIndex];
     if (this.isBrowser) {
-      localStorage.setItem(STORAGE_KEY, next);
+      try { localStorage.setItem(STORAGE_KEY, next); } catch { /* storage blocked: the choice just isn't remembered */ }
     }
     this.modeSignal.set(next);
+  }
+
+  /** localStorage can throw (storage blocked, some privacy modes); treat that as nothing saved. */
+  private readStored(): string | null {
+    try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
   }
 
   private resolveInitialMode(): ThemeMode {
     if (!this.isBrowser) return 'default';
 
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = this.readStored();
     if ((CYCLE_ORDER as string[]).includes(stored ?? '')) {
       return stored as ThemeMode;
     }

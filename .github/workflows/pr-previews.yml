@@ -153,7 +153,7 @@ jobs:
       - name: Deploy
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: npx --yes vercel@latest deploy site --prod --yes --token "$VERCEL_TOKEN"
+        run: npx --yes vercel@65.14.0 deploy site --prod --yes --token "$VERCEL_TOKEN"
 
       # A marker finds this workflow's own comment; --edit-last would overwrite whichever bot comment is newest (sync-prs also comments).
       - name: Comment the preview links
