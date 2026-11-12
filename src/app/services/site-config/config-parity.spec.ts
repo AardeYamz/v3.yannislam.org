@@ -2,6 +2,7 @@ import en from '../../../assets/config.json';
 import zh from '../../../assets/config.zh.json';
 import hk from '../../../assets/config.hk.json';
 import mx from '../../../assets/config.mx.json';
+import nl from '../../../assets/config.nl.json';
 
 // config.zh.json must mirror config.json: same keys in the same places and the
 // same list lengths, so a component never meets a field in one language that
@@ -30,7 +31,7 @@ function compare(a: unknown, b: unknown, path: string, problems: string[]): void
   }
 }
 
-for (const [name, translation] of [['config.zh.json', zh], ['config.hk.json', hk], ['config.mx.json', mx]] as const) {
+for (const [name, translation] of [['config.zh.json', zh], ['config.hk.json', hk], ['config.mx.json', mx], ['config.nl.json', nl]] as const) {
   describe(name, () => {
     it('has the same shape as config.json', () => {
       const problems: string[] = [];
