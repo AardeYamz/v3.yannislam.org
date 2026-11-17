@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, AfterViewInit, OnDestroy, Injector,
 import { isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
+import { FlagBurstComponent } from 'src/app/components/general/flag/flag-burst.component';
 import { FlagComponent } from 'src/app/components/general/flag/flag.component';
 import { IconComponent } from 'src/app/icons/icon.component';
 import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
@@ -35,7 +36,7 @@ import { LANGUAGES, Language, LanguageService, htmlLang, languageName } from 'sr
         fadeStaggerAnimation('animateMenu', 'translateX(-20px)', '.container > *')
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterLink, IconComponent, FlagComponent],
+    imports: [RouterLink, IconComponent, FlagComponent, FlagBurstComponent],
     host: {
         '(document:click)': 'closeLanguageMenu($event)',
         '(document:keydown.escape)': 'closeLanguageMenu()',
@@ -266,11 +267,21 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   // The language menu is a dropdown under the one flag button.
   languageMenuOpen = signal(false);
 
+  // Bumped after each language change; the template keys the flag on it so the burst replays.
+  burstCount = signal(0);
+  private static readonly BURST_COLORS: Record<Language, string> = {
+    en: '#b22234', zh: '#ffde00', hk: '#ffffff', mx: '#00a86b', nl: '#f5a623',
+  };
+  burstColor(): string {
+    return HeaderComponent.BURST_COLORS[this.languageService.language()];
+  }
+
   async selectLanguage(lang: Language) {
     this.languageMenuOpen.set(false);
     if (lang === this.languageService.language()) return;
     const section = await this.sectionForHash();
     await this.languageService.select(lang);
+    this.burstCount.update((n) => n + 1);
     // Keep a section link in the address bar in the new language.
     const item = this.menu.find((i) => i.scrollSection === section);
     if (item) this.setHash(item);
