@@ -89,10 +89,16 @@ with Cloudflare in front for DNS and email.
   banner mark (`logo-loop`) import and draw from: never copy polygon coordinates into a component. It also includes `favicon.svg`, `favicon.ico` and
   `apple-touch-icon.png`, plus `favicon-black` and `favicon-white` (`.svg`/`.ico`) for the light and dark modes, written to `src/generated/favicons/` and served from the site root (`index.html` links
   the default ones; `ThemeService` swaps the two `rel="icon"` hrefs when the mode changes): there is no `src/favicon.ico` any more, so never add one. The tokens file
-  holds the site's `--color-*` palette and Material Design 3 `--md-sys-color-*`
-  tokens, set per mode under `:root[data-theme="light"]` and
+  holds the Material Design 3 `--md-sys-color-*` roles and the theme's own two
+  colours (`--yl-color-emphasis`, `--yl-color-name-gradient`), set per mode under `:root[data-theme="light"]` and
   `:root[data-theme="dark"]` (the default mode is the base `:root`). Reference
-  them with `var(...)` so every theme works. To change a token, change it in
+  them with `var(...)` (in SCSS, through the `$Primary`, `$Surface`… aliases in
+  `src/variables.scss`) so every theme works. Use only the role names: the
+  `--color-*` palette names and the roles nothing used (`background`,
+  `secondary-container`, `inverse-*`, `scrim`…) are deprecated in the theme and
+  will be removed, and `variables.scss` no longer has aliases for them. The one
+  `--color-*` left, `--color-card-overlay`, is v3's own and is set in
+  `src/styles.scss`. To change a token, change it in
   yl-theme (CI there cuts a new timestamped version), then here run
   `node scripts/fetch-theme.js --bump`, rebuild, and commit `theme.json`.
   `ThemeService`'s `NAVY_BY_MODE` / `ORANGE_BY_MODE` mirror two tokens as
