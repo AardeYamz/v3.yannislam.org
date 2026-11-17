@@ -97,6 +97,24 @@ describe('BannerComponent', () => {
     let cancelSpy: jasmine.Spy;
     let scrollYSpy: jasmine.Spy;
     let volunteeringEl: HTMLElement;
+    let restoreWindowProps: Array<() => void>;
+
+    // window.scrollY / innerHeight are [Replaceable] attributes defined on the
+    // window object itself; newer Chrome builds (the CI runners') no longer
+    // expose them as a plain getter, so spyOnProperty(window, 'scrollY', 'get')
+    // throws there while working on older local builds. Defining our own
+    // configurable getter, and putting the original descriptor back afterwards,
+    // behaves the same on every browser version.
+    function stubWindowNumber(name: 'scrollY' | 'innerHeight', value: number): jasmine.Spy {
+      const original = Object.getOwnPropertyDescriptor(window, name);
+      const spy = jasmine.createSpy(name).and.returnValue(value);
+      Object.defineProperty(window, name, { configurable: true, get: () => spy() });
+      restoreWindowProps.push(() => {
+        if (original) Object.defineProperty(window, name, original);
+        else delete (window as unknown as Record<string, unknown>)[name];
+      });
+      return spy;
+    }
 
     function flushFrame(timestamp: number) {
       const callbacks = Array.from(rafCallbacks.values());
@@ -116,9 +134,10 @@ describe('BannerComponent', () => {
         rafCallbacks.delete(id);
       });
       scrollToSpy = spyOn(window, 'scrollTo');
-      scrollYSpy = spyOnProperty(window, 'scrollY', 'get').and.returnValue(0);
+      restoreWindowProps = [];
+      scrollYSpy = stubWindowNumber('scrollY', 0);
       spyOnProperty(document.documentElement, 'scrollHeight', 'get').and.returnValue(10800);
-      spyOnProperty(window, 'innerHeight', 'get').and.returnValue(800);
+      stubWindowNumber('innerHeight', 800);
 
       // A fake #volunteering section far enough down the page that the
       // computed auto-scroll distance is unambiguous and doesn't depend on
@@ -132,7 +151,11 @@ describe('BannerComponent', () => {
     });
 
     afterEach(() => {
-      volunteeringEl.remove();
+      // volunteeringEl is only created after the stubs above; guard in case a
+      // stub threw before getting that far, so the real error isn't masked by
+      // a TypeError from this cleanup.
+      volunteeringEl?.remove();
+      restoreWindowProps.forEach((restore) => restore());
     });
 
     // Target = min(volunteering.offsetTop + offsetHeight - innerHeight, maxScroll)
