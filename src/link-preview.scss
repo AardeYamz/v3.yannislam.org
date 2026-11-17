@@ -19,8 +19,8 @@ $frame-height: 175px;
     z-index: 10000;
     max-width: 280px;
     border-radius: 6px;
-    background-color: $LightNavy;
-    border: 1px solid $LightestNavy;
+    background-color: $SurfaceContainer;
+    border: 1px solid $Outline;
     box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
     font-family: $MainFont;
     pointer-events: none;
@@ -43,7 +43,7 @@ $frame-height: 175px;
         > i {
             flex: 0 0 auto;
             font-size: 20px;
-            color: $Orange;
+            color: $Primary;
 
             svg {
                 width: 1em;
@@ -60,7 +60,7 @@ $frame-height: 175px;
     }
 
     &__title {
-        color: $LightestSlate;
+        color: $OnSurface;
         font-size: 13px;
         font-weight: 600;
         white-space: nowrap;
@@ -69,7 +69,7 @@ $frame-height: 175px;
     }
 
     &__domain {
-        color: $Slate;
+        color: $OnSurfaceVariant;
         font-size: 11px;
         font-family: $CodeFont;
         white-space: nowrap;
@@ -84,7 +84,7 @@ $frame-height: 175px;
         height: $frame-height;
         overflow: hidden;
         position: relative;
-        background-color: $LightestNavy;
+        background-color: $SurfaceContainerHigh;
     }
 
     &__frame {
