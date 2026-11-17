@@ -51,6 +51,8 @@ describe('LanguageService', () => {
     expect(config.menu[0].navTitle).toBe('关于');
     await service.select('hk');
     expect(config.menu[0].navTitle).toBe('關於');
+    await service.select('mx');
+    expect(config.menu[0].navTitle).toBe('Acerca de');
   });
 
   it('detectLanguage() picks English for the US and Chinese for Chinese locales or regions', () => {
@@ -61,6 +63,9 @@ describe('LanguageService', () => {
     expect(detectLanguage(['zh-HK', 'en'], 'America/New_York')).toBe('hk');
     expect(detectLanguage(['zh-Hant-TW'], 'Asia/Taipei')).toBe('hk');
     expect(detectLanguage(['en-US'], 'Asia/Hong_Kong')).toBe('hk');
+    expect(detectLanguage(['es-MX', 'en'], 'America/Chicago')).toBe('mx');
+    expect(detectLanguage(['en-US', 'es'], 'America/Chicago')).toBe('mx');
+    expect(detectLanguage(['en-US'], 'America/Mexico_City')).toBe('mx');
     expect(detectLanguage([], '')).toBe('en');
   });
 });
