@@ -81,7 +81,7 @@
     .namecard-title {
         margin: 0 0 10px;
         font-size: 20px;
-        color: $White;
+        color: $Emphasis;
         -webkit-transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
         transition: font-size 0.5s cubic-bezier(0.55,0.055,0.675,0.19);
     }
@@ -113,13 +113,13 @@
 
         li {
             font-size: 12px;
-            color: $White;
+            color: $Emphasis;
             line-height: 1.75;
             margin-bottom: 8px;
             font-family: $CodeFont;
 
             &::marker {
-                color: $White;
+                color: $Emphasis;
             }
         }
     }
