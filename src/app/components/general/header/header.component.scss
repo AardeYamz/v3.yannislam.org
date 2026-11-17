@@ -285,6 +285,59 @@
     @extend %icon-button;
 }
 
+// Flag button that switches the page language. Same state layer as the icon
+// buttons, but sized to the flag instead of a fixed square.
+.lang-toggle {
+    @extend %icon-button;
+    width: auto;
+    min-width: 46px;
+    padding: 0 10px;
+    white-space: nowrap;
+}
+
+.lang-picker {
+    position: relative;
+}
+
+// Dropdown under the flag button: one row per language, flag plus its own name.
+.lang-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 10;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    border-radius: 12px;
+    background: $SurfaceContainerHigh;
+    color: $OnSurface;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        background: rgba(128, 128, 128, 0.2);
+    }
+
+    &[aria-current='true'] {
+        background: rgba(128, 128, 128, 0.3);
+    }
+}
+
 @media (max-width: 1050px) {
     .nav-right {
         gap: 12px;

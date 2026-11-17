@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, PLATFORM_ID, afterNextRender, effect, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { inject as injectVercelAnalytics } from '@vercel/analytics';
 import { injectSpeedInsights } from '@vercel/speed-insights';
@@ -6,6 +6,8 @@ import { wasServerPrerendered } from 'src/app/utils/hydration';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from 'src/app/components/general/header/header.component';
 import { FooterComponent } from 'src/app/components/general/footer/footer.component';
+import { LanguageService } from 'src/app/services/language/language.service';
+import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { LoadingScreenComponent } from 'src/app/components/general/loading-screen/loading-screen.component';
 
 @Component({
@@ -17,6 +19,8 @@ import { LoadingScreenComponent } from 'src/app/components/general/loading-scree
 })
 export class AppComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
+  private languageService = inject(LanguageService);
+  private configService = inject(SiteConfigService);
 
 
   // Header is kept out of the DOM (see app.component.html's `@if`) until the
@@ -44,7 +48,22 @@ export class AppComponent implements OnInit {
     if (!isPlatformBrowser(this.platformId) || wasServerPrerendered()) {
       this.headerReady = true;
     }
+
+    // The prerendered HTML and the first client render are English (what
+    // hydration must match); switch to the saved/host language right after
+    // that first render, under the loading screen. Only a non-English
+    // language touches the title/description tags (index.html authors the
+    // English ones, see ngOnInit).
+    afterNextRender(() => void this.languageService.init());
+    effect(() => {
+      const lang = this.languageService.language();
+      if (lang === 'en' && !this.languageSwitched) return;
+      this.languageSwitched = true;
+      this.languageService.applyToDocument(lang, this.configService.ui.meta);
+    });
   }
+
+  private languageSwitched = false;
 
   ngOnInit(): void {
     // Title/description/keywords/OG/Twitter tags are authored once in index.html -

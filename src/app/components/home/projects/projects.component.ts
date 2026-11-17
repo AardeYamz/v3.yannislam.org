@@ -17,7 +17,7 @@ import { ProjectsConfig } from 'src/app/services/site-config/site-config.model';
 export class ProjectsComponent {
   private configService = inject(SiteConfigService);
 
-  projects: ProjectsConfig = this.configService.projects;
+  get projects(): ProjectsConfig { return this.configService.projects; }
   get ui() { return this.configService.ui.projects; }
 }
 
