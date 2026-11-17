@@ -619,6 +619,10 @@
     ]
   },
   "ui": {
+    "meta": {
+      "title": "Yannis Lam | Software Developer",
+      "description": "Portfolio of Yannis Lam, a software developer with a dual degree in Computer Science and Economics from UMass Amherst, specializing in web development and financial technology."
+    },
     "header": {
       "homeAriaLabel": "Yannis Lam, home",
       "logoAlt": "Yannis Lam logo",
@@ -632,7 +636,8 @@
         "dark": "dark"
       },
       "openMenu": "Open menu",
-      "closeMenu": "Close menu"
+      "closeMenu": "Close menu",
+      "languagePickerLabel": "Language"
     },
     "banner": {
       "emailButton": "email me!",
@@ -670,7 +675,8 @@
     },
     "footer": {
       "designedBy": "Designed by",
-      "emailAriaLabel": "Email {handle}"
+      "emailAriaLabel": "Email {handle}",
+      "disclaimer": "This site was written in English. I am not necessarily fluent in the other languages, so translations may contain mistakes."
     }
   },
   "siteTitle": "Yannis Lam",
