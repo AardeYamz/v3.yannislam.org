@@ -151,7 +151,7 @@ flowchart TB
 | `ProjectsComponent`, `ProjectsHighschoolComponent` | Pages (lazy) | `/projects` and `/projects/highschool` |
 | `AardeYamzComponent` + `NamecardComponent` | Page (lazy) | `/aardeyamz` |
 | `SiteConfigService` | Service | The only reader of `config.json` / `config.zh.json` / `config.hk.json` (whichever `LanguageService` selects), typed by `site-config.model.ts` |
-| `LanguageService` | Service | `en` / `zh` / `hk` / `mx` as a signal, saved in `localStorage`; a `zh.*` / `hk.*` / `mx.*` hostname, then the first browser language with an edition or the time zone's region (Traditional script and Hong Kong / Macau / Taiwan go to `hk`; any Spanish or a Mexican time zone to `mx`), set the default; everyone else gets English. The header has a flag button for each other language |
+| `LanguageService` | Service | `en` / `zh` / `hk` / `mx` / `nl` as a signal, saved in `localStorage`; a `zh.*` / `hk.*` / `mx.*` / `nl.*` hostname, then the first browser language with an edition or the time zone's region (Traditional script and Hong Kong / Macau / Taiwan go to `hk`; any Spanish or a Mexican time zone to `mx`; Dutch or the Amsterdam time zone to `nl`), set the default; everyone else gets English. The header has a flag button for each other language |
 | `ThemeService` | Service | `default` / `light` / `dark` modes, as signals, saved in `localStorage` and applied as `[data-theme]` on `<html>`. The colors themselves are not here: they come from `yl-tokens.css` (below) |
 | `yl-tokens.css` | Dependency | Color tokens from the separate [yl-theme](https://github.com/AardeYamz/yl-theme) project. `theme.json` pins a version and SHA-256; `scripts/fetch-theme.js` downloads it, the eleven logos and `logo-geometry.json` (which the loading screen and banner mark draw from) and the favicons, from `theme.yannislam.org` into git-ignored `src/generated/` before every start, build, test and e2e run; `angular.json` loads the tokens as a global stylesheet and serves the logos at `assets/images/logos/` |
 | `AnalyticsService` | Service | Calls the global `gtag()` for custom events |
@@ -204,6 +204,7 @@ src/
 │   ├── config.zh.json        # The same content in Simplified Chinese
 │   ├── config.hk.json        # The same content in Traditional Chinese (Hong Kong)
 │   ├── config.mx.json        # The same content in Mexican Spanish
+│   ├── config.nl.json        # The same content in Dutch
 │   ├── resume-manifest.json  # Written by the pre-hook
 │   ├── fonts/  images/  resume/
 ├── generated/                # yl-tokens.css (color tokens per [data-theme]), logos/<variant>.svg and logo-geometry.json, fetched from yl-theme (git-ignored; see theme.json)

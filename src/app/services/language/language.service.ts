@@ -3,8 +3,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
 import { loadConfig } from '../site-config/config-loader';
 
-export type Language = 'en' | 'zh' | 'hk' | 'mx';
-export const LANGUAGES: readonly Language[] = ['en', 'zh', 'hk', 'mx'];
+export type Language = 'en' | 'zh' | 'hk' | 'mx' | 'nl';
+export const LANGUAGES: readonly Language[] = ['en', 'zh', 'hk', 'mx', 'nl'];
 
 // Each language's own name, shown in the language buttons' labels.
 const LANGUAGE_NAMES: Record<Language, string> = {
@@ -12,16 +12,17 @@ const LANGUAGE_NAMES: Record<Language, string> = {
   zh: '简体中文',
   hk: '繁體中文（香港）',
   mx: 'Español (México)',
+  nl: 'Nederlands',
 };
 export const languageName = (lang: Language): string => LANGUAGE_NAMES[lang];
 
 // <html lang> value for each language.
-const HTML_LANG: Record<Language, string> = { en: 'en', zh: 'zh-Hans', hk: 'zh-Hant-HK', mx: 'es-MX' };
+const HTML_LANG: Record<Language, string> = { en: 'en', zh: 'zh-Hans', hk: 'zh-Hant-HK', mx: 'es-MX', nl: 'nl-NL' };
 export const htmlLang = (lang: Language): string => HTML_LANG[lang];
 
 export const LANGUAGE_STORAGE_KEY = 'yl-language';
-// Hostname prefixes that pin an edition (zh.yannislam.org, hk.yannislam.org, mx.yannislam.org).
-const HOST_PREFIXES: Record<string, Language> = { 'zh.': 'zh', 'hk.': 'hk', 'mx.': 'mx' };
+// Hostname prefixes that pin an edition (zh.yannislam.org, hk.yannislam.org, mx.yannislam.org, nl.yannislam.org).
+const HOST_PREFIXES: Record<string, Language> = { 'zh.': 'zh', 'hk.': 'hk', 'mx.': 'mx', 'nl.': 'nl' };
 
 // Time zones (IANA ids) that default the page to Chinese when the browser's
 // language list doesn't already say so. The time zone is the only "where are you"
@@ -33,6 +34,8 @@ const ZH_TIME_ZONES = new Set([
 const HK_TIME_ZONES = new Set(['Asia/Hong_Kong', 'Hongkong', 'Asia/Macau', 'Asia/Macao', 'Asia/Taipei']);
 // Chinese language tags written in Traditional script.
 const HK_TAG = /^zh-(hk|mo|tw|hant)/;
+// The Netherlands' time zone (Belgium shares others, and is not all Dutch-speaking).
+const NL_TIME_ZONES = new Set(['Europe/Amsterdam']);
 // Mexico's time zones.
 const MX_TIME_ZONES = new Set([
   'America/Mexico_City', 'America/Cancun', 'America/Merida', 'America/Monterrey', 'America/Matamoros',
@@ -45,6 +48,7 @@ function languageForTag(tag: string): Language | undefined {
   const lower = tag.toLowerCase();
   if (lower.startsWith('zh')) return HK_TAG.test(lower) ? 'hk' : 'zh';
   if (lower.startsWith('es')) return 'mx';
+  if (lower.startsWith('nl')) return 'nl';
   return undefined;
 }
 
@@ -60,12 +64,13 @@ export function detectLanguage(languages: readonly string[], timeZone: string): 
   }
   if (HK_TIME_ZONES.has(timeZone)) return 'hk';
   if (MX_TIME_ZONES.has(timeZone)) return 'mx';
+  if (NL_TIME_ZONES.has(timeZone)) return 'nl';
   return ZH_TIME_ZONES.has(timeZone) ? 'zh' : 'en';
 }
 
 // Which copy of the page text (config.json and its translations) is
 // showing. Both editions are the same prerendered app, so the language is
-// resolved in the browser: a saved choice wins, then a zh.* / hk.* / mx.* hostname, then the
+// resolved in the browser: a saved choice wins, then a zh.* / hk.* / mx.* / nl.* hostname, then the
 // visitor's browser languages and time zone (detectLanguage), else English.
 //
 // The server and the first client render always use English so hydration
