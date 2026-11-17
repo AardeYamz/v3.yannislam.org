@@ -8,14 +8,14 @@ const CYCLE_ORDER: ThemeMode[] = ['default', 'light', 'dark'];
 // 'default' is already a dark theme, so it's the system-dark counterpart —
 // there's no separate OS signal for the deepest 'dark' mode.
 const PREFERS_LIGHT_QUERY = '(prefers-color-scheme: light)';
-// Mirrors --color-navy per mode from the shared yl-tokens.css (theme.json) — used to keep the browser
+// Mirrors --md-sys-color-surface per mode from the shared yl-tokens.css (theme.json) — used to keep the browser
 // chrome (address bar on mobile) in sync with the actual page background.
 const NAVY_BY_MODE: Record<ThemeMode, string> = {
   default: '#131f31',
   light: '#f4f1ea',
   dark: '#05070c'
 };
-// Mirrors --color-orange per mode from the shared yl-tokens.css (theme.json) — used by things like the
+// Mirrors --md-sys-color-primary per mode from the shared yl-tokens.css (theme.json) — used by things like the
 // generated logo-fallback placeholder that can't read CSS custom properties
 // because they're rendered into a static SVG data URI, not the live DOM.
 const ORANGE_BY_MODE: Record<ThemeMode, string> = {
@@ -61,7 +61,7 @@ export class ThemeService {
     // explicit choice (i.e. nothing saved yet) — once they click the logo,
     // that choice is stored and wins over the system preference from then on.
     window.matchMedia(PREFERS_LIGHT_QUERY).addEventListener('change', (event) => {
-      if (localStorage.getItem(STORAGE_KEY)) return;
+      if (this.readStored()) return;
       this.modeSignal.set(event.matches ? 'light' : 'default');
     });
   }
@@ -70,15 +70,20 @@ export class ThemeService {
     const nextIndex = (CYCLE_ORDER.indexOf(this.modeSignal()) + 1) % CYCLE_ORDER.length;
     const next = CYCLE_ORDER[nextIndex];
     if (this.isBrowser) {
-      localStorage.setItem(STORAGE_KEY, next);
+      try { localStorage.setItem(STORAGE_KEY, next); } catch { /* storage blocked: the choice just isn't remembered */ }
     }
     this.modeSignal.set(next);
+  }
+
+  /** localStorage can throw (storage blocked, some privacy modes); treat that as nothing saved. */
+  private readStored(): string | null {
+    try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
   }
 
   private resolveInitialMode(): ThemeMode {
     if (!this.isBrowser) return 'default';
 
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = this.readStored();
     if ((CYCLE_ORDER as string[]).includes(stored ?? '')) {
       return stored as ThemeMode;
     }
