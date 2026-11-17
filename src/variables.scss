@@ -13,10 +13,8 @@ $SurfaceContainer: var(--md-sys-color-surface-container);
 $SurfaceContainerHigh: var(--md-sys-color-surface-container-high);
 $Outline: var(--md-sys-color-outline);
 $OutlineVariant: var(--md-sys-color-outline-variant);
-// The theme's own colour, for which M3 has no role: the brightest ink (the name card's text). The fallback is the
-// same colour under its old name, for theme versions before the token condensing; drop it with the theme bump that
-// pins a version with --yl-color-emphasis (yl-theme docs/proposal-condense-color-tokens.md, release A).
-$Emphasis: var(--yl-color-emphasis, var(--color-white));
+// The theme's own colour, for which M3 has no role: the brightest ink (the name card's text).
+$Emphasis: var(--yl-color-emphasis);
 
 $ShapeExtraSmall: var(--md-sys-shape-corner-extra-small);
 $ShapeSmall: var(--md-sys-shape-corner-small);

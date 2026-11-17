@@ -52,3 +52,11 @@ shadow, outline, fill, stroke, radius, text-fill and easing of every element
 and its `::before` / `::after` were collected: about 25,000 element styles per
 comparison, 0 differences in either. Unit tests: 197 pass. Not run: the
 Playwright e2e suite and Lighthouse.
+
+## Follow-up: fallbacks removed (2026-11-17)
+
+`theme.json` now pins `v2026-11-17-0225` (#228), the first theme version with
+the condensed tokens, so both names exist in the pinned theme. The two
+fallbacks above are gone: `$Emphasis` is `var(--yl-color-emphasis)` and the
+banner's gradient is `var(--yl-color-name-gradient)`. No source file reads a
+deprecated theme name any more; `--color-card-overlay` is v3's own.
