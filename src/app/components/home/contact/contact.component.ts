@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
+import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { AosDirective } from '../../../directives/aos/aos.directive';
 
 @Component({
@@ -11,4 +12,6 @@ import { AosDirective } from '../../../directives/aos/aos.directive';
 })
 export class ContactComponent {
   analyticsService = inject(AnalyticsService);
+  configService = inject(SiteConfigService);
+  get ui() { return this.configService.ui.contact; }
 }
