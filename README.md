@@ -69,8 +69,8 @@ to an inert placeholder and warns.
 
 - [Bootstrap](https://getbootstrap.com/) 5 and
   [ng-bootstrap](https://ng-bootstrap.github.io/) 21 for layout, nav and dropdowns
-- Material Design 3 color tokens (`--md-sys-color-*`) alongside the site's own
-  `--color-*` palette, in the shared `yl-tokens.css` (fetched from
+- Material Design 3 color roles (`--md-sys-color-*`) plus the theme's own
+  `--yl-color-emphasis` and `--yl-color-name-gradient`, in the shared `yl-tokens.css` (fetched from
   yl-theme per `theme.json` into `src/generated/`, with the logos)
 - Inline SVG icons (`src/app/icons/`): the dozen Font Awesome glyphs the site
   uses, inlined instead of loading the Font Awesome CSS and webfonts
@@ -130,7 +130,7 @@ flowchart TB
     Pin[("theme.json<br/>version + SHA-256")] --> Fetch["scripts/fetch-theme.js<br/>(pre* hooks)"]
     ThemeHost -->|"download"| Fetch
     Fetch -->|"verify, then write"| Generated[("src/generated/yl-tokens.css<br/>git-ignored")]
-    Generated -->|"angular.json styles"| CSS["--color-* and --md-sys-color-*<br/>per [data-theme]"]
+    Generated -->|"angular.json styles"| CSS["--md-sys-color-* and --yl-color-*<br/>per [data-theme]"]
     Theme -->|"sets data-theme"| CSS
     CSS -.->|"var(...)"| Shell
 
