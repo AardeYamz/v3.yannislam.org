@@ -667,6 +667,12 @@
       "viewProject": "Bekijk het project {title}",
       "viewDemo": "Bekijk de demo van {title}"
     },
+    "contact": {
+      "preTitle": "05. What's Next",
+      "title": "Get in touch!",
+      "paragraph": "I will be happy to receive your contact if you want to talk about new opportunities. Write me, and I will reply as soon as I see your message.",
+      "button": "Say Hello"
+    },
     "footer": {
       "designedBy": "Ontwerp door",
       "emailAriaLabel": "E-mail {handle}",
