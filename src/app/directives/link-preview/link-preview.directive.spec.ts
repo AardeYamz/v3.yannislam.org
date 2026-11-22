@@ -5,55 +5,56 @@ import { LinkPreviewDirective } from './link-preview.directive';
 import { LinkPreviewService } from './link-preview.service';
 
 @Component({
-  standalone: true,
-  imports: [LinkPreviewDirective],
-  template: `<a [appLinkPreview]="{ icon: 'fa-github', title: 'Github', url: 'https://github.com/AardeYamz' }">link</a>`,
+    standalone: true,
+    imports: [LinkPreviewDirective],
+    template: `<a [appLinkPreview]="{ icon: 'fa-github', title: 'Github', url: 'https://github.com/AardeYamz' }">link</a>`,
 })
-class HostComponent { }
+class HostComponent {
+}
 
 describe('LinkPreviewDirective', () => {
-  let fixture: ComponentFixture<HostComponent>;
-  let previewService: jasmine.SpyObj<LinkPreviewService>;
+    let fixture: ComponentFixture<HostComponent>;
+    let previewService: { show: ReturnType<typeof vi.fn>; hide: ReturnType<typeof vi.fn> };
 
-  beforeEach(() => {
-    previewService = jasmine.createSpyObj('LinkPreviewService', ['show', 'hide']);
+    beforeEach(() => {
+        previewService = {
+            show: vi.fn().mockName("LinkPreviewService.show"),
+            hide: vi.fn().mockName("LinkPreviewService.hide")
+        };
 
-    TestBed.configureTestingModule({
-      imports: [HostComponent],
-      providers: [{ provide: LinkPreviewService, useValue: previewService }],
+        TestBed.configureTestingModule({
+            imports: [HostComponent],
+            providers: [{ provide: LinkPreviewService, useValue: previewService }],
+        });
+        fixture = TestBed.createComponent(HostComponent);
+        fixture.detectChanges();
     });
-    fixture = TestBed.createComponent(HostComponent);
-    fixture.detectChanges();
-  });
 
-  function element(): HTMLElement {
-    return fixture.nativeElement.querySelector('a');
-  }
+    function element(): HTMLElement {
+        return fixture.nativeElement.querySelector('a');
+    }
 
-  it('shows the preview on mouseenter', () => {
-    element().dispatchEvent(new Event('mouseenter'));
+    it('shows the preview on mouseenter', () => {
+        element().dispatchEvent(new Event('mouseenter'));
 
-    expect(previewService.show).toHaveBeenCalledWith(
-      element(),
-      { icon: 'fa-github', title: 'Github', url: 'https://github.com/AardeYamz' }
-    );
-  });
+        expect(previewService.show).toHaveBeenCalledWith(element(), { icon: 'fa-github', title: 'Github', url: 'https://github.com/AardeYamz' });
+    });
 
-  it('shows the preview on focus', () => {
-    element().dispatchEvent(new Event('focus'));
+    it('shows the preview on focus', () => {
+        element().dispatchEvent(new Event('focus'));
 
-    expect(previewService.show).toHaveBeenCalled();
-  });
+        expect(previewService.show).toHaveBeenCalled();
+    });
 
-  it('hides the preview on mouseleave', () => {
-    element().dispatchEvent(new Event('mouseleave'));
+    it('hides the preview on mouseleave', () => {
+        element().dispatchEvent(new Event('mouseleave'));
 
-    expect(previewService.hide).toHaveBeenCalled();
-  });
+        expect(previewService.hide).toHaveBeenCalled();
+    });
 
-  it('hides the preview on blur', () => {
-    element().dispatchEvent(new Event('blur'));
+    it('hides the preview on blur', () => {
+        element().dispatchEvent(new Event('blur'));
 
-    expect(previewService.hide).toHaveBeenCalled();
-  });
+        expect(previewService.hide).toHaveBeenCalled();
+    });
 });
