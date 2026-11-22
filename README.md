@@ -366,7 +366,7 @@ A newer push to the same PR cancels the older run
 | CodeQL | Push, PR | GitHub default setup (no workflow file) |
 | Vercel Git integration | Push to any branch | Production deploy for `main`, preview deploy for other branches |
 
-Workflows marked *shared template* are short callers of the reusable workflows in [personal-domain-devops](https://github.com/AardeYamz/personal-domain-devops#reusable-workflows-githubworkflowsreusable-yml), pinned by SHA: change the logic there, not here.
+Workflows marked *shared template* are short callers of the reusable workflows in the public [AardeYamz/workflows](https://github.com/AardeYamz/workflows) repo, pinned by SHA: change the logic there, not here.
 
 The Monday jobs are staggered (Dependabot 06:00, Security 06:30, Build & Test
 07:00) so each sees what the one before it produced.

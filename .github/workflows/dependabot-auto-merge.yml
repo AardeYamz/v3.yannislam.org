@@ -1,6 +1,6 @@
 name: Dependabot auto-merge
 
-# Auto-merges the Dependabot PRs that are safe by default, with the shared template in personal-domain-devops:
+# Auto-merges the Dependabot PRs that are safe by default, with the shared workflow in AardeYamz/workflows:
 #   - any patch or minor version bump, of any dependency
 #   - a major bump of a dev-only dependency (it never ships in the built
 #     bundle - see the "testing" group comment in dependabot.yml)
@@ -39,6 +39,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: AardeYamz/personal-domain-devops/.github/workflows/reusable-dependabot-auto-merge.yml@d340094162e5b47e29a3de3318a7af5829d65775 # personal-domain-devops#37
+    uses: AardeYamz/workflows/.github/workflows/dependabot-auto-merge.yml@000181f6b0cab9ecd39b05f483a44309ac58c581 # v1.0.0
     with:
       required-workflow: Build & Test

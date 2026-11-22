@@ -1,7 +1,7 @@
 name: Merge main into PRs
 
-# After every push to main, merges main into each open PR branch that is behind it, using the shared template in
-# personal-domain-devops (see its header: conflict comments, skipped fork, Dependabot and workflow-change merges).
+# After every push to main, merges main into each open PR branch that is behind it, using the shared workflow in
+# AardeYamz/workflows (see its header: conflict comments, skipped fork, Dependabot and workflow-change merges).
 # A push made with GITHUB_TOKEN does not trigger pull_request workflows, so the new head would sit with no checks. The
 # exception is workflow_dispatch, which this token may send and which reports its checks on the branch head (and so on
 # the PR), so the template re-runs Build & Test and Security on each branch it updates. The dispatched run skips
@@ -24,6 +24,6 @@ jobs:
       contents: write       # pushes the merge commit to the PR branch
       pull-requests: write  # comments on a PR that conflicts
       actions: write        # dispatches CI on a branch it just updated
-    uses: AardeYamz/personal-domain-devops/.github/workflows/reusable-sync-prs.yml@d340094162e5b47e29a3de3318a7af5829d65775 # personal-domain-devops#37
+    uses: AardeYamz/workflows/.github/workflows/sync-prs.yml@000181f6b0cab9ecd39b05f483a44309ac58c581 # v1.0.0
     with:
       dispatch-workflows: build-test.yml security.yml
