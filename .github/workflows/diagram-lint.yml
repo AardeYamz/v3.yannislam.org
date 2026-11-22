@@ -1,0 +1,20 @@
+name: Diagram lint
+
+# Lints every mermaid block in the repo's Markdown, and every .d2 file and d2 block, with the shared template in
+# personal-domain-devops. Run locally: see CLAUDE.md.
+on:
+  push:
+    branches: [main]
+    paths: ['**/*.md', '**/*.d2', '.github/workflows/diagram-lint.yml']
+  pull_request:
+    paths: ['**/*.md', '**/*.d2', '.github/workflows/diagram-lint.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagrams:
+    uses: AardeYamz/personal-domain-devops/.github/workflows/reusable-diagram-lint.yml@47da7800eeaa5728efda00b94d9356455987d7eb # personal-domain-devops#37
+    with:
+      d2: true
