@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "env | cut -d= -f1 | grep -i cache; env | cut -d= -f1 | grep -i npm_config; npm ci",
   "buildCommand": "npm run build",
   "outputDirectory": "dist/v3.yannislam.org/browser",
   "headers": [
