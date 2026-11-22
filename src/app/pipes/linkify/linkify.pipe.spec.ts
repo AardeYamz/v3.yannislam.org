@@ -29,7 +29,7 @@ describe('LinkifyPipe', () => {
   it('wraps an embedded http(s) URL in a real anchor tag', () => {
     const html = render('check out https://www.dbtbt.com/ for details');
 
-    expect(html).toContain('<a href="https://www.dbtbt.com/" target="_blank" rel="noopener">https://www.dbtbt.com/</a>');
+    expect(html).toContain('<a href="https://www.dbtbt.com/" target="_blank" rel="noopener noreferrer">https://www.dbtbt.com/</a>');
     expect(html.startsWith('check out ')).toBeTrue();
     expect(html.endsWith(' for details')).toBeTrue();
   });
@@ -37,8 +37,8 @@ describe('LinkifyPipe', () => {
   it('linkifies more than one URL in the same string', () => {
     const html = render('https://a.example/ and https://b.example/');
 
-    expect(html).toContain('<a href="https://a.example/" target="_blank" rel="noopener">https://a.example/</a>');
-    expect(html).toContain('<a href="https://b.example/" target="_blank" rel="noopener">https://b.example/</a>');
+    expect(html).toContain('<a href="https://a.example/" target="_blank" rel="noopener noreferrer">https://a.example/</a>');
+    expect(html).toContain('<a href="https://b.example/" target="_blank" rel="noopener noreferrer">https://b.example/</a>');
   });
 
   it('escapes HTML-significant characters in the surrounding text so they cannot inject markup', () => {
