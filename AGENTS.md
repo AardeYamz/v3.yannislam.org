@@ -11,7 +11,7 @@ The source of [yannislam.org](https://yannislam.org): an Angular 22 portfolio si
 ```bash
 npm install
 npm start                                            # dev server at http://localhost:4200
-npm test -- --watch=false --browsers=ChromeHeadless  # unit tests, single run (as CI does)
+npm test -- --no-watch  # unit tests, single run (as CI does)
 npm run build                                        # prerender every route
 npm run test:e2e                                     # Playwright
 ```
