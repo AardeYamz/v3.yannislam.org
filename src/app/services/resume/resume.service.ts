@@ -32,6 +32,6 @@ export class ResumeService {
       console.warn('[resume] Resume filename not resolved; skipping download.');
       return;
     }
-    window.open(`${window.location.origin}/assets/resume/${encodeURIComponent(filename)}`, "_blank");
+    window.open(`${window.location.origin}/assets/resume/${encodeURIComponent(filename)}`, "_blank", "noopener");
   }
 }
