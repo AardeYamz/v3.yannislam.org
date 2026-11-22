@@ -57,17 +57,13 @@
     "@lhci/cli": "^0.16.1",
     "@playwright/test": "^1.65.1",
     "@types/express": "^5.0.1",
-    "@types/jasmine": "~7.0.0",
     "@types/node": "^26.6.6",
+    "@vitest/browser-playwright": "^5.1.1",
+    "@vitest/coverage-v8": "^5.1.1",
     "http-server": "^14.1.1",
     "istanbul-lib-instrument": "^6.0.3",
-    "jasmine-core": "~7.0.2",
-    "karma": "~6.4.4",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.1",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.3.0",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "^5.1.1"
   },
   "overrides": {
     "tmp": "^0.2.6",
