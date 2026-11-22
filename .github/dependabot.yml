@@ -43,16 +43,14 @@ updates:
           - minor
           - patch
 
-      # Karma/Jasmine/Playwright churn often and never ship in the bundle,
+      # Vitest/Playwright churn often and never ship in the bundle,
       # so batching them keeps the PR count down without extra risk.
       testing:
         patterns:
           - "@playwright/test"
           - "@lhci/cli"
-          - "karma"
-          - "karma-*"
-          - "jasmine-core"
-          - "@types/jasmine"
+          - "vitest"
+          - "@vitest/*"
           - "istanbul-lib-instrument"
           - "http-server"
         update-types:
