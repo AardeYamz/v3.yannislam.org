@@ -1,3 +1,4 @@
+import type { MockedObject } from "vitest";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule } from '@angular/common';
 
@@ -7,40 +8,42 @@ import { SiteConfigService } from 'src/app/services/site-config/site-config.serv
 import { AosDirective } from 'src/app/directives/aos/aos.directive';
 
 describe('ContactComponent', () => {
-  let component: ContactComponent;
-  let fixture: ComponentFixture<ContactComponent>;
-  let analyticsService: jasmine.SpyObj<AnalyticsService>;
+    let component: ContactComponent;
+    let fixture: ComponentFixture<ContactComponent>;
+    let analyticsService: MockedObject<AnalyticsService>;
 
-  beforeEach(() => {
-    const analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['sendAnalyticEvent']);
+    beforeEach(() => {
+        const analyticsServiceSpy = {
+            sendAnalyticEvent: vi.fn().mockName("AnalyticsService.sendAnalyticEvent")
+        };
 
-    TestBed.configureTestingModule({
-    imports: [CommonModule, AosDirective, ContactComponent],
-    providers: [
-        { provide: AnalyticsService, useValue: analyticsServiceSpy }
-    ]
-});
+        TestBed.configureTestingModule({
+            imports: [CommonModule, AosDirective, ContactComponent],
+            providers: [
+                { provide: AnalyticsService, useValue: analyticsServiceSpy }
+            ]
+        });
 
-    analyticsService = TestBed.inject(AnalyticsService) as jasmine.SpyObj<AnalyticsService>;
-    fixture = TestBed.createComponent(ContactComponent);
-    component = fixture.componentInstance;
-  });
+        analyticsService = TestBed.inject(AnalyticsService) as MockedObject<AnalyticsService>;
+        fixture = TestBed.createComponent(ContactComponent);
+        component = fixture.componentInstance;
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 
-  it('should have analytics service', () => {
-    expect(component.analyticsService).toBeDefined();
-  });
+    it('should have analytics service', () => {
+        expect(component.analyticsService).toBeDefined();
+    });
 
-  it('renders the configured contact copy', () => {
-    fixture.detectChanges();
-    const ui = TestBed.inject(SiteConfigService).ui.contact;
-    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
-    for (const value of [ui.preTitle, ui.title, ui.paragraph, ui.button]) {
-      expect(text).toContain(value);
-    }
-  });
+    it('renders the configured contact copy', () => {
+        fixture.detectChanges();
+        const ui = TestBed.inject(SiteConfigService).ui.contact;
+        const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+        for (const value of [ui.preTitle, ui.title, ui.paragraph, ui.button]) {
+            expect(text).toContain(value);
+        }
+    });
 
 });
