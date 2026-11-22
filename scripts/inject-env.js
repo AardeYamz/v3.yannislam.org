@@ -66,10 +66,16 @@ function resolveValue({ env, pattern, hint, placeholder }) {
   const source = names.find((name) => process.env[name]);
   const raw = (process.env[source] || '').trim().replace(/^["']|["']$/g, '');
 
-  if (!source || !raw) {
+  if (!source) {
     return {
       value: placeholder,
       problem: `${names.join(' and ')} ${names.length > 1 ? 'are' : 'is'} not set`,
+    };
+  }
+  if (!raw) {
+    return {
+      value: placeholder,
+      problem: `${source} is set but blank`,
     };
   }
   if (!pattern.test(raw)) {
