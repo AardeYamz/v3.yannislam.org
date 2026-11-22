@@ -21,7 +21,7 @@ export class LinkifyPipe implements PipeTransform {
     const parts = (text ?? '').split(URL_PATTERN);
     const html = parts
       .map((part, i) => i % 2 === 1
-        ? `<a href="${escapeHtml(part)}" target="_blank" rel="noopener">${escapeHtml(part)}</a>`
+        ? `<a href="${escapeHtml(part)}" target="_blank" rel="noopener noreferrer">${escapeHtml(part)}</a>`
         : escapeHtml(part))
       .join('');
     return this.sanitizer.bypassSecurityTrustHtml(html);
