@@ -39,10 +39,10 @@ describe('ScrollService', () => {
 
         window.dispatchEvent(new Event('scroll'));
 
-        requestAnimationFrame(() => {
-            expect(service.y()).toBe(250);
-            ;
-        });
+        await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+        await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+
+        expect(service.y()).toBe(250);
     });
 
     it('recomputes maxScroll on a window resize event', async () => {
@@ -57,9 +57,8 @@ describe('ScrollService', () => {
 
         // recomputeMaxScroll runs synchronously off the resize event, but give
         // it a tick so this test isn't coupled to that being true forever.
-        setTimeout(() => {
-            expect(service.maxScroll()).toBe(1200);
-            ;
-        });
+        await new Promise<void>(resolve => setTimeout(resolve));
+
+        expect(service.maxScroll()).toBe(1200);
     });
 });
