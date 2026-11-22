@@ -14,9 +14,9 @@ Lineage: forked from [Lê Thanh Tuấn's Portfolio](https://github.com/lethanhtu
 
 ## Architecture
 
-Standalone components, signals and zoneless change detection; every route is prerendered by `@angular/ssr`. Routes: `/` (eager), `/projects` and `/projects/highschool`, `/aardeyamz` (lazy). Config comes from `config.json` through `SiteConfigService`; the theme comes from the [yl-theme](https://github.com/AardeYamz/yl-theme) repo, fetched at the pinned version in `theme.json`.
+Standalone components, signals and zoneless change detection; every route is prerendered by `@angular/ssr`. Routes: `/` (eager), `/projects` and `/projects/highschool`, `/aardeyamz` (lazy). Config comes from `config.json` through `SiteConfigService`; the colour tokens, logos and favicons come from the yl-theme repo, fetched at the version pinned in `theme.json`.
 
-Full architecture, code structure and build hooks: [docs/reference.md](docs/reference.md#architecture).
+Where it lives: bootstrap in `src/main.ts` and `src/app/app.config.ts`; routes in `src/app/app.routes.ts` (prerender list `app.routes.server.ts`); components under `src/app/components/`; theme download in `scripts/fetch-theme.js`; response headers in `vercel.json`. Full architecture, code structure and build hooks: [docs/reference.md](docs/reference.md#architecture).
 
 ```mermaid
 flowchart TB
@@ -42,17 +42,19 @@ flowchart LR
     CI & Sec --> Gate{"All green?"}
     Gate -->|"yes"| Merge["Merge to main"]
     Merge --> Vercel["Vercel build + deploy"] --> Edge["yannislam.org"]
-    Visitor["Visitor"] --> CF["Cloudflare DNS + Email"] --> Edge
+    Vercel -->|"deployment_status"| Release["Release: tag + notes"]
+    Visitor["Visitor"] --> CF["Cloudflare DNS"] --> Edge
 ```
 
 ## Related repos
 
+These three are private, so their links work only for the owner.
+
 | Repo | Relationship |
 |---|---|
-| [yl-theme](https://github.com/AardeYamz/yl-theme) | Supplies `yl-tokens.css` and the logos, pinned in `theme.json` |
-| [personal-dns](https://github.com/AardeYamz/personal-dns) | DNS, redirects and email routing for `yannislam.org` |
-| [workflows](https://github.com/AardeYamz/workflows) | Shared CI: diagram lint, zizmor, PR sync, Dependabot auto-merge |
-| [yannislam.org](https://github.com/AardeYamz/yannislam.org), [v3.yannislam.org-gatsby](https://github.com/AardeYamz/v3.yannislam.org-gatsby) | Earlier versions of the site |
+| [yl-theme](https://github.com/AardeYamz/yl-theme) | Serves `yl-tokens.css`, the logos, `logo-geometry.json` and the favicons from `theme.yannislam.org`; the version and SHA-256 are pinned in `theme.json` |
+| [personal-dns](https://github.com/AardeYamz/personal-dns) | Cloudflare DNS for `yannislam.org` (the Vercel records, the `theme` and `prs` hosts, email MX), plus redirects |
+| [yannislam.org](https://github.com/AardeYamz/yannislam.org) | The earlier Gatsby site; the `projects` content in `config.json` was ported from it |
 
 ## Getting started
 
@@ -62,7 +64,8 @@ Node.js 24 or 26 (CI runs both).
 npm install
 npm start            # dev server at http://localhost:4200
 npm run build        # prerender every route + postbuild env substitution
-npm test             # Vitest unit tests
+npm test             # Vitest unit tests (watch; add -- --no-watch for one run)
+npm run test:scripts # node --test for scripts/*.test.js
 npm run test:e2e     # Playwright
 npm run test:perf    # Lighthouse CI
 ```
