@@ -86,6 +86,19 @@ describe('LinkPreviewService', () => {
     expect(frame().src).toContain('voya.com');
   });
 
+  it('starts only one iframe load when show() is called repeatedly within the hover-intent delay', () => {
+    jasmine.clock().install();
+    const data = { icon: 'fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL };
+    service.show(host, data);
+    service.show(host, data);
+    service.show(host, data);
+    const attempt = spyOn(service as any, 'attemptIframe').and.callThrough();
+
+    jasmine.clock().tick(HOVER_INTENT_MS);
+
+    expect(attempt).toHaveBeenCalledTimes(1);
+  });
+
   it('cancels the hover-intent timer if hide() is called before it elapses', () => {
     jasmine.clock().install();
     service.show(host, { icon: 'fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
