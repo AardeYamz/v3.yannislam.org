@@ -1,11 +1,11 @@
 name: PR previews
 
-# Publishes every open pull request at https://prs.yannislam.org/pr-<number>/ (e.g. /pr-12/), the way the Cloudflare repos do.
+# Publishes every open pull request at https://v3.yannislam.org/pr-<number>/ (e.g. /pr-12/), the way the Cloudflare repos do.
 # Vercel's own per-branch preview URLs stay as they are; this adds one stable, path-based host for all of them.
 #
 # Vercel aliases whole hostnames, not paths, so the previews live in ONE static Vercel project (VERCEL_PREVIEWS_PROJECT_ID, not
 # connected to Git). Each run builds every open PR with `--base-href /pr-<n>/`, stages them side by side and deploys the lot to
-# production of that project, which owns the prs.yannislam.org domain. A deploy replaces the previous one, so a PR that is
+# production of that project, which owns the v3.yannislam.org domain. A deploy replaces the previous one, so a PR that is
 # closed or merged drops out on the next run; there is nothing to clean up.
 on:
   # pull_request only, on purpose. A push or workflow_dispatch run can write the default branch's Actions cache, and this workflow
@@ -149,7 +149,7 @@ jobs:
           JSON
           find site -maxdepth 2 | sort | head -40
 
-      # Production of the previews project is what prs.yannislam.org points at. The CLI reads the org and project from the env above.
+      # Production of the previews project is what v3.yannislam.org points at. The CLI reads the org and project from the env above.
       - name: Deploy
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -173,5 +173,5 @@ jobs:
             else gh pr comment "$n" --body "$marker
           $body" </dev/null; fi
           }
-          while read -r n sha; do post "$n" "**Preview:** https://prs.yannisl.am/pr-$n/ (deployed \`$sha\`)"; done < "$RUNNER_TEMP/staged.txt"
+          while read -r n sha; do post "$n" "**Preview:** https://v3.yannisl.am/pr-$n/ (deployed \`$sha\`)"; done < "$RUNNER_TEMP/staged.txt"
           while read -r n sha; do post "$n" "**No preview available:** \`$sha\` did not build. [Run]($RUN)"; done < "$RUNNER_TEMP/skipped.txt"
