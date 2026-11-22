@@ -6,6 +6,7 @@ import { wasServerPrerendered } from 'src/app/utils/hydration';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from 'src/app/components/general/header/header.component';
 import { FooterComponent } from 'src/app/components/general/footer/footer.component';
+import { SeoService } from 'src/app/services/seo/seo.service';
 import { LoadingScreenComponent } from 'src/app/components/general/loading-screen/loading-screen.component';
 
 @Component({
@@ -17,6 +18,7 @@ import { LoadingScreenComponent } from 'src/app/components/general/loading-scree
 })
 export class AppComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
+  private seo = inject(SeoService);
 
 
   // Header is kept out of the DOM (see app.component.html's `@if`) until the
@@ -51,6 +53,10 @@ export class AppComponent implements OnInit {
     // do not touch them here. This used to call Title/Meta service setters, but
     // since app.routes.server.ts prerenders this component at build time, that
     // overwrote the real tags with weaker, duplicate ones in every static page.
+
+    // Canonical / og:url / twitter:url are the one exception: they differ per
+    // route, so SeoService updates just their values (see seo.service.ts).
+    this.seo.init();
 
     // Vercel Web Analytics + Speed Insights, additive to the existing
     // gtag.js-based AnalyticsService (see analytics.service.ts). Both
