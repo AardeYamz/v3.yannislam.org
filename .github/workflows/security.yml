@@ -36,5 +36,6 @@ jobs:
   zizmor:
     permissions:
       contents: read
-      security-events: write
-    uses: AardeYamz/personal-domain-devops/.github/workflows/reusable-zizmor.yml@47da7800eeaa5728efda00b94d9356455987d7eb # personal-domain-devops#37
+      security-events: write   # uploads the SARIF to code scanning
+      actions: read            # lets the upload read this run's metadata
+    uses: AardeYamz/personal-domain-devops/.github/workflows/reusable-zizmor.yml@d340094162e5b47e29a3de3318a7af5829d65775 # personal-domain-devops#37

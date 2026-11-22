@@ -24,6 +24,6 @@ jobs:
       contents: write       # pushes the merge commit to the PR branch
       pull-requests: write  # comments on a PR that conflicts
       actions: write        # dispatches CI on a branch it just updated
-    uses: AardeYamz/personal-domain-devops/.github/workflows/reusable-sync-prs.yml@47da7800eeaa5728efda00b94d9356455987d7eb # personal-domain-devops#37
+    uses: AardeYamz/personal-domain-devops/.github/workflows/reusable-sync-prs.yml@d340094162e5b47e29a3de3318a7af5829d65775 # personal-domain-devops#37
     with:
       dispatch-workflows: build-test.yml security.yml

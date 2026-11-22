@@ -15,6 +15,6 @@ permissions:
 
 jobs:
   diagrams:
-    uses: AardeYamz/personal-domain-devops/.github/workflows/reusable-diagram-lint.yml@47da7800eeaa5728efda00b94d9356455987d7eb # personal-domain-devops#37
+    uses: AardeYamz/personal-domain-devops/.github/workflows/reusable-diagram-lint.yml@d340094162e5b47e29a3de3318a7af5829d65775 # personal-domain-devops#37
     with:
       d2: true
