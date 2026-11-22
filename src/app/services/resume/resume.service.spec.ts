@@ -17,7 +17,8 @@ describe('ResumeService', () => {
 
       expect(window.open).toHaveBeenCalledWith(
         `${window.location.origin}/assets/resume/${encodeURIComponent(resumeManifest.filename as string)}`,
-        '_blank'
+        '_blank',
+        'noopener'
       );
     });
 
