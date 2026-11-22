@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { BannerComponent } from './banner.component';
 import { FloatingLogosComponent } from '../floating-logos/floating-logos.component';
@@ -36,7 +35,6 @@ describe('BannerComponent', () => {
     TestBed.configureTestingModule({
     imports: [BannerComponent, FloatingLogosComponent],
     providers: [
-        provideNoopAnimations(),
         { provide: AnalyticsService, useValue: analyticsServiceSpy },
         { provide: ResumeService, useValue: resumeServiceSpy },
         { provide: SiteConfigService, useValue: configServiceSpy },

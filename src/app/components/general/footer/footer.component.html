@@ -1,5 +1,5 @@
 <footer>
-  <div [@animateFooter] class="footer-sides" [class.footer-sides-collapsed]="atBottom()">
+  <div appFadeStagger="translateY(100%)" class="footer-sides" [class.footer-sides-collapsed]="atBottom()">
     <ul class="footer-left-bar d-none d-md-block">
       @for (social of socials ; track social; let i = $index) {
         <li>
