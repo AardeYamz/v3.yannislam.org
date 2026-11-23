@@ -355,16 +355,19 @@ A newer push to the same PR cancels the older run
 | Workflow | Trigger | What it does |
 |---|---|---|
 | [Build & Test](.github/workflows/build-test.yml) | PR to `main`/`master`/`develop`; push to `main`; Mondays 07:00 UTC; manual | The jobs above |
-| [Security](.github/workflows/security.yml) | Same, Mondays 06:30 UTC | Lints the workflow files with zizmor |
+| [Security](.github/workflows/security.yml) | Same, Mondays 06:30 UTC | Lints the workflow files with zizmor (shared template) |
+| [Diagram lint](.github/workflows/diagram-lint.yml) | PR or push to `main` touching `*.md` or `*.d2`; manual | Lints mermaid blocks, `.d2` files and d2 blocks with the shared linters (shared template) |
 | [Release](.github/workflows/release.yml) | Vercel `deployment_status` | On a successful Production deploy of `main`, tags `vYYYYMMDD-HHMMSS` and creates a release for that commit |
-| [Merge main into PRs](.github/workflows/sync-prs.yml) | Push to `main`; manual | Merges `main` into each open PR that is behind; comments once on conflicts; skips fork and Dependabot PRs |
+| [Merge main into PRs](.github/workflows/sync-prs.yml) | Push to `main`; manual | Merges `main` into each open PR that is behind; comments once on conflicts; skips fork and Dependabot PRs, and merges that would change `.github/workflows/` (shared template) |
 | [PR previews](.github/workflows/pr-previews.yml) | PR open/sync/reopen/close | Builds the PR (and any open PR nobody has built yet) with `--base-href /pr-N/`, kept as artifact `pr-N-<sha>` for reuse |
 | [PR previews deploy](.github/workflows/pr-previews-deploy.yml) | Dispatched by PR previews; manual | Publishes every open same-repo PR's newest build together at `v3.yannislam.org/pr-N/` (separate static Vercel project), one deploy at a time, and comments the link |
-| [Dependabot auto-merge](.github/workflows/dependabot-auto-merge.yml) | `pull_request_target` | Waits for checks, then merges Dependabot patch/minor bumps and dev-only majors; production majors wait for review |
+| [Dependabot auto-merge](.github/workflows/dependabot-auto-merge.yml) | `pull_request_target` | Waits for checks, then merges Dependabot patch/minor bumps and dev-only majors; production majors wait for review (shared template) |
 | [Vercel build warnings](.github/workflows/vercel-build-warnings.yml) | Vercel `deployment_status` | Fetches a preview deploy's Vercel build log and keeps its warning/error lines in a sticky PR comment (needs `VERCEL_TOKEN`) |
 | [Dependabot](.github/dependabot.yml) | Mondays 06:00 UTC | Weekly `npm` and `github-actions` updates |
 | CodeQL | Push, PR | GitHub default setup (no workflow file) |
 | Vercel Git integration | Push to any branch | Production deploy for `main`, preview deploy for other branches |
+
+Workflows marked *shared template* are short callers of the reusable workflows in the public [AardeYamz/workflows](https://github.com/AardeYamz/workflows) repo, pinned by SHA: change the logic there, not here.
 
 The Monday jobs are staggered (Dependabot 06:00, Security 06:30, Build & Test
 07:00) so each sees what the one before it produced.
