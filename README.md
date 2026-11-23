@@ -85,7 +85,9 @@ back to an inert placeholder and warns. See [Build hooks](#build-hooks).
 - [anime.js](https://animejs.com) 4 for the boot-time logo animation
 - Hand-written pieces: a signal-driven typewriter in the banner (replaced
   `ngx-typed-js`), a `requestAnimationFrame` loop of falling logo marks behind
-  the banner, a scroll-reveal directive (`AosDirective`), hover link previews
+  the banner, a scroll-reveal directive (`AosDirective`), staggered entrance
+  animations on the Web Animations API (`FadeStaggerDirective`, replacing the
+  deprecated `@angular/animations`), hover link previews
   (`link-preview`), and a `LogoFallbackDirective` that draws a placeholder logo
   from an organization's name
 
@@ -201,13 +203,12 @@ scripts/
 └── *.test.js                     # node --test (npm run test:scripts)
 src/
 ├── app/
-│   ├── animations/           # Shared Angular animation triggers (fade-stagger)
 │   ├── components/
 │   │   ├── general/          # header, footer, loading-screen
 │   │   ├── home/             # banner (+ typewriter), floating-logos, logo-loop, about,
 │   │   │                     # education, workhistory, contact, projects, projects-highschool
 │   │   └── other/aardeyamz/  # /aardeyamz page (+ namecard)
-│   ├── directives/           # aos, link-preview, logo-fallback
+│   ├── directives/           # aos, fade-stagger, link-preview, logo-fallback
 │   ├── icons/                # Inline SVG icon registry + <app-icon>
 │   ├── pipes/linkify/        # Turns plain-text URLs into links
 │   ├── services/             # site-config, theme, analytics, resume, scroll, seo

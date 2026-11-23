@@ -55,3 +55,7 @@ deploy workflows, Diagram lint, and Workflow syntax lint (actionlint), which
 was missing from `main`'s table. `workflows` is back in Related repos, since
 those callers now use it. The build hooks list now includes `fetch-theme.js`
 and says both pre-hooks also run before `test:e2e`.
+
+After `main` dropped `@angular/animations` (#237), the code structure loses
+`src/app/animations/`, `directives/` lists `fade-stagger`, and the stack names
+`FadeStaggerDirective`.
