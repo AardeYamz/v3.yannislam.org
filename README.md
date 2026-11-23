@@ -45,7 +45,7 @@ CLI is a dev dependency, so `npx ng …` works without a global install.
 npm install
 npm start            # dev server at http://localhost:4200, reloads on save
 npm run build        # production build: prerender every route + postbuild env substitution
-npm test             # Karma + Jasmine unit tests (watch mode)
+npm test             # Vitest unit tests (watch mode)
 npm run test:e2e     # Playwright end-to-end tests
 npm run test:perf    # Lighthouse CI (mobile preset; test:perf:desktop for desktop)
 ```
@@ -254,17 +254,16 @@ edits on save.
 
 ## Testing
 
-### Unit tests (Karma + Jasmine)
+### Unit tests (Vitest)
 
 ```bash
 npm test                                             # watch mode
-npm test -- --watch=false --browsers=ChromeHeadless  # single run, as CI does
-npm test -- --watch=false --code-coverage            # with coverage
+npm test -- --no-watch                               # single run, as CI does
+npm test -- --no-watch --coverage                    # with coverage
 ng test --include='**/header.component.spec.ts'      # one spec
 ```
 
-Karma needs Chrome or Chromium. If it isn't found, point `CHROME_BIN` at a
-binary, e.g. `CHROME_BIN=/opt/pw-browsers/chromium`. CI uploads coverage from
+Vitest runs in Playwright's Chromium (`npx playwright install chromium`). CI uploads coverage from
 the Node 24 leg to [Codecov](https://codecov.io).
 
 ### End-to-end tests (Playwright)
@@ -342,7 +341,7 @@ flowchart TB
 
 | Job | Runs on | Needs | What it does |
 |---|---|---|---|
-| `unit-tests` | Node 24.x and 26.x | | `npm ci`, then Karma in `ChromeHeadless` with coverage; uploads to Codecov from the 24.x leg |
+| `unit-tests` | Node 24.x and 26.x | | `npm ci`, then Vitest in Playwright Chromium with coverage; uploads to Codecov from the 24.x leg |
 | `build` | Node 24.x | | `npm run build`, prerendering every route; uploads the output as an artifact |
 | `lighthouse` | `mobile`, `desktop` | `build` | Lighthouse CI against the build artifact |
 | `e2e` | 2 shards, `fail-fast: false` | `build` | Playwright against the build artifact (browsers cached on `package-lock.json`). PRs run Chromium and a mobile (Pixel 7) context and skip `@external`; pushes to `main` and the Monday run add Firefox and WebKit |
@@ -359,7 +358,7 @@ A newer push to the same PR cancels the older run
 | [Security](.github/workflows/security.yml) | Same, Mondays 06:30 UTC | Lints the workflow files with zizmor |
 | [Release](.github/workflows/release.yml) | Vercel `deployment_status` | On a successful Production deploy of `main`, tags `vYYYYMMDD-HHMMSS` and creates a release for that commit |
 | [Merge main into PRs](.github/workflows/sync-prs.yml) | Push to `main`; manual | Merges `main` into each open PR that is behind; comments once on conflicts; skips fork and Dependabot PRs |
-| [PR previews](.github/workflows/pr-previews.yml) | PR open/sync/reopen/close | Builds every open same-repo PR with `--base-href /pr-N/` and publishes them together at `prs.yannislam.org/pr-N/` (separate static Vercel project), commenting the link |
+| [PR previews](.github/workflows/pr-previews.yml) | PR open/sync/reopen/close | Builds every open same-repo PR with `--base-href /pr-N/` and publishes them together at `v3.yannislam.org/pr-N/` (separate static Vercel project), commenting the link |
 | [Dependabot auto-merge](.github/workflows/dependabot-auto-merge.yml) | `pull_request_target` | Waits for checks, then merges Dependabot patch/minor bumps and dev-only majors; production majors wait for review |
 | [Vercel build warnings](.github/workflows/vercel-build-warnings.yml) | Vercel `deployment_status` | Fetches a preview deploy's Vercel build log and keeps its warning/error lines in a sticky PR comment (needs `VERCEL_TOKEN`) |
 | [Dependabot](.github/dependabot.yml) | Mondays 06:00 UTC | Weekly `npm` and `github-actions` updates |
