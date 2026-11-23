@@ -71,8 +71,9 @@ Behaviour: unchanged (the site always ends at every PR's head; the artifacts are
 
 ### Step 2: one deployer, debounced, outside the PR checks
 
-Move the `deploy` job into a new workflow, `pr-previews-deploy.yml`, triggered by
-`workflow_run: { workflows: [PR previews], types: [completed] }`, with:
+Move the `deploy` job into a new workflow, `pr-previews-deploy.yml`, on `workflow_dispatch`, and replace the job in
+`pr-previews.yml` with one that runs `gh workflow run pr-previews-deploy.yml --ref main` (a `GITHUB_TOKEN` may start a
+`workflow_dispatch` run; the dispatch takes no inputs). The new workflow has:
 
 ```yaml
 concurrency:
@@ -85,19 +86,20 @@ GitHub keeps one running and at most one pending run per group and drops older p
 replaces the "Wait for earlier deploys" polling loop, which exists only because runs could deploy out of order.
 
 - The deploy re-lists open PRs itself (not from the triggering run), then uses Step 1's lookup to find each head's
-  artifact. If a head's build is still running, publish that PR's newest earlier artifact; its own run's completion
-  triggers another deploy. If the head's run failed, post "No preview available" as today.
-- `workflow_run` runs from `main`'s copy of the file with secrets, in `main`'s cache scope. It must not check out PR
+  artifact. If a head's build is still running, publish that PR's newest earlier artifact; its own run's dispatch
+  triggers another deploy. If the head's newest build job failed, post "No preview available" as today.
+- The dispatched run uses `main`'s copy of the file, with secrets, in `main`'s cache scope. It must not check out PR
   code or use `actions/cache` / `setup-node` caching (it needs neither: it only unzips files and calls the Vercel CLI).
 - A superseded pending deploy is cancelled in this workflow, which is not attached to any PR, so no PR shows a cancelled
   check (the reason [#242](https://github.com/AardeYamz/v3.yannislam.org/pull/242) split concurrency per PR).
 - `pr-previews.yml` keeps its per-PR concurrency group and loses `pull-requests: write` and `VERCEL_*`.
+- Not `workflow_run`: it would do the same, but zizmor flags it (`dangerous-triggers`) and fails the Security check.
 
 Check before merging: whether branch protection lists "PR previews / deploy" as a required check. If it does, drop it
 there, since the job leaves that workflow.
 
-Behaviour: the same site and comments. The only visible difference is that the "deploy" job is no longer among a PR's
-checks; it appears under Actions → PR previews deploy instead.
+Behaviour: the same site and comments. The only visible difference is that a PR's "deploy" check now only dispatches; the
+deploy itself appears under Actions → PR previews deploy.
 
 ### Step 3: let `v3-prs` skip Vercel's build step
 

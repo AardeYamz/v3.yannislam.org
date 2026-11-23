@@ -6,8 +6,8 @@ name: PR previews
 # Vercel aliases whole hostnames, not paths, so the previews live in ONE static Vercel project (VERCEL_PREVIEWS_PROJECT_ID, not
 # connected to Git) and every deploy publishes all open PRs together. A build depends only on the PR number (its base href) and
 # the commit, so each one is kept as artifact pr-<n>-<sha> and reused: a run builds only the PR that triggered it, plus any open
-# PR whose head nobody has built or is building. The deploy itself is in pr-previews-deploy.yml, which runs when this workflow
-# completes (workflow_run), one at a time, so a burst of runs ends in one or two deploys. See docs/todo/pr-preview-build-dedup.md.
+# PR whose head nobody has built or is building. The deploy itself is in pr-previews-deploy.yml, which the last job here
+# dispatches on main; it runs one at a time, so a burst of runs ends in one or two deploys. See docs/todo/pr-preview-build-dedup.md.
 on:
   # pull_request only, on purpose. A push or workflow_dispatch run can write the default branch's Actions cache, and this workflow
   # builds other people's PR code, so those triggers would let a PR poison what main's own builds restore (CodeQL:
@@ -110,3 +110,26 @@ jobs:
           path: dist/v3.yannislam.org/browser
           if-no-files-found: error
           retention-days: 14
+
+  # Starts the deploy once this run's builds are done, including when some failed (those PRs get a "no preview" note) and when
+  # nothing needed building (a closed PR drops out). Runs no PR code. Fork and Dependabot runs have a read-only token and
+  # cannot dispatch; the next run of anyone else publishes their state.
+  deploy:
+    needs: [list, build]
+    if: ${{ !cancelled() && needs.list.result == 'success' && needs.build.result != 'cancelled' }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    permissions:
+      contents: read   # checks that pr-previews-deploy.yml is on main
+      actions: write   # dispatches it
+    steps:
+      - name: Dispatch the deploy on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          # Only until pr-previews-deploy.yml is on main (its first PR): a dispatch needs the file on the default branch.
+          if ! gh api "repos/$GH_REPO/contents/.github/workflows/pr-previews-deploy.yml?ref=main" --silent 2>/dev/null; then
+            echo "::notice::pr-previews-deploy.yml is not on main yet; nothing to dispatch."; exit 0
+          fi
+          gh workflow run pr-previews-deploy.yml --ref main
