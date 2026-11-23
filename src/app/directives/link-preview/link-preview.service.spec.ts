@@ -86,6 +86,19 @@ describe('LinkPreviewService', () => {
         expect(frame().src).toContain('voya.com');
     });
 
+    it('starts only one iframe load when show() is called repeatedly within the hover-intent delay', () => {
+        vi.useFakeTimers();
+        const data = { icon: 'fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL };
+        service.show(host, data);
+        service.show(host, data);
+        service.show(host, data);
+        const attempt = vi.spyOn(service as any, 'attemptIframe');
+
+        vi.advanceTimersByTime(HOVER_INTENT_MS);
+
+        expect(attempt).toHaveBeenCalledTimes(1);
+    });
+
     it('cancels the hover-intent timer if hide() is called before it elapses', () => {
         vi.useFakeTimers();
         service.show(host, { icon: 'fa-up-right-from-square', title: 'Voya', url: UNBLOCKED_URL });
