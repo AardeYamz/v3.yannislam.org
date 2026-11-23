@@ -29,25 +29,13 @@ permissions:
   contents: read
 
 jobs:
-  # Lints the workflow files themselves — template injection,
-  # credential persistence, overscoped tokens, unpinned actions, cache
-  # poisoning, impostor commits. Catches regressions in §3.1-3.4 of
-  # docs/todo/github-actions-speed-and-hardening.md automatically instead of
-  # relying on the next manual audit.
+  # Lints the workflow files themselves (template injection, credential persistence, overscoped tokens, unpinned
+  # actions, cache poisoning, impostor commits) with the shared workflow in AardeYamz/workflows. Catches regressions
+  # in §3.1-3.4 of docs/todo/github-actions-speed-and-hardening.md automatically instead of relying on the next manual
+  # audit.
   zizmor:
-    name: Lint workflows (zizmor)
-    runs-on: ubuntu-26.04
-    timeout-minutes: 5
-
     permissions:
       contents: read
-      security-events: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Run zizmor
-        uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
+      security-events: write   # uploads the SARIF to code scanning
+      actions: read            # lets the upload read this run's metadata
+    uses: AardeYamz/workflows/.github/workflows/zizmor.yml@000181f6b0cab9ecd39b05f483a44309ac58c581 # v1.0.0
