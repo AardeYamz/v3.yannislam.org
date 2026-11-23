@@ -1,0 +1,11 @@
+# Read by actionlint (.github/workflows/actionlint.yml).
+self-hosted-runner:
+  # The templates default to ubuntu-26.04, which actionlint's built-in label list does not know yet.
+  labels:
+    - ubuntu-26.04
+paths:
+  .github/workflows/**/*.yml:
+    ignore:
+      # shellcheck info-level style notes (single-quoted literals, unquoted word lists) are deliberate in this repo's scripts;
+      # warnings and errors still fail.
+      - 'SC[0-9]+:info:'
