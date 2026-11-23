@@ -28,6 +28,6 @@ Verify a change with `npm test`, `npm run build` and `npm run test:e2e`.
 - A new third-party script, frame, image host or connection must be added to the CSP in `vercel.json`.
 - Never put a real Google Analytics measurement ID in the repo as a fallback.
 - Commit a new resume PDF together with the regenerated `src/assets/resume-manifest.json`.
-- Update `README.md` and `CLAUDE.md` in the same PR when a change affects commands, architecture or conventions. Substantial changes get a write-up in `docs/changes/` (naming rule in `CLAUDE.md`).
+- Update `README.md`, `docs/reference.md` and `CLAUDE.md` in the same PR when a change affects commands, architecture or conventions. Substantial changes get a write-up in `docs/changes/` (naming rule in `CLAUDE.md`).
 - Keep the long explanatory comments in the code, and update them when the behaviour changes.
 - Work in a separate git worktree off `origin/main`, merge `main` in before pushing, and keep PRs small. Fill in the PR template.

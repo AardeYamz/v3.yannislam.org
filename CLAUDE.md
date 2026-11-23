@@ -138,7 +138,7 @@ Docs live under `docs/`; [`docs/README.md`](docs/README.md) indexes them.
   and audits (`<topic>-YYYY-MM-DD.md`).
 
 When a change affects commands, architecture or conventions, update
-`docs/reference.md` (and `README.md` if the overview changes) and this file in the same PR.
+`README.md`, `docs/reference.md` and this file in the same PR.
 
 ### Naming rule for `docs/changes/`
 

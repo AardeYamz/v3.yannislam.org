@@ -46,6 +46,7 @@ npm install
 npm start            # dev server at http://localhost:4200, reloads on save
 npm run build        # production build: prerender every route + postbuild env substitution
 npm test             # Vitest unit tests (watch mode)
+npm run test:scripts # node --test for scripts/*.test.js
 npm run test:e2e     # Playwright end-to-end tests
 npm run test:perf    # Lighthouse CI (mobile preset; test:perf:desktop for desktop)
 ```
@@ -116,13 +117,13 @@ flowchart TB
     Outlet -->|"'projects', 'projects/highschool' (lazy)"| Projects
     Outlet -->|"'aardeyamz' (lazy)"| AardeYamz
 
-    Home --> Banner & About & Education & Work["WorkHistory x2"] & Contact
-    Banner --> Floating["FloatingLogos"] & Typewriter
+    Home --> Banner & About & Education & Work["WorkHistory x2"]
+    Banner --> Floating["FloatingLogos"] & LogoLoop & Typewriter
 
     Config[("config.json")] --> SiteConfig["SiteConfigService"]
     SiteConfig --> Header & Footer & Home & Banner & About & Education & Projects & AardeYamz
 
-    Theme["ThemeService"] --> App & Header & Loading & Floating
+    Theme["ThemeService"] --> Header & Loading & Floating & LogoLoop
 
     subgraph ThemeRepo["yl-theme (separate repo)"]
         Tokens[("yl-tokens.css<br/>timestamped release")] --> ThemeHost["theme.yannislam.org<br/>(Vercel project)"]
@@ -134,7 +135,7 @@ flowchart TB
     Theme -->|"sets data-theme"| CSS
     CSS -.->|"var(...)"| Shell
 
-    Analytics["AnalyticsService"] --> Header & Footer & Banner & About & Education & Contact
+    Analytics["AnalyticsService"] --> Header & Footer & Banner & About & Education
     Analytics -->|"gtag"| GA[("Google Analytics")]
 ```
 
@@ -145,8 +146,9 @@ flowchart TB
 | `HeaderComponent` | Shell | Nav bar, scroll effects and the theme toggle |
 | `FooterComponent` | Shell | Repo link, "built with" credit, design credits |
 | `HomeComponent` | Page (eager) | Composes the home sections on `/` |
-| `BannerComponent` | Home section | Hero greeting, typewriter, falling logos |
-| `AboutComponent`, `EducationComponent`, `ContactComponent` | Home sections | Read their copy from `SiteConfigService` |
+| `BannerComponent` | Home section | Hero greeting, typewriter, falling logos (`FloatingLogosComponent`) and the drawn logo mark (`LogoLoopComponent`) |
+| `AboutComponent`, `EducationComponent` | Home sections | Read their copy from `SiteConfigService` |
+| `ContactComponent` | Home section (not mounted) | Not in `HomeComponent`'s template; its copy is still in `config.json` and covered by its unit test |
 | `WorkHistoryComponent` (x2) | Home section | One instance for work, one for volunteering |
 | `ProjectsComponent`, `ProjectsHighschoolComponent` | Pages (lazy) | `/projects` and `/projects/highschool` |
 | `AardeYamzComponent` + `NamecardComponent` | Page (lazy) | `/aardeyamz` |
@@ -155,6 +157,8 @@ flowchart TB
 | `yl-tokens.css` | Dependency | Color tokens from the separate [yl-theme](https://github.com/AardeYamz/yl-theme) project. `theme.json` pins a version and SHA-256; `scripts/fetch-theme.js` downloads it, the eleven logos and `logo-geometry.json` (which the loading screen and banner mark draw from) and the favicons, from `theme.yannislam.org` into git-ignored `src/generated/` before every start, build, test and e2e run; `angular.json` loads the tokens as a global stylesheet and serves the logos at `assets/images/logos/` |
 | `AnalyticsService` | Service | Calls the global `gtag()` for custom events |
 | `ResumeService` | Service | Builds the resume download link from `resume-manifest.json` |
+| `ScrollService` | Service | One passive, rAF-throttled scroll listener exposed as signals, shared by the header and footer |
+| `SeoService` | Service | Keeps the canonical URL and `og:url` / `twitter:url` in step with the current route |
 
 ### Routes
 
@@ -179,20 +183,22 @@ same paths for prerendering and must be kept in step.
 docs/                         # see docs/README.md
 e2e/                          # Playwright specs + fixtures.ts
 scripts/
+├── fetch-theme.js                # pre-hook: yl-theme files at the theme.json pin -> src/generated/
 ├── generate-resume-manifest.js   # pre-hook: newest dated resume PDF -> resume-manifest.json
-└── inject-env.js                 # postbuild: GA measurement ID into index.html
+├── inject-env.js                 # postbuild: GA measurement ID into index.html
+└── *.test.js                     # node --test (npm run test:scripts)
 src/
 ├── app/
 │   ├── animations/           # Shared Angular animation triggers (fade-stagger)
 │   ├── components/
 │   │   ├── general/          # header, footer, loading-screen
-│   │   ├── home/             # banner (+ typewriter), floating-logos, about, education,
-│   │   │                     # workhistory, contact, projects, projects-highschool
+│   │   ├── home/             # banner (+ typewriter), floating-logos, logo-loop, about,
+│   │   │                     # education, workhistory, contact, projects, projects-highschool
 │   │   └── other/aardeyamz/  # /aardeyamz page (+ namecard)
 │   ├── directives/           # aos, link-preview, logo-fallback
 │   ├── icons/                # Inline SVG icon registry + <app-icon>
 │   ├── pipes/linkify/        # Turns plain-text URLs into links
-│   ├── services/             # site-config, theme, analytics, resume
+│   ├── services/             # site-config, theme, analytics, resume, scroll, seo
 │   ├── utils/hydration.ts    # SSR/hydration helpers
 │   ├── app.config.ts         # Browser providers
 │   ├── app.config.server.ts  # Server (prerender) providers
@@ -202,8 +208,9 @@ src/
 │   ├── config.json           # All page content
 │   ├── resume-manifest.json  # Written by the pre-hook
 │   ├── fonts/  images/  resume/
-├── generated/                # yl-tokens.css (color tokens per [data-theme]), logos/<variant>.svg and logo-geometry.json, fetched from yl-theme (git-ignored; see theme.json)
+├── generated/                # yl-tokens.css (color tokens per [data-theme]), logos/<variant>.svg, logo-geometry.json and favicons/, fetched from yl-theme (git-ignored; see theme.json)
 ├── styles.scss               # Global styles
+├── variables.scss            # SCSS aliases ($Primary, $Surface…) for the theme tokens
 ├── bootstrap-custom.scss     # Bootstrap overrides
 ├── fonts.scss                # @font-face (Calibre, SF Mono)
 ├── index.html                # gtag bootstrap, %GOOGLE_ANALYTICS_ID% placeholder
@@ -242,10 +249,11 @@ JSON at build time, so keep new entries in the same shape as their neighbours.
 | `logos` | Map of `{ src, alt }`, referenced by `logoKey` from work, education and volunteering entries. With no `logoKey` or an empty `src`, a placeholder logo is drawn from the organization's name |
 | `logoAbout` | Map of `logoKey` to an "about" blurb, shared by every entry with that `logoKey` that has no `about` of its own (e.g. the three Voya roles) |
 | `about` | `first` / `last` name, `email`, the `contact` list (each with an `icon` key such as `fa-linkedin` from the icon registry, and a `link`), and the `aardeyamz` name-meaning cards |
-| `about.experiences` | `work` and `volunteering`, each a `list` of `organization`, `title`, `timeframe`, `description[]`, `skills[]` (optional `logoKey`, `link`, `about`, `tab`); a top-level `education` array of the same shape; a flat `skills` summary |
+| `about.experiences` | `work` and `volunteering`, each a `list` of `organization`, `title`, `timeframe`, `description[]`, `skills[]` (optional `logoKey`, `link`, `about`, `tab`); `education`, a plain array of entries of the same shape; a flat `skills` summary |
 | `banner` | `greeting`, `name`, `blurb`, and the `typeSection` strings the typewriter cycles through |
 | `footer` | Repo link, "built with" credit, `designCredits` |
 | `projects.college`, `projects.highschool` | Each a `list` of `{ imgs[], title, timeframe, description[], link? }` |
+| `ui` | Interface text the templates use, grouped by component (`header`, `banner`, `about`, …): labels, buttons, headings, ARIA text. No user-visible text goes in a template |
 | `siteTitle`, `heading`, `subHeading`, `manifest*` | `<title>` and PWA manifest fields |
 
 Image `src` values can be a URL or a path under `src/assets/`. A new social
@@ -343,6 +351,7 @@ flowchart TB
 |---|---|---|---|
 | `unit-tests` | Node 24.x and 26.x | | `npm ci`, then Vitest in Playwright Chromium with coverage; uploads to Codecov from the 24.x leg |
 | `build` | Node 24.x | | `npm run build`, prerendering every route; uploads the output as an artifact |
+| `build-warnings-comment` | Same-repo, non-Dependabot PRs | `build` | Keeps the build step's warning/error lines in one sticky PR comment |
 | `lighthouse` | `mobile`, `desktop` | `build` | Lighthouse CI against the build artifact |
 | `e2e` | 2 shards, `fail-fast: false` | `build` | Playwright against the build artifact (browsers cached on `package-lock.json`). PRs run Chromium and a mobile (Pixel 7) context and skip `@external`; pushes to `main` and the Monday run add Firefox and WebKit |
 | `dependency-review` | PRs only | | `actions/dependency-review-action`, fails on `high` or above |
@@ -388,6 +397,7 @@ flowchart LR
 | DNS zone | Cloudflare | `yannislam.org` |
 | Site | Vercel | Proxied `A`/`CNAME` records point at Vercel Edge, which serves `dist/v3.yannislam.org/browser` |
 | Email | Cloudflare Email Routing | MX/SPF/DKIM/DMARC for `@yannislam.org` |
+| PR previews | Vercel (separate static project) | `v3.yannislam.org` is a DNS-only CNAME to Vercel and serves each open PR at `/pr-N/` |
 | Legacy sites | Netlify | `alpha.`, `v1.` and `v2.` still point at earlier versions of the site |
 | Theme tokens | Vercel (`yl-theme` project) | `theme.yannislam.org` is a DNS-only CNAME to Vercel. The build downloads the pinned `yl-tokens.css` from it, so a build needs that host to be reachable |
 

@@ -1,8 +1,8 @@
 # Documentation
 
 The repo's own docs, beyond the root [`README.md`](../README.md) (what the
-site is, how to build, test and deploy it) and [`CLAUDE.md`](../CLAUDE.md)
-(conventions for changing it).
+site is, how to build, test and deploy it), [`reference.md`](reference.md) (the
+same in full detail) and [`CLAUDE.md`](../CLAUDE.md) (conventions for changing it).
 
 | Folder | Holds | Naming |
 |---|---|---|

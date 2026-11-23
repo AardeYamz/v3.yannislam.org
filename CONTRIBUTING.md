@@ -23,7 +23,7 @@ npm start        # dev server at http://localhost:4200
    npm run build
    npm run test:e2e
    ```
-4. Update `README.md` and `CLAUDE.md` if you changed commands, architecture or conventions. For a substantial change, add a write-up under `docs/changes/` following the naming rule in `CLAUDE.md`.
+4. Update `README.md`, `docs/reference.md` and `CLAUDE.md` if you changed commands, architecture or conventions. For a substantial change, add a write-up under `docs/changes/` following the naming rule in `CLAUDE.md`.
 5. Open a PR using the template. Say what you actually ran and what you could not verify. Before/after screenshots help for anything visual.
 
 ## Dependencies
