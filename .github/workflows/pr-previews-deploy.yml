@@ -1,0 +1,147 @@
+name: PR previews deploy
+
+# Publishes every open same-repo PR at https://v3.yannislam.org/pr-<number>/ from the builds pr-previews.yml keeps as artifacts
+# (pr-<n>-<sha>), and comments the link on each PR. Each deploy replaces the whole site of the static previews project, so a PR
+# that is closed or merged drops out on the next one; there is nothing to clean up.
+#
+# Each pr-previews.yml run ends by dispatching this workflow on main (workflow_dispatch, which a GITHUB_TOKEN may start; it takes
+# no inputs, so nothing from the PR reaches it). Not workflow_run: zizmor flags that trigger as dangerous, and a dispatch does
+# the same job. It runs main's copy of this file, so a change here only takes effect once it is on main. One group, no
+# cancel-in-progress: GitHub keeps one deploy running and at most one waiting, and drops older waiting ones, so a burst of
+# preview runs (sync-prs.yml after a merge) ends in one or two deploys. Each deploy lists the open PRs itself when it starts,
+# so the last one always has every PR's newest build. Superseded deploys are cancelled here, in a run that is not attached to
+# any PR, so no PR shows a cancelled check. It can also be run by hand (Actions → PR previews deploy → Run workflow).
+#
+# This job holds VERCEL_TOKEN and never runs PR code: it only unzips built files and uploads them. It runs in main's cache
+# scope, so it must not use actions/cache or a setup-node dependency cache.
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: pr-previews-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read          # lists runs and downloads their artifacts
+      pull-requests: write   # comments the preview links
+    env:
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PREVIEWS_PROJECT_ID }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          package-manager-cache: false   # main's cache scope; nothing here needs one
+
+      - name: Fail early if the previews project is not configured
+        run: |
+          test -n "$VERCEL_ORG_ID" && test -n "$VERCEL_PROJECT_ID" \
+            || { echo "::error::Set the repo variables VERCEL_ORG_ID and VERCEL_PREVIEWS_PROJECT_ID (see docs/changes/*-pr-previews.md)"; exit 1; }
+
+      # For each open same-repo PR: its head's build if there is one; else, if the newest build job for that head failed, a
+      # "did not build" note; else (still building, held for approval) the PR's newest earlier build, so its preview stays up
+      # until the head's build lands and triggers the next deploy. The build job, not the run: the run that dispatched this
+      # deploy is still in progress. Only artifacts from same-repo runs whose commit matches the name are used:
+      # a fork's run could upload an artifact under any name.
+      - name: Pick a build for each open PR
+        run: |
+          gh api --paginate "repos/$GH_REPO/actions/artifacts?per_page=100" --jq '
+            .artifacts[]
+            | select((.expired | not) and (.name | test("^pr-[0-9]+-[0-9a-f]{40}$")))
+            | select(.workflow_run.head_repository_id == .workflow_run.repository_id)
+            | (.name | capture("^pr-(?<n>[0-9]+)-(?<sha>[0-9a-f]{40})$")) as $m
+            | select(.workflow_run.head_sha == $m.sha)
+            | "\(.created_at) \($m.n) \($m.sha) \(.id)"' | sort -r > "$RUNNER_TEMP/artifacts.txt"
+
+          : > "$RUNNER_TEMP/staged.txt"; : > "$RUNNER_TEMP/skipped.txt"
+          gh pr list --state open --json number,headRefOid,isCrossRepository \
+            --jq '.[] | select(.isCrossRepository | not) | "\(.number) \(.headRefOid)"' |
+          while read -r n head; do
+            pick=$(awk -v n="$n" -v s="$head" '$2 == n && $3 == s {print $3, $4; exit}' "$RUNNER_TEMP/artifacts.txt")
+            if test -z "$pick"; then
+              run=''
+              for id in $(gh api "repos/$GH_REPO/actions/workflows/pr-previews.yml/runs?head_sha=$head&per_page=5" --jq '.workflow_runs[].id'); do
+                job=$(gh api "repos/$GH_REPO/actions/runs/$id/jobs?per_page=100" \
+                  --jq "[.jobs[] | select(.name == \"build ($n, $head)\")][0] | select(. != null) | \"\(.conclusion) \(.html_url)\"")
+                test -n "$job" || continue   # that run did not build this PR; look at the one before
+                test "${job%% *}" = failure && run=${job#* }
+                break
+              done
+              if test -n "$run"; then echo "$n ${head:0:7} $run" >> "$RUNNER_TEMP/skipped.txt"; continue; fi
+              pick=$(awk -v n="$n" '$2 == n {print $3, $4; exit}' "$RUNNER_TEMP/artifacts.txt")
+            fi
+            if test -n "$pick"; then echo "$n $pick" >> "$RUNNER_TEMP/staged.txt"
+            else echo "PR #$n @ ${head:0:7}: no build yet"; fi
+          done
+          echo "Staged:"; cat "$RUNNER_TEMP/staged.txt"; echo "Did not build:"; cat "$RUNNER_TEMP/skipped.txt"
+
+      - name: Stage site/
+        run: |
+          mkdir -p site
+          while read -r n sha id; do
+            gh api "repos/$GH_REPO/actions/artifacts/$id/zip" > "$RUNNER_TEMP/pr.zip"
+            unzip -q -o "$RUNNER_TEMP/pr.zip" -d "site/pr-$n"
+            test -f "site/pr-$n/index.html" || { echo "::warning::Artifact $id for PR #$n has no index.html"; rm -rf "site/pr-$n"; }
+          done < "$RUNNER_TEMP/staged.txt"
+          # Keep only PRs that actually landed, for the index and the comments.
+          while read -r n sha id; do test -f "site/pr-$n/index.html" && echo "$n ${sha:0:7}"; done < "$RUNNER_TEMP/staged.txt" > "$RUNNER_TEMP/live.txt" || true
+
+          # Index page listing what is live, so the bare host is not a 404. The markup is .github/pr-previews/index.html, styled with
+          # the shared yl-theme at the version this repo pins in theme.json; only the version and the list are filled in here.
+          sort -n "$RUNNER_TEMP/live.txt" | while read -r n sha; do echo "    <li><a href=\"/pr-$n/\">#$n</a> <small>$sha</small></li>"; done > "$RUNNER_TEMP/items.html"
+          test -s "$RUNNER_TEMP/live.txt" || echo '    <p>No open pull requests.</p>' > "$RUNNER_TEMP/items.html"
+          theme=$(jq -r .version theme.json)
+          sed -e "s|{{THEME}}|$theme|g" -e "/{{ITEMS}}/{r $RUNNER_TEMP/items.html" -e d} .github/pr-previews/index.html > site/index.html
+
+          # Previews are for review, not for search engines or caches. Each PR's own vercel.json is not used (only this one applies).
+          cat > site/vercel.json <<'JSON'
+          {
+            "$schema": "https://openapi.vercel.sh/vercel.json",
+            "cleanUrls": true,
+            "headers": [
+              { "source": "/(.*)", "headers": [
+                { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+                { "key": "Referrer-Policy", "value": "no-referrer" },
+                { "key": "X-Content-Type-Options", "value": "nosniff" },
+                { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+              ] }
+            ]
+          }
+          JSON
+          find site -maxdepth 2 | sort | head -40
+
+      # Production of the previews project is what v3.yannislam.org points at. The CLI reads the org and project from the env above.
+      - name: Deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: npx --yes vercel@66.6.0 deploy site --prod --yes --token "$VERCEL_TOKEN"
+
+      # A marker finds this workflow's own comment; --edit-last would overwrite whichever bot comment is newest (sync-prs also comments).
+      - name: Comment the preview links
+        continue-on-error: true   # the deploy is live either way
+        run: |
+          marker='<!-- pr-previews -->'
+          post() {
+            n=$1; body=$2
+            id=$(gh api "repos/$GH_REPO/issues/$n/comments" --paginate \
+              --jq "[.[] | select(.body | startswith(\"$marker\"))] | last | .id // empty")
+            if test -n "$id"; then gh api -X PATCH "repos/$GH_REPO/issues/comments/$id" -f body="$marker
+          $body" >/dev/null
+            else gh pr comment "$n" --body "$marker
+          $body" </dev/null; fi
+          }
+          while read -r n sha; do post "$n" "**Preview:** https://v3.yannisl.am/pr-$n/ (deployed \`$sha\`)"; done < "$RUNNER_TEMP/live.txt"
+          while read -r n sha run; do post "$n" "**No preview available:** \`$sha\` did not build. [Run]($run)"; done < "$RUNNER_TEMP/skipped.txt"
