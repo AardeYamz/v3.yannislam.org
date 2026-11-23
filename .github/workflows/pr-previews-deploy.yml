@@ -37,7 +37,7 @@ jobs:
         sort -n site/.previews | while read -r n sha; do echo "    <li><a href=\"/pr-$n/\">#$n</a> <small>$sha</small></li>"; done > "$RUNNER_TEMP/items.html"
         test -s site/.previews || echo '    <p>No open pull requests.</p>' > "$RUNNER_TEMP/items.html"
         theme=$(jq -r .version theme.json)
-        sed -e "s|{{THEME}}|$theme|g" -e "/{{ITEMS}}/{r $RUNNER_TEMP/items.html" -e d} .github/pr-previews/index.html > site/index.html
+        sed -e "s|{{THEME}}|$theme|g" -e "/{{ITEMS}}/{r $RUNNER_TEMP/items.html" -e 'd}' .github/pr-previews/index.html > site/index.html
         # Previews are for review, not for search engines or caches. Each PR's own vercel.json is not used (only this one applies).
         cat > site/vercel.json <<'JSON'
         {
