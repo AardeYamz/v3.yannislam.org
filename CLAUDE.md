@@ -162,13 +162,13 @@ Date: 2026-08-11 01:39:39
   `20260811-013939-ssr-prerendering.md`), not a rename.
 - The rule applies only to `docs/changes/`.
 
-## Mermaid diagrams are linted
+## Diagrams are linted
 
-Every ```mermaid block in a tracked `*.md` file must parse. The linter lives in the `personal-domain-devops` repo (`mermaid-lint/`) and `.github/workflows/mermaid-lint.yml` calls it as `AardeYamz/personal-domain-devops/mermaid-lint`, pinned by SHA like every action in this repo (bump the SHA to pick up linter changes) on any Markdown change. After editing a diagram, run it from this repo before committing (it expects `personal-domain-devops` cloned next to this repo; run `npm ci` there once):
+Every ```mermaid block in a tracked `*.md` file must parse, and every `.d2` file and ```d2 block must compile. The linters live in the public `AardeYamz/workflows` repo (`mermaid-lint/`, `d2-lint/`), and `.github/workflows/diagram-lint.yml` calls its shared `diagram-lint.yml` workflow on any Markdown or `.d2` change. After editing a diagram, run them from this repo before committing (they expect `workflows` cloned next to this repo):
 
 ```
-npm ci --prefix ../personal-domain-devops/mermaid-lint
-node ../personal-domain-devops/mermaid-lint/lint.mjs
+npm ci --prefix ../workflows/mermaid-lint && node ../workflows/mermaid-lint/lint.mjs
+npm ci --prefix ../workflows/d2-lint && node ../workflows/d2-lint/lint.mjs
 ```
 
-It prints `file:line` and the parser's message for each broken block. Changes to the linter go in `personal-domain-devops`, not here.
+Each prints `file:line` and the parser's message for each broken diagram. Changes to the linters go in `AardeYamz/workflows`, not here.
