@@ -1,8 +1,8 @@
 # CLAUDE.md
 
 Guidance for Claude Code (claude.ai/code) and anyone else changing this repo.
-[`README.md`](README.md) is the overview; [`docs/reference.md`](docs/reference.md)
-covers the stack, architecture, `config.json` keys, tests and CI in full; this file keeps the rules and the things that are easy
+[`README.md`](README.md) covers the stack, architecture, `config.json` keys,
+tests and CI in full; this file keeps the rules and the things that are easy
 to get wrong.
 
 ## Commands
@@ -138,7 +138,7 @@ Docs live under `docs/`; [`docs/README.md`](docs/README.md) indexes them.
   and audits (`<topic>-YYYY-MM-DD.md`).
 
 When a change affects commands, architecture or conventions, update
-`README.md`, `docs/reference.md` and this file in the same PR.
+`README.md` and this file in the same PR.
 
 ### Naming rule for `docs/changes/`
 

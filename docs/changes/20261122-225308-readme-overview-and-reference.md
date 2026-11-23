@@ -1,8 +1,8 @@
 Date: 2026-11-22 22:53:08
 
-# Short README with a reference doc
+# README refresh
 
-The README is now an overview: what the site is, two diagrams, a table of related repos and the commands to start. The previous full README (stack, routes, code structure, build hooks, testing, CI/CD, DNS, dependency security) moved unchanged to [docs/reference.md](../reference.md), with its relative links adjusted. `CLAUDE.md` now points to the reference for those details.
+The README is now an overview: what the site is, two diagrams, a table of related repos and the commands to start. The previous full README (stack, routes, code structure, build hooks, testing, CI/CD, DNS, dependency security) moved unchanged to `docs/reference.md` (since folded back into the README; see the last section), with its relative links adjusted. `CLAUDE.md` now points to the reference for those details.
 
 ## Fixed: related repos and small inaccuracies
 
@@ -37,3 +37,21 @@ fixed in both files:
   table lacked the `v3.yannislam.org` PR-preview host. The related-repos row
   for personal-dns now says `v3` where it said `prs` (previews moved off
   `prs.yannislam.org`).
+
+## Fixed: one README, no reference doc
+
+Keeping two copies of the same facts meant two places to update, and they had
+already drifted: `main` changed the workflows table in the old README while it
+lived only in `docs/reference.md` here, which is what made this branch conflict.
+`docs/reference.md` is gone and its full content is back in `README.md`, inside
+the new layout (overview, lineage, related repos and the corrections above all
+stay). `CLAUDE.md`, `AGENTS.md`, `CONTRIBUTING.md` and `docs/README.md` point
+at the README alone again.
+
+Merged with `main`, so the README also carries its workflow changes: the
+*shared template* callers of `AardeYamz/workflows` (Security, Merge main into
+PRs, Dependabot auto-merge, dependency review), the split PR previews build and
+deploy workflows, Diagram lint, and Workflow syntax lint (actionlint), which
+was missing from `main`'s table. `workflows` is back in Related repos, since
+those callers now use it. The build hooks list now includes `fetch-theme.js`
+and says both pre-hooks also run before `test:e2e`.

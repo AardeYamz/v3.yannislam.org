@@ -1,8 +1,8 @@
 # Documentation
 
 The repo's own docs, beyond the root [`README.md`](../README.md) (what the
-site is, how to build, test and deploy it), [`reference.md`](reference.md) (the
-same in full detail) and [`CLAUDE.md`](../CLAUDE.md) (conventions for changing it).
+site is, how to build, test and deploy it) and [`CLAUDE.md`](../CLAUDE.md)
+(conventions for changing it).
 
 | Folder | Holds | Naming |
 |---|---|---|
@@ -34,8 +34,8 @@ chronological. By area:
 | Analytics | [`20260727-205542-google-analytics-1`](changes/20260727-205542-google-analytics-1.md), [`20260731-184800-vercel-analytics-6`](changes/20260731-184800-vercel-analytics-6.md), [`20261027-014549-ga-id-fail-closed`](changes/20261027-014549-ga-id-fail-closed.md) |
 | Security | [`20261027-020046-csp-report-only`](changes/20261027-020046-csp-report-only.md) |
 | Testing | [`20260811-030901-playwright-e2e-testing`](changes/20260811-030901-playwright-e2e-testing.md), [`20260811-115249-playwright-e2e-phase-3`](changes/20260811-115249-playwright-e2e-phase-3.md), [`20261018-195354-fix-e2e-loading-overlay-race`](changes/20261018-195354-fix-e2e-loading-overlay-race.md) |
-| CI and dependencies | [`20260811-124323-dependabot-aikido-integration`](changes/20260811-124323-dependabot-aikido-integration.md), [`20260812-002233-github-actions-speed-and-hardening`](changes/20260812-002233-github-actions-speed-and-hardening.md), [`20260904-101402-dependabot-auto-merge`](changes/20260904-101402-dependabot-auto-merge.md), [`20261019-134240-lockfile-resync-after-dependabot`](changes/20261019-134240-lockfile-resync-after-dependabot.md), [`20261019-181637-ci-runner-and-node-bump`](changes/20261019-181637-ci-runner-and-node-bump.md), [`20261021-000000-remove-aikido-workflow`](changes/20261021-000000-remove-aikido-workflow.md), [`20261104-183126-pr-previews`](changes/20261104-183126-pr-previews.md) |
-| Documentation | [`20261030-042800-consolidate-documentation`](changes/20261030-042800-consolidate-documentation.md) |
+| CI and dependencies | [`20260811-124323-dependabot-aikido-integration`](changes/20260811-124323-dependabot-aikido-integration.md), [`20260812-002233-github-actions-speed-and-hardening`](changes/20260812-002233-github-actions-speed-and-hardening.md), [`20260904-101402-dependabot-auto-merge`](changes/20260904-101402-dependabot-auto-merge.md), [`20261019-134240-lockfile-resync-after-dependabot`](changes/20261019-134240-lockfile-resync-after-dependabot.md), [`20261019-181637-ci-runner-and-node-bump`](changes/20261019-181637-ci-runner-and-node-bump.md), [`20261021-000000-remove-aikido-workflow`](changes/20261021-000000-remove-aikido-workflow.md), [`20261104-183126-pr-previews`](changes/20261104-183126-pr-previews.md), [`20261122-163540-shared-reusable-workflows`](changes/20261122-163540-shared-reusable-workflows.md) |
+| Documentation | [`20261030-042800-consolidate-documentation`](changes/20261030-042800-consolidate-documentation.md), [`20261122-225308-readme-overview-and-reference`](changes/20261122-225308-readme-overview-and-reference.md) |
 | Cleanups | [`20260803-211756-remove-footer-deployment-status-1`](changes/20260803-211756-remove-footer-deployment-status-1.md), [`20260803-211756-remove-workhistory-debug-handler-2`](changes/20260803-211756-remove-workhistory-debug-handler-2.md), [`20260817-013259-fix-braintreePS-logo-console-error`](changes/20260817-013259-fix-braintreePS-logo-console-error.md), [`20260925-073726-p0-fixes-from-code-review-backlog`](changes/20260925-073726-p0-fixes-from-code-review-backlog.md), [`20260928-083319-small-cleanups-from-code-review-backlog`](changes/20260928-083319-small-cleanups-from-code-review-backlog.md) |
 
 Older write-ups describe the code as it was then (for example, the NgModule

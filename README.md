@@ -18,12 +18,10 @@ The source of [yannislam.org](https://yannislam.org): an Angular 22 portfolio
 site, prerendered to static HTML and served from Vercel. Nearly all of the
 page copy lives in one file, `src/assets/config.json`.
 
-Lineage: forked from [Lê Thanh Tuấn's Portfolio](https://github.com/lethanhtuan939/Portfolio),
+Generated with Angular CLI 19 and since upgraded to 22. Lineage: forked from
+[Lê Thanh Tuấn's Portfolio](https://github.com/lethanhtuan939/Portfolio),
 which was based on [José Hernández's](https://github.com/andresjosehr/andresjosehr-portfolio),
 which was adapted from [Brittany Chiang's](https://github.com/bchiang7/v4).
-
-This README is the working overview. [docs/reference.md](docs/reference.md) has the
-full text of each section: component table, build hooks, e2e specs, CI jobs and workflows.
 
 ## Contents
 
@@ -59,28 +57,52 @@ in `src/assets/resume/`, and `fetch-theme.js` downloads the pinned theme files
 into `src/generated/` (so the first run, and the first after a theme bump,
 needs `theme.yannislam.org` to be reachable). After `build`, `inject-env.js`
 fills in the Google Analytics ID from `GOOGLE_ANALYTICS_ID`; locally it falls
-back to an inert placeholder and warns. Details:
-[Build hooks](docs/reference.md#build-hooks).
+back to an inert placeholder and warns. See [Build hooks](#build-hooks).
 
 ## Stack
 
-- **Framework:** Angular 22 with standalone components, signals, zoneless
-  change detection, client hydration and a service worker; `@angular/ssr`
-  prerenders every route at build time. TypeScript 6, strict mode plus
-  `strictTemplates`.
-- **UI:** Bootstrap 5 and ng-bootstrap 21; colour tokens (Material Design 3
-  `--md-sys-color-*` roles plus `--yl-color-*`) from the shared yl-theme;
-  inline SVG icons in `src/app/icons/` instead of Font Awesome;
-  ngx-owl-carousel-o for the work history carousel; anime.js 4 for the
-  boot-time logo animation. Hand-written: the banner typewriter, falling
-  logos and logo loop, scroll reveal (`AosDirective`), hover link previews and
-  placeholder logos (`LogoFallbackDirective`).
-- **Analytics:** Google Analytics 4 through the `gtag.js` tag in
-  `src/index.html` (`AnalyticsService` sends custom events only), plus Vercel
-  Web Analytics and Speed Insights.
-- **Hosting:** Vercel builds and serves the site (`vercel.json` also sets the
-  security headers, including a report-only CSP); Cloudflare holds the DNS
-  zone and routes `@yannislam.org` email.
+**Framework and language**
+
+- [Angular](https://angular.dev) 22: standalone components, signals,
+  zoneless change detection (`provideZonelessChangeDetection`), client
+  hydration and a service worker (`@angular/service-worker`)
+- `@angular/ssr`: every route is prerendered to static HTML at build time
+  (`src/app/app.routes.server.ts`)
+- TypeScript 6, strict mode plus `strictTemplates`
+
+**UI**
+
+- [Bootstrap](https://getbootstrap.com/) 5 and
+  [ng-bootstrap](https://ng-bootstrap.github.io/) 21 for layout, nav and dropdowns
+- Material Design 3 color roles (`--md-sys-color-*`) plus the theme's own
+  `--yl-color-emphasis` and `--yl-color-name-gradient`, in the shared
+  `yl-tokens.css` (fetched from yl-theme per `theme.json` into
+  `src/generated/`, with the logos)
+- Inline SVG icons (`src/app/icons/`): the dozen Font Awesome glyphs the site
+  uses, inlined instead of loading the Font Awesome CSS and webfonts
+- [ngx-owl-carousel-o](https://www.npmjs.com/package/ngx-owl-carousel-o) for
+  the work history carousel
+- [anime.js](https://animejs.com) 4 for the boot-time logo animation
+- Hand-written pieces: a signal-driven typewriter in the banner (replaced
+  `ngx-typed-js`), a `requestAnimationFrame` loop of falling logo marks behind
+  the banner, a scroll-reveal directive (`AosDirective`), hover link previews
+  (`link-preview`), and a `LogoFallbackDirective` that draws a placeholder logo
+  from an organization's name
+
+**Analytics**
+
+- Google Analytics 4 through the global `gtag.js` tag in `src/index.html`.
+  `AnalyticsService` sends custom events only; GA4's enhanced measurement
+  tracks page views. No analytics npm package is used.
+- Vercel Web Analytics and Speed Insights (`@vercel/analytics`,
+  `@vercel/speed-insights`), injected in `AppComponent`
+
+**Hosting**
+
+- [Vercel](https://vercel.com) builds and serves the site (`vercel.json`,
+  which also sets the security headers, including a report-only CSP)
+- [Cloudflare](https://www.cloudflare.com/) holds the `yannislam.org` DNS zone,
+  proxies to Vercel, and handles email routing for `@yannislam.org`
 
 ## Architecture
 
@@ -88,12 +110,12 @@ back to an inert placeholder and warns. Details:
 `src/app/app.config.ts`. Components read content only through
 `SiteConfigService`. `ThemeService` sets `[data-theme]` on `<html>`; the
 colours themselves come from `yl-tokens.css`, fetched from yl-theme at the
-version pinned in `theme.json`. Component by component:
-[docs/reference.md](docs/reference.md#architecture).
+version pinned in `theme.json`.
 
 ```mermaid
 flowchart TB
     Main["main.ts + app.config.ts"] --> App["AppComponent"]
+
     subgraph Shell["App shell"]
         Loading["LoadingScreen"]
         Header
@@ -101,19 +123,53 @@ flowchart TB
         Footer
     end
     App --> Loading & Header & Outlet & Footer
-    Outlet -->|"eager"| Home
-    Outlet -->|"lazy"| Projects & AardeYamz
+
+    Outlet -->|"'' (eager)"| Home
+    Outlet -->|"'projects', 'projects/highschool' (lazy)"| Projects
+    Outlet -->|"'aardeyamz' (lazy)"| AardeYamz
+
     Home --> Banner & About & Education & Work["WorkHistory x2"]
     Banner --> Floating["FloatingLogos"] & LogoLoop & Typewriter
-    Config[("config.json")] --> SiteConfig["SiteConfigService"] --> Shell
-    Theme["ThemeService"] -->|"sets data-theme"| CSS
+
+    Config[("config.json")] --> SiteConfig["SiteConfigService"]
+    SiteConfig --> Header & Footer & Home & Banner & About & Education & Projects & AardeYamz
+
+    Theme["ThemeService"] --> Header & Loading & Floating & LogoLoop
+
+    subgraph ThemeRepo["yl-theme (separate repo)"]
+        Tokens[("yl-tokens.css, logos, favicons<br/>timestamped release")] --> ThemeHost["theme.yannislam.org<br/>(Vercel project)"]
+    end
     Pin[("theme.json<br/>version + SHA-256")] --> Fetch["scripts/fetch-theme.js<br/>(pre* hooks)"]
-    ThemeHost["theme.yannislam.org<br/>(yl-theme)"] -->|"download"| Fetch
+    ThemeHost -->|"download"| Fetch
     Fetch -->|"verify, then write"| Generated[("src/generated/<br/>git-ignored")]
-    Generated -->|"angular.json styles"| CSS["--md-sys-color-* and --yl-color-*"]
+    Generated -->|"angular.json styles"| CSS["--md-sys-color-* and --yl-color-*<br/>per [data-theme]"]
+    Theme -->|"sets data-theme"| CSS
     CSS -.->|"var(...)"| Shell
-    Analytics["AnalyticsService"] -->|"gtag"| GA[("Google Analytics")]
+
+    Analytics["AnalyticsService"] --> Header & Footer & Banner & About & Education
+    Analytics -->|"gtag"| GA[("Google Analytics")]
 ```
+
+| Piece | Kind | What it does |
+|---|---|---|
+| `main.ts` + `app.config.ts` | Bootstrap | `bootstrapApplication(AppComponent)` with zoneless change detection, router, hydration and the service worker |
+| `LoadingScreenComponent` | Shell | Boot-time anime.js logo assembly |
+| `HeaderComponent` | Shell | Nav bar, scroll effects and the theme toggle |
+| `FooterComponent` | Shell | Repo link, "built with" credit, design credits |
+| `HomeComponent` | Page (eager) | Composes the home sections on `/` |
+| `BannerComponent` | Home section | Hero greeting, typewriter, falling logos (`FloatingLogosComponent`) and the drawn logo mark (`LogoLoopComponent`) |
+| `AboutComponent`, `EducationComponent` | Home sections | Read their copy from `SiteConfigService` |
+| `ContactComponent` | Home section (not mounted) | Not in `HomeComponent`'s template; its copy is still in `config.json` and covered by its unit test |
+| `WorkHistoryComponent` (x2) | Home section | One instance for work, one for volunteering |
+| `ProjectsComponent`, `ProjectsHighschoolComponent` | Pages (lazy) | `/projects` and `/projects/highschool` |
+| `AardeYamzComponent` + `NamecardComponent` | Page (lazy) | `/aardeyamz` |
+| `SiteConfigService` | Service | The only reader of `config.json`, typed by `site-config.model.ts` |
+| `ThemeService` | Service | `default` / `light` / `dark` modes, as signals, saved in `localStorage` and applied as `[data-theme]` on `<html>`. The colors themselves are not here: they come from `yl-tokens.css` (below) |
+| `yl-tokens.css` | Dependency | Color tokens from the separate [yl-theme](https://github.com/AardeYamz/yl-theme) project. `theme.json` pins a version and SHA-256; `scripts/fetch-theme.js` downloads it, the eleven logos and `logo-geometry.json` (which the loading screen and banner mark draw from) and the favicons, from `theme.yannislam.org` into git-ignored `src/generated/` before every start, build, test and e2e run; `angular.json` loads the tokens as a global stylesheet and serves the logos at `assets/images/logos/` |
+| `AnalyticsService` | Service | Calls the global `gtag()` for custom events |
+| `ResumeService` | Service | Builds the resume download link from `resume-manifest.json` |
+| `ScrollService` | Service | One passive, rAF-throttled scroll listener exposed as signals, shared by the header and footer |
+| `SeoService` | Service | Keeps the canonical URL and `og:url` / `twitter:url` in step with the current route |
 
 ### Routes
 
@@ -131,24 +187,72 @@ same paths for prerendering and must be kept in step.
 ## Code structure
 
 ```
-.github/          workflows, dependabot.yml, pull_request_template.md
-docs/             change write-ups, plans, reviews (see docs/README.md)
-e2e/              Playwright specs + fixtures.ts
-scripts/          fetch-theme.js, generate-resume-manifest.js, inject-env.js (+ tests)
-src/app/
-  components/     general/ (header, footer, loading-screen), home/ (sections), other/aardeyamz/
-  directives/     aos, link-preview, logo-fallback
-  icons/          inline SVG icon registry + <app-icon>
-  services/       site-config, theme, analytics, resume, scroll, seo
-  app.routes.ts   routes (app.routes.server.ts: the prerender list)
-src/assets/       config.json, resume-manifest.json, fonts/, images/, resume/
-src/generated/    theme tokens, logos and favicons from yl-theme (git-ignored)
-theme.json        pinned yl-theme version + SHA-256 per file
-vercel.json       response headers, including the report-only CSP
+.github/
+├── workflows/                # see "CI/CD and deployment"
+├── actionlint.yaml           # actionlint config
+├── dependabot.yml
+└── pull_request_template.md
+docs/                         # see docs/README.md
+e2e/                          # Playwright specs + fixtures.ts
+scripts/
+├── fetch-theme.js                # pre-hook: yl-theme files at the theme.json pin -> src/generated/
+├── generate-resume-manifest.js   # pre-hook: newest dated resume PDF -> resume-manifest.json
+├── inject-env.js                 # postbuild: GA measurement ID into index.html
+└── *.test.js                     # node --test (npm run test:scripts)
+src/
+├── app/
+│   ├── animations/           # Shared Angular animation triggers (fade-stagger)
+│   ├── components/
+│   │   ├── general/          # header, footer, loading-screen
+│   │   ├── home/             # banner (+ typewriter), floating-logos, logo-loop, about,
+│   │   │                     # education, workhistory, contact, projects, projects-highschool
+│   │   └── other/aardeyamz/  # /aardeyamz page (+ namecard)
+│   ├── directives/           # aos, link-preview, logo-fallback
+│   ├── icons/                # Inline SVG icon registry + <app-icon>
+│   ├── pipes/linkify/        # Turns plain-text URLs into links
+│   ├── services/             # site-config, theme, analytics, resume, scroll, seo
+│   ├── utils/hydration.ts    # SSR/hydration helpers
+│   ├── app.config.ts         # Browser providers
+│   ├── app.config.server.ts  # Server (prerender) providers
+│   ├── app.routes.ts         # Routes
+│   └── app.routes.server.ts  # Prerender list
+├── assets/
+│   ├── config.json           # All page content
+│   ├── resume-manifest.json  # Written by the pre-hook
+│   ├── fonts/  images/  resume/
+├── generated/                # yl-tokens.css (color tokens per [data-theme]), logos/<variant>.svg, logo-geometry.json and favicons/, fetched from yl-theme (git-ignored; see theme.json)
+├── styles.scss               # Global styles
+├── variables.scss            # SCSS aliases ($Primary, $Surface…) for the theme tokens
+├── bootstrap-custom.scss     # Bootstrap overrides
+├── fonts.scss                # @font-face (Calibre, SF Mono)
+├── index.html                # gtag bootstrap, %GOOGLE_ANALYTICS_ID% placeholder
+├── main.ts / main.server.ts
+└── server.ts                 # Express entry for `outputMode: server` (not used by Vercel)
+theme.json                    # pinned yl-theme version + SHA-256 per file
+vercel.json                   # response headers, including the report-only CSP
 ```
 
 Every component follows the Angular trio (`.ts` / `.html` / `.scss`, plus a
-`.spec.ts`). The full tree: [docs/reference.md](docs/reference.md#code-structure).
+`.spec.ts`). Components read content through `SiteConfigService`, never by
+importing `config.json`.
+
+### Build hooks
+
+- **`scripts/generate-resume-manifest.js`** runs before `start`, `build`,
+  `watch`, `test` and `test:e2e`. It finds the newest `src/assets/resume/<name> YYYYMMDD.pdf`
+  and writes its filename to `src/assets/resume-manifest.json`, so dropping in a
+  new dated PDF updates the download link with no code change. The manifest is
+  tracked in git; commit it with the new PDF.
+- **`scripts/fetch-theme.js`** runs before `start`, `build`, `watch`, `test`
+  and `test:e2e`. It downloads the yl-theme files pinned in `theme.json`
+  (`yl-tokens.css`, the logos, `logo-geometry.json`, the favicons) from
+  `theme.yannislam.org`, checks each SHA-256, and writes them to git-ignored
+  `src/generated/`.
+- **`scripts/inject-env.js`** runs after `build` and replaces
+  `%GOOGLE_ANALYTICS_ID%` in the built `index.html`. On Vercel (`VERCEL=1`) a
+  missing or malformed ID fails the build; elsewhere it writes the inert
+  placeholder `G-XXXXXXXXXX` and warns. `ALLOW_MISSING_ANALYTICS=1` lets a fork
+  build on Vercel without an ID.
 
 ## Editing content (`config.json`)
 
@@ -160,34 +264,69 @@ JSON at build time, so keep new entries in the same shape as their neighbours.
 
 | Key | What it holds |
 |---|---|
-| `siteMenu` | Nav items (`navTitle`, `siteLocation`, optional section anchors) |
-| `logos`, `logoAbout` | Organization logos and shared "about" blurbs, referenced by `logoKey` |
-| `about` | Name, email, `contact` links, the `aardeyamz` cards, and `experiences` (work, volunteering, education, skills) |
-| `banner` | Greeting, name, blurb and the typewriter strings |
-| `footer` | Repo link, "built with" credit, design credits |
-| `projects` | The `college` and `highschool` project lists |
-| `ui` | Interface text the templates use (labels, buttons, headings) |
+| `siteMenu` | Nav items: `navTitle`, `siteLocation` (route or `/#anchor`), optional `navNumber` / `navContent` / `scrollSection` |
+| `logos` | Map of `{ src, alt }`, referenced by `logoKey` from work, education and volunteering entries. With no `logoKey` or an empty `src`, a placeholder logo is drawn from the organization's name |
+| `logoAbout` | Map of `logoKey` to an "about" blurb, shared by every entry with that `logoKey` that has no `about` of its own (e.g. the three Voya roles) |
+| `about` | `first` / `last` name, `email`, the `contact` list (each with an `icon` key such as `fa-linkedin` from the icon registry, and a `link`), and the `aardeyamz` name-meaning cards |
+| `about.experiences` | `work` and `volunteering`, each a `list` of `organization`, `title`, `timeframe`, `description[]`, `skills[]` (optional `logoKey`, `link`, `about`, `tab`); `education`, a plain array of entries of the same shape; a flat `skills` summary |
+| `banner` | `greeting`, `name`, `blurb`, and the `typeSection` strings the typewriter cycles through |
+| `footer` | Repo link, "built with" credit, `designCredits` |
+| `projects.college`, `projects.highschool` | Each a `list` of `{ imgs[], title, timeframe, description[], link? }` |
+| `ui` | Interface text the templates use, grouped by component (`header`, `banner`, `about`, …): labels, buttons, headings, ARIA text. No user-visible text goes in a template |
 | `siteTitle`, `heading`, `subHeading`, `manifest*` | `<title>` and PWA manifest fields |
 
-A new social icon must exist in `src/app/icons/icon-registry.ts`. Field by
-field: [docs/reference.md](docs/reference.md#editing-content-configjson).
+Image `src` values can be a URL or a path under `src/assets/`. A new social
+icon must exist in `src/app/icons/icon-registry.ts`. The dev server picks up
+edits on save.
 
 ## Testing
 
-- **Unit (Vitest):** `npm test -- --no-watch` runs once, as CI does; add
-  `--coverage` for coverage, or run one spec with
-  `ng test --include='**/header.component.spec.ts'`. Vitest runs in
-  Playwright's Chromium (`npx playwright install chromium`).
-- **End-to-end (Playwright):** the specs in `e2e/` cover the boot sequence,
-  the home sections, navigation, theme switching, the project pages, the
-  resume download, links, mobile layout and assets. Install browsers once with
-  `npx playwright install --with-deps chromium firefox webkit`; use
-  `npm run test:e2e:ui` to write specs and `npm run test:e2e:report` for the
-  last run. Wait for the app with `gotoAndSettle()` from `e2e/fixtures.ts`,
-  never `waitForTimeout()`.
-- **Performance (Lighthouse CI):** `npm run test:perf` (mobile) and
-  `npm run test:perf:desktop` check a production build against the budgets in
-  `lighthouserc.js`; CI runs both presets on every PR.
+### Unit tests (Vitest)
+
+```bash
+npm test                                             # watch mode
+npm test -- --no-watch                               # single run, as CI does
+npm test -- --no-watch --coverage                    # with coverage
+ng test --include='**/header.component.spec.ts'      # one spec
+```
+
+Vitest runs in Playwright's Chromium (`npx playwright install chromium`). CI
+uploads coverage from the Node 24 leg to [Codecov](https://codecov.io).
+
+### End-to-end tests (Playwright)
+
+Unit tests stub child components, so page composition, the boot sequence,
+navigation and theme switching are covered by Playwright specs in `e2e/`
+against the real app.
+
+```bash
+npx playwright install --with-deps chromium firefox webkit   # once per machine
+npm run test:e2e            # headless
+npm run test:e2e:ui         # interactive UI mode, best for writing specs
+npm run test:e2e:report     # last run's HTML report (traces, screenshots, video)
+```
+
+Locally, Playwright starts (or reuses) `ng serve`. In CI it serves the `build`
+job's `dist/v3.yannislam.org/browser` output through a static server with SPA
+fallback, which is what Vercel deploys.
+
+| Spec | Covers |
+|---|---|
+| `smoke` | Boot sequence (loading overlay, header mounts, scroll restored), `<title>`, no console errors or failed same-origin requests on any route |
+| `home-sections` | Each home section renders the content from `config.json` |
+| `navigation` | Nav scroll-to-section and route clicks, hard loads of every route, the `**` redirect, back/forward |
+| `theme` | The `default → light → dark` cycle recolors the DOM, persists across reload, follows `prefers-color-scheme` |
+| `projects`, `resume`, `footer-and-links`, `responsive`, `assets` | Project pages, resume download, footer and external links (tagged `@external`, run only on the weekly schedule), mobile layout, asset loading |
+
+When adding a spec, never `waitForTimeout()` past the loading screen: use
+`gotoAndSettle()` from `e2e/fixtures.ts`, which waits for the header nav. The
+same fixture blocks analytics requests and isolates the service worker.
+
+### Performance (Lighthouse CI)
+
+`npm run test:perf` (mobile, slow 4G and 4× CPU) and `npm run test:perf:desktop`
+run Lighthouse against a production build with the budgets in
+`lighthouserc.js`. CI runs both presets on every PR.
 
 ## CI/CD and deployment
 
@@ -196,6 +335,8 @@ flowchart TB
     PR["Pull request"] --> CI
     Push["Push to main"] --> CI
     Cron["Monday cron"] --> CI
+    Manual["workflow_dispatch"] --> CI
+
     subgraph CI["Build & Test"]
         Unit["unit-tests"]
         Build["build"]
@@ -204,36 +345,63 @@ flowchart TB
         DepReview["dependency-review"]
         Build --> Lighthouse & E2E
     end
+
     PR --> Sec["Security"]
     Push --> Sec
     Cron --> Sec
+
     CI & Sec --> Gate{"All green?"}
     Gate -->|"no"| Fix["Fix and re-push"]
     Fix -.-> PR
     Gate -->|"yes"| Merge["Merge to main"]
+
+    ThemeHost["theme.yannislam.org<br/>(yl-theme, pinned in theme.json)"] -.->|"fetch-theme.js in the<br/>pre* hooks of every build"| Build
+    ThemeHost -.-> Vercel
+
     Merge --> Vercel["Vercel build + deploy"]
+    Vercel --> Edge["Vercel Edge"]
     Vercel -->|"deployment_status"| Release["Release: tag + notes"]
     Merge --> Sync["Merge main into PRs"]
 ```
 
-- **Build & Test** (`build-test.yml`): unit tests on Node 24 and 26 (coverage
-  to Codecov), the prerendered build, Lighthouse (mobile and desktop) and
-  Playwright in two shards against that build, and dependency review on PRs.
-  PRs run Chromium and a mobile context; pushes to `main` and the Monday run
-  add Firefox and WebKit. A newer push to a PR cancels its older run.
-- **Security** (`security.yml`): lints the workflow files with zizmor.
-- **Deploy:** the Vercel Git integration deploys `main` to production and
-  other branches as previews. **Release** then tags `vYYYYMMDD-HHMMSS` on each
-  successful production deploy.
-- **PR previews** (`pr-previews.yml`): every open PR is built with
-  `--base-href /pr-N/` and published at `v3.yannislam.org/pr-N/`.
-- **Housekeeping:** `sync-prs.yml` merges `main` into open PRs that are
-  behind; `dependabot-auto-merge.yml` merges safe Dependabot bumps once their
-  checks pass; `build-test.yml` and `vercel-build-warnings.yml` keep the
-  Actions and Vercel build warnings in sticky PR comments. CodeQL runs as
-  GitHub default setup.
+### Build & Test jobs (`build-test.yml`)
 
-Every workflow, trigger and job: [docs/reference.md](docs/reference.md#cicd-and-deployment).
+| Job | Runs on | Needs | What it does |
+|---|---|---|---|
+| `unit-tests` | Node 24.x and 26.x | | `npm ci`, then Vitest in Playwright Chromium with coverage; uploads to Codecov from the 24.x leg |
+| `build` | Node 24.x | | `npm run build`, prerendering every route; uploads the output as an artifact |
+| `build-warnings-comment` | Same-repo, non-Dependabot PRs | `build` | Keeps the build step's warning/error lines in one sticky PR comment |
+| `lighthouse` | `mobile`, `desktop` | `build` | Lighthouse CI against the build artifact |
+| `e2e` | 2 shards, `fail-fast: false` | `build` | Playwright against the build artifact (browsers cached on `package-lock.json`). PRs run Chromium and a mobile (Pixel 7) context and skip `@external`; pushes to `main` and the Monday run add Firefox and WebKit |
+| `dependency-review` | PRs only | | Dependency review (shared template), fails on `high` or above |
+
+A newer push to the same PR cancels the older run
+(`concurrency: cancel-in-progress`). Pushes to `main` are never cancelled.
+
+### Workflows
+
+| Workflow | Trigger | What it does |
+|---|---|---|
+| [Build & Test](.github/workflows/build-test.yml) | PR to `main`/`master`/`develop`; push to `main`; Mondays 07:00 UTC; manual | The jobs above |
+| [Security](.github/workflows/security.yml) | Same, Mondays 06:30 UTC | Lints the workflow files with zizmor (shared template) |
+| [Workflow syntax lint](.github/workflows/actionlint.yml) | PR or push to `main` touching `.github/workflows/` or `.github/actionlint.yaml`; manual | Lints the workflow files with actionlint, including shellcheck on `run:` scripts (shared template) |
+| [Diagram lint](.github/workflows/diagram-lint.yml) | PR or push to `main` touching `*.md` or `*.d2`; manual | Lints mermaid blocks, `.d2` files and d2 blocks with the shared linters (shared template) |
+| [Release](.github/workflows/release.yml) | Vercel `deployment_status` | On a successful Production deploy of `main`, tags `vYYYYMMDD-HHMMSS` and creates a release for that commit |
+| [Merge main into PRs](.github/workflows/sync-prs.yml) | Push to `main`; manual | Merges `main` into each open PR that is behind; comments once on conflicts; skips fork and Dependabot PRs, and merges that would change `.github/workflows/` (shared template) |
+| [PR previews](.github/workflows/pr-previews.yml) | PR open/sync/reopen/close | Builds the PR (and any open PR nobody has built yet) with `--base-href /pr-N/`, kept as artifact `pr-N-<sha>` for reuse (shared template) |
+| [PR previews deploy](.github/workflows/pr-previews-deploy.yml) | Dispatched by PR previews; manual | Publishes every open same-repo PR's newest build together at `v3.yannislam.org/pr-N/` (separate static Vercel project), one deploy at a time, and comments the link (shared template) |
+| [Dependabot auto-merge](.github/workflows/dependabot-auto-merge.yml) | `pull_request_target` | Waits for checks, then merges Dependabot patch/minor bumps and dev-only majors; production majors wait for review (shared template) |
+| [Vercel build warnings](.github/workflows/vercel-build-warnings.yml) | Vercel `deployment_status` | Fetches a preview deploy's Vercel build log and keeps its warning/error lines in a sticky PR comment (needs `VERCEL_TOKEN`) |
+| [Dependabot](.github/dependabot.yml) | Mondays 06:00 UTC | Weekly `npm` and `github-actions` updates |
+| CodeQL | Push, PR | GitHub default setup (no workflow file) |
+| Vercel Git integration | Push to any branch | Production deploy for `main`, preview deploy for other branches |
+
+Workflows marked *shared template* are short callers of the reusable workflows
+in the public [AardeYamz/workflows](https://github.com/AardeYamz/workflows)
+repo, pinned by SHA: change the logic there, not here.
+
+The Monday jobs are staggered (Dependabot 06:00, Security 06:30, Build & Test
+07:00) so each sees what the one before it produced.
 
 ### DNS and delivery
 
@@ -242,38 +410,57 @@ flowchart LR
     Visitor["Visitor"] -->|"DNS lookup"| CF["Cloudflare DNS"]
     CF -->|"proxied A/CNAME"| Vercel["Vercel Edge"]
     Vercel -->|"serves site"| Visitor
+
     CF --> Mail["Cloudflare Email Routing"] --> Inbox["@yannislam.org inbox"]
     CF -.->|"legacy CNAMEs"| Netlify["Netlify (older sites)"]
+
     Build["Build (CI and Vercel)"] -->|"fetch theme files<br/>at the pinned version"| ThemeCF["theme.yannislam.org<br/>(DNS-only CNAME)"]
     ThemeCF --> ThemeVercel["Vercel: yl-theme project"]
 ```
 
+| Concern | Provider | Details |
+|---|---|---|
+| DNS zone | Cloudflare | `yannislam.org` |
+| Site | Vercel | Proxied `A`/`CNAME` records point at Vercel Edge, which serves `dist/v3.yannislam.org/browser` |
+| Email | Cloudflare Email Routing | MX/SPF/DKIM/DMARC for `@yannislam.org` |
+| PR previews | Vercel (separate static project) | `v3.yannislam.org` is a DNS-only CNAME to Vercel and serves each open PR at `/pr-N/` |
+| Legacy sites | Netlify | `alpha.`, `v1.` and `v2.` still point at earlier versions of the site |
+| Theme files | Vercel (`yl-theme` project) | `theme.yannislam.org` is a DNS-only CNAME to Vercel. The build downloads the pinned theme files from it, so a build needs that host to be reachable |
+
 ## Dependency security
 
-[Dependabot](https://docs.github.com/en/code-security/dependabot) opens weekly
-`npm` and `github-actions` updates (Mondays 06:00 UTC, with a cooldown) and
-security updates. Bumps are grouped: `angular` (packages that must move
-together), `testing`, and a `minor-and-patch` catch-all; other majors arrive
-one per PR. Angular majors are ignored by Dependabot and done by hand with
-`ng update`. [Aikido](https://www.aikido.dev) triages advisories by
-reachability as a GitHub App set up in its own dashboard; there is no Aikido
-job or secret in this repo.
+- **[Dependabot](https://docs.github.com/en/code-security/dependabot)** opens
+  the bump PRs: weekly `npm` and `github-actions` version updates from
+  `.github/dependabot.yml` (Mondays 06:00 UTC, with a cooldown), and security
+  updates from the repository settings, batched by the `security-updates`
+  group.
+- **[Aikido](https://www.aikido.dev)** triages them: it checks whether an
+  advisory is reachable from shipped code, so a critical advisory in an
+  unreachable dev dependency doesn't drown out real ones. It runs as a GitHub
+  App with PR gating set in the Aikido dashboard; there is no Aikido job or
+  secret in this repo.
+
+Bumps are grouped: `angular` (the `@angular/*` packages and libraries tied to
+an Angular major, which must move together), `testing`, and a
+`minor-and-patch` catch-all. Other majors arrive one per PR so each can be
+reverted alone. Angular majors are ignored by Dependabot and upgraded by hand
+with `ng update`.
 
 ## Related repos
 
-These three are private, so their links work only for the owner.
-
 | Repo | Relationship |
 |---|---|
-| [yl-theme](https://github.com/AardeYamz/yl-theme) | Serves `yl-tokens.css`, the logos, `logo-geometry.json` and the favicons from `theme.yannislam.org`; the version and SHA-256 are pinned in `theme.json` |
-| [personal-dns](https://github.com/AardeYamz/personal-dns) | Cloudflare DNS for `yannislam.org` (the Vercel records, the `theme` and `v3` hosts, email MX), plus redirects |
-| [yannislam.org](https://github.com/AardeYamz/yannislam.org) | The earlier Gatsby site; the `projects` content in `config.json` was ported from it |
+| [yl-theme](https://github.com/AardeYamz/yl-theme) (private) | Serves `yl-tokens.css`, the logos, `logo-geometry.json` and the favicons from `theme.yannislam.org`; the version and SHA-256 are pinned in `theme.json` |
+| [workflows](https://github.com/AardeYamz/workflows) (public) | The reusable workflows and linters the *shared template* workflows call |
+| [personal-dns](https://github.com/AardeYamz/personal-dns) (private) | Cloudflare DNS for `yannislam.org` (the Vercel records, the `theme` and `v3` hosts, email MX), plus redirects |
+| [yannislam.org](https://github.com/AardeYamz/yannislam.org) (private) | The earlier Gatsby site; the `projects` content in `config.json` was ported from it |
+
+Links to the private repos work only for the owner.
 
 ## Further documentation
 
 | Doc | What |
 |---|---|
-| [docs/reference.md](docs/reference.md) | The full reference: every section above in detail |
 | [docs/README.md](docs/README.md) | Index of change write-ups, plans and reviews |
 | [CLAUDE.md](CLAUDE.md), [AGENTS.md](AGENTS.md) | Conventions for agents and people changing the code |
 | [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Contributing, reporting vulnerabilities, conduct |
