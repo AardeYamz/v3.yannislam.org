@@ -1,0 +1,18 @@
+name: Workflow syntax lint
+
+# Lints the workflow files with actionlint (syntax, expressions, action inputs, shellcheck on run scripts), using the
+# shared workflow in AardeYamz/workflows.
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/**', '.github/actionlint.yaml']
+  pull_request:
+    paths: ['.github/workflows/**', '.github/actionlint.yaml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    uses: AardeYamz/workflows/.github/workflows/actionlint.yml@b922e5e6ac75f08041307e93116f824350c80f82 # v1.0.3
