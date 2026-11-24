@@ -19,7 +19,7 @@ npm start        # dev server at http://localhost:4200
 2. Make the change. Read the matching rules in `CLAUDE.md` first, especially for routes, SSR and hydration, styling and `config.json`.
 3. Verify it:
    ```bash
-   npm test -- --watch=false --browsers=ChromeHeadless
+   npm test -- --no-watch
    npm run build
    npm run test:e2e
    ```
