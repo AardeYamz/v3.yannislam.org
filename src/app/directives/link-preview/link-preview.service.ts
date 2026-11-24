@@ -100,6 +100,10 @@ export class LinkPreviewService {
       return;
     }
 
+    // mouseover bubbles from every child of a link, so show() can run several
+    // times per hover; cancel the pending attempt so only one iframe load starts.
+    clearTimeout(this.hoverIntentTimer);
+    clearTimeout(this.iframeTimeoutTimer);
     this.hoverIntentTimer = setTimeout(() => this.attemptIframe(data.url), HOVER_INTENT_MS);
   }
 

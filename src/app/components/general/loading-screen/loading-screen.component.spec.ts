@@ -1,3 +1,4 @@
+import type { Mock, MockedObject } from "vitest";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoadingScreenComponent } from './loading-screen.component';
@@ -5,108 +6,110 @@ import { ThemeService } from 'src/app/services/theme/theme.service';
 import logoGeometry from 'src/generated/logo-geometry.json';
 
 describe('LoadingScreenComponent', () => {
-  let component: LoadingScreenComponent;
-  let fixture: ComponentFixture<LoadingScreenComponent>;
-  let themeService: jasmine.SpyObj<ThemeService>;
+    let component: LoadingScreenComponent;
+    let fixture: ComponentFixture<LoadingScreenComponent>;
+    let themeService: MockedObject<ThemeService>;
 
-  beforeEach(() => {
-    const themeServiceSpy = jasmine.createSpyObj('ThemeService', [], { mode: jasmine.createSpy('mode').and.returnValue('default') });
+    beforeEach(() => {
+        const themeServiceSpy = {
+            mode: vi.fn().mockName('mode').mockReturnValue('default')
+        };
 
-    TestBed.configureTestingModule({
-    imports: [LoadingScreenComponent],
-    providers: [
-        { provide: ThemeService, useValue: themeServiceSpy }
-    ]
-});
+        TestBed.configureTestingModule({
+            imports: [LoadingScreenComponent],
+            providers: [
+                { provide: ThemeService, useValue: themeServiceSpy }
+            ]
+        });
 
-    themeService = TestBed.inject(ThemeService) as jasmine.SpyObj<ThemeService>;
-    fixture = TestBed.createComponent(LoadingScreenComponent);
-    component = fixture.componentInstance;
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it("draws one polygon per piece of the theme's logo geometry, as drawn", () => {
-    fixture.detectChanges();
-    const shapes = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.logo-piece'));
-    expect(shapes.length).toBe(logoGeometry.pieces.length);
-    shapes.forEach((shape, i) => {
-      expect(shape.getAttribute('points')).toBe(logoGeometry.pieces[i].points);
-      expect(shape.getAttribute('fill')).toBe(logoGeometry.pieces[i].fill);
-    });
-  });
-
-  it('should have hidden set to false initially', () => {
-    expect(component.hidden).toBe(false);
-  });
-
-  it('should emit finished event', (done) => {
-    component.finished.subscribe(() => {
-      expect(true).toBe(true);
-      done();
+        themeService = TestBed.inject(ThemeService) as MockedObject<ThemeService>;
+        fixture = TestBed.createComponent(LoadingScreenComponent);
+        component = fixture.componentInstance;
     });
 
-    // Trigger the finished event manually
-    component.finished.emit();
-  });
-
-  describe('pieceFill', () => {
-    it('should return default color for default theme', () => {
-      (themeService.mode as jasmine.Spy).and.returnValue('default');
-      const color = component.pieceFill('#FF0000');
-      expect(color).toBe('#FF0000');
+    it('should create', () => {
+        expect(component).toBeTruthy();
     });
 
-    it('should return black for light theme', () => {
-      (themeService.mode as jasmine.Spy).and.returnValue('light');
-      const color = component.pieceFill('#FF0000');
-      expect(color).toBe('#000000');
+    it("draws one polygon per piece of the theme's logo geometry, as drawn", () => {
+        fixture.detectChanges();
+        const shapes = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.logo-piece'));
+        expect(shapes.length).toBe(logoGeometry.pieces.length);
+        shapes.forEach((shape, i) => {
+            expect(shape.getAttribute('points')).toBe(logoGeometry.pieces[i].points);
+            expect(shape.getAttribute('fill')).toBe(logoGeometry.pieces[i].fill);
+        });
     });
 
-    it('should return white for dark theme', () => {
-      (themeService.mode as jasmine.Spy).and.returnValue('dark');
-      const color = component.pieceFill('#FF0000');
-      expect(color).toBe('#ffffff');
+    it('should have hidden set to false initially', () => {
+        expect(component.hidden).toBe(false);
     });
-  });
 
-  it('should handle ngAfterViewInit without errors', () => {
-    expect(() => {
-      fixture.detectChanges();
-    }).not.toThrow();
-  });
+    it('should emit finished event', async () => {
+        component.finished.subscribe(() => {
+            expect(true).toBe(true);
+            ;
+        });
 
-  it('should handle ngOnDestroy without errors', () => {
-    fixture.detectChanges();
-    expect(() => {
-      component.ngOnDestroy();
-    }).not.toThrow();
-  });
+        // Trigger the finished event manually
+        component.finished.emit();
+    });
 
-  it('locks page scroll while shown and restores it once destroyed, even before the outro finishes', () => {
-    fixture.detectChanges();
+    describe('pieceFill', () => {
+        it('should return default color for default theme', () => {
+            (themeService.mode as Mock).mockReturnValue('default');
+            const color = component.pieceFill('#FF0000');
+            expect(color).toBe('#FF0000');
+        });
 
-    expect(document.body.style.overflow).toBe('hidden');
+        it('should return black for light theme', () => {
+            (themeService.mode as Mock).mockReturnValue('light');
+            const color = component.pieceFill('#FF0000');
+            expect(color).toBe('#000000');
+        });
 
-    component.ngOnDestroy();
+        it('should return white for dark theme', () => {
+            (themeService.mode as Mock).mockReturnValue('dark');
+            const color = component.pieceFill('#FF0000');
+            expect(color).toBe('#ffffff');
+        });
+    });
 
-    expect(document.body.style.overflow).toBe('');
-  });
+    it('should handle ngAfterViewInit without errors', () => {
+        expect(() => {
+            fixture.detectChanges();
+        }).not.toThrow();
+    });
 
-  it('skips the intro/outro animation and hides quickly when the user prefers reduced motion', async () => {
-    spyOn(window, 'matchMedia').and.returnValue({ matches: true } as MediaQueryList);
-    fixture.detectChanges();
+    it('should handle ngOnDestroy without errors', () => {
+        fixture.detectChanges();
+        expect(() => {
+            component.ngOnDestroy();
+        }).not.toThrow();
+    });
 
-    expect(component.hidden).toBeFalse();
+    it('locks page scroll while shown and restores it once destroyed, even before the outro finishes', () => {
+        fixture.detectChanges();
 
-    // REDUCED_MOTION_DISPLAY_MS is a real (unmocked) setTimeout - this repo
-    // doesn't use zone.js/fakeAsync (the app is zoneless), so a short real
-    // wait is how the rest of this suite handles timer-driven async code too.
-    await new Promise(resolve => setTimeout(resolve, 350));
+        expect(document.body.style.overflow).toBe('hidden');
 
-    expect(component.hidden).toBeTrue();
-    expect(document.body.style.overflow).toBe('');
-  });
+        component.ngOnDestroy();
+
+        expect(document.body.style.overflow).toBe('');
+    });
+
+    it('skips the intro/outro animation and hides quickly when the user prefers reduced motion', async () => {
+        vi.spyOn(window, 'matchMedia').mockReturnValue({ matches: true } as MediaQueryList);
+        fixture.detectChanges();
+
+        expect(component.hidden).toBe(false);
+
+        // REDUCED_MOTION_DISPLAY_MS is a real (unmocked) setTimeout - this repo
+        // doesn't use zone.js/fakeAsync (the app is zoneless), so a short real
+        // wait is how the rest of this suite handles timer-driven async code too.
+        await new Promise(resolve => setTimeout(resolve, 350));
+
+        expect(component.hidden).toBe(true);
+        expect(document.body.style.overflow).toBe('');
+    });
 });
