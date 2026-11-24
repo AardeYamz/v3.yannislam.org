@@ -4,7 +4,7 @@ import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
 import { FlagComponent } from 'src/app/components/general/flag/flag.component';
 import { IconComponent } from 'src/app/icons/icon.component';
-import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
+import { FadeStaggerDirective } from 'src/app/directives/fade-stagger/fade-stagger.directive';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
 import { loadConfig, loadedConfig } from 'src/app/services/site-config/config-loader';
@@ -19,23 +19,8 @@ import { LANGUAGES, Language, LanguageService, htmlLang, languageName } from 'sr
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
-    animations: [
-        // `*` (every descendant) is the wrong query here: the header's markup
-        // duplicates every nav item inside the mobile drawer (.menu-responsive)
-        // and also always includes the desktop-only nav list, both hidden via
-        // CSS depending on viewport width but still present in the DOM — so
-        // querySelectorAll matches them regardless, and their ~40 combined
-        // descendant elements each claim a 50ms stagger slot ahead of the
-        // theme toggle and menu-toggle button in DOM order. On mobile that left
-        // the menu toggle sitting at opacity 0 (invisible, unusable) for over a
-        // second after the header itself became visible. Staggering just the
-        // 4 top-level chrome groups (logo, nav-right, menu toggle, mobile
-        // drawer) as blocks instead of every nested span/li fixes that and
-        // still reads as a staggered entrance.
-        fadeStaggerAnimation('animateMenu', 'translateX(-20px)', '.container > *')
-    ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterLink, IconComponent, FlagComponent],
+    imports: [RouterLink, IconComponent, FadeStaggerDirective, FlagComponent],
     host: {
         '(document:click)': 'closeLanguageMenu($event)',
         '(document:keydown.escape)': 'closeLanguageMenu()',

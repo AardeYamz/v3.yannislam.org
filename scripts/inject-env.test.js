@@ -27,6 +27,12 @@ test('unset variable falls back to the placeholder with a problem', () => {
   assert.match(r.problem, /not set/);
 });
 
+test('a whitespace-only variable is reported as blank, not unset', () => {
+  const r = withEnv({ GOOGLE_ANALYTICS_ID: '  ' }, () => resolveValue(ga));
+  assert.equal(r.value, GA_PLACEHOLDER);
+  assert.match(r.problem, /GOOGLE_ANALYTICS_ID is set but blank/);
+});
+
 test('valid ID is used, trimmed and unquoted', () => {
   const r = withEnv({ GOOGLE_ANALYTICS_ID: ' "G-ABC123XYZ" ' }, () => resolveValue(ga));
   assert.deepEqual(r, { value: 'G-ABC123XYZ', problem: null });

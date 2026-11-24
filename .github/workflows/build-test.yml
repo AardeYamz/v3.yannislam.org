@@ -70,13 +70,17 @@ jobs:
       # aren't covered by allowScripts; match it so those warnings (and any
       # npm-12-only failures) show up here too.
       - name: Install npm 12
-        run: npm install --global npm@12.2.1 # zizmor: ignore[adhoc-packages] npm is the package manager itself, so no lockfile can supply it; exact version pinned
+        run: npm install --global npm@12.2.3 # zizmor: ignore[adhoc-packages] npm is the package manager itself, so no lockfile can supply it; exact version pinned
 
       - name: Install dependencies
         run: npm ci
 
+      # The Angular unit-test builder runs Vitest in Playwright's Chromium.
+      - name: Install Chromium for unit tests
+        run: npx playwright install --with-deps chromium
+
       - name: Run tests with coverage
-        run: npm test -- --watch=false --browsers=ChromeHeadless --code-coverage
+        run: npm test -- --no-watch --coverage
 
       - name: Run build script tests
         run: npm run test:scripts
@@ -121,7 +125,7 @@ jobs:
       # aren't covered by allowScripts; match it so those warnings (and any
       # npm-12-only failures) show up here too.
       - name: Install npm 12
-        run: npm install --global npm@12.2.1 # zizmor: ignore[adhoc-packages] npm is the package manager itself, so no lockfile can supply it; exact version pinned
+        run: npm install --global npm@12.2.3 # zizmor: ignore[adhoc-packages] npm is the package manager itself, so no lockfile can supply it; exact version pinned
 
       - name: Install dependencies
         run: npm ci
@@ -264,7 +268,7 @@ jobs:
       # aren't covered by allowScripts; match it so those warnings (and any
       # npm-12-only failures) show up here too.
       - name: Install npm 12
-        run: npm install --global npm@12.2.1 # zizmor: ignore[adhoc-packages] npm is the package manager itself, so no lockfile can supply it; exact version pinned
+        run: npm install --global npm@12.2.3 # zizmor: ignore[adhoc-packages] npm is the package manager itself, so no lockfile can supply it; exact version pinned
 
       - name: Install dependencies
         run: npm ci
@@ -323,7 +327,7 @@ jobs:
       # aren't covered by allowScripts; match it so those warnings (and any
       # npm-12-only failures) show up here too.
       - name: Install npm 12
-        run: npm install --global npm@12.2.1 # zizmor: ignore[adhoc-packages] npm is the package manager itself, so no lockfile can supply it; exact version pinned
+        run: npm install --global npm@12.2.3 # zizmor: ignore[adhoc-packages] npm is the package manager itself, so no lockfile can supply it; exact version pinned
 
       - name: Install dependencies
         run: npm ci
@@ -387,16 +391,9 @@ jobs:
   # either.
   dependency-review:
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-26.04
-    timeout-minutes: 5
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Dependency review
-        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
-        with:
-          fail-on-severity: high
+    permissions:
+      contents: read
+    uses: AardeYamz/workflows/.github/workflows/dependency-review.yml@49a0ea9f9b0eb2279db8d0c111e53b8787c4149d # v1.0.4
+    with:
+      fail-on-severity: high
+      runs-on: ubuntu-26.04
