@@ -24,6 +24,6 @@ jobs:
       contents: write       # pushes the merge commit to the PR branch
       pull-requests: write  # comments on a PR that conflicts
       actions: write        # dispatches CI on a branch it just updated
-    uses: AardeYamz/workflows/.github/workflows/sync-prs.yml@000181f6b0cab9ecd39b05f483a44309ac58c581 # v1.0.0
+    uses: AardeYamz/workflows/.github/workflows/sync-prs.yml@fb34c430ca68e310d24b586534003a47643d4b07 # v1.1.0
     with:
       dispatch-workflows: build-test.yml ci.yml
