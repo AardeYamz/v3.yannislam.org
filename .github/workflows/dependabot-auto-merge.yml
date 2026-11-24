@@ -39,6 +39,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: AardeYamz/workflows/.github/workflows/dependabot-auto-merge.yml@6eceb21ea6ea5c57d36a5c60dda2229758fa86ab # v1.1.1
+    uses: AardeYamz/workflows/.github/workflows/dependabot-auto-merge.yml@0bd932fd360647971c045606af91173468a16fe4 # v1.1.2
     with:
       required-workflow: Build & Test
