@@ -393,7 +393,7 @@ jobs:
     if: github.event_name == 'pull_request'
     permissions:
       contents: read
-    uses: AardeYamz/workflows/.github/workflows/dependency-review.yml@49a0ea9f9b0eb2279db8d0c111e53b8787c4149d # v1.0.4
+    uses: AardeYamz/workflows/.github/workflows/dependency-review.yml@fb34c430ca68e310d24b586534003a47643d4b07 # v1.1.0
     with:
       fail-on-severity: high
       runs-on: ubuntu-26.04
