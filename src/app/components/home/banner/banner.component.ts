@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, PLATFORM_ID, signal, OnDestroy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
+import { FadeStaggerDirective } from 'src/app/directives/fade-stagger/fade-stagger.directive';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
@@ -66,11 +66,8 @@ export function scrollEaseProgress(t: number, durationMs: number, easeMs = AUTO_
     selector: 'app-banner',
     templateUrl: './banner.component.html',
     styleUrls: ['./banner.component.scss'],
-    animations: [
-        fadeStaggerAnimation('bannerTrigger', 'translateX(-50px)')
-    ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FloatingLogosComponent, LogoLoopComponent, TypewriterComponent, LinkPreviewDelegateDirective]
+    imports: [FadeStaggerDirective, FloatingLogosComponent, LogoLoopComponent, TypewriterComponent, LinkPreviewDelegateDirective]
 })
 export class BannerComponent implements OnDestroy {
     analyticsService = inject(AnalyticsService);

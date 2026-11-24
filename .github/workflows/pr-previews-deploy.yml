@@ -1,0 +1,61 @@
+name: PR previews deploy
+
+# Publishes every open same-repo PR at https://v3.yannislam.org/pr-<number>/ from the builds pr-previews.yml keeps as artifacts,
+# and comments the link on each PR. Each deploy replaces the whole site of the static previews project (VERCEL_PREVIEWS_PROJECT_ID,
+# not connected to Git), so a closed or merged PR drops out on the next one. Shared logic: AardeYamz/workflows preview-deploy.yml.
+#
+# Each pr-previews.yml run ends by dispatching this on main; workflow_dispatch takes no inputs, so nothing from a PR reaches it.
+# (Not workflow_run: zizmor flags that trigger.) One group, no cancel-in-progress: a burst of runs ends in one or two deploys.
+# It holds VERCEL_TOKEN and never runs PR code. Run by hand: Actions → PR previews deploy → Run workflow.
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: pr-previews-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    permissions:
+      contents: read
+      actions: read          # lists runs and downloads their artifacts
+      pull-requests: write   # comments the preview links
+    uses: AardeYamz/workflows/.github/workflows/preview-deploy.yml@49a0ea9f9b0eb2279db8d0c111e53b8787c4149d # v1.0.4
+    with:
+      runs-on: ubuntu-26.04
+      build-workflow: pr-previews.yml
+      node-version: 24
+      preview-url: https://v3.yannisl.am/pr-{n}/
+      deploy-env: |
+        VERCEL_ORG_ID=${{ vars.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID=${{ vars.VERCEL_PREVIEWS_PROJECT_ID }}
+      # Index page listing what is live, so the bare host is not a 404. The markup is .github/pr-previews/index.html, styled with
+      # the shared yl-theme at the version this repo pins in theme.json; only the version and the list are filled in here.
+      stage-command: |
+        sort -n site/.previews | while read -r n sha; do echo "    <li><a href=\"/pr-$n/\">#$n</a> <small>$sha</small></li>"; done > "$RUNNER_TEMP/items.html"
+        test -s site/.previews || echo '    <p>No open pull requests.</p>' > "$RUNNER_TEMP/items.html"
+        theme=$(jq -r .version theme.json)
+        sed -e "s|{{THEME}}|$theme|g" -e "/{{ITEMS}}/{r $RUNNER_TEMP/items.html" -e 'd}' .github/pr-previews/index.html > site/index.html
+        # Previews are for review, not for search engines or caches. Each PR's own vercel.json is not used (only this one applies).
+        cat > site/vercel.json <<'JSON'
+        {
+          "$schema": "https://openapi.vercel.sh/vercel.json",
+          "cleanUrls": true,
+          "headers": [
+            { "source": "/(.*)", "headers": [
+              { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+              { "key": "Referrer-Policy", "value": "no-referrer" },
+              { "key": "X-Content-Type-Options", "value": "nosniff" },
+              { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+            ] }
+          ]
+        }
+        JSON
+      # Production of the previews project is what v3.yannislam.org points at. The CLI reads the org and project from the env above.
+      deploy-command: |
+        test -n "$VERCEL_ORG_ID" && test -n "$VERCEL_PROJECT_ID" || { echo "::error::Set the repo variables VERCEL_ORG_ID and VERCEL_PREVIEWS_PROJECT_ID"; exit 1; }
+        npx --yes vercel@66.6.0 deploy site --prod --yes --token "$DEPLOY_TOKEN"
+    secrets:
+      deploy-token: ${{ secrets.VERCEL_TOKEN }}

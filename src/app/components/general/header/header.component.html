@@ -1,4 +1,4 @@
-<nav [@animateMenu] class="navbar main-navbar on-top" [class.nav-shadow]="hasScrolled()" [attr.aria-label]="ui.primaryNavLabel">
+<nav appFadeStagger="translateX(-20px)" appFadeStaggerSelector=".container > *" class="navbar main-navbar on-top" [class.nav-shadow]="hasScrolled()" [attr.aria-label]="ui.primaryNavLabel">
   <div class="container">
     <a class="navbar-brand text-light" [routerLink]="'/'" [attr.aria-label]="ui.homeAriaLabel">
       <img [src]="'assets/images/logos/' + themeService.logoVariant() + '.svg'" width="55" [alt]="ui.logoAlt"
