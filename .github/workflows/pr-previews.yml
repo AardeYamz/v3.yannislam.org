@@ -1,135 +1,35 @@
 name: PR previews
 
-# Builds the previews that pr-previews-deploy.yml publishes at https://v3.yannislam.org/pr-<number>/ (e.g. /pr-12/), the way the
-# Cloudflare repos do. Vercel's own per-branch preview URLs stay as they are; this adds one stable, path-based host for all of them.
+# Builds the previews that pr-previews-deploy.yml publishes at https://v3.yannislam.org/pr-<number>/ (e.g. /pr-12/): each open
+# PR once per commit, kept as artifact pr-<n>-<sha>, then dispatches the deploy. Shared logic: AardeYamz/workflows
+# preview-build.yml (see docs/changes/*-shared-preview-workflows.md). Vercel's own per-branch preview URLs stay as they are.
 #
-# Vercel aliases whole hostnames, not paths, so the previews live in ONE static Vercel project (VERCEL_PREVIEWS_PROJECT_ID, not
-# connected to Git) and every deploy publishes all open PRs together. A build depends only on the PR number (its base href) and
-# the commit, so each one is kept as artifact pr-<n>-<sha> and reused: a run builds only the PR that triggered it, plus any open
-# PR whose head nobody has built or is building. The deploy itself is in pr-previews-deploy.yml, which the last job here
-# dispatches on main; it runs one at a time, so a burst of runs ends in one or two deploys. See docs/todo/pr-preview-build-dedup.md.
+# pull_request only, on purpose. A push or workflow_dispatch run can write the default branch's Actions cache, and this builds
+# other people's PR code (CodeQL: actions/cache-poisoning). When sync-prs.yml merges main into the PR branches, each push starts
+# a run here that GitHub holds as "action_required" until someone approves it; until then the PR's preview stays at its
+# previous build. VERCEL is unset in the build, so inject-env.js writes the inert GA placeholder.
 on:
-  # pull_request only, on purpose. A push or workflow_dispatch run can write the default branch's Actions cache, and this workflow
-  # builds other people's PR code, so those triggers would let a PR poison what main's own builds restore (CodeQL:
-  # actions/cache-poisoning). A pull_request run writes only its own merge-ref scope. When sync-prs.yml merges main into the PR
-  # branches, each push does start a run here, but GitHub holds it as "action_required" until someone approves it; until then
-  # that PR's preview stays at its previous build.
   pull_request:
     types: [opened, synchronize, reopened, closed]
 
 permissions:
   contents: read
 
-# One group per PR: a new push cancels only that PR's own older run, so no PR is left with a cancelled check because another PR
-# started a run.
 concurrency:
   group: pr-previews-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
-env:
-  NPM_CONFIG_AUDIT: 'false'
-  NPM_CONFIG_FUND: 'false'
-  NPM_CONFIG_PREFER_OFFLINE: 'true'
-
 jobs:
-  list:
-    # Dependabot's PRs are built by the next run of anyone else (sync-prs.yml never pushes to them).
-    if: github.actor != 'dependabot[bot]'
-    runs-on: ubuntu-26.04
+  previews:
     permissions:
+      contents: read
       pull-requests: read
-      actions: read   # looks up earlier builds and runs
-    outputs:
-      build: ${{ steps.list.outputs.build }}
-    steps:
-      # Same-repo PRs only: a fork's code is never built here. For each open PR at its head:
-      #   - a live artifact pr-<n>-<sha> exists: reuse it, build nothing;
-      #   - it is the PR that triggered this run: build it;
-      #   - another run for that head is queued or running, or already failed: leave it (it builds it, or reports the failure);
-      #   - otherwise (no run, cancelled, or held for approval): build it here, so the next deploy has it.
-      - id: list
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          SELF: ${{ github.event.pull_request.number }}
-          RUN_ID: ${{ github.run_id }}
-        run: |
-          prs=$(gh pr list --state open --json number,headRefOid,isCrossRepository \
-            --jq '[.[] | select(.isCrossRepository | not) | {n: .number, sha: .headRefOid}]')
-          build='[]'
-          while read -r n sha; do
-            test -n "$n" || continue
-            # Same filter as the deploy: only a same-repo run's build of that very commit counts.
-            have=$(gh api "repos/$GH_REPO/actions/artifacts?name=pr-$n-$sha&per_page=10" --jq "[.artifacts[]
-              | select((.expired | not) and .workflow_run.head_repository_id == .workflow_run.repository_id
-                       and .workflow_run.head_sha == \"$sha\")] | length")
-            if test "$have" -gt 0; then echo "PR #$n @ ${sha:0:7}: built already"; continue; fi
-            if test "$n" != "$SELF"; then
-              taken=$(gh api "repos/$GH_REPO/actions/workflows/pr-previews.yml/runs?head_sha=$sha&per_page=100" \
-                --jq "[.workflow_runs[] | select(.id != $RUN_ID) | select(.status != \"completed\" or .conclusion == \"failure\")] | length")
-              if test "$taken" -gt 0; then echo "PR #$n @ ${sha:0:7}: another run has it"; continue; fi
-            fi
-            echo "PR #$n @ ${sha:0:7}: building"
-            build=$(jq -c --argjson n "$n" --arg sha "$sha" '. + [{n: $n, sha: $sha}]' <<< "$build")
-          done < <(jq -r '.[] | "\(.n) \(.sha)"' <<< "$prs")
-          echo "build=$build" >> "$GITHUB_OUTPUT"
-
-  # Builds run without any secret, and nothing in this workflow holds one.
-  build:
-    needs: list
-    if: needs.list.outputs.build != '[]'
-    runs-on: ubuntu-26.04
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false   # one PR that does not build must not take the others down
-      matrix:
-        pr: ${{ fromJSON(needs.list.outputs.build) }}
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ matrix.pr.sha }}
-          persist-credentials: false
-
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 24
-          package-manager-cache: false   # nothing here needs a dependency cache; PR code runs in this job
-
-      - run: npm ci
-
-      # VERCEL is unset here, so inject-env.js writes the inert GA placeholder: previews never report into real analytics.
-      - name: Build with the PR's base path
-        run: npm run build -- --base-href "/pr-${{ matrix.pr.n }}/"
-
-      # Named by PR and commit so later runs (and pr-previews-deploy.yml) can find and reuse it. A PR that sits for longer than
-      # the retention is simply rebuilt by the next run.
-      - name: Upload the build
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: pr-${{ matrix.pr.n }}-${{ matrix.pr.sha }}
-          path: dist/v3.yannislam.org/browser
-          if-no-files-found: error
-          retention-days: 14
-
-  # Starts the deploy once this run's builds are done, including when some failed (those PRs get a "no preview" note) and when
-  # nothing needed building (a closed PR drops out). Runs no PR code. Fork and Dependabot runs have a read-only token and
-  # cannot dispatch; the next run of anyone else publishes their state.
-  deploy:
-    needs: [list, build]
-    if: ${{ !cancelled() && needs.list.result == 'success' && needs.build.result != 'cancelled' }}
-    runs-on: ubuntu-26.04
-    timeout-minutes: 5
-    permissions:
-      contents: read   # checks that pr-previews-deploy.yml is on main
-      actions: write   # dispatches it
-    steps:
-      - name: Dispatch the deploy on main
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          # Only until pr-previews-deploy.yml is on main (its first PR): a dispatch needs the file on the default branch.
-          if ! gh api "repos/$GH_REPO/contents/.github/workflows/pr-previews-deploy.yml?ref=main" --silent 2>/dev/null; then
-            echo "::notice::pr-previews-deploy.yml is not on main yet; nothing to dispatch."; exit 0
-          fi
-          gh workflow run pr-previews-deploy.yml --ref main
+      actions: write   # lists runs and artifacts; dispatches pr-previews-deploy.yml
+    uses: AardeYamz/workflows/.github/workflows/preview-build.yml@49a0ea9f9b0eb2279db8d0c111e53b8787c4149d # v1.0.4
+    with:
+      runs-on: ubuntu-26.04
+      node-version: 24
+      install: npm ci --no-audit --no-fund --prefer-offline
+      build: npm run build -- --base-href "/pr-{n}/"
+      output: dist/v3.yannislam.org/browser
+      deploy-workflow: pr-previews-deploy.yml

@@ -1,7 +1,6 @@
 import type { MockedObject } from "vitest";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { HomeComponent } from './home.component';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
@@ -44,7 +43,6 @@ describe('HomeComponent', () => {
         TestBed.configureTestingModule({
             imports: [HomeComponent, RouterTestingModule],
             providers: [
-                provideNoopAnimations(),
                 { provide: SiteConfigService, useValue: configServiceSpy },
                 { provide: AnalyticsService, useValue: analyticsServiceSpy },
                 { provide: ThemeService, useValue: themeServiceSpy },

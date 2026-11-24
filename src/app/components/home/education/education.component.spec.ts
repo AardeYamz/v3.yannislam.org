@@ -2,7 +2,6 @@ import type { MockedObject } from "vitest";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { EducationComponent } from './education.component';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
@@ -38,7 +37,6 @@ describe('EducationComponent', () => {
         TestBed.configureTestingModule({
             imports: [CommonModule, NgbNavModule, AosDirective, LogoFallbackDirective, EducationComponent],
             providers: [
-                provideNoopAnimations(),
                 { provide: AnalyticsService, useValue: analyticsServiceSpy },
                 { provide: SiteConfigService, useValue: configServiceSpy }
             ]
