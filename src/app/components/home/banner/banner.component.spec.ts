@@ -112,11 +112,13 @@ describe('BannerComponent', () => {
         // behaves the same on every browser version.
         function stubWindowNumber(name: 'scrollY' | 'innerHeight', value: number): Mock {
             const original = Object.getOwnPropertyDescriptor(window, name);
-            const spy = vi.fn().mockReturnValue(value);
+            const spy = vi.fn().mockName(name).mockReturnValue(value);
             Object.defineProperty(window, name, { configurable: true, get: () => spy() });
             restoreWindowProps.push(() => {
-                if (original) Object.defineProperty(window, name, original);
-                else delete (window as unknown as Record<string, unknown>)[name];
+                if (original)
+                    Object.defineProperty(window, name, original);
+                else
+                    delete (window as unknown as Record<string, unknown>)[name];
             });
             return spy;
         }
@@ -138,7 +140,7 @@ describe('BannerComponent', () => {
             cancelSpy = vi.spyOn(window, 'cancelAnimationFrame').mockImplementation((id: number) => {
                 rafCallbacks.delete(id);
             });
-            scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
+            scrollToSpy = vi.spyOn(window, 'scrollTo').mockReturnValue(undefined);
             restoreWindowProps = [];
             scrollYSpy = stubWindowNumber('scrollY', 0);
             vi.spyOn(document.documentElement, 'scrollHeight', 'get').mockReturnValue(10800);
@@ -161,7 +163,6 @@ describe('BannerComponent', () => {
             // a TypeError from this cleanup.
             volunteeringEl?.remove();
             restoreWindowProps.forEach((restore) => restore());
-            vi.restoreAllMocks();
         });
 
         // Target = min(volunteering.offsetTop + offsetHeight - innerHeight, maxScroll)
@@ -180,8 +181,8 @@ describe('BannerComponent', () => {
             component.scrollToAbout();
             expect(window.requestAnimationFrame).toHaveBeenCalledTimes(1);
 
-            flushFrame(0);     // first frame establishes the animation's start time
-            flushFrame(3000);  // partway through
+            flushFrame(0); // first frame establishes the animation's start time
+            flushFrame(3000); // partway through
             flushFrame(30000); // finishes (duration is capped at AUTO_SCROLL_MAX_DURATION_MS = 30s)
 
             // scrollToAbout uses the options-object form (window.scrollTo({top,
@@ -190,7 +191,9 @@ describe('BannerComponent', () => {
             // (behavior: 'instant' is required to bypass Bootstrap's
             // `scroll-behavior: smooth` on <html>, which the two-arg form would
             // otherwise inherit).
-            const positions: number[] = scrollToSpy.mock.calls.map((args: unknown[]) => (args[0] as { top: number }).top);
+            const positions: number[] = vi.mocked(scrollToSpy).mock.calls.map((args: unknown[]) => (args[0] as {
+                top: number;
+            }).top);
             expect(positions.length).toBeGreaterThan(0);
             // Every intermediate call moved further toward the target than the
             // last, and never overshot it.
@@ -233,63 +236,63 @@ describe('BannerComponent', () => {
 // for why a full-duration ease reads as jolty on a long scroll. Pure
 // function, no Angular/DOM needed to exercise it.
 describe('scrollEaseProgress', () => {
-  it('starts at 0 and ends exactly at 1, for both short and long durations', () => {
-    for (const duration of [6000, 12000, 30000]) {
-      expect(scrollEaseProgress(0, duration)).toBe(0);
-      expect(scrollEaseProgress(1, duration)).toBe(1);
-    }
-  });
+    it('starts at 0 and ends exactly at 1, for both short and long durations', () => {
+        for (const duration of [6000, 12000, 30000]) {
+            expect(scrollEaseProgress(0, duration)).toBe(0);
+            expect(scrollEaseProgress(1, duration)).toBe(1);
+        }
+    });
 
-  it('is monotonically non-decreasing across the whole animation', () => {
-    const duration = 30000;
-    let previous = scrollEaseProgress(0, duration);
-    for (let i = 1; i <= 1000; i++) {
-      const current = scrollEaseProgress(i / 1000, duration);
-      expect(current).toBeGreaterThanOrEqual(previous);
-      previous = current;
-    }
-  });
+    it('is monotonically non-decreasing across the whole animation', () => {
+        const duration = 30000;
+        let previous = scrollEaseProgress(0, duration);
+        for (let i = 1; i <= 1000; i++) {
+            const current = scrollEaseProgress(i / 1000, duration);
+            expect(current).toBeGreaterThanOrEqual(previous);
+            previous = current;
+        }
+    });
 
-  it('has no velocity discontinuity ("kink") where the ramp meets the cruise segment', () => {
-    // A visible kink would itself read as a jolt even without a long slow
-    // plateau — check the step size just before and after each boundary is
-    // nearly identical, not just that progress itself is continuous.
-    const duration = 30000;
-    const dt = 1 / 100000;
-    const easeMs = 600;
-    const e = easeMs / duration;
+    it('has no velocity discontinuity ("kink") where the ramp meets the cruise segment', () => {
+        // A visible kink would itself read as a jolt even without a long slow
+        // plateau — check the step size just before and after each boundary is
+        // nearly identical, not just that progress itself is continuous.
+        const duration = 30000;
+        const dt = 1 / 100000;
+        const easeMs = 600;
+        const e = easeMs / duration;
 
-    for (const boundary of [e, 1 - e]) {
-      const before = scrollEaseProgress(boundary, duration) - scrollEaseProgress(boundary - dt, duration);
-      const after = scrollEaseProgress(boundary + dt, duration) - scrollEaseProgress(boundary, duration);
-      expect(after).toBeCloseTo(before, 6);
-    }
-  });
+        for (const boundary of [e, 1 - e]) {
+            const before = scrollEaseProgress(boundary, duration) - scrollEaseProgress(boundary - dt, duration);
+            const after = scrollEaseProgress(boundary + dt, duration) - scrollEaseProgress(boundary, duration);
+            expect(after).toBeCloseTo(before, 6);
+        }
+    });
 
-  it('reaches cruising speed within a fixed, short time no matter how long the whole scroll takes', () => {
-    // This is the actual bug being fixed: a full sine ease-in-out spread
-    // across the entire duration has near-zero velocity for a
-    // duration-proportional stretch — on a 30s scroll, over a second at
-    // each end — long enough for individual frame steps to be visible
-    // before the motion "catches up" to a cruising speed, which is what
-    // read as jolty. The fixed-duration ramp should be back at full speed
-    // shortly after its own ~600ms window, regardless of total duration.
-    //
-    // Velocity is measured as a finite-difference step in *progress* over
-    // a small dt, at an absolute elapsed time (700ms — just past the
-    // 600ms ramp) rather than a fraction of the total duration, since
-    // "does this specific point in real time feel like cruising speed
-    // yet" is exactly the perceptual question that matters here.
-    function velocityAt(elapsedMs: number, duration: number): number {
-      const dt = 1; // 1ms finite-difference step
-      const t = elapsedMs / duration;
-      return (scrollEaseProgress(t + dt / duration, duration) - scrollEaseProgress(t, duration)) / dt;
-    }
+    it('reaches cruising speed within a fixed, short time no matter how long the whole scroll takes', () => {
+        // This is the actual bug being fixed: a full sine ease-in-out spread
+        // across the entire duration has near-zero velocity for a
+        // duration-proportional stretch — on a 30s scroll, over a second at
+        // each end — long enough for individual frame steps to be visible
+        // before the motion "catches up" to a cruising speed, which is what
+        // read as jolty. The fixed-duration ramp should be back at full speed
+        // shortly after its own ~600ms window, regardless of total duration.
+        //
+        // Velocity is measured as a finite-difference step in *progress* over
+        // a small dt, at an absolute elapsed time (700ms — just past the
+        // 600ms ramp) rather than a fraction of the total duration, since
+        // "does this specific point in real time feel like cruising speed
+        // yet" is exactly the perceptual question that matters here.
+        function velocityAt(elapsedMs: number, duration: number): number {
+            const dt = 1; // 1ms finite-difference step
+            const t = elapsedMs / duration;
+            return (scrollEaseProgress(t + dt / duration, duration) - scrollEaseProgress(t, duration)) / dt;
+        }
 
-    for (const duration of [6000, 12000, 30000]) {
-      const cruiseVelocity = velocityAt(duration / 2, duration); // definitely mid-cruise
-      const velocityJustAfterRamp = velocityAt(700, duration);
-      expect(velocityJustAfterRamp).toBeCloseTo(cruiseVelocity, 5);
-    }
-  });
+        for (const duration of [6000, 12000, 30000]) {
+            const cruiseVelocity = velocityAt(duration / 2, duration); // definitely mid-cruise
+            const velocityJustAfterRamp = velocityAt(700, duration);
+            expect(velocityJustAfterRamp).toBeCloseTo(cruiseVelocity, 5);
+        }
+    });
 });
