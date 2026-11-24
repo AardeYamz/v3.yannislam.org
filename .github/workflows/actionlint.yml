@@ -15,4 +15,4 @@ permissions:
 
 jobs:
   actionlint:
-    uses: AardeYamz/workflows/.github/workflows/actionlint.yml@fb34c430ca68e310d24b586534003a47643d4b07 # v1.1.0
+    uses: AardeYamz/workflows/.github/workflows/actionlint.yml@0bd932fd360647971c045606af91173468a16fe4 # v1.1.2
