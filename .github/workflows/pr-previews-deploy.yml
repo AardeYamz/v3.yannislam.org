@@ -31,13 +31,18 @@ jobs:
       deploy-env: |
         VERCEL_ORG_ID=${{ vars.VERCEL_ORG_ID }}
         VERCEL_PROJECT_ID=${{ vars.VERCEL_PREVIEWS_PROJECT_ID }}
-      # Index page listing what is live, so the bare host is not a 404. The markup is .github/pr-previews/index.html, styled with
-      # the shared yl-theme at the version this repo pins in theme.json; only the version and the list are filled in here.
+      # Index page: a sortable, filterable AG Grid table of every live preview, so the bare host is not a 404. The markup is
+      # .github/pr-previews/index.html, styled with the shared yl-theme at the version this repo pins in theme.json. Here the
+      # theme version is filled in and prs.json (number, title, author, branch, draft, sha, updated) is written for the grid.
       stage-command: |
-        sort -n site/.previews | while read -r n sha; do echo "    <li><a href=\"/pr-$n/\">#$n</a> <small>$sha</small></li>"; done > "$RUNNER_TEMP/items.html"
-        test -s site/.previews || echo '    <p>No open pull requests.</p>' > "$RUNNER_TEMP/items.html"
+        gh pr list --state open --limit 200 --json number,title,author,headRefName,isDraft,updatedAt,url > "$RUNNER_TEMP/open.json"
+        jq -Rn --slurpfile open "$RUNNER_TEMP/open.json" '
+          [inputs | split(" ") | {n: (.[0] | tonumber), sha: .[1]}] as $live
+          | [$live[] | . as $l | $open[0][] | select(.number == $l.n)
+             | {number, title, author: .author.login, branch: .headRefName, draft: .isDraft, sha: $l.sha, updated: .updatedAt, url}]
+        ' < site/.previews > site/prs.json
         theme=$(jq -r .version theme.json)
-        sed -e "s|{{THEME}}|$theme|g" -e "/{{ITEMS}}/{r $RUNNER_TEMP/items.html" -e 'd}' .github/pr-previews/index.html > site/index.html
+        sed "s|{{THEME}}|$theme|g" .github/pr-previews/index.html > site/index.html
         # Previews are for review, not for search engines or caches. Each PR's own vercel.json is not used (only this one applies).
         cat > site/vercel.json <<'JSON'
         {
