@@ -383,17 +383,3 @@ jobs:
             test-results/
             blob-report/
           retention-days: 7
-
-  # Diffs the lockfile on every PR and fails on a newly-introduced
-  # known-vulnerable or disallowed-license package, before it merges.
-  # Complements Dependabot (reactive: opens a PR after an advisory exists)
-  # and Aikido (dashboard PR gating, reachability triage) rather than duplicating
-  # either.
-  dependency-review:
-    if: github.event_name == 'pull_request'
-    permissions:
-      contents: read
-    uses: AardeYamz/workflows/.github/workflows/dependency-review.yml@fb34c430ca68e310d24b586534003a47643d4b07 # v1.1.0
-    with:
-      fail-on-severity: high
-      runs-on: ubuntu-26.04

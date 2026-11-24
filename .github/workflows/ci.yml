@@ -1,0 +1,36 @@
+name: CI
+
+# One entry point for the repo's static checks, as jobs of one run, with the shared ci.yml in AardeYamz/workflows:
+# diagram lint (mermaid and D2), actionlint, zizmor and dependency review. CodeQL stays on GitHub's default setup, and
+# the build, unit tests, Lighthouse and e2e stay in build-test.yml (they share a build artifact and a test matrix, which
+# ci.yml's single `test` command cannot express). Check names are `ci / <job>`.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Mondays, 06:30 UTC: after Dependabot's 06:00 window, so the weekly scan sees whatever it just opened.
+    - cron: '30 6 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  # Scoped to PRs: cancelling an in-progress push-to-main run would leave main without a green run of its own.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    permissions:
+      contents: read
+      pull-requests: read     # lists a PR's changed files
+      security-events: write  # zizmor uploads SARIF to code scanning
+      actions: read
+    uses: AardeYamz/workflows/.github/workflows/ci.yml@6eceb21ea6ea5c57d36a5c60dda2229758fa86ab # v1.1.1
+    with:
+      d2: true
+      dependency-review: true
+      dependency-review-severity: high
+      runs-on: ubuntu-26.04  # public repo: GitHub-hosted runner
