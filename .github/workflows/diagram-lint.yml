@@ -15,6 +15,6 @@ permissions:
 
 jobs:
   diagrams:
-    uses: AardeYamz/workflows/.github/workflows/diagram-lint.yml@000181f6b0cab9ecd39b05f483a44309ac58c581 # v1.0.0
+    uses: AardeYamz/workflows/.github/workflows/diagram-lint.yml@fb34c430ca68e310d24b586534003a47643d4b07 # v1.1.0
     with:
       d2: true
