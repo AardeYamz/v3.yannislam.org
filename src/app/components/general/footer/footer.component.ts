@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { fadeStaggerAnimation } from 'src/app/animations/fade-stagger.animation';
+import { FadeStaggerDirective } from 'src/app/directives/fade-stagger/fade-stagger.directive';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
@@ -12,11 +12,8 @@ import { Contact, FooterConfig } from 'src/app/services/site-config/site-config.
     selector: 'app-footer',
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss'],
-    animations: [
-        fadeStaggerAnimation('animateFooter', 'translateY(100%)')
-    ],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [LinkPreviewDirective, DatePipe, IconComponent],
+    imports: [LinkPreviewDirective, DatePipe, IconComponent, FadeStaggerDirective],
 })
 export class FooterComponent {
     analyticsService = inject(AnalyticsService);

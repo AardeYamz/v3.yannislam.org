@@ -9,7 +9,7 @@
   <!-- Desktop (>=992px) swaps the falling logos for the looping mark; both
        are in the markup and CSS shows one, so SSR and hydration agree. -->
   <app-logo-loop></app-logo-loop>
-  <div [@bannerTrigger] class="container">
+  <div appFadeStagger="translateX(-50px)" class="container">
     <div class="section-box-banner">
       <div class="content">
         <div>

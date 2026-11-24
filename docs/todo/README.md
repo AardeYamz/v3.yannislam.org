@@ -41,6 +41,11 @@ Status as of 2026-10-31.
    Phases 1–3 have shipped. Open: Phase 4 (`accessibility.spec.ts` with axe;
    visual regression, deferred).
 
+7. **[`pr-preview-build-dedup.md`](pr-preview-build-dedup.md)** (2026-11-22).
+   Steps 1–2 have shipped (builds reused, deploy debounced). Open: Step 3,
+   prebuilt `v3-prs` deploys (#250), and the decision on skipping Vercel
+   previews of sync-prs merge commits (#251).
+
 ## Not tied to a plan
 
 - Decide whether `v3.yannislam.org.code-workspace` should be committed or
