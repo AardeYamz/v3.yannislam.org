@@ -36,11 +36,7 @@ jobs:
       # theme version is filled in and prs.json (number, title, author, branch, draft, sha, updated) is written for the grid.
       stage-command: |
         gh pr list --state open --limit 200 --json number,title,author,headRefName,isDraft,updatedAt,url > "$RUNNER_TEMP/open.json"
-        jq -Rn --slurpfile open "$RUNNER_TEMP/open.json" '
-          [inputs | split(" ") | {n: (.[0] | tonumber), sha: .[1]}] as $live
-          | [$live[] | . as $l | $open[0][] | select(.number == $l.n)
-             | {number, title, author: .author.login, branch: .headRefName, draft: .isDraft, sha: $l.sha, updated: .updatedAt, url}]
-        ' < site/.previews > site/prs.json
+        jq -Rn --slurpfile open "$RUNNER_TEMP/open.json" -f .github/pr-previews/prs.jq < site/.previews > site/prs.json
         theme=$(jq -r .version theme.json)
         sed "s|{{THEME}}|$theme|g" .github/pr-previews/index.html > site/index.html
         # Previews are for review, not for search engines or caches. Each PR's own vercel.json is not used (only this one applies).
