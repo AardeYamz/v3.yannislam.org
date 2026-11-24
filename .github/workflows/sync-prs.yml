@@ -4,7 +4,7 @@ name: Merge main into PRs
 # AardeYamz/workflows (see its header: conflict comments, skipped fork, Dependabot and workflow-change merges).
 # A push made with GITHUB_TOKEN does not trigger pull_request workflows, so the new head would sit with no checks. The
 # exception is workflow_dispatch, which this token may send and which reports its checks on the branch head (and so on
-# the PR), so the template re-runs Build & Test and Security on each branch it updates. The dispatched run skips
+# the PR), so the template re-runs Build & Test and CI on each branch it updates. The dispatched run skips
 # dependency-review, which is pull_request-only; the merge only adds what main has.
 on:
   push:
@@ -26,4 +26,4 @@ jobs:
       actions: write        # dispatches CI on a branch it just updated
     uses: AardeYamz/workflows/.github/workflows/sync-prs.yml@0bd932fd360647971c045606af91173468a16fe4 # v1.1.2
     with:
-      dispatch-workflows: build-test.yml security.yml
+      dispatch-workflows: build-test.yml ci.yml
