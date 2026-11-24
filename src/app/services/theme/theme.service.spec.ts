@@ -6,158 +6,160 @@ import { ThemeService } from './theme.service';
 const STORAGE_KEY = 'yl-theme-mode';
 
 function stubMatchMedia(matches: boolean): void {
-  spyOn(window, 'matchMedia').and.returnValue({
-    matches,
-    addEventListener: () => { },
-    removeEventListener: () => { },
-  } as unknown as MediaQueryList);
+    vi.spyOn(window, 'matchMedia').mockReturnValue({
+        matches,
+        addEventListener: () => { },
+        removeEventListener: () => { },
+    } as unknown as MediaQueryList);
 }
 
 describe('ThemeService', () => {
-  let themeColorMeta: HTMLMetaElement;
+    let themeColorMeta: HTMLMetaElement;
 
-  beforeEach(() => {
-    localStorage.removeItem(STORAGE_KEY);
-    document.documentElement.removeAttribute('data-theme');
+    beforeEach(() => {
+        localStorage.removeItem(STORAGE_KEY);
+        document.documentElement.removeAttribute('data-theme');
 
-    themeColorMeta = document.createElement('meta');
-    themeColorMeta.setAttribute('name', 'theme-color');
-    document.head.appendChild(themeColorMeta);
-  });
-
-  afterEach(() => {
-    localStorage.removeItem(STORAGE_KEY);
-    document.documentElement.removeAttribute('data-theme');
-    themeColorMeta.remove();
-  });
-
-  it('defaults to "default" mode when nothing is stored and the OS has no light preference', () => {
-    stubMatchMedia(false);
-
-    const service = TestBed.inject(ThemeService);
-
-    expect(service.mode()).toBe('default');
-    expect(service.logoVariant()).toBe('clearcolor');
-  });
-
-  it('resolves to "light" when the OS prefers light and nothing is stored', () => {
-    stubMatchMedia(true);
-
-    const service = TestBed.inject(ThemeService);
-
-    expect(service.mode()).toBe('light');
-    expect(service.logoVariant()).toBe('black');
-  });
-
-  it('prefers a stored choice over the current OS preference', () => {
-    localStorage.setItem(STORAGE_KEY, 'dark');
-    stubMatchMedia(true); // OS says "light", but the stored choice should win
-
-    const service = TestBed.inject(ThemeService);
-
-    expect(service.mode()).toBe('dark');
-    expect(service.logoVariant()).toBe('white');
-  });
-
-  it('ignores a stored value that is not one of the known modes', () => {
-    localStorage.setItem(STORAGE_KEY, 'not-a-real-mode');
-    stubMatchMedia(false);
-
-    const service = TestBed.inject(ThemeService);
-
-    expect(service.mode()).toBe('default');
-  });
-
-  it('cycles default -> light -> dark -> default and persists each choice', () => {
-    stubMatchMedia(false);
-    const service = TestBed.inject(ThemeService);
-
-    expect(service.mode()).toBe('default');
-
-    service.cycle();
-    expect(service.mode()).toBe('light');
-    expect(localStorage.getItem(STORAGE_KEY)).toBe('light');
-
-    service.cycle();
-    expect(service.mode()).toBe('dark');
-    expect(localStorage.getItem(STORAGE_KEY)).toBe('dark');
-
-    service.cycle();
-    expect(service.mode()).toBe('default');
-    expect(localStorage.getItem(STORAGE_KEY)).toBe('default');
-  });
-
-  it('applies the data-theme attribute and theme-color meta tag to match the mode', () => {
-    stubMatchMedia(false);
-    const service = TestBed.inject(ThemeService);
-    const appRef = TestBed.inject(ApplicationRef);
-    appRef.tick();
-
-    expect(document.documentElement.hasAttribute('data-theme')).toBeFalse();
-    expect(themeColorMeta.getAttribute('content')).toBe('#131f31');
-
-    service.cycle(); // -> light
-    appRef.tick();
-
-    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
-    expect(themeColorMeta.getAttribute('content')).toBe('#f4f1ea');
-
-    service.cycle(); // -> dark
-    appRef.tick();
-
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
-    expect(themeColorMeta.getAttribute('content')).toBe('#05070c');
-  });
-
-  it('points both favicon links at the file for the mode', () => {
-    stubMatchMedia(false);
-    const links = ['favicon.svg', 'favicon.ico'].map((href) => {
-      const link = document.createElement('link');
-      link.rel = 'icon';
-      link.setAttribute('href', href);
-      document.head.appendChild(link);
-      return link;
+        themeColorMeta = document.createElement('meta');
+        themeColorMeta.setAttribute('name', 'theme-color');
+        document.head.appendChild(themeColorMeta);
     });
-    const service = TestBed.inject(ThemeService);
-    const appRef = TestBed.inject(ApplicationRef);
-    const hrefs = () => links.map((l) => l.getAttribute('href'));
-    appRef.tick();
-    expect(hrefs()).toEqual(['favicon.svg', 'favicon.ico']);
 
-    service.cycle(); // -> light
-    appRef.tick();
-    expect(hrefs()).toEqual(['favicon-black.svg', 'favicon-black.ico']);
-
-    service.cycle(); // -> dark
-    appRef.tick();
-    expect(hrefs()).toEqual(['favicon-white.svg', 'favicon-white.ico']);
-
-    service.cycle(); // -> default
-    appRef.tick();
-    expect(hrefs()).toEqual(['favicon.svg', 'favicon.ico']);
-    links.forEach((l) => l.remove());
-  });
-
-  // The service mirrors --md-sys-color-surface / --md-sys-color-primary as literals (the browser chrome colour and the logo fallback can't read
-  // CSS custom properties). The tokens are fetched from the yl-theme project (theme.json), so this fails if a theme bump
-  // moves a colour and these literals were not updated.
-  (['default', 'light', 'dark'] as const).forEach((mode) => {
-    it(`mirrors the fetched --md-sys-color-surface and --md-sys-color-primary tokens in "${mode}" mode`, () => {
-      localStorage.setItem(STORAGE_KEY, mode);
-      stubMatchMedia(false);
-      const service = TestBed.inject(ThemeService);
-      TestBed.inject(ApplicationRef).tick();
-
-      const tokens = getComputedStyle(document.documentElement);
-      expect(themeColorMeta.getAttribute('content')).toBe(tokens.getPropertyValue('--md-sys-color-surface').trim().toLowerCase());
-      expect(service.accentColor()).toBe(tokens.getPropertyValue('--md-sys-color-primary').trim().toLowerCase());
+    afterEach(() => {
+        localStorage.removeItem(STORAGE_KEY);
+        document.documentElement.removeAttribute('data-theme');
+        themeColorMeta.remove();
     });
-  });
 
-  it('still constructs when localStorage throws', () => {
-    stubMatchMedia(false);
-    spyOn(Storage.prototype, 'getItem').and.throwError('blocked');
-    const service = TestBed.inject(ThemeService);
-    expect(service.mode()).toBe('default');
-  });
+    it('defaults to "default" mode when nothing is stored and the OS has no light preference', () => {
+        stubMatchMedia(false);
+
+        const service = TestBed.inject(ThemeService);
+
+        expect(service.mode()).toBe('default');
+        expect(service.logoVariant()).toBe('clearcolor');
+    });
+
+    it('resolves to "light" when the OS prefers light and nothing is stored', () => {
+        stubMatchMedia(true);
+
+        const service = TestBed.inject(ThemeService);
+
+        expect(service.mode()).toBe('light');
+        expect(service.logoVariant()).toBe('black');
+    });
+
+    it('prefers a stored choice over the current OS preference', () => {
+        localStorage.setItem(STORAGE_KEY, 'dark');
+        stubMatchMedia(true); // OS says "light", but the stored choice should win
+
+        const service = TestBed.inject(ThemeService);
+
+        expect(service.mode()).toBe('dark');
+        expect(service.logoVariant()).toBe('white');
+    });
+
+    it('ignores a stored value that is not one of the known modes', () => {
+        localStorage.setItem(STORAGE_KEY, 'not-a-real-mode');
+        stubMatchMedia(false);
+
+        const service = TestBed.inject(ThemeService);
+
+        expect(service.mode()).toBe('default');
+    });
+
+    it('cycles default -> light -> dark -> default and persists each choice', () => {
+        stubMatchMedia(false);
+        const service = TestBed.inject(ThemeService);
+
+        expect(service.mode()).toBe('default');
+
+        service.cycle();
+        expect(service.mode()).toBe('light');
+        expect(localStorage.getItem(STORAGE_KEY)).toBe('light');
+
+        service.cycle();
+        expect(service.mode()).toBe('dark');
+        expect(localStorage.getItem(STORAGE_KEY)).toBe('dark');
+
+        service.cycle();
+        expect(service.mode()).toBe('default');
+        expect(localStorage.getItem(STORAGE_KEY)).toBe('default');
+    });
+
+    it('applies the data-theme attribute and theme-color meta tag to match the mode', () => {
+        stubMatchMedia(false);
+        const service = TestBed.inject(ThemeService);
+        const appRef = TestBed.inject(ApplicationRef);
+        appRef.tick();
+
+        expect(document.documentElement.hasAttribute('data-theme')).toBe(false);
+        expect(themeColorMeta.getAttribute('content')).toBe('#131f31');
+
+        service.cycle(); // -> light
+        appRef.tick();
+
+        expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+        expect(themeColorMeta.getAttribute('content')).toBe('#f4f1ea');
+
+        service.cycle(); // -> dark
+        appRef.tick();
+
+        expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+        expect(themeColorMeta.getAttribute('content')).toBe('#05070c');
+    });
+
+    it('points both favicon links at the file for the mode', () => {
+        stubMatchMedia(false);
+        const links = ['favicon.svg', 'favicon.ico'].map((href) => {
+            const link = document.createElement('link');
+            link.rel = 'icon';
+            link.setAttribute('href', href);
+            document.head.appendChild(link);
+            return link;
+        });
+        const service = TestBed.inject(ThemeService);
+        const appRef = TestBed.inject(ApplicationRef);
+        const hrefs = () => links.map((l) => l.getAttribute('href'));
+        appRef.tick();
+        expect(hrefs()).toEqual(['favicon.svg', 'favicon.ico']);
+
+        service.cycle(); // -> light
+        appRef.tick();
+        expect(hrefs()).toEqual(['favicon-black.svg', 'favicon-black.ico']);
+
+        service.cycle(); // -> dark
+        appRef.tick();
+        expect(hrefs()).toEqual(['favicon-white.svg', 'favicon-white.ico']);
+
+        service.cycle(); // -> default
+        appRef.tick();
+        expect(hrefs()).toEqual(['favicon.svg', 'favicon.ico']);
+        links.forEach((l) => l.remove());
+    });
+
+    // The service mirrors --md-sys-color-surface / --md-sys-color-primary as literals (the browser chrome colour and the logo fallback can't read
+    // CSS custom properties). The tokens are fetched from the yl-theme project (theme.json), so this fails if a theme bump
+    // moves a colour and these literals were not updated.
+    (['default', 'light', 'dark'] as const).forEach((mode) => {
+        it(`mirrors the fetched --md-sys-color-surface and --md-sys-color-primary tokens in "${mode}" mode`, () => {
+            localStorage.setItem(STORAGE_KEY, mode);
+            stubMatchMedia(false);
+            const service = TestBed.inject(ThemeService);
+            TestBed.inject(ApplicationRef).tick();
+
+            const tokens = getComputedStyle(document.documentElement);
+            expect(themeColorMeta.getAttribute('content')).toBe(tokens.getPropertyValue('--md-sys-color-surface').trim().toLowerCase());
+            expect(service.accentColor()).toBe(tokens.getPropertyValue('--md-sys-color-primary').trim().toLowerCase());
+        });
+    });
+
+    it('still constructs when localStorage throws', () => {
+        stubMatchMedia(false);
+        vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+            throw new Error('blocked');
+        });
+        const service = TestBed.inject(ThemeService);
+        expect(service.mode()).toBe('default');
+    });
 });
