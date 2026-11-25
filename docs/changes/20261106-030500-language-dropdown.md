@@ -7,3 +7,5 @@ flag on each click. It restores the menu that `7a2c6a35` had replaced, so a visi
 menu closes on Escape, on a click outside it, and after a choice; the current language is marked `aria-current`.
 
 The header component's style budget warning is raised from 7 kB to 7.5 kB (the dropdown styles put it 6 bytes over).
+
+The dropdown rows show only the flag; the language's own name is the hover tooltip (`title`) and the accessible name (`aria-label`). The current language's row is shaded instead of bold.

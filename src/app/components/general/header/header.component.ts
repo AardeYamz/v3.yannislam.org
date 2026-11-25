@@ -7,8 +7,8 @@ import { IconComponent } from 'src/app/icons/icon.component';
 import { FadeStaggerDirective } from 'src/app/directives/fade-stagger/fade-stagger.directive';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { ResumeService } from 'src/app/services/resume/resume.service';
-import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { loadConfig, loadedConfig } from 'src/app/services/site-config/config-loader';
+import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { SiteConfigService } from 'src/app/services/site-config/site-config.service';
 import { MenuItem } from 'src/app/services/site-config/site-config.model';
 import { ThemeService } from 'src/app/services/theme/theme.service';
@@ -45,7 +45,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   // otherwise catch -- a signal write is what actually re-renders the menu
   // in that case.
   readonly responsiveMenuVisible = signal(false);
-
   // Getters, not fields: the language can change while the header is mounted.
   get menu(): MenuItem[] { return this.configService.menu; }
   get ui() { return this.configService.ui.header; }
