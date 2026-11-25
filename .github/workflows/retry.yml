@@ -1,0 +1,19 @@
+name: Retry failed runs
+
+# Re-runs the failed jobs of a listed workflow when a job was lost with its self-hosted runner (Docker restart, reboot,
+# lost contact), up to 3 attempts with backoff. A real failure is not re-run. Shared logic: AardeYamz/workflows retry-failed.yml.
+# workflow_run runs the default branch's copy of this file and only calls `gh run rerun`; no PR code is checked out.
+on: # zizmor: ignore[dangerous-triggers]
+  workflow_run:
+    workflows: ["Build & Test", "CI", "PR previews deploy", "PR previews", "Vercel build warnings"]
+    types: [completed]
+
+permissions: {}
+
+jobs:
+  retry:
+    permissions:
+      actions: write   # re-runs the failed jobs
+    uses: AardeYamz/workflows/.github/workflows/retry-failed.yml@29925d0db71b5298f59bf6e776a78917ccae27d3 # v1.2.2
+    with:
+      max-attempts: 3
