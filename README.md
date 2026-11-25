@@ -4,7 +4,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node](https://img.shields.io/badge/Node-24%20%7C%2026-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Build & Test](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/build-test.yml/badge.svg)](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/build-test.yml)
-[![Security](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/security.yml/badge.svg)](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/security.yml)
+[![CI](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/ci.yml/badge.svg)](https://github.com/AardeYamz/v3.yannislam.org/actions/workflows/ci.yml)
 [![Dependabot](https://img.shields.io/badge/dependencies-Dependabot-025E8C?logo=dependabot&logoColor=white)](.github/dependabot.yml)
 [![Playwright](https://img.shields.io/badge/E2E-Playwright%201.64-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
@@ -99,6 +99,10 @@ to an inert placeholder and warns.
   proxies to Vercel, and handles email routing for `@yannislam.org`
 
 ## Architecture
+
+The whole system on one page, from the theme fetch and build hooks through the app to CI and delivery: [`docs/diagrams/architecture.svg`](docs/diagrams/architecture.svg) (source: [`architecture.d2`](docs/diagrams/architecture.d2), in [D2](https://d2lang.com)). The diagrams below zoom in on each part.
+
+[![Architecture overview](docs/diagrams/architecture.svg)](docs/diagrams/architecture.svg)
 
 ```mermaid
 flowchart TB
@@ -329,15 +333,14 @@ flowchart TB
         Build["build"]
         Lighthouse["lighthouse"]
         E2E["e2e"]
-        DepReview["dependency-review"]
         Build --> Lighthouse & E2E
     end
 
-    PR --> Sec["Security"]
-    Push --> Sec
-    Cron --> Sec
+    PR --> Checks["CI"]
+    Push --> Checks
+    Cron --> Checks
 
-    CI & Sec --> Gate{"All green?"}
+    CI & Checks --> Gate{"All green?"}
     Gate -->|"no"| Fix["Fix and re-push"]
     Fix -.-> PR
     Gate -->|"yes"| Merge["Merge to main"]
@@ -359,7 +362,6 @@ flowchart TB
 | `build` | Node 24.x | | `npm run build`, prerendering every route; uploads the output as an artifact |
 | `lighthouse` | `mobile`, `desktop` | `build` | Lighthouse CI against the build artifact |
 | `e2e` | 2 shards, `fail-fast: false` | `build` | Playwright against the build artifact (browsers cached on `package-lock.json`). PRs run Chromium and a mobile (Pixel 7) context and skip `@external`; pushes to `main` and the Monday run add Firefox and WebKit |
-| `dependency-review` | PRs only | | `actions/dependency-review-action`, fails on `high` or above |
 
 A newer push to the same PR cancels the older run
 (`concurrency: cancel-in-progress`). Pushes to `main` are never cancelled.
@@ -369,13 +371,13 @@ A newer push to the same PR cancels the older run
 | Workflow | Trigger | What it does |
 |---|---|---|
 | [Build & Test](.github/workflows/build-test.yml) | PR to `main`/`master`/`develop`; push to `main`; Mondays 07:00 UTC; manual | The jobs above |
-| [Security](.github/workflows/security.yml) | Same, Mondays 06:30 UTC | Lints the workflow files with zizmor (shared template) |
-| [Diagram lint](.github/workflows/diagram-lint.yml) | PR or push to `main` touching `*.md` or `*.d2`; manual | Lints mermaid blocks, `.d2` files and d2 blocks with the shared linters (shared template) |
+| [CI](.github/workflows/ci.yml) | PR; push to `main`; Mondays 06:30 UTC; manual | One run of the shared `ci.yml`: diagram lint (mermaid and D2), actionlint, zizmor and dependency review (shared template). Checks are named `ci / <job>` |
 | [Release](.github/workflows/release.yml) | Vercel `deployment_status` | On a successful Production deploy of `main`, tags `vYYYYMMDD-HHMMSS` and creates a release for that commit |
 | [Merge main into PRs](.github/workflows/sync-prs.yml) | Push to `main`; manual | Merges `main` into each open PR that is behind; comments once on conflicts; skips fork and Dependabot PRs, and merges that would change `.github/workflows/` (shared template) |
 | [PR previews](.github/workflows/pr-previews.yml) | PR open/sync/reopen/close | Builds the PR (and any open PR nobody has built yet) with `--base-href /pr-N/`, kept as artifact `pr-N-<sha>` for reuse |
 | [PR previews deploy](.github/workflows/pr-previews-deploy.yml) | Dispatched by PR previews; manual | Publishes every open same-repo PR's newest build together at `v3.yannislam.org/pr-N/` (separate static Vercel project), one deploy at a time, and comments the link |
 | [Dependabot auto-merge](.github/workflows/dependabot-auto-merge.yml) | `pull_request_target` | Waits for checks, then merges Dependabot patch/minor bumps and dev-only majors; production majors wait for review (shared template) |
+| [Retry failed runs](.github/workflows/retry.yml) | Build & Test, CI, PR previews, PR previews deploy or Vercel build warnings finishing with a failure | Re-runs the failed jobs (up to 3 attempts, with backoff) only if one was lost with its runner (shutdown, lost contact); a real failure is left alone (shared template) |
 | [Vercel build warnings](.github/workflows/vercel-build-warnings.yml) | Vercel `deployment_status` | Fetches a preview deploy's Vercel build log and keeps its warning/error lines in a sticky PR comment (needs `VERCEL_TOKEN`) |
 | [Dependabot](.github/dependabot.yml) | Mondays 06:00 UTC | Weekly `npm` and `github-actions` updates |
 | CodeQL | Push, PR | GitHub default setup (no workflow file) |
@@ -383,7 +385,7 @@ A newer push to the same PR cancels the older run
 
 Workflows marked *shared template* are short callers of the reusable workflows in the public [AardeYamz/workflows](https://github.com/AardeYamz/workflows) repo, pinned by SHA: change the logic there, not here.
 
-The Monday jobs are staggered (Dependabot 06:00, Security 06:30, Build & Test
+The Monday jobs are staggered (Dependabot 06:00, CI 06:30, Build & Test
 07:00) so each sees what the one before it produced.
 
 ### DNS and delivery
