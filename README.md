@@ -100,6 +100,10 @@ to an inert placeholder and warns.
 
 ## Architecture
 
+The whole system on one page, from the theme fetch and build hooks through the app to CI and delivery: [`docs/diagrams/architecture.svg`](docs/diagrams/architecture.svg) (source: [`architecture.d2`](docs/diagrams/architecture.d2), in [D2](https://d2lang.com)). The diagrams below zoom in on each part.
+
+[![Architecture overview](docs/diagrams/architecture.svg)](docs/diagrams/architecture.svg)
+
 ```mermaid
 flowchart TB
     Main["main.ts + app.config.ts"] --> App["AppComponent"]

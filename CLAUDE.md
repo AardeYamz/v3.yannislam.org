@@ -172,3 +172,5 @@ npm ci --prefix ../workflows/d2-lint && node ../workflows/d2-lint/lint.mjs
 ```
 
 Each prints `file:line` and the parser's message for each broken diagram. Changes to the linters go in `AardeYamz/workflows`, not here.
+
+The architecture overview is `docs/diagrams/architecture.d2`, rendered to `architecture.svg` next to it (README links both). CI lints the source but not the SVG, so when the architecture changes, update the `.d2`, re-render (command in its header) and commit both.
