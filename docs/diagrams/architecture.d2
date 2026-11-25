@@ -1,0 +1,136 @@
+# v3.yannislam.org architecture overview.
+# Source of truth for docs/diagrams/architecture.svg; re-render after editing, with the d2 CLI:
+#   d2 --layout elk docs/diagrams/architecture.d2 docs/diagrams/architecture.svg
+# (or D2.js, @terrastruct/d2, which AardeYamz/workflows' d2-lint already installs). CI lints this file (diagram-lint),
+# but does not check that the SVG is up to date: commit both together.
+# Keep in step with the Architecture, CI/CD and DNS sections of README.md.
+
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 0
+  }
+}
+
+direction: down
+
+classes: {
+  svc: {style: {fill: "#e8f0fe"; stroke: "#1a73e8"}}
+  store: {shape: cylinder; style: {fill: "#fef7e0"; stroke: "#f9ab00"}}
+  ext: {style: {fill: "#f1f3f4"; stroke: "#5f6368"; stroke-dash: 3}}
+  job: {style: {fill: "#e6f4ea"; stroke: "#188038"}}
+}
+
+yl-theme: "yl-theme (separate repo)" {
+  class: ext
+  release: "Timestamped release\nyl-tokens.css, logos,\nlogo-geometry.json, favicons" {class: store}
+  host: "theme.yannislam.org\n(Vercel project)"
+  release -> host
+}
+
+build: "Build pipeline (npm pre*/post* hooks)" {
+  pin: "theme.json\nversion + SHA-256" {class: store}
+  fetch: "scripts/fetch-theme.js"
+  generated: "src/generated/\n(git-ignored)" {class: store}
+  resume: "scripts/generate-resume-manifest.js"
+  manifest: "resume-manifest.json" {class: store}
+  ng: "ng build\nprerender every route\n(@angular/ssr)"
+  inject: "scripts/inject-env.js\n%GOOGLE_ANALYTICS_ID%"
+  dist: "dist/v3.yannislam.org/browser\nstatic HTML" {class: store}
+
+  pin -> fetch
+  fetch -> generated: verify, then write
+  resume -> manifest
+  generated -> ng: angular.json styles + assets
+  manifest -> ng
+  ng -> inject -> dist
+}
+
+yl-theme.host -> build.fetch: download pinned version
+
+app: "Angular 22 app (standalone, signals, zoneless)" {
+  main: "main.ts + app.config.ts"
+  root: AppComponent
+
+  shell: "App shell" {
+    loading: LoadingScreen
+    header: Header
+    outlet: router-outlet {shape: hexagon}
+    footer: Footer
+  }
+
+  pages: "Routes (app.routes.ts = app.routes.server.ts)" {
+    home: "'' Home (eager)"
+    projects: "projects, projects/highschool (lazy)"
+    aardeyamz: "aardeyamz (lazy)"
+  }
+
+  sections: "Home sections" {
+    banner: "Banner\nTypewriter, FloatingLogos, LogoLoop"
+    about: About
+    education: Education
+    work: "WorkHistory x2\n(work, volunteering)"
+    contact: Contact
+  }
+
+  services: Services {
+    config: SiteConfigService {class: svc}
+    theme: ThemeService {class: svc}
+    analytics: AnalyticsService {class: svc}
+    resumesvc: ResumeService {class: svc}
+  }
+
+  configjson: "config.json\n(all page copy)" {class: store}
+
+  main -> root
+  root -> shell.loading
+  root -> shell.header
+  root -> shell.outlet
+  root -> shell.footer
+  shell.outlet -> pages.home
+  shell.outlet -> pages.projects
+  shell.outlet -> pages.aardeyamz
+  pages.home -> sections
+
+  configjson -> services.config
+  services.config -> shell: copy
+  services.config -> pages: copy
+  services.config -> sections: copy
+  services.theme -> shell: "[data-theme] on <html>"
+  services.resumesvc -> shell.header: resume link
+}
+
+build.generated -> app.services.theme: "--md-sys-color-* tokens" {style.stroke-dash: 3}
+build.manifest -> app.services.resumesvc {style.stroke-dash: 3}
+build.ng <- app: compiles {style.stroke-dash: 3}
+
+ci: "GitHub Actions" {
+  bt: "Build & Test\nunit-tests, build,\nlighthouse, e2e,\ndependency-review" {class: job}
+  sec: "Security (zizmor)" {class: job}
+  previews: "PR previews\nprs.yannislam.org/pr-N/" {class: job}
+  sync: "Merge main into PRs" {class: job}
+  release: "Release\ntag + notes" {class: job}
+  dependabot: "Dependabot\n+ auto-merge" {class: job}
+}
+
+ci.bt -> build.ng: runs
+
+hosting: "Delivery" {
+  vercel: "Vercel\nbuild + deploy\n(vercel.json headers, CSP)"
+  edge: Vercel Edge
+  cf: "Cloudflare DNS\nyannislam.org"
+  mail: "Cloudflare Email Routing" {class: ext}
+  vercel -> edge
+  cf -> edge: proxied A/CNAME
+  cf -> mail
+}
+
+build.dist -> hosting.vercel: deploy
+hosting.vercel -> ci.release: deployment_status
+
+visitor: Visitor {shape: person}
+visitor -> hosting.cf: DNS lookup
+hosting.edge -> visitor: serves site
+
+ga: "Google Analytics (gtag)" {class: ext}
+app.services.analytics -> ga: custom events
