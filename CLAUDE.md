@@ -168,3 +168,16 @@ Date: 2026-08-11 01:39:39
   section appended to the existing file (see the "Fixed: …" sections of
   `20260811-013939-ssr-prerendering.md`), not a rename.
 - The rule applies only to `docs/changes/`.
+
+## Diagrams are linted
+
+Every ```mermaid block in a tracked `*.md` file must parse, and every `.d2` file and ```d2 block must compile. The linters live in the public `AardeYamz/workflows` repo (`mermaid-lint/`, `d2-lint/`), and `.github/workflows/diagram-lint.yml` calls its shared `diagram-lint.yml` workflow on any Markdown or `.d2` change. After editing a diagram, run them from this repo before committing (they expect `workflows` cloned next to this repo):
+
+```
+npm ci --prefix ../workflows/mermaid-lint && node ../workflows/mermaid-lint/lint.mjs
+npm ci --prefix ../workflows/d2-lint && node ../workflows/d2-lint/lint.mjs
+```
+
+Each prints `file:line` and the parser's message for each broken diagram. Changes to the linters go in `AardeYamz/workflows`, not here.
+
+The architecture overview is `docs/diagrams/architecture.d2`, rendered to `architecture.svg` next to it (README links both). CI lints the source but not the SVG, so when the architecture changes, update the `.d2`, re-render (command in its header) and commit both.
