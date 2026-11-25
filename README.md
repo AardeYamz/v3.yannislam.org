@@ -100,6 +100,10 @@ to an inert placeholder and warns.
 
 ## Architecture
 
+The whole system on one page, from the theme fetch and build hooks through the app to CI and delivery: [`docs/diagrams/architecture.svg`](docs/diagrams/architecture.svg) (source: [`architecture.d2`](docs/diagrams/architecture.d2), in [D2](https://d2lang.com)). The diagrams below zoom in on each part.
+
+[![Architecture overview](docs/diagrams/architecture.svg)](docs/diagrams/architecture.svg)
+
 ```mermaid
 flowchart TB
     Main["main.ts + app.config.ts"] --> App["AppComponent"]
@@ -373,6 +377,7 @@ A newer push to the same PR cancels the older run
 | [PR previews](.github/workflows/pr-previews.yml) | PR open/sync/reopen/close | Builds the PR (and any open PR nobody has built yet) with `--base-href /pr-N/`, kept as artifact `pr-N-<sha>` for reuse |
 | [PR previews deploy](.github/workflows/pr-previews-deploy.yml) | Dispatched by PR previews; manual | Publishes every open same-repo PR's newest build together at `v3.yannislam.org/pr-N/` (separate static Vercel project), one deploy at a time, and comments the link |
 | [Dependabot auto-merge](.github/workflows/dependabot-auto-merge.yml) | `pull_request_target` | Waits for checks, then merges Dependabot patch/minor bumps and dev-only majors; production majors wait for review (shared template) |
+| [Retry failed runs](.github/workflows/retry.yml) | Build & Test, CI, PR previews, PR previews deploy or Vercel build warnings finishing with a failure | Re-runs the failed jobs (up to 3 attempts, with backoff) only if one was lost with its runner (shutdown, lost contact); a real failure is left alone (shared template) |
 | [Vercel build warnings](.github/workflows/vercel-build-warnings.yml) | Vercel `deployment_status` | Fetches a preview deploy's Vercel build log and keeps its warning/error lines in a sticky PR comment (needs `VERCEL_TOKEN`) |
 | [Dependabot](.github/dependabot.yml) | Mondays 06:00 UTC | Weekly `npm` and `github-actions` updates |
 | CodeQL | Push, PR | GitHub default setup (no workflow file) |
