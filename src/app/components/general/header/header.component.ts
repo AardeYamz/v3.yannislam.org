@@ -20,7 +20,7 @@ import { LANGUAGES, Language, LanguageService, htmlLang, languageName } from 'sr
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterLink, IconComponent, FlagComponent, FadeStaggerDirective],
+    imports: [RouterLink, IconComponent, FadeStaggerDirective, FlagComponent],
     host: {
         '(document:click)': 'closeLanguageMenu($event)',
         '(document:keydown.escape)': 'closeLanguageMenu()',
