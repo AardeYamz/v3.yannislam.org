@@ -1,0 +1,49 @@
+name: Wiki sync
+
+# Publishes the wiki/ folder to the GitHub wiki (this repo's .wiki.git) whenever it changes on main, so the wiki pages are
+# edited in a PR like any other doc instead of by hand in the wiki. Pages not in wiki/ are removed from the wiki.
+# The wiki must be enabled and have at least one page (it is seeded). Run by hand: Actions → Wiki sync → Run workflow.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'wiki/**'
+      - '.github/workflows/wiki-sync.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: wiki-sync
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    permissions:
+      contents: write   # the wiki repository accepts pushes with the contents scope
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Publish wiki/ to the wiki
+        env:
+          GH_TOKEN: ${{ github.token }}
+          WIKI_URL: https://github.com/${{ github.repository }}.wiki.git
+        run: |
+          auth="Authorization: Basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          echo "::add-mask::${auth#Authorization: Basic }"
+          git -c "http.extraheader=$auth" clone --depth 1 "$WIKI_URL" "$RUNNER_TEMP/wiki"
+          rsync -a --delete --exclude '.git' wiki/ "$RUNNER_TEMP/wiki/"
+          cd "$RUNNER_TEMP/wiki"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Wiki already matches wiki/."
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -m "Sync from ${GITHUB_REPOSITORY}@${GITHUB_SHA}"
+          git -c "http.extraheader=$auth" push origin HEAD
