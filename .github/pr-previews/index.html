@@ -4,13 +4,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <title>PR previews</title>
-<!-- Template for the v3.yannislam.org root page; pr-previews.yml replaces the THEME and ITEMS placeholders below (the theme version pinned in theme.json; one li per live preview). -->
+<!-- Template for the v3.yannislam.org root page; pr-previews-deploy.yml replaces {{THEME}} (the theme version pinned in theme.json) and writes prs.json beside it (one object per live preview). -->
 <link rel="stylesheet" href="https://theme.yannislam.org/{{THEME}}/yl-theme.css">
 <script src="https://theme.yannislam.org/{{THEME}}/yl-theme.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@36.3.0/dist/ag-grid-community.min.js" integrity="sha384-r0nb7ZF8ZNA118r2mrXGSha1zo2m59NrKxYNq7HPj+uZ0rjr+U1csR+ywLx0nNve" crossorigin="anonymous" defer></script>
 <style>
   body { margin: 0; padding-inline: var(--yl-gutter, 1.25rem); line-height: 1.5; }
-  main { max-width: 40rem; padding-block: 1rem 4rem; }
-  small { font-family: var(--yl-mono, monospace); }
+  main { max-width: 72rem; padding-block: 1rem 4rem; }
+  #grid { height: 28rem; }
   a { color: var(--md-sys-color-primary, inherit); }
 </style>
 <header class="yl-head sticky">
@@ -20,7 +21,30 @@
 </header>
 <main>
   <h2 class="yl-section-title">Open pull requests</h2>
-  <ul>
-{{ITEMS}}
-  </ul>
+  <div id="grid"></div>
+  <noscript><p>Open <a href="prs.json">prs.json</a> for the list.</p></noscript>
 </main>
+<script>
+  addEventListener('DOMContentLoaded', async () => {
+    const rows = await fetch('prs.json', { cache: 'no-store' }).then(r => r.json()).catch(() => []);
+    const link = (href, text) => { const a = document.createElement('a'); a.href = href; a.textContent = text; return a; };
+    const api = agGrid.createGrid(document.getElementById('grid'), {
+      theme: agGrid.themeQuartz.withParams({ accentColor: getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-primary').trim() || undefined }),
+      rowData: rows,
+      domLayout: rows.length > 10 ? 'normal' : 'autoHeight',
+      defaultColDef: { sortable: true, filter: true, resizable: true },
+      overlayNoRowsTemplate: 'No open pull requests.',
+      initialState: { sort: { sortModel: [{ colId: 'number', sort: 'desc' }] } },
+      columnDefs: [
+        { field: 'number', headerName: '#', width: 90, filter: 'agNumberColumnFilter', cellRenderer: p => link(`/pr-${p.value}/`, `#${p.value}`) },
+        { field: 'title', flex: 3, minWidth: 220, cellRenderer: p => link(p.data.url, p.value) },
+        { field: 'author', flex: 1, minWidth: 110 },
+        { field: 'branch', flex: 2, minWidth: 160 },
+        { field: 'draft', headerName: 'Draft', width: 100, valueFormatter: p => (p.value ? 'Draft' : '') },
+        { field: 'sha', headerName: 'Commit', width: 110, cellStyle: { fontFamily: 'var(--yl-mono, monospace)' } },
+        { field: 'updated', headerName: 'Updated', flex: 1, minWidth: 150, filter: 'agDateColumnFilter', valueFormatter: p => new Date(p.value).toLocaleString() },
+      ],
+    });
+    api.sizeColumnsToFit();
+  });
+</script>
