@@ -22,7 +22,7 @@ jobs:
       contents: read
       actions: read          # lists runs and downloads their artifacts
       pull-requests: write   # comments the preview links
-    uses: AardeYamz/workflows/.github/workflows/preview-deploy.yml@5fb99872c35eb7da5ed8304b34209aa01a0d3cfa # v1.2.3
+    uses: AardeYamz/workflows/.github/workflows/preview-deploy.yml@eafc5e563897385646641039275f03d34ea4f971 # v1.2.4
     with:
       runs-on: ubuntu-26.04
       build-workflow: pr-previews.yml
