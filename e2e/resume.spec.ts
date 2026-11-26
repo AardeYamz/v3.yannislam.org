@@ -1,11 +1,9 @@
 import { test, expect, gotoAndSettle } from './fixtures';
 
-// ResumeService resolves the filename from resume-manifest.json, which
-// scripts/generate-resume-manifest.js regenerates from whichever dated PDF
-// in src/assets/resume/ is newest. The failure mode worth guarding is a
-// manifest that points at a file which isn't in the build — the unit spec
-// only asserts the URL string it builds, never that the URL resolves.
-const RESUME_URL_PATTERN = /\/assets\/resume\/.+\.pdf$/;
+// ResumeService opens the PDF that yl-resume publishes to GitHub Pages. This only
+// checks which URL the click opens: whether that URL serves a PDF is yl-resume's
+// deployment, not this build, so it is not fetched here.
+const RESUME_URL = 'https://aardeyamz.github.io/yl-resume/resume.pdf';
 
 declare global {
   interface Window {
@@ -51,34 +49,11 @@ test.describe('resume', () => {
     await popup.close();
   });
 
-  test('the tab it opens points at the manifest-resolved resume PDF', async ({ page }) => {
+  test('the tab it opens points at the published resume PDF', async ({ page }) => {
     await recordOpenedUrls(page);
     await gotoAndSettle(page, '/');
     await clickResume(page);
 
-    expect(await openedUrl(page)).toMatch(RESUME_URL_PATTERN);
-  });
-
-  test('the resolved filename carries the YYYYMMDD date the manifest sorts on', async ({ page }) => {
-    await recordOpenedUrls(page);
-    await gotoAndSettle(page, '/');
-    await clickResume(page);
-
-    const filename = (await openedUrl(page)).split('/').pop() ?? '';
-
-    // Same pattern generate-resume-manifest.js matches on. A filename that
-    // drifts from it means the manifest silently fell back / picked nothing.
-    expect(filename).toMatch(/^.+ \d{8}\.pdf$/);
-  });
-
-  test('the resume URL actually serves a PDF', async ({ page, request }) => {
-    await recordOpenedUrls(page);
-    await gotoAndSettle(page, '/');
-    await clickResume(page);
-
-    const response = await request.get(await openedUrl(page));
-
-    expect(response.status()).toBe(200);
-    expect(response.headers()['content-type']).toContain('application/pdf');
+    expect(await openedUrl(page)).toBe(RESUME_URL);
   });
 });

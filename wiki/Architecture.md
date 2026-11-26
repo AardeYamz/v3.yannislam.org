@@ -44,7 +44,7 @@ flowchart TB
 | `SiteConfigService` | Service | The only reader of `config.json`, typed by `site-config.model.ts` |
 | `ThemeService` | Service | `default` / `light` / `dark` as signals, saved in `localStorage`, applied as `[data-theme]` on `<html>` |
 | `AnalyticsService` | Service | Calls the global `gtag()` for custom events |
-| `ResumeService` | Service | Builds the résumé download link from `resume-manifest.json` |
+| `ResumeService` | Service | Opens the résumé PDF that yl-resume publishes to GitHub Pages |
 
 ## Routes
 
@@ -68,7 +68,6 @@ Colour tokens and logos come from the separate [yl-theme](https://github.com/Aar
 docs/                         # change write-ups, plans, reviews
 e2e/                          # Playwright specs + fixtures.ts
 scripts/
-├── generate-resume-manifest.js   # pre-hook: newest dated resume PDF -> resume-manifest.json
 └── inject-env.js                 # postbuild: GA measurement ID into index.html
 src/
 ├── app/
@@ -82,5 +81,4 @@ src/
 
 ## Build hooks
 
-- **`generate-resume-manifest.js`** runs before `start`, `build`, `watch` and `test`. It finds the newest `src/assets/resume/<name> YYYYMMDD.pdf` and writes it to `resume-manifest.json` (tracked in git; commit it with the new PDF).
 - **`inject-env.js`** runs after `build` and replaces `%GOOGLE_ANALYTICS_ID%` in the built HTML. On Vercel a missing or malformed ID fails the build; elsewhere it writes the inert `G-XXXXXXXXXX` and warns. `ALLOW_MISSING_ANALYTICS=1` lets a fork opt out.

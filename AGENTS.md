@@ -27,7 +27,7 @@ Verify a change with `npm test`, `npm run build` and `npm run test:e2e`.
 - Colour tokens come from the shared [yl-theme](https://github.com/AardeYamz/yl-theme) project, not this repo. Use `var(...)`; to change a token, change it there, then run `node scripts/fetch-theme.js --bump` and commit `theme.json`.
 - A new third-party script, frame, image host or connection must be added to the CSP in `vercel.json`.
 - Never put a real Google Analytics measurement ID in the repo as a fallback.
-- Commit a new resume PDF together with the regenerated `src/assets/resume-manifest.json`.
+- The resume is not in this repo: edit it in `yl-resume`, which publishes the PDF the site links to.
 - Update `README.md` and `CLAUDE.md` in the same PR when a change affects commands, architecture or conventions. Substantial changes get a write-up in `docs/changes/` (naming rule in `CLAUDE.md`).
 - Keep the long explanatory comments in the code, and update them when the behaviour changes.
 - Work in a separate git worktree off `origin/main`, merge `main` in before pushing, and keep PRs small. Fill in the PR template.

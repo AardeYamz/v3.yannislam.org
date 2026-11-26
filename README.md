@@ -158,7 +158,7 @@ flowchart TB
 | `ThemeService` | Service | `default` / `light` / `dark` modes, as signals, saved in `localStorage` and applied as `[data-theme]` on `<html>`. The colors themselves are not here: they come from `yl-tokens.css` (below) |
 | `yl-tokens.css` | Dependency | Color tokens from the separate [yl-theme](https://github.com/AardeYamz/yl-theme) project. `theme.json` pins a version and SHA-256; `scripts/fetch-theme.js` downloads it, the eleven logos and `logo-geometry.json` (which the loading screen and banner mark draw from) and the favicons, from `theme.yannislam.org` into git-ignored `src/generated/` before every start, build, test and e2e run; `angular.json` loads the tokens as a global stylesheet and serves the logos at `assets/images/logos/` |
 | `AnalyticsService` | Service | Calls the global `gtag()` for custom events |
-| `ResumeService` | Service | Builds the resume download link from `resume-manifest.json` |
+| `ResumeService` | Service | Opens the resume PDF that [yl-resume](https://github.com/AardeYamz/yl-resume) publishes to GitHub Pages; nothing resume-related is built here |
 
 ### Routes
 
@@ -183,7 +183,6 @@ same paths for prerendering and must be kept in step.
 docs/                         # see docs/README.md
 e2e/                          # Playwright specs + fixtures.ts
 scripts/
-├── generate-resume-manifest.js   # pre-hook: newest dated resume PDF -> resume-manifest.json
 └── inject-env.js                 # postbuild: GA measurement ID into index.html
 src/
 ├── app/
@@ -204,8 +203,7 @@ src/
 │   └── app.routes.server.ts  # Prerender list
 ├── assets/
 │   ├── config.json           # All page content
-│   ├── resume-manifest.json  # Written by the pre-hook
-│   ├── fonts/  images/  resume/
+│   ├── fonts/  images/
 ├── generated/                # yl-tokens.css (color tokens per [data-theme]), logos/<variant>.svg and logo-geometry.json, fetched from yl-theme (git-ignored; see theme.json)
 ├── styles.scss               # Global styles
 ├── bootstrap-custom.scss     # Bootstrap overrides
@@ -221,11 +219,6 @@ importing `config.json`.
 
 ### Build hooks
 
-- **`scripts/generate-resume-manifest.js`** runs before `start`, `build`,
-  `watch` and `test`. It finds the newest `src/assets/resume/<name> YYYYMMDD.pdf`
-  and writes its filename to `src/assets/resume-manifest.json`, so dropping in a
-  new dated PDF updates the download link with no code change. The manifest is
-  tracked in git; commit it with the new PDF.
 - **`scripts/inject-env.js`** runs after `build` and replaces
   `%GOOGLE_ANALYTICS_ID%` in the built `index.html`. On Vercel (`VERCEL=1`) a
   missing or malformed ID fails the build; elsewhere it writes the inert
