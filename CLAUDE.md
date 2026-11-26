@@ -141,6 +141,11 @@ Docs live under `docs/`; [`docs/README.md`](docs/README.md) indexes them.
   area before changing it, and add one for any substantial change.
 - **`docs/todo/`**: plans for work not yet built. [`docs/todo/README.md`](docs/todo/README.md)
   orders them; update it when a plan's status changes.
+- **`wiki/`**: the pages of the GitHub wiki, summarising `README.md`, this file
+  and `docs/`. Edit them here, not in the wiki: `.github/workflows/wiki-sync.yml`
+  publishes the folder to the wiki when it changes on `main` (anything only in the
+  wiki is deleted). When you change `README.md`, this file or
+  `docs/todo/README.md`, update the matching page in the same PR.
 - **`docs/reviews/`**: point-in-time reviews of PRs (`pr-<number>-<slug>.md`)
   and audits (`<topic>-YYYY-MM-DD.md`).
 
