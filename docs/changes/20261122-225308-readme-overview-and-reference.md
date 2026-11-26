@@ -59,3 +59,11 @@ and says both pre-hooks also run before `test:e2e`.
 After `main` dropped `@angular/animations` (#237), the code structure loses
 `src/app/animations/`, `directives/` lists `fade-stagger`, and the stack names
 `FadeStaggerDirective`.
+
+## Changed: README follows the shared template
+
+The README now follows the template in `claude-settings` (summary, one
+architecture diagram, layout, related repos, commands, docs). There is no
+long-form copy: the stack, routes, `config.json` keys, tests and CI detail are
+summarised in `wiki/`, and the code is the reference. `CLAUDE.md`,
+`CONTRIBUTING.md` and the D2 header point there.
