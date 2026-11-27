@@ -76,3 +76,7 @@ the component, CI/CD and DNS diagrams live in `wiki/` only. The wiki pages were
 brought up to date with the last full README first (they still listed the old
 Security workflow and an unmounted `ContactComponent`), and the workflow table
 gained Wiki sync.
+
+The original "Code structure" tree (with the same corrections) replaces the
+short "Layout" block and moves out of the wiki, and a shorter "Editing content"
+section is back in the README.

@@ -40,23 +40,77 @@ The full picture is in [`docs/diagrams/architecture.svg`](docs/diagrams/architec
 
 - **App:** standalone components, signals, zoneless, `@angular/ssr` prerendering. Routes: `/`, `/projects`, `/projects/highschool`, `/aardeyamz`; keep `app.routes.ts` and `app.routes.server.ts` in step. Components read content only through `SiteConfigService`.
 - **Build hooks:** before start, build, watch, test and e2e, `generate-resume-manifest.js` links the newest dated resume PDF and `fetch-theme.js` downloads the theme files pinned in `theme.json` from `theme.yannislam.org`. After build, `inject-env.js` fills in `GOOGLE_ANALYTICS_ID` (required on Vercel; `ALLOW_MISSING_ANALYTICS=1` lets a fork skip it).
-- **Content:** edit `config.json`, typed by `site-config.model.ts`; nothing validates it at build time.
 - **Deploy:** Vercel builds `main` for production and every branch as a preview (`vercel.json` sets the security headers); each production deploy is tagged and released. `vercel-build-warnings.yml` needs `VERCEL_TOKEN`.
 - **Dependencies:** weekly Dependabot bumps with auto-merge for patch, minor and dev majors; Aikido triages advisories. Angular majors are upgraded by hand with `ng update`.
 
-## Layout
+## Code structure
 
 ```
+.github/
+├── workflows/                # see wiki/CI-CD-and-Deployment.md
+├── actionlint.yaml           # actionlint config
+├── dependabot.yml
+├── pr-previews/              # PR preview support files
+└── pull_request_template.md
+docs/                         # see docs/README.md
+e2e/                          # Playwright specs + fixtures.ts
+scripts/
+├── fetch-theme.js                # pre-hook: yl-theme files at the theme.json pin -> src/generated/
+├── generate-resume-manifest.js   # pre-hook: newest dated resume PDF -> resume-manifest.json
+├── inject-env.js                 # postbuild: GA measurement ID into index.html
+└── *.test.js                     # node --test (npm run test:scripts)
 src/
-  app/            components/, directives/, icons/, pipes/, services/
-  assets/         config.json, fonts, images, resume PDFs
-  generated/      fetched theme files (git-ignored)
-e2e/              Playwright specs and fixtures
-scripts/          build hooks and their tests
-docs/             change write-ups, plans, reviews, diagrams
-wiki/             GitHub wiki pages (published from here)
-.github/          CI, preview, release and Dependabot config
+├── app/
+│   ├── components/
+│   │   ├── general/          # header, footer, loading-screen
+│   │   ├── home/             # banner (+ typewriter), floating-logos, logo-loop, about,
+│   │   │                     # education, workhistory, contact, projects, projects-highschool
+│   │   └── other/aardeyamz/  # /aardeyamz page (+ namecard)
+│   ├── directives/           # aos, fade-stagger, link-preview, logo-fallback
+│   ├── icons/                # Inline SVG icon registry + <app-icon>
+│   ├── pipes/linkify/        # Turns plain-text URLs into links
+│   ├── services/             # site-config, theme, analytics, resume, scroll, seo
+│   ├── utils/hydration.ts    # SSR/hydration helpers
+│   ├── app.config.ts         # Browser providers
+│   ├── app.config.server.ts  # Server (prerender) providers
+│   ├── app.routes.ts         # Routes
+│   └── app.routes.server.ts  # Prerender list
+├── assets/
+│   ├── config.json           # All page content
+│   ├── resume-manifest.json  # Written by the pre-hook
+│   ├── fonts/  images/  resume/
+├── generated/                # yl-tokens.css (color tokens per [data-theme]), logos/<variant>.svg, logo-geometry.json and favicons/, fetched from yl-theme (git-ignored; see theme.json)
+├── styles.scss               # Global styles
+├── variables.scss            # SCSS aliases ($Primary, $Surface…) for the theme tokens
+├── bootstrap-custom.scss     # Bootstrap overrides
+├── fonts.scss                # @font-face (Calibre, SF Mono)
+├── index.html                # gtag bootstrap, %GOOGLE_ANALYTICS_ID% placeholder
+├── main.ts / main.server.ts
+└── server.ts                 # Express entry for `outputMode: server` (not used by Vercel)
+wiki/                         # GitHub wiki pages (published from here)
+theme.json                    # pinned yl-theme version + SHA-256 per file
+vercel.json                   # response headers, including the report-only CSP
 ```
+
+Every component follows the Angular trio (`.ts` / `.html` / `.scss`, plus a
+`.spec.ts`). Components read content through `SiteConfigService`, never by
+importing `config.json`.
+
+## Editing content (`config.json`)
+
+Nearly all page content is in [`src/assets/config.json`](src/assets/config.json).
+
+| Key | Holds |
+|---|---|
+| `siteMenu` | Nav items |
+| `about` | Name, email, contact links, name-meaning cards and `experiences` (work, volunteering, education, skills) |
+| `logos`, `logoAbout` | Logos and organization blurbs, matched by `logoKey` |
+| `banner`, `footer` | Hero text and typewriter strings; footer links and credits |
+| `projects` | College and high school projects |
+| `ui` | Interface text (none goes in templates) |
+| `siteTitle`, `heading`, `subHeading`, `manifest*` | Page title and PWA manifest fields |
+
+Match the shape of neighbouring entries: it is typed in `site-config.model.ts`, but the build does not validate the JSON. New social icons also go in `src/app/icons/icon-registry.ts`. Field-by-field detail: [Editing Content](wiki/Editing-Content.md).
 
 ## Related repos
 

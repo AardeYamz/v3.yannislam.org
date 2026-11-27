@@ -86,54 +86,7 @@ Colour tokens and logos come from the separate [yl-theme](https://github.com/Aar
 
 ## Code structure
 
-```
-.github/
-├── workflows/                # see the CI/CD and Deployment page
-├── actionlint.yaml           # actionlint config
-├── dependabot.yml
-└── pull_request_template.md
-docs/                         # see docs/README.md
-e2e/                          # Playwright specs + fixtures.ts
-scripts/
-├── fetch-theme.js                # pre-hook: yl-theme files at the theme.json pin -> src/generated/
-├── generate-resume-manifest.js   # pre-hook: newest dated resume PDF -> resume-manifest.json
-├── inject-env.js                 # postbuild: GA measurement ID into index.html
-└── *.test.js                     # node --test (npm run test:scripts)
-src/
-├── app/
-│   ├── components/
-│   │   ├── general/          # header, footer, loading-screen
-│   │   ├── home/             # banner (+ typewriter), floating-logos, logo-loop, about,
-│   │   │                     # education, workhistory, contact, projects, projects-highschool
-│   │   └── other/aardeyamz/  # /aardeyamz page (+ namecard)
-│   ├── directives/           # aos, fade-stagger, link-preview, logo-fallback
-│   ├── icons/                # Inline SVG icon registry + <app-icon>
-│   ├── pipes/linkify/        # Turns plain-text URLs into links
-│   ├── services/             # site-config, theme, analytics, resume, scroll, seo
-│   ├── utils/hydration.ts    # SSR/hydration helpers
-│   ├── app.config.ts         # Browser providers
-│   ├── app.config.server.ts  # Server (prerender) providers
-│   ├── app.routes.ts         # Routes
-│   └── app.routes.server.ts  # Prerender list
-├── assets/
-│   ├── config.json           # All page content
-│   ├── resume-manifest.json  # Written by the pre-hook
-│   ├── fonts/  images/  resume/
-├── generated/                # yl-tokens.css (color tokens per [data-theme]), logos/<variant>.svg, logo-geometry.json and favicons/, fetched from yl-theme (git-ignored; see theme.json)
-├── styles.scss               # Global styles
-├── variables.scss            # SCSS aliases ($Primary, $Surface…) for the theme tokens
-├── bootstrap-custom.scss     # Bootstrap overrides
-├── fonts.scss                # @font-face (Calibre, SF Mono)
-├── index.html                # gtag bootstrap, %GOOGLE_ANALYTICS_ID% placeholder
-├── main.ts / main.server.ts
-└── server.ts                 # Express entry for `outputMode: server` (not used by Vercel)
-theme.json                    # pinned yl-theme version + SHA-256 per file
-vercel.json                   # response headers, including the report-only CSP
-```
-
-Every component follows the Angular trio (`.ts` / `.html` / `.scss`, plus a
-`.spec.ts`). Components read content through `SiteConfigService`, never by
-importing `config.json`.
+See [Code structure](https://github.com/AardeYamz/v3.yannislam.org/blob/main/README.md#code-structure) in the README.
 
 ## Build hooks
 
