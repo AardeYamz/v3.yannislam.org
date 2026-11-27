@@ -26,7 +26,7 @@ jobs:
       pull-requests: read     # lists a PR's changed files
       security-events: write  # zizmor uploads SARIF to code scanning
       actions: read
-    uses: AardeYamz/workflows/.github/workflows/ci.yml@756b83b3d2dd16a88863d2bb8aaf03a90b72c6b7 # v1.2.7
+    uses: AardeYamz/workflows/.github/workflows/ci.yml@3f1c44d370d79f186604657b5ddc3155a95a5433 # v1.3.0
     with:
       d2: true
       dependency-review: true
