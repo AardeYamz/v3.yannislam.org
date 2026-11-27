@@ -67,3 +67,12 @@ architecture diagram, layout, related repos, commands, docs). There is no
 long-form copy: the stack, routes, `config.json` keys, tests and CI detail are
 summarised in `wiki/`, and the code is the reference. `CLAUDE.md`,
 `CONTRIBUTING.md` and the D2 header point there.
+
+## Changed: getting started and testing back in the README
+
+The template-only README cut too much, so "Commands" is now short "Getting
+started" and "Testing" sections. The CI schedule, workflow and job tables, and
+the component, CI/CD and DNS diagrams live in `wiki/` only. The wiki pages were
+brought up to date with the last full README first (they still listed the old
+Security workflow and an unmounted `ContactComponent`), and the workflow table
+gained Wiki sync.

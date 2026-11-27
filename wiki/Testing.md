@@ -11,6 +11,10 @@ ng test --include='**/header.component.spec.ts'      # one spec
 
 Vitest runs in Playwright's Chromium (`npx playwright install chromium`). CI uploads coverage from the Node 24 leg to Codecov.
 
+## Script tests
+
+`npm run test:scripts` runs `node --test` over `scripts/*.test.js`.
+
 ## End-to-end tests (Playwright)
 
 Unit tests stub child components, so page composition, boot sequence, navigation and theme switching are covered by Playwright specs in `e2e/` against the real app.

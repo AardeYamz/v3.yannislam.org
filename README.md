@@ -67,23 +67,33 @@ wiki/             GitHub wiki pages (published from here)
 | [personal-dns](https://github.com/AardeYamz/personal-dns) (private) | Cloudflare DNS and email routing |
 | [yannislam.org](https://github.com/AardeYamz/yannislam.org) (private) | the earlier Gatsby site |
 
-## Commands
+## Getting started
 
-Node 24 or 26.
+You need Node.js 24 or 26 (CI runs both).
 
 ```bash
 npm install
-npm start                    # dev server at http://localhost:4200
-npm run build                # prerender every route
-npm test -- --no-watch       # Vitest (needs: npx playwright install chromium)
-npm run test:scripts         # script tests
-npm run test:e2e             # Playwright (first: npx playwright install --with-deps chromium firefox webkit)
-npm run test:perf            # Lighthouse CI; test:perf:desktop for desktop
+npm start            # dev server at http://localhost:4200, reloads on save
+npm run build        # prerender every route
 ```
+
+The first `start` downloads the theme files, so `theme.yannislam.org` must be reachable. A local build without `GOOGLE_ANALYTICS_ID` warns and uses a placeholder. More in [Getting Started](wiki/Getting-Started.md).
+
+## Testing
+
+```bash
+npx playwright install --with-deps chromium firefox webkit   # once per machine
+npm test -- --no-watch   # Vitest unit tests, one run (plain npm test watches)
+npm run test:scripts     # tests for the build scripts
+npm run test:e2e         # Playwright; test:e2e:ui for interactive mode
+npm run test:perf        # Lighthouse CI; test:perf:desktop for desktop
+```
+
+Unit tests stub child components, so page composition, navigation and theming are covered by the Playwright specs in `e2e/`. In new specs, wait with `gotoAndSettle()` from `e2e/fixtures.ts`, not `waitForTimeout()`. More in [Testing](wiki/Testing.md).
 
 ## Docs
 
-- [Wiki](https://github.com/AardeYamz/v3.yannislam.org/wiki) (source in [`wiki/`](wiki/)): architecture, `config.json`, testing, CI/CD.
+- [Wiki](https://github.com/AardeYamz/v3.yannislam.org/wiki) (source in [`wiki/`](wiki/)): architecture and component diagrams, `config.json`, testing, CI/CD schedule and DNS.
 - [docs/README.md](docs/README.md): index of change write-ups, plans and reviews.
 - [CLAUDE.md](CLAUDE.md), [AGENTS.md](AGENTS.md): conventions and rules.
 - [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
