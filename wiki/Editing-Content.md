@@ -17,4 +17,4 @@ Nearly everything on the page comes from `src/assets/config.json`. Its shape is 
 
 Image `src` values can be a URL or a path under `src/assets/`. A new social icon must exist in `src/app/icons/icon-registry.ts`. The dev server picks up edits on save.
 
-To update the résumé, drop a new `<name> YYYYMMDD.pdf` in `src/assets/resume/` and commit it with the regenerated `resume-manifest.json`.
+To update the résumé, edit `resume.md` in [yl-resume](https://github.com/AardeYamz/yl-resume). Its push to `main` publishes the PDF the site links to; nothing changes here.

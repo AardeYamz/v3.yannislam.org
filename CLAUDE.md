@@ -109,10 +109,6 @@ with Cloudflare in front for DNS and email.
 
 ### Build hooks
 
-- `scripts/generate-resume-manifest.js` runs before `start`, `build`, `watch`
-  and `test`. It writes the newest `src/assets/resume/<name> YYYYMMDD.pdf` to
-  `src/assets/resume-manifest.json`. The manifest is tracked in git: commit it
-  together with a new resume PDF.
 - `scripts/inject-env.js` runs after `build` and replaces
   `%GOOGLE_ANALYTICS_ID%` in every built HTML file. On Vercel (`VERCEL=1`) a
   missing or malformed ID fails the build, because previews and production

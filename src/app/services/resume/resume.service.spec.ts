@@ -1,6 +1,4 @@
-import resumeManifest from 'src/assets/resume-manifest.json';
-
-import { ResumeService } from './resume.service';
+import { RESUME_URL, ResumeService } from './resume.service';
 
 describe('ResumeService', () => {
     let service: ResumeService;
@@ -10,12 +8,12 @@ describe('ResumeService', () => {
     });
 
     describe('open()', () => {
-        it('opens the manifest-resolved resume filename as an absolute, encoded URL', () => {
+        it('opens the published resume PDF', () => {
             vi.spyOn(window, 'open').mockReturnValue(null);
 
             service.open();
 
-            expect(window.open).toHaveBeenCalledWith(`${window.location.origin}/assets/resume/${encodeURIComponent(resumeManifest.filename as string)}`, '_blank', 'noopener');
+            expect(window.open).toHaveBeenCalledWith(RESUME_URL, '_blank', 'noopener');
         });
 
         it('does nothing during server-side rendering', () => {
