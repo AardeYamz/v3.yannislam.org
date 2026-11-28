@@ -1,9 +1,9 @@
 # CLAUDE.md
 
 Guidance for Claude Code (claude.ai/code) and anyone else changing this repo.
-[`README.md`](README.md) covers the stack, architecture, `config.json` keys,
-tests and CI in full; this file keeps the rules and the things that are easy
-to get wrong.
+[`README.md`](README.md) is the overview and [`wiki/`](wiki/) summarises the
+stack, architecture, `config.json`, tests and CI; this file keeps the rules and
+the things that are easy to get wrong.
 
 ## Commands
 
