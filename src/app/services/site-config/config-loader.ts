@@ -12,6 +12,7 @@ const IMPORTERS: Record<Exclude<Language, 'en'>, () => Promise<{ default: unknow
   zh: () => import('../../../assets/config.zh.json'),
   hk: () => import('../../../assets/config.hk.json'),
   mx: () => import('../../../assets/config.mx.json'),
+  nl: () => import('../../../assets/config.nl.json'),
 };
 
 /** The config for `lang`, or English if that translation has not been loaded yet. */
