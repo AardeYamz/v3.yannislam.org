@@ -7,9 +7,12 @@ npm install
 npm start            # dev server at http://localhost:4200, reloads on save
 npm run build        # production build: prerender every route + postbuild env substitution
 npm test             # Vitest unit tests (watch mode)
+npm run test:scripts # node --test for scripts/*.test.js
 npm run test:e2e     # Playwright end-to-end tests
 npm run test:perf    # Lighthouse CI (mobile; test:perf:desktop for desktop)
 ```
+
+`start`, `build`, `watch`, `test` and `test:e2e` first run the [build hooks](Architecture#build-hooks), which need `theme.yannislam.org` reachable on the first run and after a theme bump.
 
 `npm run build` fills in the Google Analytics ID from the `GOOGLE_ANALYTICS_ID` environment variable. Locally it falls back to an inert placeholder (`G-XXXXXXXXXX`) and warns.
 
