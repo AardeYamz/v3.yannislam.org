@@ -14,7 +14,7 @@
 [![License: MIT](https://img.shields.io/badge/Code-MIT-yellow.svg)](LICENSE)
 [![License: CC BY 4.0](https://img.shields.io/badge/Content-CC%20BY%204.0-lightgrey.svg)](LICENSE-CONTENT)
 
-The source of [yannislam.org](https://yannislam.org): a public Angular 22 portfolio, prerendered to static HTML and served from Vercel. Nearly all page copy lives in `src/assets/config.json`. Forked from [Lê Thanh Tuấn's Portfolio](https://github.com/lethanhtuan939/Portfolio), based on [José Hernández's](https://github.com/andresjosehr/andresjosehr-portfolio), adapted from [Brittany Chiang's](https://github.com/bchiang7/v4).
+The source of [yannislam.org](https://yannislam.org): a public Angular 22 portfolio, prerendered to static HTML and served from Vercel. Nearly all page copy lives in `src/assets/config.json`, with translations in `config.zh.json`. Forked from [Lê Thanh Tuấn's Portfolio](https://github.com/lethanhtuan939/Portfolio), based on [José Hernández's](https://github.com/andresjosehr/andresjosehr-portfolio), adapted from [Brittany Chiang's](https://github.com/bchiang7/v4).
 
 ## Architecture
 
@@ -69,14 +69,15 @@ src/
 │   ├── directives/           # aos, fade-stagger, link-preview, logo-fallback
 │   ├── icons/                # Inline SVG icon registry + <app-icon>
 │   ├── pipes/linkify/        # Turns plain-text URLs into links
-│   ├── services/             # site-config, theme, analytics, resume, scroll, seo
+│   ├── services/             # site-config, language, theme, analytics, resume, scroll, seo
 │   ├── utils/hydration.ts    # SSR/hydration helpers
 │   ├── app.config.ts         # Browser providers
 │   ├── app.config.server.ts  # Server (prerender) providers
 │   ├── app.routes.ts         # Routes
 │   └── app.routes.server.ts  # Prerender list
 ├── assets/
-│   ├── config.json           # All page content
+│   ├── config.json           # All page content (English)
+│   ├── config.zh.json        # The same content in Simplified Chinese
 │   ├── resume-manifest.json  # Written by the pre-hook
 │   ├── fonts/  images/  resume/
 ├── generated/                # yl-tokens.css (color tokens per [data-theme]), logos/<variant>.svg, logo-geometry.json and favicons/, fetched from yl-theme (git-ignored; see theme.json)
@@ -109,6 +110,11 @@ Nearly all page content is in [`src/assets/config.json`](src/assets/config.json)
 | `projects` | College and high school projects |
 | `ui` | Interface text (none goes in templates) |
 | `siteTitle`, `heading`, `subHeading`, `manifest*` | Page title and PWA manifest fields |
+
+The Chinese edition is [`src/assets/config.zh.json`](src/assets/config.zh.json), a
+translation with exactly the same keys and list lengths (a unit test checks
+this). Edit both files together. See
+[`docs/changes/20261104-041538-chinese-edition.md`](docs/changes/20261104-041538-chinese-edition.md).
 
 Match the shape of neighbouring entries: it is typed in `site-config.model.ts`, but the build does not validate the JSON. New social icons also go in `src/app/icons/icon-registry.ts`. Field-by-field detail: [Editing Content](wiki/Editing-Content.md).
 

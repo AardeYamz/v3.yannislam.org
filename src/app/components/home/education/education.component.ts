@@ -18,10 +18,6 @@ export class EducationComponent {
 
 
   active = 0
+  get experiences(): Experiences { return this.configService.experiences; }
   get ui() { return this.configService.ui.education; }
-  experiences: Experiences;
-
-  constructor() {
-    this.experiences = this.configService.experiences;
-  }
 }
