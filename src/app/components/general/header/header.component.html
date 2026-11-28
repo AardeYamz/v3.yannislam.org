@@ -33,9 +33,9 @@
             @for (option of languages; track option) {
               <li>
                 <button type="button" class="lang-option" (click)="selectLanguage(option)"
+                  [title]="languageName(option)" [attr.aria-label]="languageName(option)"
                   [attr.lang]="htmlLang(option)" [attr.aria-current]="option === languageService.language() ? 'true' : null">
                   <app-flag [lang]="option"></app-flag>
-                  <span>{{languageName(option)}}</span>
                 </button>
               </li>
             }

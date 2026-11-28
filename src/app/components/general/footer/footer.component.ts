@@ -50,4 +50,5 @@ export class FooterComponent {
     readonly atBottom = computed(() =>
         this.scrollService.y() >= this.scrollService.maxScroll() - FooterComponent.BOTTOM_THRESHOLD_PX
     );
+
 }
