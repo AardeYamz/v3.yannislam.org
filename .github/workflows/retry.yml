@@ -14,6 +14,6 @@ jobs:
   retry:
     permissions:
       actions: write   # re-runs the failed jobs
-    uses: AardeYamz/workflows/.github/workflows/retry-failed.yml@06ed74b2165e1ab9b96ad1337816ff6163337ea3 # v1.2.6
+    uses: AardeYamz/workflows/.github/workflows/retry-failed.yml@b2ce6116c460e3911d9961f62f167547ee85981d # v1.4.0
     with:
       max-attempts: 3
