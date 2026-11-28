@@ -17,7 +17,10 @@ Nearly everything on the page comes from `src/assets/config.json`. Its shape is 
 
 The Chinese edition is [`src/assets/config.zh.json`](https://github.com/AardeYamz/v3.yannislam.org/blob/main/src/assets/config.zh.json), a
 translation with exactly the same keys and list lengths (a unit test checks
-this). Edit both files together. See
+this). Edit all three files together (`config.hk.json` is
+[`config.zh.json`](https://github.com/AardeYamz/v3.yannislam.org/blob/main/src/assets/config.zh.json) converted to Traditional characters with
+Hong Kong wording, see
+[`docs/changes/20261105-120000-hong-kong-edition.md`](https://github.com/AardeYamz/v3.yannislam.org/blob/main/docs/changes/20261105-120000-hong-kong-edition.md)). See
 [`docs/changes/20261104-041538-chinese-edition.md`](https://github.com/AardeYamz/v3.yannislam.org/blob/main/docs/changes/20261104-041538-chinese-edition.md).
 
 Image `src` values can be a URL or a path under `src/assets/`. A new social icon must exist in `src/app/icons/icon-registry.ts`. The dev server picks up edits on save.
